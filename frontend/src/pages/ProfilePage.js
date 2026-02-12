@@ -78,7 +78,7 @@ export default function ProfilePage() {
 
       {/* Share Link */}
       {shareLink && (
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
           <div className="flex items-center gap-2 mb-3">
             <ExternalLink className="w-4 h-4 text-purple-500" />
             <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Public Schedule Link</span>
@@ -112,7 +112,7 @@ export default function ProfilePage() {
       {profile && (
         <div>
           {/* Athlete Info Card */}
-          <div data-testid="profile-athlete-info-card" className="rounded-xl p-6 border space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+          <div data-testid="profile-athlete-info-card" className="rounded-xl p-6 border space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Athlete Info</h3>
             <div className="flex items-start gap-5">
               <div className="relative group">
@@ -148,7 +148,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Physical Info Card */}
-          <div data-testid="profile-physical-info-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+          <div data-testid="profile-physical-info-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Physical Info</h3>
             <div className="grid grid-cols-3 gap-3">
               <SelectRow label="Handed" testId="profile-handed" value={profile.handed} onChange={(v) => updateProfile("handed", v)} options={["", "Right", "Left", "Ambidextrous"]} />
@@ -163,7 +163,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Team & Location Card */}
-          <div data-testid="profile-team-location-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+          <div data-testid="profile-team-location-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Team & Location</h3>
             <div className="grid grid-cols-2 gap-3">
               <FieldRow label="Club Team" testId="profile-club" value={profile.club_team} onChange={(v) => updateProfile("club_team", v)} placeholder="A5 Volleyball" />
@@ -176,7 +176,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Media & Bio Card */}
-          <div data-testid="profile-media-bio-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+          <div data-testid="profile-media-bio-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Media & Bio</h3>
             <FieldRow label="Highlights Video Link" testId="profile-video" value={profile.video_link} onChange={(v) => updateProfile("video_link", v)} placeholder="https://youtube.com/..." />
             <div>
@@ -194,7 +194,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Contact Info Card */}
-          <div data-testid="profile-contact-card" className="rounded-xl p-6 border space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
+          <div data-testid="profile-contact-card" className="rounded-xl p-6 border space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <div className="space-y-4">
               <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Athlete Contact</h3>
               <div className="grid grid-cols-2 gap-3">
