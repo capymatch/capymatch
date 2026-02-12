@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 import api from "./lib/api";
 import { ThemeProvider } from "./lib/theme";
 import Layout from "./components/Layout";
@@ -9,6 +9,9 @@ import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
 import NeedsFollowUp from "./pages/NeedsFollowUp";
 import ProgramDetail from "./pages/ProgramDetail";
+import Inbox from "./pages/Inbox";
+import Analytics from "./pages/Analytics";
+import SettingsPage from "./pages/SettingsPage";
 import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
