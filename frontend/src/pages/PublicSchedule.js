@@ -1,7 +1,25 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Calendar, MapPin, Clock, Play, Mail, Phone, User, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Clock, Play, Mail, Phone, User, Loader2, ExternalLink } from "lucide-react";
 import { BACKEND_URL } from "../lib/api";
+
+function getYouTubeEmbedUrl(url) {
+  if (!url) return null;
+  let videoId = null;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtube.com") && u.pathname === "/watch") {
+      videoId = u.searchParams.get("v");
+    } else if (u.hostname.includes("youtube.com") && u.pathname.startsWith("/embed/")) {
+      videoId = u.pathname.split("/embed/")[1]?.split("?")[0];
+    } else if (u.hostname === "youtu.be") {
+      videoId = u.pathname.slice(1).split("?")[0];
+    } else if (u.hostname.includes("youtube.com") && u.pathname.startsWith("/shorts/")) {
+      videoId = u.pathname.split("/shorts/")[1]?.split("?")[0];
+    }
+  } catch { return null; }
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+}
 
 const EVENT_COLORS = {
   Camp: "bg-purple-500",
