@@ -137,12 +137,12 @@ export default function PublicSchedule() {
                 <img
                   src={profile.photo_url}
                   alt={profile.athlete_name}
-                  className="w-36 h-36 rounded-2xl object-cover border-2 border-purple-500/40 shadow-2xl"
+                  className="w-64 h-64 rounded-2xl object-cover border-2 border-purple-500/40 shadow-2xl"
                   data-testid="athlete-photo"
                 />
               ) : (
-                <div className="w-36 h-36 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center border-2 border-purple-500/40 shadow-2xl">
-                  <User className="w-16 h-16 text-white/70" />
+                <div className="w-64 h-64 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center border-2 border-purple-500/40 shadow-2xl">
+                  <User className="w-24 h-24 text-white/70" />
                 </div>
               )}
             </div>
