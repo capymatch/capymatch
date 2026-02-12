@@ -90,11 +90,15 @@ function AppRouter() {
           {(user) => <Layout user={user} />}
         </ProtectedRoute>
       }>
-        <Route index element={<Dashboard />} />
-        <Route path="board" element={<RecruitingBoard />} />
+        <Route index element={<Navigate to="/board" replace />} />
+        <Route path="board" element={<Dashboard />} />
+        <Route path="pipeline" element={<RecruitingBoard />} />
         <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
         <Route path="follow-ups" element={<NeedsFollowUp />} />
         <Route path="programs/:programId" element={<ProgramDetail />} />
+        <Route path="inbox" element={<Inbox />} />
+        <Route path="analytics" element={<Analytics />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
   );
