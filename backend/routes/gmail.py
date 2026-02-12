@@ -467,6 +467,105 @@ async def toggle_read(message_id: str, request: Request):
         raise HTTPException(status_code=500, detail="Failed to update email")
 
 
+@router.post("/check-replies")
+async def check_replies_now(request: Request):
+    """Manually trigger a check for coach replies and update program statuses"""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    creds = await get_gmail_credentials(user["user_id"])
+    
+    if not creds:
+        raise HTTPException(status_code=403, detail="Gmail not connected")
+    
+    try:
+        # Get all coach emails for this tenant
+        coaches = await db.coaches.find(
+            {"tenant_id": tenant_id, "email": {"$ne": ""}},
+            {"_id": 0, "email": 1, "program_id": 1}
+        ).to_list(500)
+        
+        if not coaches:
+            return {"updated_count": 0, "message": "No coaches found"}
+        
+        # Build a map of coach email -> program_id
+        coach_email_to_program = {}
+        for c in coaches:
+            email_addr = c.get("email", "").strip().lower()
+            if email_addr:
+                coach_email_to_program[email_addr] = c["program_id"]
+        
+        if not coach_email_to_program:
+            return {"updated_count": 0, "message": "No coach emails found"}
+        
+        # Get programs with "No Reply" status
+        no_reply_programs = await db.programs.find(
+            {"tenant_id": tenant_id, "reply_status": "No Reply"},
+            {"_id": 0, "program_id": 1, "university_name": 1}
+        ).to_list(500)
+        
+        no_reply_program_ids = {p["program_id"]: p.get("university_name", "") for p in no_reply_programs}
+        
+        if not no_reply_program_ids:
+            return {"updated_count": 0, "message": "No programs with 'No Reply' status"}
+        
+        service = get_gmail_service(creds)
+        
+        # Search for emails from coach addresses
+        coach_emails_list = list(coach_email_to_program.keys())
+        from_queries = [f"from:{email}" for email in coach_emails_list[:20]]
+        query = f"({' OR '.join(from_queries)})"
+        
+        results = service.users().messages().list(
+            userId="me",
+            q=query,
+            maxResults=100
+        ).execute()
+        
+        messages = results.get("messages", [])
+        updated_programs = []
+        
+        for msg_ref in messages:
+            msg = service.users().messages().get(
+                userId="me",
+                id=msg_ref["id"],
+                format="metadata",
+                metadataHeaders=["From"]
+            ).execute()
+            
+            headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
+            from_addr = headers.get("From", "").lower()
+            
+            for coach_email, program_id in coach_email_to_program.items():
+                if coach_email in from_addr and program_id in no_reply_program_ids:
+                    result = await db.programs.update_one(
+                        {"program_id": program_id, "tenant_id": tenant_id, "reply_status": "No Reply"},
+                        {"$set": {
+                            "reply_status": "Reply Received",
+                            "priority": "Very High",
+                            "updated_at": datetime.now(timezone.utc).isoformat()
+                        }}
+                    )
+                    if result.modified_count > 0:
+                        updated_programs.append({
+                            "program_id": program_id,
+                            "university_name": no_reply_program_ids[program_id],
+                            "coach_email": coach_email
+                        })
+                        logger.info(f"Updated reply status for {no_reply_program_ids[program_id]} (coach: {coach_email})")
+                    del no_reply_program_ids[program_id]
+                    break
+        
+        return {
+            "updated_count": len(updated_programs),
+            "updated_programs": updated_programs,
+            "message": f"Updated {len(updated_programs)} program(s) to 'Reply Received'"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error checking replies: {e}")
+        raise HTTPException(status_code=500, detail="Failed to check for replies")
+
+
 # ─── Helpers ───
 
 def _extract_body(payload):
