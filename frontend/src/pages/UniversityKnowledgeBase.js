@@ -108,17 +108,17 @@ export default function UniversityKnowledgeBase() {
       <div className="flex gap-6">
         {/* Left Sidebar Filters */}
         <aside className="w-64 flex-shrink-0" data-testid="kb-sidebar-filters">
-          <div className="bg-[#1e293b] border border-[#334155] rounded-lg p-4 sticky top-20">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-20 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-                <span className="font-heading font-bold text-white text-sm">Filters</span>
+                <SlidersHorizontal className="w-4 h-4 text-gray-500" />
+                <span className="font-heading font-bold text-gray-900 text-sm">Filters</span>
               </div>
               {hasFilters && (
                 <button
                   onClick={resetFilters}
                   data-testid="kb-reset-filters"
-                  className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                  className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1 transition-colors"
                 >
                   <RotateCcw className="w-3 h-3" /> Reset
                 </button>
@@ -128,12 +128,12 @@ export default function UniversityKnowledgeBase() {
             <div className="space-y-5">
               {/* Division */}
               <div>
-                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Division</label>
+                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Division</label>
                 <Select value={filterDivision} onValueChange={setFilterDivision}>
-                  <SelectTrigger data-testid="kb-filter-division" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-division" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="all">Any</SelectItem>
                     {DIVISIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                   </SelectContent>
@@ -142,12 +142,12 @@ export default function UniversityKnowledgeBase() {
 
               {/* Region */}
               <div>
-                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Region</label>
+                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Region</label>
                 <Select value={filterRegion} onValueChange={setFilterRegion}>
-                  <SelectTrigger data-testid="kb-filter-region" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-region" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="all">Any</SelectItem>
                     {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                   </SelectContent>
@@ -156,28 +156,28 @@ export default function UniversityKnowledgeBase() {
 
               {/* Conference */}
               <div>
-                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Conference</label>
+                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Conference</label>
                 <Select value={filterConference} onValueChange={setFilterConference}>
-                  <SelectTrigger data-testid="kb-filter-conference" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-conference" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="all">Any</SelectItem>
                     {CONFERENCES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
 
-              <Separator className="bg-[#334155]" />
+              <Separator className="bg-gray-200" />
 
               {/* Sort */}
               <div>
-                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Sort By</label>
+                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Sort By</label>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger data-testid="kb-sort" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                  <SelectTrigger data-testid="kb-sort" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
                     <ArrowUpDown className="w-3 h-3 mr-1" /><SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="name">Name</SelectItem>
                     <SelectItem value="division">Division</SelectItem>
                   </SelectContent>
