@@ -13,6 +13,7 @@ import Tour from "../components/Tour";
 export default function Layout({ user }) {
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const profileRef = useRef(null);
 
   useEffect(() => {
