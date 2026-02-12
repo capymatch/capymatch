@@ -172,6 +172,7 @@ export default function ProfilePage() {
           {/* Media & Bio Card */}
           <div data-testid="profile-media-bio-card" className="rounded-xl p-6 border space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Media & Bio</h3>
+            <FieldRow label="Hudl Profile Link" testId="profile-hudl" value={profile.hudl_profile_url} onChange={(v) => updateProfile("hudl_profile_url", v)} placeholder="https://hudl.com/profile/..." />
             <FieldRow label="Highlights Video Link" testId="profile-video" value={profile.video_link} onChange={(v) => updateProfile("video_link", v)} placeholder="https://youtube.com/..." />
             <div>
               <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-muted)" }}>Bio</label>
