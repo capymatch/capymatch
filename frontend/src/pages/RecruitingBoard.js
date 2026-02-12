@@ -473,7 +473,8 @@ export default function RecruitingBoard() {
             placeholder="Search universities..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-lg focus:bg-white"
+            className="pl-9 border rounded-lg"
+            style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
         <div className="w-px h-6 bg-gray-200" />
