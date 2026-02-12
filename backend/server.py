@@ -892,6 +892,11 @@ from gmail_routes import gmail_router, set_db as set_gmail_db
 set_gmail_db(db)
 app.include_router(gmail_router)
 
+# AI routes
+from ai_routes import ai_router, set_db as set_ai_db
+set_ai_db(db)
+app.include_router(ai_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
