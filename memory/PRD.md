@@ -62,7 +62,25 @@ Build a Volleyball Recruiting CRM with native Gmail integration for managing col
   - Event type legend
 - **Testing**: Backend 92%, Frontend 100% — `/app/test_reports/iteration_6.json`
 
-### Completed - Feb 12, 2026: UI Improvements
+### Completed - Feb 12, 2026: Public Athlete Schedule
+- **Public Schedule Page**: Shareable URL (`/schedule/{tenant_id}`) viewable by anyone without login
+  - Athlete profile hero: name, photo, position, grad year, height, club team, school, GPA, bio
+  - Action buttons: Watch Highlights (video link), Email, Call
+  - Parent/Guardian contact section
+  - Upcoming events list with type, dates, location, times, descriptions
+  - Past events section
+  - "Powered by Recruiting HQ" footer
+- **Athlete Profile in Settings**: Full profile form with 17+ fields
+  - Photo upload, name, position, grad year, height, jersey #, GPA
+  - Club team, high school, city, state, video link, bio
+  - Athlete contact (email, phone) + Parent contact (name, email, phone)
+  - Copy-to-clipboard share link
+- **Backend APIs**:
+  - `GET/PUT /api/athlete-profile` - Profile CRUD (auth required)
+  - `POST /api/athlete-profile/photo` - Photo upload
+  - `GET /api/public/schedule/{tenant_id}` - Public endpoint (NO auth)
+  - `GET /api/share-link` - Get shareable tenant ID
+- **Testing**: Backend 100% (21/21), Frontend 100% — `/app/test_reports/iteration_7.json`
 - Simplified pipeline funnel to compact single-line strip
 - Lightened dark theme (backgrounds raised ~10% lightness)
 - Brighter stage title colors for dark mode
