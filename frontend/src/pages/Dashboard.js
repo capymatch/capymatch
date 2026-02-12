@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronRight, Calendar, MapPin, Clock, Eye, AlertTriangle, Send, Sparkles } from "lucide-react";
+import { ChevronRight, Calendar, MapPin, Eye, AlertTriangle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -32,364 +32,241 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading || !data) {
+  if (loading) {
     return (
-      <div className="flex items-center justify-center py-32" data-testid="dashboard-loading">
-        <div className="w-8 h-8 border-2 border-purple-400/30 border-t-purple-500 rounded-full animate-spin" />
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // Calculate real stats
   const totalSchools = programs.length;
   const offersCount = programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length;
-  const followUpsDue = data.follow_ups_due || 0;
-
-  // Funnel stages with counts from real data — each maps to a pipeline section key
-  const funnelStages = [
-    { label: "Not Contacted", count: programs.filter(p => p.recruiting_status === "Not Contacted").length, color: "#6366f1", sectionKey: "not_contacted" },
-    { label: "Contacted", count: programs.filter(p => p.recruiting_status === "Contacted").length, color: "#8b5cf6", sectionKey: "contacted" },
-    { label: "Video Viewed", count: programs.filter(p => p.recruiting_status === "Video Viewed").length, color: "#a78bfa", sectionKey: "contacted" },
-    { label: "No Response Yet", count: programs.filter(p => p.recruiting_status === "No Response Yet").length, color: "#fbbf24", sectionKey: "contacted" },
-    { label: "Some Interest", count: programs.filter(p => p.recruiting_status === "Some Interest").length, color: "#f59e0b", sectionKey: "active" },
-    { label: "Active Conversation", count: programs.filter(p => p.recruiting_status === "Active Conversation").length, color: "#f97316", sectionKey: "active" },
-    { label: "Offered", count: programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length, color: "#22c55e", sectionKey: "offers" },
-    { label: "Closed", count: programs.filter(p => p.recruiting_status === "Not a Fit / Closed").length, color: "#64748b", sectionKey: "closed" },
-  ];
-  const maxFunnel = Math.max(...funnelStages.map(s => s.count), 1);
-
   const formatDate = (d) => {
     if (!d) return "";
-    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const dt = new Date(d + "T00:00:00");
+    return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  // School colors for avatars
-  const avatarColors = ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316", "#10b981", "#6366f1"];
+  const schoolColors = ["bg-blue-500", "bg-purple-500", "bg-pink-500", "bg-emerald-500", "bg-amber-500", "bg-cyan-500", "bg-rose-500", "bg-indigo-500"];
+
+  // Schools needing action
+  const actionNeeded = programs
+    .filter(p => p.next_action_due && p.recruiting_status !== "Not a Fit / Closed")
+    .sort((a, b) => (a.next_action_due || "").localeCompare(b.next_action_due || ""))
+    .slice(0, 5);
+
+  // Upcoming events
+  const today = new Date().toISOString().split("T")[0];
+  const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 5);
+  const typeBg = { Camp: "bg-purple-500/15 text-purple-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
 
   return (
-    <div data-testid="dashboard" className="space-y-6">
+    <div className="space-y-6" data-testid="dashboard">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Dashboard</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Welcome back! Here's your recruiting overview.</p>
+        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Your recruiting overview</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
-        </div>
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{offersCount}</p>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
-        </div>
-        <div className="rounded-xl p-5 border cursor-pointer transition-colors hover:bg-[var(--t-surface-alt)]" style={{ backgroundColor: "rgba(251, 146, 60, 0.1)", borderColor: "var(--t-border)" }} onClick={() => { const el = document.getElementById("reminders-section"); if (el) el.scrollIntoView({ behavior: "smooth" }); }}>
-          <p className="text-3xl font-bold" style={{ color: reminders.length > 0 ? "#f97316" : "var(--t-text)" }}>{reminders.length}</p>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Overdue</p>
-        </div>
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews?.this_week || 0}</p>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Profile Views (7d)</p>
-        </div>
+        {[
+          { value: totalSchools, label: "Active Schools", color: "rgba(99, 102, 241, 0.1)" },
+          { value: offersCount, label: "Offers Received", color: "rgba(139, 92, 246, 0.1)" },
+          { value: reminders.length, label: "Follow-ups Overdue", color: reminders.length > 0 ? "rgba(251, 146, 60, 0.15)" : "rgba(251, 146, 60, 0.1)", accent: reminders.length > 0 ? "#f97316" : null },
+          { value: profileViews?.this_week || 0, label: "Profile Views (7d)", color: "rgba(16, 185, 129, 0.1)" },
+        ].map((s, i) => (
+          <div key={i} className="rounded-xl p-5 border" style={{ backgroundColor: s.color, borderColor: "var(--t-border)" }}>
+            <p className="text-3xl font-bold" style={{ color: s.accent || "var(--t-text)" }}>{s.value}</p>
+            <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>{s.label}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Divider */}
-      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-12 gap-5">
-        {/* Left Column */}
-        <div className="col-span-5 space-y-5">
-          {/* Progress Funnel */}
-          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <h3 className="font-semibold mb-5" style={{ color: "var(--t-text)" }}>Recruiting Pipeline</h3>
-            <div className="space-y-8">
-              {funnelStages.map((stage, i) => (
+      {/* Main Grid: Schools + Events */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Schools Requiring Action */}
+        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="schools-action-widget">
+          <div className="flex items-center justify-between px-5 py-4">
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schools Requiring Action</h4>
+            <button onClick={() => navigate("/pipeline")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
+              View all <ChevronRight className="w-3 h-3" />
+            </button>
+          </div>
+          {actionNeeded.length > 0 ? (
+            <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+              {actionNeeded.map((prog, i) => (
                 <div
-                  key={i}
-                  data-testid={`funnel-link-${stage.sectionKey}-${i}`}
-                  onClick={() => navigate(`/pipeline#${stage.sectionKey}`)}
-                  className="flex items-center gap-3 py-2 cursor-pointer rounded-lg px-2 -mx-2 transition-colors hover:bg-[var(--t-surface-alt)]"
+                  key={prog.program_id}
+                  className="flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors"
+                  onClick={() => navigate(`/pipeline#${prog.recruiting_status === "Not Contacted" ? "not_contacted" : prog.recruiting_status?.includes("Active") ? "active" : "contacted"}`)}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                  data-testid={`school-action-${prog.program_id}`}
                 >
-                  <span className="text-sm w-36 truncate" style={{ color: "var(--t-text-muted)" }}>{stage.label}</span>
-                  <div className="flex-1 h-5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                    <div 
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${stage.count > 0 ? Math.max((stage.count / maxFunnel) * 100, 10) : 0}%`,
-                        backgroundColor: stage.color
-                      }}
-                    />
+                  <div className={`w-8 h-8 rounded-full ${schoolColors[i % schoolColors.length]} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                    {(prog.university_name || "?")[0]}
                   </div>
-                  <span className="font-medium w-8 text-right" style={{ color: "var(--t-text)" }}>{stage.count}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{prog.university_name}</p>
+                    <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
+                      {prog.recruiting_status} {prog.division ? `· ${prog.division}` : ""}
+                    </p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <span className="text-[11px] px-2.5 py-1 rounded-md" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>
+                      Follow Up
+                    </span>
+                    <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatDate(prog.next_action_due)}</p>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
-
-          {/* Recent Activity */}
-          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>Recent Activity</h3>
-              <button 
-                onClick={() => navigate("/inbox")}
-                className="text-sm transition-colors"
-                style={{ color: "var(--t-text-muted)" }}
-              >
-                View all
-              </button>
-            </div>
-            {data.recent_interactions && data.recent_interactions.length > 0 ? (
-              <div className="space-y-3">
-                {data.recent_interactions.slice(0, 4).map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg transition-colors" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                    <div 
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold"
-                      style={{ backgroundColor: avatarColors[i % avatarColors.length] }}
-                    >
-                      {item.university_name?.charAt(0) || "?"}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{item.university_name}</p>
-                      <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>{item.type} • {item.outcome || "Pending"}</p>
-                    </div>
-                    <span className="text-xs" style={{ color: "var(--t-text-faint)" }}>
-                      {item.date_time ? formatDate(item.date_time) : "Recently"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No recent activity</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column */}
-        <div className="col-span-7 space-y-5">
-          {/* Priority Schools */}
-          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>Schools Requiring Action</h3>
-              <button 
-                onClick={() => navigate("/follow-ups")}
-                className="text-sm transition-colors flex items-center gap-1"
-                style={{ color: "var(--t-text-muted)" }}
-              >
-                View all <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-            {programs.length > 0 ? (
-              <div className="space-y-2">
-                {programs.slice(0, 5).map((prog, i) => (
-                  <div 
-                    key={prog.program_id}
-                    onClick={() => navigate(`/programs/${prog.program_id}`)}
-                    className="flex items-center gap-3 p-3 rounded-lg transition-colors cursor-pointer group"
-                    style={{ backgroundColor: "var(--t-surface-alt)" }}
-                  >
-                    <div 
-                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold"
-                      style={{ backgroundColor: avatarColors[i % avatarColors.length] }}
-                    >
-                      {prog.university_name?.charAt(0) || "?"}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm group-hover:text-purple-500 transition-colors truncate" style={{ color: "var(--t-text)" }}>
-                        {prog.university_name}
-                      </p>
-                      <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-                        {prog.recruiting_status || "Not Contacted"} • {prog.division || ""}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-purple-600 hover:text-white transition-colors" style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary)" }}>
-                        Follow Up
-                      </span>
-                    </div>
-                    <span className="text-xs w-16 text-right" style={{ color: "var(--t-text-muted)" }}>
-                      {prog.next_action_due ? formatDate(prog.next_action_due) : "—"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No schools added yet</p>
-                <button 
-                  onClick={() => navigate("/knowledge-base")}
-                  className="mt-3 text-purple-500 text-sm hover:text-purple-400 transition-colors"
-                >
-                  + Add your first school
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
-
-          {/* Upcoming Events */}
-          <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex items-center justify-between px-5 py-4">
-              <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h4>
-              <button onClick={() => navigate("/calendar")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
-                View all <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
-            {(() => {
-              const today = new Date().toISOString().split("T")[0];
-              const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 5);
-              const typeBg = { Camp: "bg-purple-500/15 text-purple-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
-              const formatDate = (d) => { const dt = new Date(d + "T00:00:00"); return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }); };
-              if (upcoming.length === 0) return (
-                <div className="text-center py-8 px-5">
-                  <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
-                  <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
-                  <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-purple-500 hover:text-purple-400">+ Add event</button>
-                </div>
-              );
-              return (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-t border-b" style={{ borderColor: "var(--t-border)" }}>
-                      <th className="text-left text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Event</th>
-                      <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Date</th>
-                      <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Location</th>
-                      <th className="text-right text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {upcoming.map((evt) => (
-                      <tr
-                        key={evt.event_id}
-                        onClick={() => navigate("/calendar")}
-                        className="border-b cursor-pointer transition-colors"
-                        style={{ borderColor: "var(--t-border)" }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
-                        onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
-                      >
-                        <td className="px-5 py-3">
-                          <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{evt.title}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs whitespace-nowrap" style={{ color: "var(--t-text-secondary)" }}>
-                            {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{evt.location || "—"}</span>
-                        </td>
-                        <td className="px-5 py-3 text-right">
-                          <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>
-                            {evt.event_type}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              );
-            })()}
-          </div>
-        </div>
-      </div>
-
-      {/* Smart Follow-Up Reminders */}
-      <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
-        <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-          <AlertTriangle className="w-4 h-4 text-orange-500" />
-          <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
-          {reminders.length > 0 && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-500 font-medium ml-auto">{reminders.length} overdue</span>
-          )}
-        </div>
-        {reminders.length > 0 ? (
-          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
-            {reminders.slice(0, 5).map((r) => (
-              <div
-                key={r.program_id}
-                className="flex items-center gap-4 px-5 py-3.5 cursor-pointer transition-colors"
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
-                onClick={() => navigate(`/programs/${r.program_id}`)}
-                data-testid={`reminder-${r.program_id}`}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{r.university_name}</p>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
-                    {r.coach_name ? `${r.coach_name} · ` : ""}{r.next_action || "Follow up needed"}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <span className="text-xs font-medium text-orange-500">{r.days_overdue}d overdue</span>
-                  {r.last_interaction_date && (
-                    <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Last: {formatDate(r.last_interaction_date)}</p>
-                  )}
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate("/inbox"); }}
-                  className="p-2 rounded-lg transition-colors hover:bg-purple-500/15"
-                  title="Send follow-up"
-                  data-testid={`send-followup-${r.program_id}`}
-                >
-                  <Send className="w-4 h-4 text-purple-500" />
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 px-5">
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No overdue follow-ups</p>
-            <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Set follow-up dates on your programs and reminders will appear here when they're due.</p>
-          </div>
-        )}
-      </div>
-
-      {/* Profile Views */}
-      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
-        <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-          <Eye className="w-4 h-4 text-emerald-500" />
-          <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
-          {profileViews && (
-            <div className="flex gap-3 ml-auto">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">This week: {profileViews.this_week}</span>
+          ) : (
+            <div className="text-center py-10 px-5">
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No schools need action right now</p>
+              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">+ Add a school</button>
             </div>
           )}
         </div>
-        {profileViews && profileViews.views.length > 0 ? (
-          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
-            {profileViews.views.slice(0, 5).map((v, i) => (
-              <div key={i} className="flex items-center gap-4 px-5 py-3">
-                <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
-                    {v.referer ? (() => { try { return new URL(v.referer).hostname; } catch { return "Unknown source"; } })() : "Direct visit"}
-                    {v.is_edu && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500">.edu</span>}
-                  </p>
-                </div>
-                <span className="text-xs flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>
-                  {new Date(v.viewed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 px-5">
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No profile views yet</p>
-            <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, their visits will be tracked here.</p>
-            <button onClick={() => navigate("/settings")} className="mt-3 text-sm text-purple-500 hover:text-purple-400 transition-colors">
-              Set up your profile
+
+        {/* Upcoming Events */}
+        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="events-widget">
+          <div className="flex items-center justify-between px-5 py-4">
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h4>
+            <button onClick={() => navigate("/calendar")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
+              View all <ChevronRight className="w-3 h-3" />
             </button>
           </div>
-        )}
+          {upcoming.length > 0 ? (
+            <table className="w-full">
+              <thead>
+                <tr className="border-t border-b" style={{ borderColor: "var(--t-border)" }}>
+                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Event</th>
+                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Date</th>
+                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Location</th>
+                  <th className="text-right text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {upcoming.map((evt) => (
+                  <tr
+                    key={evt.event_id}
+                    onClick={() => navigate("/calendar")}
+                    className="border-b cursor-pointer transition-colors"
+                    style={{ borderColor: "var(--t-border)" }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                  >
+                    <td className="px-5 py-3"><span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{evt.title}</span></td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs whitespace-nowrap" style={{ color: "var(--t-text-secondary)" }}>
+                        {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3"><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{evt.location || "—"}</span></td>
+                    <td className="px-5 py-3 text-right">
+                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>{evt.event_type}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="text-center py-10 px-5">
+              <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
+              <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-purple-500 hover:text-purple-400">+ Add event</button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Row: Reminders + Profile Views */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Follow-Up Reminders */}
+        <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
+          <div className="flex items-center gap-2 px-5 py-4">
+            <AlertTriangle className="w-4 h-4 text-orange-500" />
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
+            {reminders.length > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-500 font-medium ml-auto">{reminders.length} overdue</span>
+            )}
+          </div>
+          {reminders.length > 0 ? (
+            <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+              {reminders.slice(0, 4).map((r) => (
+                <div
+                  key={r.program_id}
+                  className="flex items-center gap-4 px-5 py-3 cursor-pointer transition-colors"
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                  data-testid={`reminder-${r.program_id}`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{r.university_name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                      {r.coach_name ? `${r.coach_name} · ` : ""}{r.next_action || "Follow up needed"}
+                    </p>
+                  </div>
+                  <span className="text-xs font-medium text-orange-500 flex-shrink-0">{r.days_overdue}d overdue</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigate("/inbox"); }}
+                    className="p-2 rounded-lg transition-colors hover:bg-purple-500/15"
+                    title="Send follow-up"
+                    data-testid={`send-followup-${r.program_id}`}
+                  >
+                    <Send className="w-4 h-4 text-purple-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 px-5">
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No overdue follow-ups</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Set follow-up dates on your programs and reminders will appear here.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Profile Views */}
+        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
+          <div className="flex items-center gap-2 px-5 py-4">
+            <Eye className="w-4 h-4 text-emerald-500" />
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
+            {profileViews && (
+              <div className="flex gap-3 ml-auto">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">This week: {profileViews.this_week}</span>
+              </div>
+            )}
+          </div>
+          {profileViews && profileViews.views.length > 0 ? (
+            <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+              {profileViews.views.slice(0, 4).map((v, i) => (
+                <div key={i} className="flex items-center gap-4 px-5 py-3">
+                  <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
+                      {v.referer ? (() => { try { return new URL(v.referer).hostname; } catch { return "Unknown"; } })() : "Direct visit"}
+                      {v.is_edu && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500">.edu</span>}
+                    </p>
+                  </div>
+                  <span className="text-xs flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>
+                    {new Date(v.viewed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 px-5">
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No profile views yet</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, visits will appear here.</p>
+              <button onClick={() => navigate("/settings")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">Share your profile</button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
