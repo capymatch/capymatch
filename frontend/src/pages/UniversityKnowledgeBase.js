@@ -77,29 +77,30 @@ export default function UniversityKnowledgeBase() {
   });
 
   if (loading) {
-    return <div className="text-gray-400 text-center py-12" data-testid="kb-loading">Loading knowledge base...</div>;
+    return <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }} data-testid="kb-loading">Loading knowledge base...</div>;
   }
 
   return (
     <div data-testid="knowledge-base" className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-2xl font-bold text-gray-900" data-testid="kb-title">University Knowledge Base</h2>
+        <h2 className="font-heading text-2xl font-bold" style={{ color: "var(--t-text)" }} data-testid="kb-title">University Knowledge Base</h2>
       </div>
 
       {/* Search Bar */}
-      <div className="flex items-center gap-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+      <div className="flex items-center gap-4 rounded-lg p-4 shadow-sm border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
           <Input
             data-testid="kb-search"
             placeholder="Search by College Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 h-10"
+            className="pl-9 h-10"
+            style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
-        <span className="text-gray-500 text-sm whitespace-nowrap" data-testid="kb-count">
+        <span className="text-sm whitespace-nowrap" style={{ color: "var(--t-text-muted)" }} data-testid="kb-count">
           {sorted.length} colleges found
         </span>
       </div>
@@ -108,17 +109,18 @@ export default function UniversityKnowledgeBase() {
       <div className="flex gap-6">
         {/* Left Sidebar Filters */}
         <aside className="w-64 flex-shrink-0" data-testid="kb-sidebar-filters">
-          <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-20 shadow-sm">
+          <div className="rounded-lg p-4 sticky top-20 shadow-sm border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-gray-500" />
-                <span className="font-heading font-bold text-gray-900 text-sm">Filters</span>
+                <SlidersHorizontal className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+                <span className="font-heading font-bold text-sm" style={{ color: "var(--t-text)" }}>Filters</span>
               </div>
               {hasFilters && (
                 <button
                   onClick={resetFilters}
                   data-testid="kb-reset-filters"
-                  className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1 transition-colors"
+                  className="text-xs flex items-center gap-1 transition-colors"
+                  style={{ color: "var(--t-text-muted)" }}
                 >
                   <RotateCcw className="w-3 h-3" /> Reset
                 </button>
@@ -128,12 +130,12 @@ export default function UniversityKnowledgeBase() {
             <div className="space-y-5">
               {/* Division */}
               <div>
-                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Division</label>
+                <label className="text-xs font-medium uppercase tracking-wider block mb-1.5" style={{ color: "var(--t-text-muted)" }}>Division</label>
                 <Select value={filterDivision} onValueChange={setFilterDivision}>
-                  <SelectTrigger data-testid="kb-filter-division" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-division" className="h-9 text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
+                  <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="all">Any</SelectItem>
                     {DIVISIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
                   </SelectContent>
@@ -142,12 +144,12 @@ export default function UniversityKnowledgeBase() {
 
               {/* Region */}
               <div>
-                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Region</label>
+                <label className="text-xs font-medium uppercase tracking-wider block mb-1.5" style={{ color: "var(--t-text-muted)" }}>Region</label>
                 <Select value={filterRegion} onValueChange={setFilterRegion}>
-                  <SelectTrigger data-testid="kb-filter-region" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-region" className="h-9 text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
+                  <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="all">Any</SelectItem>
                     {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                   </SelectContent>
@@ -156,28 +158,28 @@ export default function UniversityKnowledgeBase() {
 
               {/* Conference */}
               <div>
-                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Conference</label>
+                <label className="text-xs font-medium uppercase tracking-wider block mb-1.5" style={{ color: "var(--t-text-muted)" }}>Conference</label>
                 <Select value={filterConference} onValueChange={setFilterConference}>
-                  <SelectTrigger data-testid="kb-filter-conference" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
+                  <SelectTrigger data-testid="kb-filter-conference" className="h-9 text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
+                  <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="all">Any</SelectItem>
                     {CONFERENCES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
 
-              <Separator className="bg-gray-200" />
+              <Separator style={{ backgroundColor: "var(--t-border)" }} />
 
               {/* Sort */}
               <div>
-                <label className="text-gray-500 text-xs font-medium uppercase tracking-wider block mb-1.5">Sort By</label>
+                <label className="text-xs font-medium uppercase tracking-wider block mb-1.5" style={{ color: "var(--t-text-muted)" }}>Sort By</label>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger data-testid="kb-sort" className="bg-white border-gray-300 text-gray-700 h-9 text-sm">
+                  <SelectTrigger data-testid="kb-sort" className="h-9 text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <ArrowUpDown className="w-3 h-3 mr-1" /><SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
+                  <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="name">Name</SelectItem>
                     <SelectItem value="division">Division</SelectItem>
                   </SelectContent>
@@ -195,7 +197,7 @@ export default function UniversityKnowledgeBase() {
               {activeFilterTags.map((tag) => (
                 <Badge
                   key={tag.key}
-                  className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-1 text-xs cursor-pointer hover:bg-slate-200 transition-colors"
+                  className="bg-slate-500/20 text-slate-400 border border-slate-500/30 px-2 py-1 text-xs cursor-pointer transition-colors"
                   onClick={tag.clear}
                 >
                   {tag.label} &times;
@@ -204,12 +206,12 @@ export default function UniversityKnowledgeBase() {
             </div>
           )}
           {activeFilterTags.length === 0 && (
-            <p className="text-gray-400 text-sm" data-testid="kb-no-filters">No filters selected</p>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }} data-testid="kb-no-filters">No filters selected</p>
           )}
 
           {/* University Cards */}
           {sorted.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">No universities found matching your filters</div>
+            <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }}>No universities found matching your filters</div>
           ) : (
             sorted.map((uni) => (
               <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
