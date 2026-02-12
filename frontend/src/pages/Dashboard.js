@@ -15,10 +15,12 @@ export default function Dashboard() {
     Promise.all([
       api.get("/dashboard"),
       api.get("/programs"),
+      api.get("/events"),
     ])
-      .then(([dashRes, progRes]) => {
+      .then(([dashRes, progRes, evtRes]) => {
         setData(dashRes.data);
         setPrograms(progRes.data);
+        setEvents(evtRes.data);
       })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
