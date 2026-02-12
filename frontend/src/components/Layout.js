@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
-  LogOut, Search, Bell, Mail, PlusCircle, Sparkles, Home, Kanban
+  LogOut, Search, Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -19,6 +19,7 @@ export default function Layout({ user }) {
   const sidebarItems = [
     { to: "/board", icon: Home, label: "Dashboard" },
     { to: "/pipeline", icon: Kanban, label: "Pipeline" },
+    { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
