@@ -45,6 +45,39 @@ function ComposeModal({ onClose, onSent, replyTo }) {
   const [subject, setSubject] = useState(replyTo?.subject || "");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [drafting, setDrafting] = useState(false);
+  const [programs, setPrograms] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState("");
+  const [emailType, setEmailType] = useState("intro");
+  const [showAiPanel, setShowAiPanel] = useState(false);
+  const [customInstructions, setCustomInstructions] = useState("");
+
+  useEffect(() => {
+    if (!replyTo) {
+      api.get("/programs").then(res => setPrograms(res.data || [])).catch(() => {});
+    }
+  }, [replyTo]);
+
+  const handleAiDraft = async () => {
+    if (!selectedProgram) return toast.error("Select a program first");
+    setDrafting(true);
+    try {
+      const res = await api.post("/ai/draft-email", {
+        program_id: selectedProgram,
+        email_type: emailType,
+        custom_instructions: customInstructions,
+      });
+      setSubject(res.data.subject || "");
+      setBody(res.data.body || "");
+      if (res.data.coach_email) setTo(res.data.coach_email);
+      setShowAiPanel(false);
+      toast.success("Draft generated!");
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to generate draft");
+    } finally {
+      setDrafting(false);
+    }
+  };
 
   const handleSend = async () => {
     if (!to.trim()) return toast.error("Recipient is required");
@@ -74,6 +107,13 @@ function ComposeModal({ onClose, onSent, replyTo }) {
     }
   };
 
+  const emailTypes = [
+    { value: "intro", label: "Introduction" },
+    { value: "follow_up", label: "Follow-Up" },
+    { value: "thank_you", label: "Thank You" },
+    { value: "interest_update", label: "Interest Update" },
+  ];
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" data-testid="compose-modal">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
@@ -86,10 +126,70 @@ function ComposeModal({ onClose, onSent, replyTo }) {
           <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>
             {replyTo ? "Reply" : "New Message"}
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg transition-colors" style={{ color: "var(--t-text-muted)" }}>
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {!replyTo && (
+              <button
+                data-testid="ai-draft-toggle"
+                onClick={() => setShowAiPanel(!showAiPanel)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showAiPanel ? "bg-purple-600 text-white" : "bg-purple-500/15 text-purple-500 hover:bg-purple-500/25"}`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                AI Draft
+              </button>
+            )}
+            <button onClick={onClose} className="p-1.5 rounded-lg transition-colors" style={{ color: "var(--t-text-muted)" }}>
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
+        {/* AI Draft Panel */}
+        {showAiPanel && (
+          <div className="px-5 py-4 border-b space-y-3" style={{ borderColor: "var(--t-border)", backgroundColor: "rgba(139, 92, 246, 0.05)" }} data-testid="ai-draft-panel">
+            <div className="flex items-center gap-3">
+              <select
+                data-testid="ai-program-select"
+                value={selectedProgram}
+                onChange={(e) => setSelectedProgram(e.target.value)}
+                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+              >
+                <option value="">Select a program...</option>
+                {programs.map(p => (
+                  <option key={p.program_id} value={p.program_id}>{p.university_name}</option>
+                ))}
+              </select>
+              <select
+                data-testid="ai-email-type"
+                value={emailType}
+                onChange={(e) => setEmailType(e.target.value)}
+                className="px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+              >
+                {emailTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                data-testid="ai-custom-instructions"
+                value={customInstructions}
+                onChange={(e) => setCustomInstructions(e.target.value)}
+                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                placeholder="Optional: custom instructions (e.g., 'mention I'll be at their camp next month')"
+              />
+              <button
+                data-testid="ai-generate-btn"
+                onClick={handleAiDraft}
+                disabled={drafting || !selectedProgram}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+              >
+                {drafting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                {drafting ? "Drafting..." : "Generate"}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         <div className="flex-1 overflow-auto p-5 space-y-3">
