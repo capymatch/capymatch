@@ -504,6 +504,9 @@ export default function RecruitingBoard() {
         </Select>
       </div>
 
+      {/* Divider */}
+      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
+
       {/* Sections */}
       <div>
         {PIPELINE.map((stage, stageIdx) => {
