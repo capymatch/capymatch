@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Settings, User, Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2 } from "lucide-react";
-import api from "../lib/api";
+import { useState, useEffect, useRef } from "react";
+import { Settings, User, Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Copy, ExternalLink, Camera, Check } from "lucide-react";
+import api, { BACKEND_URL } from "../lib/api";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
 
