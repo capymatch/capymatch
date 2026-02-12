@@ -115,9 +115,6 @@ export default function Layout({ user }) {
           style={{ backgroundColor: "var(--t-header-bg)", borderColor: "var(--t-border)" }}
         >
           <div className="flex items-center gap-6">
-            <h1 className="font-heading text-xl font-bold tracking-tight" style={{ color: "var(--t-text)" }} data-testid="app-title">
-              Recruiting HQ
-            </h1>
           </div>
 
           <div className="flex items-center gap-5">
