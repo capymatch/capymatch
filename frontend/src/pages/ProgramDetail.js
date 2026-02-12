@@ -166,7 +166,7 @@ export default function ProgramDetail() {
 
   const setField = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
-  if (loading) return <div className="text-gray-400 text-center py-12" data-testid="detail-loading">Loading...</div>;
+  if (loading) return <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }} data-testid="detail-loading">Loading...</div>;
   if (!program) return null;
 
   return (
@@ -174,11 +174,11 @@ export default function ProgramDetail() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/board")} data-testid="back-to-board" className="text-gray-500 hover:text-gray-800">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/board")} data-testid="back-to-board" style={{ color: "var(--t-text-muted)" }}>
             <ArrowLeft className="w-4 h-4 mr-1" /> Board
           </Button>
-          <h2 className="font-heading text-2xl font-bold text-gray-900" data-testid="detail-title">{program.university_name}</h2>
-          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${DIVISION_BADGE[program.division] || "bg-gray-100 text-gray-700"}`}>
+          <h2 className="font-heading text-2xl font-bold" style={{ color: "var(--t-text)" }} data-testid="detail-title">{program.university_name}</h2>
+          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${DIVISION_BADGE[program.division] || "bg-gray-500/20 text-gray-400"}`}>
             {program.division}
           </span>
         </div>
@@ -195,9 +195,9 @@ export default function ProgramDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Program Fields */}
         <div className="lg:col-span-2 space-y-4">
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-gray-900">Program Info</CardTitle>
+              <CardTitle className="font-heading text-lg" style={{ color: "var(--t-text)" }}>Program Info</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <FieldInput label="University Name" value={form.university_name} onChange={(v) => setField("university_name", v)} testId="field-university-name" />
@@ -210,9 +210,9 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-gray-900">Recruiting Status</CardTitle>
+              <CardTitle className="font-heading text-lg" style={{ color: "var(--t-text)" }}>Recruiting Status</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <FieldSelect label="Recruiting Status" value={form.recruiting_status} options={RECRUITING_STATUSES} onChange={(v) => setField("recruiting_status", v)} testId="field-recruiting-status" />
@@ -227,9 +227,9 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-gray-900">Additional Info</CardTitle>
+              <CardTitle className="font-heading text-lg" style={{ color: "var(--t-text)" }}>Additional Info</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <FieldInput label="Roster Needs" value={form.roster_needs} onChange={(v) => setField("roster_needs", v)} testId="field-roster-needs" />
@@ -237,12 +237,13 @@ export default function ProgramDetail() {
               <FieldInput label="Video Link" value={form.video_link} onChange={(v) => setField("video_link", v)} testId="field-video-link" />
               <FieldInput label="Coach Contract Expiration" value={form.coach_contract_expiration} onChange={(v) => setField("coach_contract_expiration", v)} type="date" testId="field-contract-exp" />
               <div className="col-span-2">
-                <Label className="text-gray-500 text-xs">Notes</Label>
+                <Label className="text-xs" style={{ color: "var(--t-text-muted)" }}>Notes</Label>
                 <Textarea
                   value={form.notes || ""}
                   onChange={(e) => setField("notes", e.target.value)}
                   data-testid="field-notes"
-                  className="bg-white border-gray-300 text-gray-900 mt-1 min-h-[80px] focus:border-slate-500"
+                  className="mt-1 min-h-[80px]"
+                  style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
                 />
               </div>
             </CardContent>
