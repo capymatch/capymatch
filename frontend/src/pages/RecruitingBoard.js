@@ -472,7 +472,7 @@ export default function RecruitingBoard() {
       {/* Filters */}
       <div className="flex items-center gap-3 border rounded-xl p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
           <Input
             data-testid="board-search"
             placeholder="Search universities..."
@@ -484,19 +484,19 @@ export default function RecruitingBoard() {
         </div>
         <div className="w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
         <Select value={filterDivision} onValueChange={setFilterDivision}>
-          <SelectTrigger data-testid="filter-division" className="w-36 bg-gray-50 border-gray-200 text-gray-700 rounded-lg">
-            <Filter className="w-3 h-3 mr-1.5 text-gray-400" /><SelectValue placeholder="Division" />
+          <SelectTrigger data-testid="filter-division" className="w-36 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+            <Filter className="w-3 h-3 mr-1.5" style={{ color: "var(--t-text-muted)" }} /><SelectValue placeholder="Division" />
           </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
+          <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
             <SelectItem value="all">All Divisions</SelectItem>
             {DIVISIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={filterRegion} onValueChange={setFilterRegion}>
-          <SelectTrigger data-testid="filter-region" className="w-40 bg-gray-50 border-gray-200 text-gray-700 rounded-lg">
-            <Filter className="w-3 h-3 mr-1.5 text-gray-400" /><SelectValue placeholder="Region" />
+          <SelectTrigger data-testid="filter-region" className="w-40 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+            <Filter className="w-3 h-3 mr-1.5" style={{ color: "var(--t-text-muted)" }} /><SelectValue placeholder="Region" />
           </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
+          <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
             <SelectItem value="all">All Regions</SelectItem>
             {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
           </SelectContent>
