@@ -41,7 +41,7 @@ export default function Layout({ user }) {
                   className={({ isActive }) =>
                     `flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                       isActive
-                        ? "text-purple-700 bg-purple-50 border-b-2 border-purple-600"
+                        ? "text-slate-700 bg-slate-100 border-b-2 border-slate-600"
                         : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
                     }`
                   }
