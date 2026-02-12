@@ -219,6 +219,11 @@ function AddProgramDialog({ onAdd }) {
 
 /* ── Pipeline Funnel ── */
 function PipelineFunnel({ programs }) {
+  const scrollTo = (key) => {
+    const el = document.getElementById(`pipeline-${key}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="flex items-center gap-2 p-2 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
       {PIPELINE.map((stage) => {
@@ -226,7 +231,8 @@ function PipelineFunnel({ programs }) {
         return (
           <div
             key={stage.key}
-            className="flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center"
+            onClick={() => scrollTo(stage.key)}
+            className="flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center cursor-pointer transition-colors hover:bg-[var(--t-surface-alt)]"
             data-testid={`funnel-${stage.key}`}
           >
             <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${stage.color} flex-shrink-0`} />
