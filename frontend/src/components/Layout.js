@@ -185,6 +185,17 @@ export default function Layout({ user }) {
                   </div>
                   <div className="py-1">
                     <button
+                      onClick={() => { setProfileOpen(false); navigate("/profile"); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left"
+                      style={{ color: "var(--t-text-secondary)" }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                      data-testid="profile-link"
+                    >
+                      <User className="w-4 h-4" strokeWidth={1.5} />
+                      Athlete Profile
+                    </button>
+                    <button
                       onClick={() => { setProfileOpen(false); navigate("/settings"); }}
                       className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left"
                       style={{ color: "var(--t-text-secondary)" }}
