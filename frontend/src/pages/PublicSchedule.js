@@ -221,6 +221,19 @@ export default function PublicSchedule() {
 
               {/* Action buttons */}
               <div className="flex flex-wrap gap-3 mt-5 justify-center sm:justify-start">
+                {profile.hudl_profile_url && (
+                  <a
+                    href={profile.hudl_profile_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="hudl-link"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                  >
+                    <Play className="w-4 h-4" />
+                    Hudl Profile
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                  </a>
+                )}
                 {profile.video_link && (
                   <a
                     href={profile.video_link}
