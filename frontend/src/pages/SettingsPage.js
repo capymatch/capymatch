@@ -391,9 +391,9 @@ export default function SettingsPage() {
             <div className="pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
               <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Club Coach</h3>
               <div className="space-y-3">
-                <FieldRow label="Name" testId="profile-parent-name" value={profile.parent_name} onChange={(v) => updateProfile("parent_name", v)} placeholder="John Smith" />
+                <FieldRow label="Name" testId="profile-parent-name" value={profile.parent_name} onChange={(v) => updateProfile("parent_name", v)} placeholder="Coach Name" />
                 <div className="grid grid-cols-2 gap-3">
-                  <FieldRow label="Email" testId="profile-parent-email" value={profile.parent_email} onChange={(v) => updateProfile("parent_email", v)} placeholder="parent@email.com" />
+                  <FieldRow label="Email" testId="profile-parent-email" value={profile.parent_email} onChange={(v) => updateProfile("parent_email", v)} placeholder="coach@club.com" />
                   <FieldRow label="Phone" testId="profile-parent-phone" value={profile.parent_phone} onChange={(v) => updateProfile("parent_phone", v)} placeholder="(555) 987-6543" />
                 </div>
               </div>
