@@ -259,7 +259,10 @@ function PipelineFunnel({ programs }) {
 function ProgramRow({ p, navigate, handleInlineUpdate }) {
   return (
     <div
-      className="group grid grid-cols-[1.8fr_0.5fr_1fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.5fr] gap-1 items-center px-4 py-3 bg-white border border-gray-100 rounded-lg mb-1.5 hover:shadow-md hover:border-gray-200 transition-all duration-200 cursor-default"
+      className="group grid grid-cols-[1.8fr_0.5fr_1fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.5fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
+      style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
+      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
+      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
       data-testid={`program-row-${p.program_id}`}
     >
       {/* University Name */}
