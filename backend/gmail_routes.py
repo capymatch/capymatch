@@ -151,7 +151,8 @@ def get_gmail_service(creds):
 async def gmail_connect(request: Request):
     """Initiate Gmail OAuth flow."""
     user = await get_current_user(request)
-    flow = Flow.from_client_config(CLIENT_CONFIG, scopes=GMAIL_SCOPES, redirect_uri=GMAIL_REDIRECT_URI)
+    _, _, redirect_uri, client_config = _gmail_config()
+    flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=redirect_uri)
     auth_url, state = flow.authorization_url(
         access_type="offline",
         prompt="consent",
