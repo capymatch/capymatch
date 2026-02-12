@@ -83,21 +83,31 @@ function ComposeModal({ onClose, onSent, replyTo }) {
     if (!to.trim()) return toast.error("Recipient is required");
     setSending(true);
     try {
+      let response;
       if (replyTo?.thread_id && replyTo?.message_id) {
-        await api.post("/gmail/reply", {
+        response = await api.post("/gmail/reply", {
           thread_id: replyTo.thread_id,
           message_id: replyTo.message_id,
           body: body.replace(/\n/g, "<br>"),
           reply_all: false,
         });
       } else {
-        await api.post("/gmail/send", {
+        response = await api.post("/gmail/send", {
           to: to.trim(),
           subject: subject.trim(),
           body: body.replace(/\n/g, "<br>"),
         });
       }
       toast.success("Email sent!");
+      
+      // Show toast if program status was auto-updated
+      if (response.data?.program_updated) {
+        const { university_name } = response.data.program_updated;
+        toast.success(`${university_name} updated to "Contacted" → "Awaiting Reply"`, {
+          duration: 5000,
+        });
+      }
+      
       onSent?.();
       onClose();
     } catch (err) {
