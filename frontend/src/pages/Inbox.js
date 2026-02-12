@@ -439,29 +439,13 @@ export default function Inbox() {
             </div>
           ) : emails.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 px-6">
-              {noCoaches ? (
-                <>
-                  <UserPlus className="w-10 h-10 mb-3" style={{ color: "var(--t-text-faint)" }} />
-                  <p className="text-sm font-medium mb-1" style={{ color: "var(--t-text)" }}>No coach emails to show</p>
-                  <p className="text-xs text-center max-w-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
-                    Add coach email addresses to your programs on the Pipeline board to see conversations here.
-                  </p>
-                  <button
-                    onClick={() => navigate("/pipeline")}
-                    className="text-sm text-purple-500 hover:text-purple-400 transition-colors"
-                    data-testid="go-to-pipeline-btn"
-                  >
-                    Go to Pipeline
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Mail className="w-10 h-10 mb-3" style={{ color: "var(--t-text-faint)" }} />
-                  <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
-                    {activeSearch ? "No emails match your search" : "No coach emails found"}
-                  </p>
-                </>
-              )}
+              <Mail className="w-10 h-10 mb-3" style={{ color: "var(--t-text-faint)" }} />
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
+                {activeSearch ? "No emails match your search" : "No recruiting emails found"}
+              </p>
+              <p className="text-xs text-center max-w-xs mt-2" style={{ color: "var(--t-text-faint)" }}>
+                Emails from .edu addresses and your tracked coaches will appear here.
+              </p>
             </div>
           ) : (
             <>
