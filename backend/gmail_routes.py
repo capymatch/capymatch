@@ -20,28 +20,20 @@ logger = logging.getLogger(__name__)
 
 gmail_router = APIRouter(prefix="/api/gmail")
 
-GMAIL_CLIENT_ID = os.environ.get("GMAIL_CLIENT_ID")
-GMAIL_CLIENT_SECRET = os.environ.get("GMAIL_CLIENT_SECRET")
-GMAIL_REDIRECT_URI = os.environ.get("GMAIL_REDIRECT_URI")
-
-GMAIL_SCOPES = [
-    "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/gmail.modify",
-    "https://www.googleapis.com/auth/gmail.send",
-    "https://www.googleapis.com/auth/gmail.labels",
-    "openid",
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/userinfo.profile",
-]
-
-CLIENT_CONFIG = {
-    "web": {
-        "client_id": GMAIL_CLIENT_ID,
-        "client_secret": GMAIL_CLIENT_SECRET,
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
+def _gmail_config():
+    """Read Gmail config at request time to avoid stale env values."""
+    client_id = os.environ.get("GMAIL_CLIENT_ID")
+    client_secret = os.environ.get("GMAIL_CLIENT_SECRET")
+    redirect_uri = os.environ.get("GMAIL_REDIRECT_URI")
+    config = {
+        "web": {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
     }
-}
+    return client_id, client_secret, redirect_uri, config
 
 # Will be set by server.py
 db = None
