@@ -8,6 +8,7 @@ Build a production-ready web app called "Volleyball Recruiting CRM (Families)" w
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB (motor async driver)
 - **Auth**: Emergent-managed Google OAuth
+- **Theming**: CSS variables with class-based dark mode (default: dark)
 
 ## User Personas
 - **Volleyball Athlete Families**: Primary users tracking college recruiting process
@@ -21,6 +22,7 @@ Build a production-ready web app called "Volleyball Recruiting CRM (Families)" w
 - Needs Follow-Up page for overdue action items
 - Program Detail with coaches and interaction timeline management
 - Server-side automation rules
+- Dark/Light theme toggle with persistence
 
 ## What's Been Implemented (Feb 12, 2026)
 
@@ -42,7 +44,12 @@ Build a production-ready web app called "Volleyball Recruiting CRM (Families)" w
 - University Knowledge Base with division tabs, search, add-to-board
 - Needs Follow-Up with overdue list and mark-sent action
 - Program Detail with full edit, coaches management, interaction timeline
-- Dark theme matching design guidelines
+- **Dark/Light Theme System**:
+  - Theme toggle button in header (sun/moon icons)
+  - CSS variables for all colors (index.css)
+  - ThemeProvider context (lib/theme.js)
+  - localStorage persistence
+  - All pages and dialogs support both themes
 
 ## Prioritized Backlog
 
@@ -56,6 +63,7 @@ Build a production-ready web app called "Volleyball Recruiting CRM (Families)" w
 - [x] CRUD for Programs, Coaches, Interactions
 - [x] Automation rules
 - [x] Seed data
+- [x] Dark/Light theme toggle
 
 ### P1 (Next)
 - [ ] Bulk actions (select multiple programs, update status)
