@@ -49,10 +49,24 @@ Build a Volleyball Recruiting CRM with native Gmail integration for managing col
 - **Settings Gmail Section**: Connect/disconnect Gmail in settings page
 - **Token Management**: Auto-refresh expired tokens, secure storage in MongoDB
 
-### Testing Status
-- All 14 backend route tests passed (auth protection verified)
-- All frontend UI components verified
-- Test report: `/app/test_reports/iteration_5.json`
+### Completed - Feb 12, 2026: Calendar Events Feature
+- **Backend Events API**: Full CRUD at `/api/events` (create/read/update/delete)
+  - Event fields: title, type, location, dates, times, linked school, notes
+  - Event types: Camp, Showcase, Tournament, Visit, Tryout, Meeting, Deadline, Other
+- **Frontend Calendar Update**: Complete rebuild with event management
+  - "Add Event" button + modal form with all fields
+  - Events display on calendar grid with color-coded types
+  - Click day to see detail panel + add event for that date
+  - Edit/delete events from modal
+  - Upcoming events sidebar
+  - Event type legend
+- **Testing**: Backend 92%, Frontend 100% — `/app/test_reports/iteration_6.json`
+
+### Completed - Feb 12, 2026: UI Improvements
+- Simplified pipeline funnel to compact single-line strip
+- Lightened dark theme (backgrounds raised ~10% lightness)
+- Brighter stage title colors for dark mode
+- Larger section titles and funnel text
 
 ## Database Collections
 - `users` - User accounts
