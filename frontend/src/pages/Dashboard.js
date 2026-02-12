@@ -68,39 +68,21 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-4">
         <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold text-white">{totalSchools}</p>
-              <p className="text-white/60 text-sm mt-1">Active Schools</p>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-400" />
-            </div>
-          </div>
+          <p className="text-3xl font-bold text-white">{totalSchools}</p>
+          <p className="text-white/60 text-sm mt-1">Active Schools</p>
         </div>
         <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)" }}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold text-white">{offersCount}</p>
-              <p className="text-white/60 text-sm mt-1">Offers Received</p>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-              <Award className="w-5 h-5 text-purple-400" />
-            </div>
-          </div>
+          <p className="text-3xl font-bold text-white">{offersCount}</p>
+          <p className="text-white/60 text-sm mt-1">Offers Received</p>
         </div>
         <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)" }}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold text-white">{followUpsDue}</p>
-              <p className="text-white/60 text-sm mt-1">Follow-ups Due</p>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-green-400" />
-            </div>
-          </div>
+          <p className="text-3xl font-bold text-white">{followUpsDue}</p>
+          <p className="text-white/60 text-sm mt-1">Follow-ups Due</p>
         </div>
       </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/10" />
 
       {/* Main Grid */}
       <div className="grid grid-cols-12 gap-5">
