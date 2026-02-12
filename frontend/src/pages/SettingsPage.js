@@ -346,9 +346,24 @@ export default function SettingsPage() {
 
             {/* Physical + Team */}
             <div className="grid grid-cols-3 gap-3">
-              <FieldRow label="Height" testId="profile-height" value={profile.height} onChange={(v) => updateProfile("height", v)} placeholder="5'11&quot;" />
+              <FieldRow label="Height" testId="profile-height" value={profile.height} onChange={(v) => updateProfile("height", v)} placeholder="6'00&quot;" />
+              <FieldRow label="Weight (lbs)" testId="profile-weight" value={profile.weight} onChange={(v) => updateProfile("weight", v)} placeholder="138" />
               <FieldRow label="Jersey #" testId="profile-jersey" value={profile.jersey_number} onChange={(v) => updateProfile("jersey_number", v)} placeholder="14" />
-              <FieldRow label="GPA" testId="profile-gpa" value={profile.gpa} onChange={(v) => updateProfile("gpa", v)} placeholder="3.8" />
+            </div>
+
+            {/* Physical Info */}
+            <div className="pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Physical Info</h3>
+              <div className="grid grid-cols-3 gap-3">
+                <SelectRow label="Handed" testId="profile-handed" value={profile.handed} onChange={(v) => updateProfile("handed", v)} options={["", "Right", "Left", "Ambidextrous"]} />
+                <FieldRow label="Standing Reach" testId="profile-standing-reach" value={profile.standing_reach} onChange={(v) => updateProfile("standing_reach", v)} placeholder="7'8&quot;" />
+                <FieldRow label="Approach Touch" testId="profile-approach-touch" value={profile.approach_touch} onChange={(v) => updateProfile("approach_touch", v)} placeholder="9'10&quot;" />
+              </div>
+              <div className="grid grid-cols-3 gap-3 mt-3">
+                <FieldRow label="Block Touch" testId="profile-block-touch" value={profile.block_touch} onChange={(v) => updateProfile("block_touch", v)} placeholder="9'4&quot;" />
+                <FieldRow label="Wingspan" testId="profile-wingspan" value={profile.wingspan} onChange={(v) => updateProfile("wingspan", v)} placeholder="6'2&quot;" />
+                <FieldRow label="GPA" testId="profile-gpa" value={profile.gpa} onChange={(v) => updateProfile("gpa", v)} placeholder="3.8" />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
