@@ -26,6 +26,7 @@ from routes.profile import router as profile_router
 from routes.knowledge import router as knowledge_router
 from routes.ai import router as ai_router
 from routes.gmail import router as gmail_router
+from routes.notifications import router as notifications_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
@@ -35,6 +36,7 @@ app.include_router(profile_router)
 app.include_router(knowledge_router)
 app.include_router(ai_router)
 app.include_router(gmail_router)
+app.include_router(notifications_router)
 
 # ─── Background Task: Auto-detect coach replies ───
 
