@@ -400,14 +400,24 @@ export default function RecruitingBoard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Auto-scroll to section from URL hash
+  // Focus a section: expand it, collapse all others, scroll to it
+  const focusSection = (key) => {
+    const newCollapsed = {};
+    PIPELINE.forEach((stage) => {
+      newCollapsed[stage.key] = stage.key !== key;
+    });
+    setCollapsed(newCollapsed);
+    setTimeout(() => {
+      const el = document.getElementById(`pipeline-${key}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  // Auto-focus section from URL hash (when coming from Dashboard)
   useEffect(() => {
     if (!loading && location.hash) {
       const sectionId = location.hash.replace("#", "");
-      const el = document.getElementById(`pipeline-${sectionId}`);
-      if (el) {
-        setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-      }
+      focusSection(sectionId);
     }
   }, [loading, location.hash]);
 
