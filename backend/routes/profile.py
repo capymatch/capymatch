@@ -59,6 +59,8 @@ async def upload_athlete_photo(request: Request):
 
 @router.get("/public/schedule/{tenant_id}")
 async def public_schedule(tenant_id: str, request: Request):
+    from routes.notifications import create_notification
+    
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
         raise HTTPException(status_code=404, detail="Athlete not found")
@@ -76,15 +78,59 @@ async def public_schedule(tenant_id: str, request: Request):
     visitor_ip = forwarded.split(",")[0].strip() if forwarded else request.client.host if request.client else ""
     user_agent = request.headers.get("user-agent", "")
     referer = request.headers.get("referer", "")
+    is_edu = ".edu" in referer.lower() or ".edu" in user_agent.lower()
+    
+    # Extract potential school name from referer
+    school_hint = ""
+    if is_edu and referer:
+        try:
+            from urllib.parse import urlparse
+            parsed = urlparse(referer)
+            domain = parsed.netloc.lower()
+            # Extract school name from domain like "athletics.stanford.edu"
+            parts = domain.replace(".edu", "").split(".")
+            school_hint = parts[-1].title() if parts else ""
+        except:
+            pass
+    
     await db.profile_views.insert_one({
         "view_id": f"pv_{uuid.uuid4().hex[:12]}",
         "tenant_id": tenant_id,
         "visitor_ip": visitor_ip,
         "user_agent": user_agent,
         "referer": referer,
-        "is_edu": ".edu" in referer.lower() or ".edu" in user_agent.lower(),
+        "is_edu": is_edu,
+        "school_hint": school_hint,
         "viewed_at": datetime.now(timezone.utc).isoformat(),
     })
+    
+    # Create notification for .edu visitors (potential coaches)
+    if is_edu:
+        # Check if we already notified about this IP in last hour to avoid spam
+        one_hour_ago = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+        recent_view = await db.profile_views.find_one({
+            "tenant_id": tenant_id,
+            "visitor_ip": visitor_ip,
+            "is_edu": True,
+            "viewed_at": {"$gte": one_hour_ago}
+        })
+        
+        # Only notify once per IP per hour
+        view_count = await db.profile_views.count_documents({
+            "tenant_id": tenant_id,
+            "visitor_ip": visitor_ip,
+            "is_edu": True
+        })
+        
+        if view_count <= 1:  # First view from this IP
+            school_text = f" ({school_hint})" if school_hint else ""
+            await create_notification(
+                tenant_id=tenant_id,
+                notif_type="profile_view_edu",
+                title="College Coach May Be Viewing!",
+                message=f"Someone from a .edu domain{school_text} viewed your profile",
+                data={"referer": referer, "school_hint": school_hint}
+            )
 
     return {
         "profile": profile,
