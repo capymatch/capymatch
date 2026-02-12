@@ -110,7 +110,7 @@ export default function Dashboard() {
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
             <button onClick={() => navigate("/knowledge-base")} className="text-blue-600 text-xs font-medium hover:text-blue-800 flex items-center gap-1 transition-colors">
-              Browse Universities <ArrowRight className="w-3 h-3" />
+              Browse Universities <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
         </div>
