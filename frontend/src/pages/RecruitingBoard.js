@@ -465,7 +465,7 @@ export default function RecruitingBoard() {
       <PipelineFunnel programs={programs} />
 
       {/* Filters */}
-      <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl p-3 shadow-sm" data-testid="board-filters">
+      <div className="flex items-center gap-3 border rounded-xl p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
