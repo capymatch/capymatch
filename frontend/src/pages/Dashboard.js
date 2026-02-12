@@ -75,7 +75,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", borderColor: "var(--t-border)" }}>
           <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
           <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
@@ -84,9 +84,13 @@ export default function Dashboard() {
           <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{offersCount}</p>
           <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
         </div>
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{followUpsDue}</p>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Due</p>
+        <div className="rounded-xl p-5 border cursor-pointer transition-colors hover:bg-[var(--t-surface-alt)]" style={{ backgroundColor: "rgba(251, 146, 60, 0.1)", borderColor: "var(--t-border)" }} onClick={() => { const el = document.getElementById("reminders-section"); if (el) el.scrollIntoView({ behavior: "smooth" }); }}>
+          <p className="text-3xl font-bold" style={{ color: reminders.length > 0 ? "#f97316" : "var(--t-text)" }}>{reminders.length}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Overdue</p>
+        </div>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews?.this_week || 0}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Profile Views (7d)</p>
         </div>
       </div>
 
