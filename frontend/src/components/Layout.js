@@ -8,6 +8,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
 import { toast } from "sonner";
+import Tour from "../components/Tour";
 
 export default function Layout({ user }) {
   const navigate = useNavigate();
