@@ -88,7 +88,7 @@ function AppRouter() {
   }
   return (
     <Routes>
-      <Route path="/login" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/" element={
