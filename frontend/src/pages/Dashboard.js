@@ -48,8 +48,8 @@ export default function Dashboard() {
         <div className="absolute bottom-0 left-1/3 w-32 h-32 bg-white/5 rounded-full translate-y-1/2" />
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-5 h-5 text-purple-200" />
-            <span className="text-purple-200 text-sm font-medium">Welcome back</span>
+            <Sparkles className="w-5 h-5 text-slate-300" strokeWidth={1.5} />
+            <span className="text-slate-300 text-sm font-medium">Welcome back</span>
           </div>
           <h2 className="font-heading text-4xl font-black tracking-tight" data-testid="dashboard-title">
             {data.athlete_name ? `${data.athlete_name}'s Recruiting Hub` : "Recruiting Hub"}
