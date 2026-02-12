@@ -486,7 +486,7 @@ export default function RecruitingBoard() {
         <div className="w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
         <Select value={filterDivision} onValueChange={setFilterDivision}>
           <SelectTrigger data-testid="filter-division" className="w-36 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-            <Filter className="w-3 h-3 mr-1.5" style={{ color: "var(--t-text-muted)" }} /><SelectValue placeholder="Division" />
+            <SelectValue placeholder="Division" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
             <SelectItem value="all">All Divisions</SelectItem>
@@ -495,7 +495,7 @@ export default function RecruitingBoard() {
         </Select>
         <Select value={filterRegion} onValueChange={setFilterRegion}>
           <SelectTrigger data-testid="filter-region" className="w-40 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-            <Filter className="w-3 h-3 mr-1.5" style={{ color: "var(--t-text-muted)" }} /><SelectValue placeholder="Region" />
+            <SelectValue placeholder="Region" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
             <SelectItem value="all">All Regions</SelectItem>
