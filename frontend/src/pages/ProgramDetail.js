@@ -18,7 +18,7 @@ import { toast } from "sonner";
 const DIVISION_BADGE = {
   D1: "bg-emerald-100 text-emerald-700",
   D2: "bg-blue-100 text-blue-700",
-  D3: "bg-purple-100 text-purple-700",
+  D3: "bg-slate-100 text-slate-800",
   NAIA: "bg-orange-100 text-orange-700",
   JUCO: "bg-yellow-100 text-yellow-700",
 };
@@ -31,7 +31,7 @@ function FieldSelect({ label, value, options, onChange, testId }) {
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1 text-sm focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-200"
+        className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-200"
       >
         <option value="">Select</option>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
@@ -49,7 +49,7 @@ function FieldInput({ label, value, onChange, type = "text", testId }) {
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="bg-white border-gray-300 text-gray-900 mt-1 focus:border-purple-400 focus:ring-purple-200"
+        className="bg-white border-gray-300 text-gray-900 mt-1 focus:border-slate-500 focus:ring-slate-200"
       />
     </div>
   );
@@ -181,7 +181,7 @@ export default function ProgramDetail() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleSave} disabled={saving} data-testid="save-program" className="bg-purple-600 hover:bg-purple-700 text-white">
+          <Button size="sm" onClick={handleSave} disabled={saving} data-testid="save-program" className="bg-slate-700 hover:bg-slate-800 text-white">
             <Save className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Save"}
           </Button>
           <Button size="sm" variant="destructive" onClick={handleDelete} data-testid="delete-program">
@@ -240,7 +240,7 @@ export default function ProgramDetail() {
                   value={form.notes || ""}
                   onChange={(e) => setField("notes", e.target.value)}
                   data-testid="field-notes"
-                  className="bg-white border-gray-300 text-gray-900 mt-1 min-h-[80px] focus:border-purple-400"
+                  className="bg-white border-gray-300 text-gray-900 mt-1 min-h-[80px] focus:border-slate-500"
                 />
               </div>
             </CardContent>
@@ -267,7 +267,7 @@ export default function ProgramDetail() {
                     <FieldSelect label="Role" value={coachForm.role} options={COACH_ROLES} onChange={(v) => setCoachForm({ ...coachForm, role: v })} testId="coach-role-input" />
                     <FieldInput label="Email" value={coachForm.email} onChange={(v) => setCoachForm({ ...coachForm, email: v })} testId="coach-email-input" />
                     <FieldInput label="Phone" value={coachForm.phone} onChange={(v) => setCoachForm({ ...coachForm, phone: v })} testId="coach-phone-input" />
-                    <Button onClick={handleAddCoach} data-testid="submit-coach" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button onClick={handleAddCoach} data-testid="submit-coach" className="w-full bg-slate-700 hover:bg-slate-800 text-white">
                       {editingCoach ? "Update" : "Add"} Coach
                     </Button>
                   </div>
@@ -292,7 +292,7 @@ export default function ProgramDetail() {
                           <button
                             onClick={() => { setEditingCoach(c); setCoachForm({ coach_name: c.coach_name, role: c.role, email: c.email, phone: c.phone, notes: c.notes }); setCoachOpen(true); }}
                             data-testid={`edit-coach-${c.coach_id}`}
-                            className="text-gray-400 hover:text-purple-600 text-xs px-1"
+                            className="text-gray-400 hover:text-slate-700 text-xs px-1"
                           >Edit</button>
                           <button
                             onClick={() => handleDeleteCoach(c.coach_id)}
@@ -303,7 +303,7 @@ export default function ProgramDetail() {
                           </button>
                         </div>
                       </div>
-                      {c.email && <p className="text-purple-600 text-xs flex items-center gap-1 mt-1"><Mail className="w-3 h-3" />{c.email}</p>}
+                      {c.email && <p className="text-slate-700 text-xs flex items-center gap-1 mt-1"><Mail className="w-3 h-3" />{c.email}</p>}
                       {c.phone && <p className="text-gray-500 text-xs flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</p>}
                     </div>
                   ))}
@@ -339,7 +339,7 @@ export default function ProgramDetail() {
                         className="bg-white border-gray-300 text-gray-900 mt-1"
                       />
                     </div>
-                    <Button onClick={handleAddInteraction} data-testid="submit-interaction" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button onClick={handleAddInteraction} data-testid="submit-interaction" className="w-full bg-slate-700 hover:bg-slate-800 text-white">
                       Add Interaction
                     </Button>
                   </div>
@@ -354,7 +354,7 @@ export default function ProgramDetail() {
                   {interactions.map((int) => (
                     <div key={int.interaction_id} className="p-3 rounded-lg bg-gray-50 border border-gray-200" data-testid={`interaction-${int.interaction_id}`}>
                       <div className="flex items-center justify-between">
-                        <Badge className="bg-purple-100 text-purple-700 text-[10px] border border-purple-200">{int.type}</Badge>
+                        <Badge className="bg-slate-100 text-slate-800 text-[10px] border border-slate-200">{int.type}</Badge>
                         <span className="text-gray-400 text-[10px]">
                           {int.date_time ? new Date(int.date_time).toLocaleDateString() : ""}
                         </span>

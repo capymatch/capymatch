@@ -195,7 +195,7 @@ export default function UniversityKnowledgeBase() {
               {activeFilterTags.map((tag) => (
                 <Badge
                   key={tag.key}
-                  className="bg-purple-100 text-purple-700 border border-purple-200 px-2 py-1 text-xs cursor-pointer hover:bg-purple-200 transition-colors"
+                  className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-1 text-xs cursor-pointer hover:bg-slate-200 transition-colors"
                   onClick={tag.clear}
                 >
                   {tag.label} &times;
@@ -225,7 +225,7 @@ function UniversityCard({ uni, adding, addToBoard }) {
   const divColor = {
     D1: "bg-emerald-100 text-emerald-700",
     D2: "bg-blue-100 text-blue-700",
-    D3: "bg-purple-100 text-purple-700",
+    D3: "bg-slate-100 text-slate-800",
     NAIA: "bg-orange-100 text-orange-700",
     JUCO: "bg-yellow-100 text-yellow-700",
   }[uni.division] || "bg-gray-100 text-gray-700";
@@ -264,7 +264,7 @@ function UniversityCard({ uni, adding, addToBoard }) {
             onClick={() => addToBoard(uni)}
             disabled={adding[uni.university_name]}
             data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-            className="text-xs border-purple-300 text-purple-600 hover:bg-purple-50 hover:border-purple-400 h-8 gap-1.5 transition-colors"
+            className="text-xs border-slate-400 text-slate-700 hover:bg-slate-50 hover:border-slate-500 h-8 gap-1.5 transition-colors"
           >
             <BookmarkPlus className="w-3.5 h-3.5" />
             {adding[uni.university_name] ? "Adding..." : "Add to Board"}
