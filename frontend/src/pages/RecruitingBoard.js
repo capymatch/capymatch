@@ -245,7 +245,6 @@ function PipelineFunnel({ programs }) {
             <div className="mt-3 w-full rounded-full h-1.5" style={{ backgroundColor: "var(--t-border)" }}>
               <div className={`h-1.5 rounded-full bg-gradient-to-r ${stage.color} transition-all duration-700`} style={{ width: `${Math.max(pct, 2)}%` }} />
             </div>
-            </div>
           </div>
         );
       })}
