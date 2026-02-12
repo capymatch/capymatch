@@ -183,19 +183,19 @@ export default function Dashboard() {
                       {prog.university_name?.charAt(0) || "?"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium text-sm group-hover:text-purple-300 transition-colors truncate">
+                      <p className="font-medium text-sm group-hover:text-purple-500 transition-colors truncate" style={{ color: "var(--t-text)" }}>
                         {prog.university_name}
                       </p>
-                      <p className="text-white/40 text-xs">
+                      <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
                         {prog.recruiting_status || "Not Contacted"} • {prog.division || ""}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="px-3 py-1.5 rounded-lg bg-white/10 text-white/70 text-xs font-medium hover:bg-purple-600 hover:text-white transition-colors">
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-purple-600 hover:text-white transition-colors" style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary)" }}>
                         Follow Up
                       </span>
                     </div>
-                    <span className="text-white/40 text-xs w-16 text-right">
+                    <span className="text-xs w-16 text-right" style={{ color: "var(--t-text-muted)" }}>
                       {prog.next_action_due ? formatDate(prog.next_action_due) : "—"}
                     </span>
                   </div>
@@ -203,10 +203,10 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-white/40 text-sm">No schools added yet</p>
+                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No schools added yet</p>
                 <button 
                   onClick={() => navigate("/knowledge-base")}
-                  className="mt-3 text-purple-400 text-sm hover:text-purple-300 transition-colors"
+                  className="mt-3 text-purple-500 text-sm hover:text-purple-400 transition-colors"
                 >
                   + Add your first school
                 </button>
@@ -215,39 +215,39 @@ export default function Dashboard() {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-white/10" />
+          <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
-              <h4 className="text-white/60 text-sm mb-3">By Division</h4>
+            <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+              <h4 className="text-sm mb-3" style={{ color: "var(--t-text-muted)" }}>By Division</h4>
               <div className="space-y-2">
                 {["D1", "D2", "D3", "NAIA"].map((div) => {
                   const count = programs.filter(p => p.division === div).length;
                   return (
                     <div key={div} className="flex items-center justify-between">
-                      <span className="text-white/80 text-sm">{div}</span>
-                      <span className="text-white font-medium">{count}</span>
+                      <span className="text-sm" style={{ color: "var(--t-text-secondary)" }}>{div}</span>
+                      <span className="font-medium" style={{ color: "var(--t-text)" }}>{count}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
-            <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
-              <h4 className="text-white/60 text-sm mb-3">By Priority</h4>
+            <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+              <h4 className="text-sm mb-3" style={{ color: "var(--t-text-muted)" }}>By Priority</h4>
               <div className="space-y-2">
                 {["Very High", "High", "Medium", "Low"].map((priority) => {
                   const count = programs.filter(p => p.priority === priority).length;
                   const colors = {
-                    "Very High": "text-red-400",
-                    "High": "text-orange-400",
-                    "Medium": "text-blue-400",
-                    "Low": "text-white/60"
+                    "Very High": "text-red-500",
+                    "High": "text-orange-500",
+                    "Medium": "text-blue-500",
+                    "Low": ""
                   };
                   return (
                     <div key={priority} className="flex items-center justify-between">
-                      <span className={`text-sm ${colors[priority]}`}>{priority}</span>
-                      <span className="text-white font-medium">{count}</span>
+                      <span className={`text-sm ${colors[priority]}`} style={{ color: colors[priority] ? undefined : "var(--t-text-muted)" }}>{priority}</span>
+                      <span className="font-medium" style={{ color: "var(--t-text)" }}>{count}</span>
                     </div>
                   );
                 })}
