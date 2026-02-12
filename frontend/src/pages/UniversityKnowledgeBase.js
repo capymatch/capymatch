@@ -225,17 +225,18 @@ export default function UniversityKnowledgeBase() {
 
 function UniversityCard({ uni, adding, addToBoard }) {
   const divColor = {
-    D1: "bg-emerald-100 text-emerald-700",
-    D2: "bg-blue-100 text-blue-700",
-    D3: "bg-slate-100 text-slate-800",
-    NAIA: "bg-orange-100 text-orange-700",
-    JUCO: "bg-yellow-100 text-yellow-700",
-  }[uni.division] || "bg-gray-100 text-gray-700";
+    D1: "bg-emerald-500/20 text-emerald-400",
+    D2: "bg-blue-500/20 text-blue-400",
+    D3: "bg-violet-500/20 text-violet-400",
+    NAIA: "bg-orange-500/20 text-orange-400",
+    JUCO: "bg-yellow-500/20 text-yellow-400",
+  }[uni.division] || "bg-gray-500/20 text-gray-400";
   const divFull = uni.division === "D1" ? "NCAA I" : uni.division === "D2" ? "NCAA II" : uni.division === "D3" ? "NCAA III" : uni.division;
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 hover:shadow-md transition-all duration-200 group shadow-sm"
+      className="rounded-lg p-5 transition-all duration-200 group shadow-sm border"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`kb-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -244,8 +245,8 @@ function UniversityCard({ uni, adding, addToBoard }) {
             {uni.division}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-gray-900 font-heading font-bold text-lg leading-tight">{uni.university_name}</h3>
-            <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 flex-wrap">
+            <h3 className="font-heading font-bold text-lg leading-tight" style={{ color: "var(--t-text)" }}>{uni.university_name}</h3>
+            <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
               {uni.region && (
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" /> {uni.region}
@@ -266,7 +267,8 @@ function UniversityCard({ uni, adding, addToBoard }) {
             onClick={() => addToBoard(uni)}
             disabled={adding[uni.university_name]}
             data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-            className="text-xs border-slate-400 text-slate-700 hover:bg-slate-50 hover:border-slate-500 h-8 gap-1.5 transition-colors"
+            className="text-xs h-8 gap-1.5 transition-colors"
+            style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
           >
             <BookmarkPlus className="w-3.5 h-3.5" />
             {adding[uni.university_name] ? "Adding..." : "Add to Board"}
@@ -277,7 +279,8 @@ function UniversityCard({ uni, adding, addToBoard }) {
               target="_blank"
               rel="noopener noreferrer"
               data-testid={`visit-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-800 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border rounded-md transition-colors"
+              style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
             >
               <ExternalLink className="w-3.5 h-3.5" /> Visit
             </a>
@@ -291,17 +294,17 @@ function UniversityCard({ uni, adding, addToBoard }) {
           </span>
         )}
         {uni.region && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600 border border-gray-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>
             <MapPin className="w-3 h-3" /> {uni.region}
           </span>
         )}
         {uni.mascot && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600 border border-gray-200">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>
             {uni.mascot}
           </span>
         )}
         {uni.notes && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-50 text-amber-700 border border-amber-200">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-500/20 text-amber-400 border border-amber-500/30">
             {uni.notes}
           </span>
         )}
