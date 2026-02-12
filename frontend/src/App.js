@@ -4,6 +4,7 @@ import api from "./lib/api";
 import { ThemeProvider } from "./lib/theme";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
+import LandingPage from "./pages/LandingPage";
 import RecruitingBoard from "./pages/RecruitingBoard";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
@@ -87,7 +88,7 @@ function AppRouter() {
   }
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<LandingPage />} />
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/" element={
