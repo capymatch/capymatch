@@ -102,7 +102,19 @@ export default function Layout({ user }) {
           className="h-16 flex items-center justify-between px-6 border-b"
           style={{ backgroundColor: "var(--t-header-bg)", borderColor: "var(--t-border)" }}
         >
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3" data-testid="header-page-title">
+            {(() => {
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/settings": "Settings", "/profile": "Profile" };
+              const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
+              const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
+              const Icon = icon || Home;
+              return (
+                <>
+                  <Icon className="w-5 h-5" style={{ color: "var(--t-text-muted)" }} strokeWidth={1.5} />
+                  <h2 className="text-base font-semibold" style={{ color: "var(--t-text)" }}>{match?.[1] || "Dashboard"}</h2>
+                </>
+              );
+            })()}
           </div>
 
           <div className="flex items-center gap-5">
