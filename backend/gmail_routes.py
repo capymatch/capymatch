@@ -262,19 +262,45 @@ async def gmail_disconnect(request: Request):
 
 @gmail_router.get("/emails")
 async def list_emails(request: Request, page_token: Optional[str] = None, q: Optional[str] = None, max_results: int = 20):
-    """List emails from Gmail, syncing fresh data."""
+    """List emails from Gmail filtered to coach contacts only."""
     user = await get_current_user(request)
     creds = await get_gmail_credentials(user["user_id"])
     if not creds:
         raise HTTPException(status_code=403, detail="Gmail not connected")
+
+    # Get tenant and coach emails to filter
+    tenant_id = await get_tenant_id(user)
+    coaches = await db.coaches.find({"tenant_id": tenant_id, "email": {"$ne": ""}}, {"_id": 0, "email": 1}).to_list(500)
+    coach_emails = [c["email"].strip().lower() for c in coaches if c.get("email", "").strip()]
 
     try:
         service = get_gmail_service(creds)
         params = {"userId": "me", "maxResults": max_results}
         if page_token:
             params["pageToken"] = page_token
-        if q:
+
+        # Build Gmail search query filtering to coach emails
+        coach_query = ""
+        if coach_emails:
+            email_parts = " OR ".join(coach_emails)
+            coach_query = f"({email_parts})"
+
+        # Combine user search with coach filter
+        if q and coach_query:
+            params["q"] = f"{coach_query} {q}"
+        elif coach_query:
+            params["q"] = coach_query
+        elif q:
             params["q"] = q
+
+        # If no coaches exist, return empty with a hint
+        if not coach_emails:
+            return {
+                "emails": [],
+                "next_page_token": None,
+                "result_size_estimate": 0,
+                "no_coaches": True,
+            }
 
         results = service.users().messages().list(**params).execute()
         messages = results.get("messages", [])
