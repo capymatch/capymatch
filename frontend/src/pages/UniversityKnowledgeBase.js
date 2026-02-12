@@ -195,7 +195,7 @@ export default function UniversityKnowledgeBase() {
               {activeFilterTags.map((tag) => (
                 <Badge
                   key={tag.key}
-                  className="bg-blue-900/50 text-blue-300 border border-blue-700 px-2 py-1 text-xs cursor-pointer hover:bg-blue-900/80 transition-colors"
+                  className="bg-purple-100 text-purple-700 border border-purple-200 px-2 py-1 text-xs cursor-pointer hover:bg-purple-200 transition-colors"
                   onClick={tag.clear}
                 >
                   {tag.label} &times;
@@ -204,7 +204,7 @@ export default function UniversityKnowledgeBase() {
             </div>
           )}
           {activeFilterTags.length === 0 && (
-            <p className="text-slate-500 text-sm" data-testid="kb-no-filters">No filters selected</p>
+            <p className="text-gray-400 text-sm" data-testid="kb-no-filters">No filters selected</p>
           )}
 
           {/* University Cards */}
