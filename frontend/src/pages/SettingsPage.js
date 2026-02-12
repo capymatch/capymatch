@@ -59,6 +59,57 @@ export default function SettingsPage() {
     }
   };
 
+  // Load athlete profile + share link
+  useEffect(() => {
+    Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
+      .then(([profRes, linkRes]) => {
+        setProfile(profRes.data);
+        const base = window.location.origin;
+        setShareLink(`${base}/schedule/${linkRes.data.tenant_id}`);
+      })
+      .catch(() => {})
+      .finally(() => setProfileLoading(false));
+  }, []);
+
+  const updateProfile = (key, val) => setProfile((p) => ({ ...p, [key]: val }));
+
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      const res = await api.put("/athlete-profile", profile);
+      setProfile(res.data);
+      toast.success("Profile saved");
+    } catch {
+      toast.error("Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5_000_000) return toast.error("Photo must be under 5MB");
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        await api.post("/athlete-profile/photo", { photo_data: reader.result });
+        updateProfile("photo_url", reader.result);
+        toast.success("Photo uploaded");
+      } catch {
+        toast.error("Failed to upload photo");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const copyShareLink = () => {
+    navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+    toast.success("Link copied!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   useEffect(() => {
     // Get saved theme from localStorage
     const savedTheme = localStorage.getItem("theme") || "dark";
