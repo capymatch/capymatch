@@ -60,17 +60,9 @@ export default function Dashboard() {
   return (
     <div data-testid="dashboard" className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-white/50 text-sm mt-1">Welcome back! Here's your recruiting overview.</p>
-        </div>
-        <button 
-          onClick={() => navigate("/knowledge-base")}
-          className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          + Add School
-        </button>
+      <div>
+        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <p className="text-white/50 text-sm mt-1">Welcome back! Here's your recruiting overview.</p>
       </div>
 
       {/* Stats Cards */}

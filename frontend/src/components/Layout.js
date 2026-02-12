@@ -108,8 +108,7 @@ export default function Layout({ user }) {
         <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 backdrop-blur-xl" style={{ backgroundColor: "rgba(15, 15, 25, 0.5)" }}>
           <div className="flex items-center gap-6">
             <h1 className="font-heading text-xl font-bold text-white tracking-tight" data-testid="app-title">
-              Volleyball Recruiting
-              <span className="text-purple-400 ml-2">2028</span>
+              Recruiting HQ
             </h1>
           </div>
 
