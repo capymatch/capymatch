@@ -245,7 +245,7 @@ function PipelineFunnel({ programs }) {
               {total > 0 && <span className="text-[11px] mb-1" style={{ color: "var(--t-text-muted)" }}>{pct}%</span>}
             </div>
             {/* Mini bar */}
-            <div className="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+            <div className="mt-2 w-full rounded-full h-1.5" style={{ backgroundColor: "var(--t-border)" }}>
               <div className={`h-1.5 rounded-full bg-gradient-to-r ${stage.color} transition-all duration-700`} style={{ width: `${Math.max(pct, 2)}%` }} />
             </div>
           </div>
