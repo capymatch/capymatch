@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
@@ -12,6 +12,7 @@ import Tour from "../components/Tour";
 
 export default function Layout({ user }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const profileRef = useRef(null);
