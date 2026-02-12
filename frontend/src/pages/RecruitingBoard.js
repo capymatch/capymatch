@@ -467,6 +467,9 @@ export default function RecruitingBoard() {
       {/* Pipeline Funnel */}
       <PipelineFunnel programs={programs} />
 
+      {/* Divider */}
+      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
+
       {/* Filters */}
       <div className="flex items-center gap-3 border rounded-xl p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
         <div className="relative flex-1 max-w-sm">
