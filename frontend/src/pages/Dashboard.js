@@ -91,7 +91,7 @@ export default function Dashboard() {
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
             <button onClick={() => navigate("/follow-ups")} className="text-orange-600 text-xs font-medium hover:text-orange-800 flex items-center gap-1 transition-colors">
-              {data.follow_ups_due > 0 ? "Action needed" : "All caught up"} <ArrowRight className="w-3 h-3" />
+              {data.follow_ups_due > 0 ? "Action needed" : "All caught up"} <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
         </div>
