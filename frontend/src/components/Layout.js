@@ -90,16 +90,8 @@ export default function Layout({ user }) {
           ))}
         </nav>
 
-        {/* Add Group Button */}
-        <div className="p-4 border-t" style={{ borderColor: "var(--t-border)" }}>
-          <button 
-            className="flex items-center gap-3 px-4 py-3 text-sm transition-all w-full rounded-xl group"
-            style={{ color: "var(--t-text-muted)" }}
-          >
-            <PlusCircle className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" strokeWidth={1.5} />
-            Add Group
-          </button>
-        </div>
+        {/* Bottom spacing */}
+        <div className="p-4" />
       </aside>
 
       {/* Main Content */}
