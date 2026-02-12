@@ -105,7 +105,7 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
-              <TrendingUp className="w-7 h-7 text-blue-600" />
+              <TrendingUp className="w-7 h-7 text-blue-600" strokeWidth={1.5} />
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
