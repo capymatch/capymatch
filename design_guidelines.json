@@ -1,0 +1,142 @@
+{
+  "identity": {
+    "persona": "E1",
+    "mission": "Create a high-performance, dark-themed sports recruiting CRM that feels like a professional analytics tool.",
+    "principles": [
+      "Fusion over Imitation: Mix 'Sports Broadcast' aesthetics with 'SaaS Productivity'.",
+      "Emotion First: The UI should feel 'Locked In' and 'Focused'.",
+      "Content is King: Data tables must be readable but beautiful.",
+      "Contrast: High contrast text on dark backgrounds."
+    ]
+  },
+  "typography": {
+    "primary_font": "Inter",
+    "heading_font": "Barlow Condensed",
+    "font_weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "bold": 700,
+      "black": 900
+    },
+    "instructions": "Use 'Barlow Condensed' (weights 600-900) for all Page Titles, Section Headers, and Statistic Numbers to give an athletic feel. Use 'Inter' for all body text, table data, and inputs for maximum legibility."
+  },
+  "colors": {
+    "theme": "dark",
+    "palette": {
+      "background": "#0f172a",
+      "surface": "#1e293b",
+      "surface_highlight": "#334155",
+      "border": "#334155",
+      "text_primary": "#f8fafc",
+      "text_secondary": "#94a3b8",
+      "text_muted": "#64748b",
+      "primary": "#3b82f6",
+      "primary_foreground": "#ffffff"
+    },
+    "status_colors": {
+      "not_contacted": {
+        "bg": "#7f1d1d",
+        "text": "#fecaca",
+        "border": "#991b1b"
+      },
+      "contacted": {
+        "bg": "#14532d",
+        "text": "#bbf7d0",
+        "border": "#166534"
+      },
+      "active_conversation": {
+        "bg": "#1e3a8a",
+        "text": "#bfdbfe",
+        "border": "#1e40af"
+      },
+      "offer": {
+        "bg": "#713f12",
+        "text": "#fef08a",
+        "border": "#a16207"
+      },
+      "archived": {
+        "bg": "#3f3f46",
+        "text": "#e4e4e7",
+        "border": "#52525b"
+      }
+    },
+    "division_colors": {
+      "d1": "#22c55e",
+      "d2": "#3b82f6",
+      "d3": "#a855f7",
+      "naia": "#f97316",
+      "juco": "#eab308"
+    }
+  },
+  "visual_enhancers": {
+    "borders": "1px solid rgba(255,255,255,0.08)",
+    "shadows": "0 4px 6px -1px rgba(0, 0, 0, 0.5)",
+    "glassmorphism": "backdrop-blur-md bg-slate-900/80 border-b border-white/10",
+    "gradients": "None for backgrounds. Subtle linear gradients allowed on primary buttons only.",
+    "textures": "Noise texture overlay (opacity 0.02) recommended for the main background to reduce banding."
+  },
+  "layout_strategies": {
+    "dashboard": {
+      "type": "Bento Grid (Mode B)",
+      "grid_cols": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4",
+      "gap": "gap-4",
+      "widgets": [
+        "Summary Metrics (Single Cards)",
+        "Recent Activity (Feed)",
+        "Priority List (Table Widget)"
+      ]
+    },
+    "recruiting_board": {
+      "type": "Grouped Table",
+      "spacing": "p-0",
+      "structure": "Collapsible sections based on Status. Each section contains a table."
+    },
+    "program_detail": {
+      "type": "Master-Detail",
+      "layout": "Left sidebar (School Info) + Main Content (Tabs: Interactions, Coaches, Notes)."
+    }
+  },
+  "components": {
+    "cards": "Flat, dark slate (#1e293b) background, 1px border (#334155), rounded-lg. No massive shadows.",
+    "buttons": "Sharp corners or small radius (rounded-md). High contrast text. Primary: Blue-600. Secondary: Slate-700.",
+    "tables": "Dense. Row height 48px. Header text uppercase and tracking-wider. Alternating row colors (optional, prefer hover states).",
+    "badges": "Pill shaped. Solid background or Bordered with transparent bg. Font size xs, font-weight bold.",
+    "navigation": "Top bar. Logo left. Tabs center. Profile right. Active tab gets a bottom border (2px) + text glow."
+  },
+  "image_urls": {
+    "hero_backgrounds": [
+      "https://images.unsplash.com/photo-1765109380575-ba33954b43b9?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1765109350739-ed25db5757be?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ],
+    "university_images": [
+      "https://images.unsplash.com/photo-1769021045407-d49e26aebcba?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1754573061107-7c8d00c9e662?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.pexels.com/photos/1920152/pexels-photo-1920152.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    ],
+    "avatars": [
+      "https://images.unsplash.com/photo-1765109388116-4c971d093da9?crop=entropy&cs=srgb&fm=jpg&q=85"
+    ]
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5px or 2px. Consistent sizing (w-4 h-4 for small, w-5 h-5 for medium)."
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALL FONTS: Add '@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');' to index.css immediately.",
+    "2. SETUP TAILWIND: Configure the colors in tailwind.config.js to match the 'colors' section above. Use CSS variables for flexibility if needed, but hardcoded Slate colors are fine for this specific dark theme requirement.",
+    "3. SHADCN OVERRIDES: Update Shadcn components to use the dark slate palette. Ensure Popovers and Dialogs have the correct background (#1e293b) and border colors.",
+    "4. RECRUITING BOARD: This is the core feature. Build a robust 'GroupedTable' component that can handle the sections (Active, Contacted, etc.). It needs to look like the screenshots.",
+    "5. MOCK DATA: Generate realistic mock data for Universities (using the images provided), Coaches, and Interactions.",
+    "6. USE SONNER: For all success/error toasts.",
+    "7. DATA-TESTID: Add data-testid to all interactive elements."
+  ],
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts. Use grids.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "NEVER use AI assistant Emoji characters.",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "Use 2-3x more spacing than feels comfortable."
+  ]
+}
