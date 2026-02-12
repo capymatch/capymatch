@@ -526,7 +526,7 @@ export default function RecruitingBoard() {
                 <div className={`w-7 h-7 rounded-lg ${stage.bg} flex items-center justify-center`}>
                   <stage.icon className={`w-3.5 h-3.5 ${stage.text}`} strokeWidth={1.5} />
                 </div>
-                <span className={`font-heading font-bold text-sm tracking-wide ${isEmpty ? "text-gray-400" : "text-gray-800"}`}>
+                <span className={`font-heading font-bold text-sm tracking-wide`} style={{ color: isEmpty ? "var(--t-text-muted)" : "var(--t-text)" }}>
                   {stage.label === "Not Contacted" ? "Active - Not Contacted" :
                    stage.label === "Contacted" ? "Contacted - Awaiting Reply" :
                    stage.label === "Active" ? "Active Conversations" :
