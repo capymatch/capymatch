@@ -12,6 +12,7 @@ import ProgramDetail from "./pages/ProgramDetail";
 import Inbox from "./pages/Inbox";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
+import CalendarPage from "./pages/CalendarPage";
 import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
