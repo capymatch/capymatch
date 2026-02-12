@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import api from "./lib/api";
+import { ThemeProvider } from "./lib/theme";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
 import RecruitingBoard from "./pages/RecruitingBoard";
