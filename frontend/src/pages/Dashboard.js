@@ -89,13 +89,13 @@ export default function Dashboard() {
         {/* Left Column */}
         <div className="col-span-5 space-y-5">
           {/* Progress Funnel */}
-          <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
-            <h3 className="text-white font-semibold mb-5">Recruiting Pipeline</h3>
+          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+            <h3 className="font-semibold mb-5" style={{ color: "var(--t-text)" }}>Recruiting Pipeline</h3>
             <div className="space-y-3">
               {funnelStages.map((stage, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <span className="text-white/60 text-sm w-36 truncate">{stage.label}</span>
-                  <div className="flex-1 h-5 rounded-full bg-white/5 overflow-hidden">
+                  <span className="text-sm w-36 truncate" style={{ color: "var(--t-text-muted)" }}>{stage.label}</span>
+                  <div className="flex-1 h-5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-surface-alt)" }}>
                     <div 
                       className="h-full rounded-full transition-all duration-500"
                       style={{ 
@@ -104,22 +104,23 @@ export default function Dashboard() {
                       }}
                     />
                   </div>
-                  <span className="text-white font-medium w-8 text-right">{stage.count}</span>
+                  <span className="font-medium w-8 text-right" style={{ color: "var(--t-text)" }}>{stage.count}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Divider */}
-          <div className="border-t border-white/10" />
+          <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
           {/* Recent Activity */}
-          <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
+          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-semibold">Recent Activity</h3>
+              <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>Recent Activity</h3>
               <button 
                 onClick={() => navigate("/inbox")}
-                className="text-white/50 text-sm hover:text-white transition-colors"
+                className="text-sm transition-colors"
+                style={{ color: "var(--t-text-muted)" }}
               >
                 View all
               </button>
@@ -127,7 +128,7 @@ export default function Dashboard() {
             {data.recent_interactions && data.recent_interactions.length > 0 ? (
               <div className="space-y-3">
                 {data.recent_interactions.slice(0, 4).map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg transition-colors" style={{ backgroundColor: "var(--t-surface-alt)" }}>
                     <div 
                       className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold"
                       style={{ backgroundColor: avatarColors[i % avatarColors.length] }}
@@ -135,10 +136,10 @@ export default function Dashboard() {
                       {item.university_name?.charAt(0) || "?"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm font-medium truncate">{item.university_name}</p>
-                      <p className="text-white/40 text-xs">{item.type} • {item.outcome || "Pending"}</p>
+                      <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{item.university_name}</p>
+                      <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>{item.type} • {item.outcome || "Pending"}</p>
                     </div>
-                    <span className="text-white/30 text-xs">
+                    <span className="text-xs" style={{ color: "var(--t-text-faint)" }}>
                       {item.date_time ? formatDate(item.date_time) : "Recently"}
                     </span>
                   </div>
@@ -146,8 +147,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Mail className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                <p className="text-white/40 text-sm">No recent activity</p>
+                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No recent activity</p>
               </div>
             )}
           </div>
@@ -156,12 +156,13 @@ export default function Dashboard() {
         {/* Right Column */}
         <div className="col-span-7 space-y-5">
           {/* Priority Schools */}
-          <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
+          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-semibold">Schools Requiring Action</h3>
+              <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>Schools Requiring Action</h3>
               <button 
                 onClick={() => navigate("/follow-ups")}
-                className="text-white/50 text-sm hover:text-white transition-colors flex items-center gap-1"
+                className="text-sm transition-colors flex items-center gap-1"
+                style={{ color: "var(--t-text-muted)" }}
               >
                 View all <ChevronRight className="w-4 h-4" />
               </button>
@@ -172,7 +173,8 @@ export default function Dashboard() {
                   <div 
                     key={prog.program_id}
                     onClick={() => navigate(`/programs/${prog.program_id}`)}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group"
+                    className="flex items-center gap-3 p-3 rounded-lg transition-colors cursor-pointer group"
+                    style={{ backgroundColor: "var(--t-surface-alt)" }}
                   >
                     <div 
                       className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold"
