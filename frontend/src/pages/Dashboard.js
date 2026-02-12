@@ -79,11 +79,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow" data-testid="stat-follow-ups-due">
+        <div className="bg-white dark:bg-[#141e30] rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow" style={{ borderColor: "var(--t-border)" }} data-testid="stat-follow-ups-due">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Follow-Ups Due</p>
-              <p className="font-heading text-4xl font-black text-gray-900 mt-1">{data.follow_ups_due}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Follow-Ups Due</p>
+              <p className="font-heading text-4xl font-black mt-1" style={{ color: "var(--t-text)" }}>{data.follow_ups_due}</p>
             </div>
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${data.follow_ups_due > 0 ? "bg-orange-50" : "bg-green-50"}`}>
               <Bell className={`w-7 h-7 ${data.follow_ups_due > 0 ? "text-orange-500" : "text-green-500"}`} strokeWidth={1.5} />
