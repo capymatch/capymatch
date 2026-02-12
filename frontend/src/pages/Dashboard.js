@@ -54,7 +54,7 @@ export default function Dashboard() {
           <h2 className="font-heading text-4xl font-black tracking-tight" data-testid="dashboard-title">
             {data.athlete_name ? `${data.athlete_name}'s Recruiting Hub` : "Recruiting Hub"}
           </h2>
-          <p className="text-purple-200 mt-2 text-sm max-w-md">
+          <p className="text-slate-300 mt-2 text-sm max-w-md">
             Track your progress, manage follow-ups, and stay on top of your college volleyball recruiting journey.
           </p>
         </div>
