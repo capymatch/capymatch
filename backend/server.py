@@ -637,6 +637,11 @@ async def root():
 
 app.include_router(api_router)
 
+# Gmail routes
+from gmail_routes import gmail_router, set_db as set_gmail_db
+set_gmail_db(db)
+app.include_router(gmail_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
