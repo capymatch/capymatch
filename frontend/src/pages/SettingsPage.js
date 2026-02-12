@@ -257,27 +257,162 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* Profile Section */}
+      {/* Athlete Profile & Share Link */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <User className="w-5 h-5 text-blue-500" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Profile</h2>
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Your account information</p>
-          </div>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Account</span>
-            <span className="text-sm" style={{ color: "var(--t-text)" }}>Connected via Google</span>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Role</span>
-            <span className="text-sm" style={{ color: "var(--t-text)" }}>Athlete Family</span>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+              <User className="w-5 h-5 text-blue-500" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Athlete Profile</h2>
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>This info appears on your public schedule page</p>
+            </div>
           </div>
         </div>
+
+        {/* Share Link */}
+        {shareLink && (
+          <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+            <div className="flex items-center gap-2 mb-2">
+              <ExternalLink className="w-4 h-4 text-purple-500" />
+              <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Public Schedule Link</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                readOnly
+                value={shareLink}
+                data-testid="share-link-input"
+                className="flex-1 px-3 py-2 rounded-lg text-sm border"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}
+              />
+              <button
+                data-testid="copy-share-link-btn"
+                onClick={copyShareLink}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+              >
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+              <a
+                href={shareLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg transition-colors"
+                style={{ color: "var(--t-text-muted)" }}
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+            <p className="text-xs mt-2" style={{ color: "var(--t-text-muted)" }}>
+              Share this link with coaches so they can see your event schedule and contact info
+            </p>
+          </div>
+        )}
+
+        {profileLoading ? (
+          <div className="flex items-center gap-3 py-8 justify-center">
+            <Loader2 className="w-5 h-5 animate-spin text-purple-500" />
+          </div>
+        ) : profile ? (
+          <div className="space-y-6">
+            {/* Photo + Name */}
+            <div className="flex items-start gap-5">
+              <div className="relative group">
+                {profile.photo_url ? (
+                  <img src={profile.photo_url} alt="Profile" className="w-24 h-24 rounded-xl object-cover border-2 border-purple-500/30" />
+                ) : (
+                  <div className="w-24 h-24 rounded-xl bg-purple-500/20 flex items-center justify-center border-2 border-dashed border-purple-500/30">
+                    <User className="w-10 h-10 text-purple-500/50" />
+                  </div>
+                )}
+                <button
+                  onClick={() => photoRef.current?.click()}
+                  data-testid="upload-photo-btn"
+                  className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                >
+                  <Camera className="w-6 h-6 text-white" />
+                </button>
+                <input ref={photoRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+              </div>
+              <div className="flex-1 space-y-3">
+                <FieldRow label="Full Name" testId="profile-name" value={profile.athlete_name} onChange={(v) => updateProfile("athlete_name", v)} />
+                <div className="grid grid-cols-2 gap-3">
+                  <FieldRow label="Graduation Year" testId="profile-grad-year" value={profile.grad_year} onChange={(v) => updateProfile("grad_year", v)} placeholder="2027" />
+                  <FieldRow label="Position" testId="profile-position" value={profile.position} onChange={(v) => updateProfile("position", v)} placeholder="Outside Hitter" />
+                </div>
+              </div>
+            </div>
+
+            {/* Physical + Team */}
+            <div className="grid grid-cols-3 gap-3">
+              <FieldRow label="Height" testId="profile-height" value={profile.height} onChange={(v) => updateProfile("height", v)} placeholder="5'11&quot;" />
+              <FieldRow label="Jersey #" testId="profile-jersey" value={profile.jersey_number} onChange={(v) => updateProfile("jersey_number", v)} placeholder="14" />
+              <FieldRow label="GPA" testId="profile-gpa" value={profile.gpa} onChange={(v) => updateProfile("gpa", v)} placeholder="3.8" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="Club Team" testId="profile-club" value={profile.club_team} onChange={(v) => updateProfile("club_team", v)} placeholder="A5 Volleyball" />
+              <FieldRow label="High School" testId="profile-hs" value={profile.high_school} onChange={(v) => updateProfile("high_school", v)} placeholder="Lincoln High" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FieldRow label="City" testId="profile-city" value={profile.city} onChange={(v) => updateProfile("city", v)} placeholder="Austin" />
+              <FieldRow label="State" testId="profile-state" value={profile.state} onChange={(v) => updateProfile("state", v)} placeholder="TX" />
+            </div>
+
+            {/* Video Link */}
+            <FieldRow label="Highlights Video Link" testId="profile-video" value={profile.video_link} onChange={(v) => updateProfile("video_link", v)} placeholder="https://youtube.com/..." />
+
+            {/* Bio */}
+            <div>
+              <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-muted)" }}>Bio</label>
+              <textarea
+                data-testid="profile-bio"
+                value={profile.bio || ""}
+                onChange={(e) => updateProfile("bio", e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50 resize-none"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                placeholder="Tell coaches about yourself..."
+              />
+            </div>
+
+            {/* Contact Info */}
+            <div className="pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Athlete Contact</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <FieldRow label="Email" testId="profile-email" value={profile.contact_email} onChange={(v) => updateProfile("contact_email", v)} placeholder="clara@email.com" />
+                <FieldRow label="Phone" testId="profile-phone" value={profile.contact_phone} onChange={(v) => updateProfile("contact_phone", v)} placeholder="(555) 123-4567" />
+              </div>
+            </div>
+
+            {/* Parent Info */}
+            <div className="pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Parent / Guardian</h3>
+              <div className="space-y-3">
+                <FieldRow label="Name" testId="profile-parent-name" value={profile.parent_name} onChange={(v) => updateProfile("parent_name", v)} placeholder="John Smith" />
+                <div className="grid grid-cols-2 gap-3">
+                  <FieldRow label="Email" testId="profile-parent-email" value={profile.parent_email} onChange={(v) => updateProfile("parent_email", v)} placeholder="parent@email.com" />
+                  <FieldRow label="Phone" testId="profile-parent-phone" value={profile.parent_phone} onChange={(v) => updateProfile("parent_phone", v)} placeholder="(555) 987-6543" />
+                </div>
+              </div>
+            </div>
+
+            {/* Save */}
+            <div className="pt-2">
+              <button
+                data-testid="save-profile-btn"
+                onClick={saveProfile}
+                disabled={saving}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {saving ? "Saving..." : "Save Profile"}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {/* Notifications Section */}
