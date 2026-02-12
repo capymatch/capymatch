@@ -9,6 +9,12 @@ export default function SettingsPage() {
   const [gmailStatus, setGmailStatus] = useState(null);
   const [gmailLoading, setGmailLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const [copied, setCopied] = useState(false);
+  const photoRef = useRef(null);
 
   // Check for Gmail callback result
   useEffect(() => {
