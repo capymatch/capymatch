@@ -233,20 +233,18 @@ function PipelineFunnel({ programs }) {
             data-testid={`funnel-${stage.key}`}
           >
             {/* Top gradient bar */}
-            <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stage.color}`} />
-            <div className="flex items-center gap-2 mb-2">
-              <div className={`w-8 h-8 rounded-lg ${stage.bg} flex items-center justify-center`}>
-                <stage.icon className={`w-4 h-4 ${stage.text}`} />
-              </div>
-              <span className="text-xs font-medium uppercase tracking-wider leading-tight" style={{ color: "var(--t-text-secondary)" }}>{stage.label}</span>
+            <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${stage.color}`} />
+            <div className="mt-2 mb-3">
+              <span className={`text-xs font-bold uppercase tracking-wider ${stage.text}`}>{stage.label}</span>
             </div>
             <div className="flex items-end justify-between">
-              <span className="font-heading text-3xl font-black" style={{ color: "var(--t-text)" }}>{count}</span>
-              {total > 0 && <span className="text-[11px] mb-1" style={{ color: "var(--t-text-muted)" }}>{pct}%</span>}
+              <span className="font-heading text-4xl font-black" style={{ color: "var(--t-text)" }}>{count}</span>
+              {total > 0 && <span className="text-sm mb-1" style={{ color: "var(--t-text-muted)" }}>{pct}%</span>}
             </div>
             {/* Mini bar */}
-            <div className="mt-2 w-full rounded-full h-1.5" style={{ backgroundColor: "var(--t-border)" }}>
+            <div className="mt-3 w-full rounded-full h-1.5" style={{ backgroundColor: "var(--t-border)" }}>
               <div className={`h-1.5 rounded-full bg-gradient-to-r ${stage.color} transition-all duration-700`} style={{ width: `${Math.max(pct, 2)}%` }} />
+            </div>
             </div>
           </div>
         );
