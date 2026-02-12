@@ -83,57 +83,56 @@ export default function SettingsPage() {
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${
                 theme === option.value ? "bg-purple-500/30" : ""
               }`} style={{ backgroundColor: theme === option.value ? undefined : "var(--t-surface)" }}>
-              }`}>
-                <option.icon className={`w-5 h-5 ${theme === option.value ? "text-purple-400" : "text-white/60"}`} />
+                <option.icon className={`w-5 h-5 ${theme === option.value ? "text-purple-500" : ""}`} style={{ color: theme === option.value ? undefined : "var(--t-text-muted)" }} />
               </div>
-              <p className={`font-medium ${theme === option.value ? "text-white" : "text-white/80"}`}>
+              <p className="font-medium" style={{ color: theme === option.value ? "var(--t-text)" : "var(--t-text-secondary)" }}>
                 {option.label}
               </p>
-              <p className="text-white/40 text-xs mt-1">{option.description}</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>{option.description}</p>
             </button>
           ))}
         </div>
       </div>
 
       {/* Profile Section */}
-      <div className="rounded-xl p-6 border border-white/10 bg-white/[0.02]">
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <User className="w-5 h-5 text-blue-400" />
+            <User className="w-5 h-5 text-blue-500" />
           </div>
           <div>
-            <h2 className="text-white font-semibold text-lg">Profile</h2>
-            <p className="text-white/50 text-sm">Your account information</p>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Profile</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Your account information</p>
           </div>
         </div>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
-            <span className="text-white/60 text-sm">Account</span>
-            <span className="text-white text-sm">Connected via Google</span>
+          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Account</span>
+            <span className="text-sm" style={{ color: "var(--t-text)" }}>Connected via Google</span>
           </div>
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
-            <span className="text-white/60 text-sm">Role</span>
-            <span className="text-white text-sm">Athlete Family</span>
+          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Role</span>
+            <span className="text-sm" style={{ color: "var(--t-text)" }}>Athlete Family</span>
           </div>
         </div>
       </div>
 
       {/* Notifications Section */}
-      <div className="rounded-xl p-6 border border-white/10 bg-white/[0.02]">
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-            <Bell className="w-5 h-5 text-orange-400" />
+            <Bell className="w-5 h-5 text-orange-500" />
           </div>
           <div>
-            <h2 className="text-white font-semibold text-lg">Notifications</h2>
-            <p className="text-white/50 text-sm">Manage your notification preferences</p>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Notifications</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Manage your notification preferences</p>
           </div>
         </div>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
+          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div>
-              <p className="text-white text-sm">Follow-up Reminders</p>
-              <p className="text-white/40 text-xs">Get notified when follow-ups are due</p>
+              <p className="text-sm" style={{ color: "var(--t-text)" }}>Follow-up Reminders</p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Get notified when follow-ups are due</p>
             </div>
             <div className="w-10 h-6 bg-purple-600 rounded-full relative cursor-pointer">
               <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full"></div>
