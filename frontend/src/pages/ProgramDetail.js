@@ -16,22 +16,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 
 const DIVISION_BADGE = {
-  D1: "bg-emerald-100 text-emerald-700",
-  D2: "bg-blue-100 text-blue-700",
-  D3: "bg-slate-100 text-slate-800",
-  NAIA: "bg-orange-100 text-orange-700",
-  JUCO: "bg-yellow-100 text-yellow-700",
+  D1: "bg-emerald-500/20 text-emerald-400",
+  D2: "bg-blue-500/20 text-blue-400",
+  D3: "bg-violet-500/20 text-violet-400",
+  NAIA: "bg-orange-500/20 text-orange-400",
+  JUCO: "bg-yellow-500/20 text-yellow-400",
 };
 
 function FieldSelect({ label, value, options, onChange, testId }) {
   return (
     <div>
-      <Label className="text-gray-500 text-xs">{label}</Label>
+      <Label className="text-xs" style={{ color: "var(--t-text-muted)" }}>{label}</Label>
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-200"
+        className="w-full border rounded-md px-3 py-2 mt-1 text-sm focus:outline-none focus:ring-1"
+        style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
       >
         <option value="">Select</option>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
@@ -43,13 +44,14 @@ function FieldSelect({ label, value, options, onChange, testId }) {
 function FieldInput({ label, value, onChange, type = "text", testId }) {
   return (
     <div>
-      <Label className="text-gray-500 text-xs">{label}</Label>
+      <Label className="text-xs" style={{ color: "var(--t-text-muted)" }}>{label}</Label>
       <Input
         type={type}
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="bg-white border-gray-300 text-gray-900 mt-1 focus:border-slate-500 focus:ring-slate-200"
+        className="mt-1"
+        style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
       />
     </div>
   );
