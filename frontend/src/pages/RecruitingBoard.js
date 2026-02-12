@@ -235,15 +235,15 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
       {/* Actions */}
       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {p.website && (
-          <a href={p.website} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-400 hover:text-purple-600 rounded transition-colors">
-            <ExternalLink className="w-3.5 h-3.5" />
+          <a href={p.website} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors">
+            <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         )}
         <button
           onClick={() => navigate(`/programs/${p.program_id}`)}
-          className="p-1 text-gray-400 hover:text-purple-600 rounded transition-colors"
+          className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors"
         >
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
         </button>
       </div>
     </div>
