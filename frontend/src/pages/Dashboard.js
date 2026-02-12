@@ -300,6 +300,80 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Smart Follow-Up Reminders */}
+      {reminders.length > 0 && (
+        <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
+          <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <AlertTriangle className="w-4 h-4 text-orange-500" />
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-500 font-medium ml-auto">{reminders.length} overdue</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+            {reminders.slice(0, 5).map((r) => (
+              <div
+                key={r.program_id}
+                className="flex items-center gap-4 px-5 py-3.5 cursor-pointer transition-colors"
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                onClick={() => navigate(`/programs/${r.program_id}`)}
+                data-testid={`reminder-${r.program_id}`}
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{r.university_name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                    {r.coach_name ? `${r.coach_name} · ` : ""}{r.next_action || "Follow up needed"}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <span className="text-xs font-medium text-orange-500">{r.days_overdue}d overdue</span>
+                  {r.last_interaction_date && (
+                    <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Last: {formatDate(r.last_interaction_date)}</p>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate("/inbox"); }}
+                  className="p-2 rounded-lg transition-colors hover:bg-purple-500/15"
+                  title="Send follow-up"
+                  data-testid={`send-followup-${r.program_id}`}
+                >
+                  <Send className="w-4 h-4 text-purple-500" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Profile Views */}
+      {profileViews && profileViews.total > 0 && (
+        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
+          <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <Eye className="w-4 h-4 text-emerald-500" />
+            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
+            <div className="flex gap-3 ml-auto">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">This week: {profileViews.this_week}</span>
+            </div>
+          </div>
+          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+            {profileViews.views.slice(0, 5).map((v, i) => (
+              <div key={i} className="flex items-center gap-4 px-5 py-3">
+                <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
+                    {v.referer ? new URL(v.referer).hostname : "Direct visit"}
+                    {v.is_edu && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500">.edu</span>}
+                  </p>
+                </div>
+                <span className="text-xs flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>
+                  {new Date(v.viewed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
