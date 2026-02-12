@@ -14,6 +14,7 @@ import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
 import CalendarPage from "./pages/CalendarPage";
 import PublicSchedule from "./pages/PublicSchedule";
+import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
@@ -102,6 +103,7 @@ function AppRouter() {
         <Route path="programs/:programId" element={<ProgramDetail />} />
         <Route path="inbox" element={<Inbox />} />
         <Route path="analytics" element={<Analytics />} />
+        <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
