@@ -146,16 +146,67 @@ export default function Layout({ user }) {
             {/* Divider */}
             <div className="w-px h-8" style={{ backgroundColor: "var(--t-border)" }} />
 
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              data-testid="logout-btn"
-              className="p-2.5 hover:text-red-500 rounded-xl transition-all"
-              style={{ color: "var(--t-text-muted)" }}
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" strokeWidth={1.5} />
-            </button>
+            {/* User Profile Dropdown */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl transition-colors hover:bg-[var(--t-surface-alt)]"
+                data-testid="profile-dropdown-trigger"
+              >
+                <Avatar className="w-8 h-8 ring-2 ring-purple-500/20">
+                  <AvatarImage src={user?.picture} alt={user?.name} />
+                  <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-xs font-bold">
+                    {user?.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium hidden lg:block" style={{ color: "var(--t-text)" }}>{user?.name?.split(" ")[0] || "User"}</span>
+                <ChevronDown className="w-3.5 h-3.5 hidden lg:block" style={{ color: "var(--t-text-muted)" }} />
+              </button>
+
+              {profileOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-64 rounded-xl border shadow-xl overflow-hidden z-50"
+                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+                  data-testid="profile-dropdown-menu"
+                >
+                  <div className="px-4 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-10 h-10 ring-2 ring-purple-500/30">
+                        <AvatarImage src={user?.picture} alt={user?.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-sm font-bold">
+                          {user?.name?.charAt(0) || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate" style={{ color: "var(--t-text)" }}>{user?.name || "User"}</p>
+                        <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{user?.email || ""}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="py-1">
+                    <button
+                      onClick={() => { setProfileOpen(false); navigate("/settings"); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left"
+                      style={{ color: "var(--t-text-secondary)" }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                      data-testid="profile-settings-link"
+                    >
+                      <Settings className="w-4 h-4" strokeWidth={1.5} />
+                      Settings
+                    </button>
+                    <button
+                      onClick={() => { setProfileOpen(false); handleLogout(); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left text-red-500 hover:bg-red-500/10"
+                      data-testid="logout-btn"
+                    >
+                      <LogOut className="w-4 h-4" strokeWidth={1.5} />
+                      Log out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
