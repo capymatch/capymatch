@@ -204,11 +204,11 @@ export default function PublicSchedule() {
         </div>
       </div>
 
-      {/* Parent/Guardian Contact */}
+      {/* Club Coach Contact */}
       {(profile.parent_name || profile.parent_email || profile.parent_phone) && (
-        <div className="max-w-4xl mx-auto px-6 mb-8">
+        <div className="max-w-4xl mx-auto px-6 mt-10 mb-8">
           <div className="rounded-xl bg-white/5 border border-white/10 p-5">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Parent / Guardian</h3>
+            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Club Coach</h3>
             <div className="flex flex-wrap gap-6 text-sm text-gray-300">
               {profile.parent_name && <span>{profile.parent_name}</span>}
               {profile.parent_email && (

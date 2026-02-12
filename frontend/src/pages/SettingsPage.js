@@ -387,9 +387,9 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* Parent Info */}
+            {/* Club Coach Info */}
             <div className="pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
-              <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Parent / Guardian</h3>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>Club Coach</h3>
               <div className="space-y-3">
                 <FieldRow label="Name" testId="profile-parent-name" value={profile.parent_name} onChange={(v) => updateProfile("parent_name", v)} placeholder="John Smith" />
                 <div className="grid grid-cols-2 gap-3">
