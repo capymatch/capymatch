@@ -264,6 +264,8 @@ export default function Inbox() {
   }, []);
 
   // Load emails when connected
+  const [noCoaches, setNoCoaches] = useState(false);
+
   const fetchEmails = useCallback(async (query = "", append = false, pageToken = null) => {
     if (!gmailStatus?.connected) return;
     if (append) setLoadingMore(true);
@@ -274,6 +276,7 @@ export default function Inbox() {
       if (query) params.set("q", query);
       if (pageToken) params.set("page_token", pageToken);
       const res = await api.get(`/gmail/emails?${params.toString()}`);
+      setNoCoaches(!!res.data.no_coaches);
       if (append) {
         setEmails((prev) => [...prev, ...res.data.emails]);
       } else {
