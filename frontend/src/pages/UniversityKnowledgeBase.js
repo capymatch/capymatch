@@ -222,28 +222,28 @@ export default function UniversityKnowledgeBase() {
 }
 
 function UniversityCard({ uni, adding, addToBoard }) {
-  const divColor = DIVISION_COLORS[uni.division] || "bg-slate-600 text-white";
+  const divColor = {
+    D1: "bg-emerald-100 text-emerald-700",
+    D2: "bg-blue-100 text-blue-700",
+    D3: "bg-purple-100 text-purple-700",
+    NAIA: "bg-orange-100 text-orange-700",
+    JUCO: "bg-yellow-100 text-yellow-700",
+  }[uni.division] || "bg-gray-100 text-gray-700";
   const divFull = uni.division === "D1" ? "NCAA I" : uni.division === "D2" ? "NCAA II" : uni.division === "D3" ? "NCAA III" : uni.division;
 
   return (
     <div
-      className="bg-[#1e293b] border border-[#334155] rounded-lg p-5 hover:border-[#475569] transition-all duration-200 group"
+      className="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 hover:shadow-md transition-all duration-200 group shadow-sm"
       data-testid={`kb-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
     >
-      {/* Top Row: Name + Location + Division + Actions */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          {/* Division Badge Icon */}
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
             {uni.division}
           </div>
-
           <div className="flex-1 min-w-0">
-            {/* University Name */}
-            <h3 className="text-white font-heading font-bold text-lg leading-tight">{uni.university_name}</h3>
-
-            {/* Location / Conference */}
-            <div className="flex items-center gap-3 mt-1 text-sm text-slate-400 flex-wrap">
+            <h3 className="text-gray-900 font-heading font-bold text-lg leading-tight">{uni.university_name}</h3>
+            <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 flex-wrap">
               {uni.region && (
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" /> {uni.region}
@@ -257,8 +257,6 @@ function UniversityCard({ uni, adding, addToBoard }) {
             </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <Button
             size="sm"
@@ -266,7 +264,7 @@ function UniversityCard({ uni, adding, addToBoard }) {
             onClick={() => addToBoard(uni)}
             disabled={adding[uni.university_name]}
             data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-            className="text-xs border-blue-600/50 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 h-8 gap-1.5 transition-colors"
+            className="text-xs border-purple-300 text-purple-600 hover:bg-purple-50 hover:border-purple-400 h-8 gap-1.5 transition-colors"
           >
             <BookmarkPlus className="w-3.5 h-3.5" />
             {adding[uni.university_name] ? "Adding..." : "Add to Board"}
@@ -277,15 +275,13 @@ function UniversityCard({ uni, adding, addToBoard }) {
               target="_blank"
               rel="noopener noreferrer"
               data-testid={`visit-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border border-[#334155] text-slate-300 hover:bg-[#334155] hover:text-white rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-800 rounded-md transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" /> Visit
             </a>
           )}
         </div>
       </div>
-
-      {/* Tags Row */}
       <div className="flex items-center gap-2 mt-3 flex-wrap">
         {uni.division && (
           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${divColor}`}>
@@ -293,17 +289,17 @@ function UniversityCard({ uni, adding, addToBoard }) {
           </span>
         )}
         {uni.region && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-slate-700/60 text-slate-300 border border-slate-600">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600 border border-gray-200">
             <MapPin className="w-3 h-3" /> {uni.region}
           </span>
         )}
         {uni.mascot && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-slate-700/60 text-slate-300 border border-slate-600">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600 border border-gray-200">
             {uni.mascot}
           </span>
         )}
         {uni.notes && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-900/40 text-amber-300 border border-amber-700/50">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-50 text-amber-700 border border-amber-200">
             {uni.notes}
           </span>
         )}
