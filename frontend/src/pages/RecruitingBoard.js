@@ -361,7 +361,7 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Sections */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {PIPELINE.map((stage) => {
           const stagePrograms = programs.filter((p) => stage.statuses.includes(p.recruiting_status));
           const isCollapsed = collapsed[stage.key];
