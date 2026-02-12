@@ -296,6 +296,7 @@ async def list_emails(request: Request, page_token: Optional[str] = None, q: Opt
         next_page_token = results.get("nextPageToken")
 
         # Fetch full message details
+        coach_set = set(coach_emails)
         email_list = []
         for msg_ref in messages:
             msg = service.users().messages().get(
@@ -303,6 +304,10 @@ async def list_emails(request: Request, page_token: Optional[str] = None, q: Opt
                 metadataHeaders=["From", "To", "Subject", "Date", "Cc"],
             ).execute()
             headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
+            # Check if sender/recipient is a known coach
+            from_addr = headers.get("From", "").lower()
+            to_addr = headers.get("To", "").lower()
+            is_known = any(ce in from_addr or ce in to_addr for ce in coach_set) if coach_set else False
             email_list.append({
                 "id": msg["id"],
                 "thread_id": msg["threadId"],
@@ -315,6 +320,7 @@ async def list_emails(request: Request, page_token: Optional[str] = None, q: Opt
                 "internal_date": msg.get("internalDate", ""),
                 "label_ids": msg.get("labelIds", []),
                 "is_unread": "UNREAD" in msg.get("labelIds", []),
+                "is_known_coach": is_known,
             })
 
         return {
