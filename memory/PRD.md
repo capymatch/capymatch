@@ -10,55 +10,75 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar management, p
 - **Gmail**: Google Gmail API via OAuth 2.0
 - **AI**: Claude Sonnet 4.5 via Emergent LLM Key (emergentintegrations)
 
+## Backend Structure (Refactored Feb 2026)
+```
+/app/backend/
+├── server.py          # Slim entry point: app setup, middleware, router inclusion
+├── database.py        # Shared MongoDB connection (db, client)
+├── auth.py            # Shared auth helpers (get_current_user, get_tenant_id)
+├── models.py          # All Pydantic models
+├── routes/
+│   ├── auth_routes.py # /api/auth/* endpoints
+│   ├── programs.py    # /api/programs, /api/coaches, /api/interactions, /api/follow-ups
+│   ├── events.py      # /api/events CRUD
+│   ├── dashboard.py   # /api/dashboard, /api/reminders
+│   ├── profile.py     # /api/athlete-profile, /api/public/schedule, /api/profile-views, /api/tenant, /api/share-link
+│   ├── knowledge.py   # /api/knowledge-base, /api/seed
+│   ├── ai.py          # /api/ai/draft-email
+│   └── gmail.py       # /api/gmail/* endpoints
+```
+
 ## Completed Features
 
 ### Core CRM
-- Dashboard with 4 stat cards, pipeline funnel (clickable), recent activity, events table
-- Pipeline/Recruiting Board with Kanban stages, inline editing, funnel bar click-to-focus
-- Calendar with event CRUD (tournaments, camps, showcases)
-- Settings with athlete profile management, Gmail connection, theme selector
+- Dashboard with stat cards, pipeline funnel (clickable), events
+- Pipeline/Recruiting Board with Kanban stages, inline editing
+- Calendar with event CRUD
 - University Knowledge Base with search
 - Follow-up task tracking
 
-### Gmail Integration (Full)
+### Profile Page (Updated Feb 2026)
+- Dedicated page at `/profile` with 5 distinct card sections:
+  - Athlete Info (photo, name, position, grad year, height, weight, jersey)
+  - Physical Info (handed, reach, touch, wingspan, GPA)
+  - Team & Location (club, high school, city, state)
+  - Media & Bio (video link, bio text)
+  - Contact Info (athlete contact + club coach)
+- Share link for public schedule page
+
+### Gmail Integration
 - OAuth connect/disconnect
-- Email listing filtered to .edu addresses + known coach emails
-- Thread view, compose, reply, search, toggle read/unread
-- Coach badge (green) vs New contact badge (blue) tagging
+- Email listing filtered to .edu + known coaches
+- Thread view, compose, reply, search
+- Coach vs New contact tagging
 
 ### AI Email Drafts (Claude Sonnet 4.5)
-- One-click personalized email generation from compose modal
+- One-click personalized email generation
 - 4 email types: Introduction, Follow-Up, Thank You, Interest Update
-- Uses athlete profile, program/coach info, interaction history, upcoming events
-- Optional custom instructions for fine-tuning
 
 ### Smart Follow-Up Reminders
-- Dashboard widget showing overdue follow-ups with days overdue count
-- Coach info, last interaction date, and quick "Send follow-up" action
-- Filters out closed/not-a-fit programs
+- Dashboard widget showing overdue follow-ups
+- Coach info, last interaction, quick action
 
 ### Profile View Tracking
-- Automatic logging when anyone visits public athlete profile
-- Tracks visitor IP, user-agent, referrer, and .edu detection
-- Dashboard widget showing recent views with .edu badge highlighting
-- Stats: today count, this week count, total views
+- Auto-logging on public profile visits
+- .edu domain detection, dashboard widget
 
-### Public Athlete Profile
-- Shareable page at `/schedule/:tenantId`
-- Displays bio, physical stats, contact info, upcoming/past events
-
-### Clickable Dashboard Stats
-- Pipeline funnel bars navigate to `/pipeline#section-key`
-- Pipeline funnel strip items click-to-focus: expand section, collapse others, scroll
+### Settings
+- Appearance/theme management
+- Gmail connection management
 
 ## Key API Endpoints
 - `/api/auth/*` - Authentication
 - `/api/programs`, `/api/coaches`, `/api/interactions` - CRUD
 - `/api/events` - Calendar CRUD
-- `/api/dashboard`, `/api/follow-ups`, `/api/reminders`
-- `/api/athlete-profile` (GET/PUT), `/api/profile-views`
-- `/api/public/schedule/{tenant_id}`
-- `/api/gmail/*` - Gmail integration (connect, status, emails, threads, send, reply)
+- `/api/follow-ups` - Follow-up tracking
+- `/api/dashboard`, `/api/reminders` - Dashboard data
+- `/api/athlete-profile`, `/api/profile-views` - Profile management
+- `/api/public/schedule/{tenant_id}` - Public schedule
+- `/api/tenant`, `/api/share-link` - Settings
+- `/api/knowledge-base`, `/api/seed` - University data
+- `/api/gmail/*` - Gmail integration
 - `/api/ai/draft-email` - AI email generation
 
 ## Prioritized Backlog
@@ -69,12 +89,11 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar management, p
 - Bulk email sending
 
 ### P2
-- Refactor SettingsPage.js into smaller components
-- Refactor server.py into separate route files
 - Mobile-responsive improvements
+- School match scoring
 
 ### P3
 - Coach contact import/export
 - Parent/Guardian read-only access
-- School match scoring
 - Recruiting timeline with NCAA deadlines
+- Camp/Tournament ROI tracking
