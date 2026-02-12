@@ -361,8 +361,8 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Sections */}
-      <div className="space-y-14">
-        {PIPELINE.map((stage) => {
+      <div>
+        {PIPELINE.map((stage, stageIdx) => {
           const stagePrograms = programs.filter((p) => stage.statuses.includes(p.recruiting_status));
           const isCollapsed = collapsed[stage.key];
           const isEmpty = stagePrograms.length === 0;
