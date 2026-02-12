@@ -178,33 +178,33 @@ function AddProgramDialog({ onAdd }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid="add-program-btn" className="bg-slate-700 hover:bg-slate-800 text-white shadow-md shadow-slate-200 hover:shadow-lg hover:shadow-slate-200 transition-all">
+        <Button data-testid="add-program-btn" className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all">
           <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add Program
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white border-gray-200 text-gray-900 sm:max-w-md">
+      <DialogContent className="sm:max-w-md" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">Add New Program</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div>
-            <Label className="text-gray-600 text-sm">University Name *</Label>
-            <Input data-testid="add-university-name" value={form.university_name} onChange={(e) => setForm({ ...form, university_name: e.target.value })} placeholder="e.g. Stanford University" className="bg-white border-gray-300 text-gray-900 mt-1.5" />
+            <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">University Name *</Label>
+            <Input data-testid="add-university-name" value={form.university_name} onChange={(e) => setForm({ ...form, university_name: e.target.value })} placeholder="e.g. Stanford University" className="mt-1.5" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <Label className="text-gray-600 text-sm">Division</Label>
-              <select data-testid="add-division" value={form.division} onChange={(e) => setForm({ ...form, division: e.target.value })} className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1.5 text-sm focus:border-purple-400 focus:outline-none">
+              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Division</Label>
+              <select data-testid="add-division" value={form.division} onChange={(e) => setForm({ ...form, division: e.target.value })} className="w-full border rounded-md px-3 py-2 mt-1.5 text-sm focus:outline-none" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
                 {DIVISIONS.map((d) => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             <div>
-              <Label className="text-gray-600 text-sm">Conference</Label>
-              <Input data-testid="add-conference" value={form.conference} onChange={(e) => setForm({ ...form, conference: e.target.value })} className="bg-white border-gray-300 text-gray-900 mt-1.5" />
+              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Conference</Label>
+              <Input data-testid="add-conference" value={form.conference} onChange={(e) => setForm({ ...form, conference: e.target.value })} className="mt-1.5" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
             </div>
             <div>
-              <Label className="text-gray-600 text-sm">Region</Label>
-              <select data-testid="add-region" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1.5 text-sm focus:border-purple-400 focus:outline-none">
+              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Region</Label>
+              <select data-testid="add-region" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} className="w-full border rounded-md px-3 py-2 mt-1.5 text-sm focus:outline-none" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
                 <option value="">Select</option>
                 {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
