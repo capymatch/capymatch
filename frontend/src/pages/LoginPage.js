@@ -11,8 +11,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center" data-testid="login-page">
       <div className="max-w-md w-full mx-4">
         <div className="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-lg">
-          <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Activity className="w-8 h-8 text-purple-600" />
+          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Activity className="w-8 h-8 text-slate-600" strokeWidth={1.5} />
           </div>
           <h1 className="font-heading text-3xl font-bold text-gray-900 mb-2" data-testid="login-title">
             Volleyball Recruiting CRM
