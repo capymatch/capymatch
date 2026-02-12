@@ -44,8 +44,8 @@ function InlineSelect({ value, options, onChange }) {
     <select
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-white border border-gray-200 hover:border-purple-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 cursor-pointer text-gray-700 transition-all appearance-none"
-      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 6px center', paddingRight: '22px' }}
+      className="bg-white border border-gray-200 hover:border-gray-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-100 cursor-pointer text-gray-700 transition-all appearance-none"
+      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 6px center', paddingRight: '22px' }}
     >
       <option value="">-</option>
       {options.map((o) => <option key={o} value={o}>{o}</option>)}
