@@ -281,6 +281,26 @@ export default function PublicSchedule() {
         </div>
       )}
 
+      {/* Embedded Video */}
+      {profile.video_link && getYouTubeEmbedUrl(profile.video_link) && (
+        <div className="max-w-4xl mx-auto px-6 mt-10 mb-8" data-testid="video-embed-section">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Play className="w-5 h-5 text-purple-400" />
+            Highlights
+          </h2>
+          <div className="rounded-xl overflow-hidden border border-white/10 aspect-video">
+            <iframe
+              src={getYouTubeEmbedUrl(profile.video_link)}
+              title="Highlights Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+              data-testid="video-embed-iframe"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Upcoming Events */}
       <div className="max-w-4xl mx-auto px-6 pb-16">
         <h2 className="text-2xl font-bold text-white mb-6">
