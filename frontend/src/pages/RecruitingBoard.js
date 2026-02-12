@@ -397,7 +397,8 @@ function QuickAddRow({ onAdd }) {
         placeholder="Add university name"
         disabled={adding}
         data-testid="quick-add-input"
-        className="bg-transparent text-sm text-gray-500 placeholder:text-gray-300 focus:text-gray-800 outline-none border-none w-64 py-0.5"
+        className="bg-transparent text-sm placeholder:opacity-40 focus:opacity-100 outline-none border-none w-64 py-0.5"
+        style={{ color: "var(--t-text-secondary)" }}
       />
     </div>
   );
