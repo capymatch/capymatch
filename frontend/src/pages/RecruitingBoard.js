@@ -117,7 +117,7 @@ function AddProgramDialog({ onAdd }) {
               </select>
             </div>
           </div>
-          <Button data-testid="submit-add-program" onClick={handleSubmit} className="w-full bg-purple-600 hover:bg-purple-700 text-white mt-2">Add to Board</Button>
+          <Button data-testid="submit-add-program" onClick={handleSubmit} className="w-full bg-slate-700 hover:bg-slate-800 text-white mt-2">Add to Board</Button>
         </div>
       </DialogContent>
     </Dialog>
