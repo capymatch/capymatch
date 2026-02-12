@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles } from "lucide-react";
 import api, { BACKEND_URL } from "../lib/api";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
@@ -209,6 +209,31 @@ export default function SettingsPage() {
           </div>
           <button className="px-4 py-2 text-sm rounded-lg transition-colors" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>Export</button>
         </div>
+      </div>
+
+      {/* Replay Tour */}
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-indigo-500" />
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Guided Tour</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Replay the app walkthrough</p>
+          </div>
+        </div>
+        <button
+          data-testid="replay-tour-btn"
+          onClick={() => {
+            localStorage.removeItem("tour_completed");
+            localStorage.removeItem("onboarding_dismissed");
+            window.location.href = "/board";
+          }}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+        >
+          <Sparkles className="w-4 h-4" />
+          Replay Tour
+        </button>
       </div>
     </div>
   );
