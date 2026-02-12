@@ -56,7 +56,7 @@ export default function Layout({ user }) {
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">
                 <AvatarImage src={user?.picture} alt={user?.name} />
-                <AvatarFallback className="bg-purple-600 text-white text-xs">
+                <AvatarFallback className="bg-slate-600 text-white text-xs">
                   {user?.name?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
