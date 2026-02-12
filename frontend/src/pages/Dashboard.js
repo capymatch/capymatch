@@ -220,42 +220,51 @@ export default function Dashboard() {
           {/* Divider */}
           <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-              <h4 className="text-sm mb-3" style={{ color: "var(--t-text-muted)" }}>By Division</h4>
-              <div className="space-y-2">
-                {["D1", "D2", "D3", "NAIA"].map((div) => {
-                  const count = programs.filter(p => p.division === div).length;
-                  return (
-                    <div key={div} className="flex items-center justify-between">
-                      <span className="text-sm" style={{ color: "var(--t-text-secondary)" }}>{div}</span>
-                      <span className="font-medium" style={{ color: "var(--t-text)" }}>{count}</span>
-                    </div>
-                  );
-                })}
-              </div>
+          {/* Upcoming Events */}
+          <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h4>
+              <button onClick={() => navigate("/calendar")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
+                View all <ChevronRight className="w-3 h-3" />
+              </button>
             </div>
-            <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-              <h4 className="text-sm mb-3" style={{ color: "var(--t-text-muted)" }}>By Priority</h4>
-              <div className="space-y-2">
-                {["Very High", "High", "Medium", "Low"].map((priority) => {
-                  const count = programs.filter(p => p.priority === priority).length;
-                  const colors = {
-                    "Very High": "text-red-500",
-                    "High": "text-orange-500",
-                    "Medium": "text-blue-500",
-                    "Low": ""
-                  };
-                  return (
-                    <div key={priority} className="flex items-center justify-between">
-                      <span className={`text-sm ${colors[priority]}`} style={{ color: colors[priority] ? undefined : "var(--t-text-muted)" }}>{priority}</span>
-                      <span className="font-medium" style={{ color: "var(--t-text)" }}>{count}</span>
+            {(() => {
+              const today = new Date().toISOString().split("T")[0];
+              const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 4);
+              const eventColors = { Camp: "bg-purple-500", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-emerald-500", Tryout: "bg-pink-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
+              const formatDate = (d) => { const dt = new Date(d + "T00:00:00"); return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }); };
+              if (upcoming.length === 0) return (
+                <div className="text-center py-6">
+                  <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
+                  <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
+                  <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-purple-500 hover:text-purple-400">+ Add event</button>
+                </div>
+              );
+              return (
+                <div className="space-y-3">
+                  {upcoming.map((evt) => (
+                    <div key={evt.event_id} onClick={() => navigate("/calendar")} className="flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                      <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${eventColors[evt.event_type] || "bg-gray-500"}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{evt.title}</p>
+                        <div className="flex items-center gap-3 mt-1">
+                          <span className="text-xs flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
+                          </span>
+                          {evt.location && (
+                            <span className="text-xs flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+                              <MapPin className="w-3 h-3" /> {evt.location}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-muted)" }}>{evt.event_type}</span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>
