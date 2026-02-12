@@ -68,6 +68,26 @@ export default function Dashboard() {
   const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 5);
   const typeBg = { Camp: "bg-purple-500/15 text-purple-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
 
+  // Onboarding steps
+  const profileDone = !!(profile?.athlete_name && profile?.position);
+  const schoolsDone = programs.length > 0;
+  const gmailDone = gmailConnected;
+  const eventsDone = events.length > 0;
+  const onboardingSteps = [
+    { key: "profile", label: "Set up your athlete profile", description: "Add your name, position, stats, and a highlight video", icon: User, done: profileDone, action: () => navigate("/profile") },
+    { key: "schools", label: "Add your first target school", description: "Browse the database and add schools to your pipeline", icon: GraduationCap, done: schoolsDone, action: () => navigate("/knowledge-base") },
+    { key: "gmail", label: "Connect your Gmail", description: "Send and receive coach emails right from the app", icon: MailIcon, done: gmailDone, action: () => navigate("/settings") },
+    { key: "events", label: "Add an upcoming event", description: "Camps, showcases, and visits — keep them all in one place", icon: Calendar, done: eventsDone, action: () => navigate("/calendar") },
+  ];
+  const completedCount = onboardingSteps.filter(s => s.done).length;
+  const allDone = completedCount === onboardingSteps.length;
+  const showOnboarding = !onboardingDismissed && !allDone;
+
+  const dismissOnboarding = () => {
+    localStorage.setItem("onboarding_dismissed", "true");
+    setOnboardingDismissed(true);
+  };
+
   return (
     <div className="space-y-6" data-testid="dashboard">
       {/* Header */}
