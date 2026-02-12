@@ -1,78 +1,115 @@
-# Volleyball Recruiting CRM (Families) - PRD
+# Volleyball Recruiting CRM - PRD
 
 ## Original Problem Statement
-Build a production-ready web app called "Volleyball Recruiting CRM (Families)" with Recruiting Board (5 grouped sections), University Knowledge Base (D1/D2/D3), Dashboard, Needs Follow-Up page, Program Detail page. Multi-tenant SaaS with strict tenant isolation. Server-side automation rules for status changes.
+Build a "Family Recruiting CRM" application for tracking student-athlete recruitment with universities.
 
 ## Architecture
 - **Frontend**: React + Tailwind CSS + Shadcn/UI
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB (motor async driver)
 - **Auth**: Emergent-managed Google OAuth
-- **Theming**: CSS variables with class-based dark mode (default: dark)
+- **Theming**: CSS variables with class-based dark/light mode
 
-## User Personas
-- **Volleyball Athlete Families**: Primary users tracking college recruiting process
-- **Athletes**: High school volleyball players managing program outreach
+## Core Features Implemented
 
-## Core Requirements
-- Multi-tenant isolation (tenant_id derived server-side from logged-in user)
-- 5-section Recruiting Board grouped by recruiting_status
-- University Knowledge Base (45 seeded programs across D1/D2/D3)
-- Dashboard with stats and recent activity
-- Needs Follow-Up page for overdue action items
-- Program Detail with coaches and interaction timeline management
-- Server-side automation rules
-- Dark/Light theme toggle with persistence
+### Navigation & Layout
+- Left sidebar navigation with: Dashboard, Pipeline, Calendar, Inbox, Tasks, Schools, Analytics, Settings
+- Top header with search and notifications
+- User profile section in sidebar
+- Full light/dark theme support
 
-## What's Been Implemented (Feb 12, 2026)
+### Dashboard
+- Stats cards (Active Schools, Offers Received, Follow-ups Due)
+- Recruiting Pipeline progress bars
+- Recent Activity section
+- Schools Requiring Action list
+- Quick stats by Division and Priority
+- Clean design without icons in stat cards
 
-### Backend (server.py)
-- Auth: session exchange, /auth/me, logout
-- Programs: full CRUD with tenant isolation
-- Coaches: full CRUD with tenant isolation
-- Interactions: create/list with tenant isolation
-- Knowledge Base: list with filters, add-to-board
-- Dashboard: stats endpoint
-- Follow-ups: list overdue, mark-sent with auto-interaction creation
-- Automation rules: status→contact date, reply→priority, contact→next_action_due
-- Seed data: 45 universities (20 D1, 10 D2, 15 D3)
+### Pipeline (Recruiting Board)
+- Kanban-style funnel view (5 columns: Not Contacted, Contacted, Active, Offers, Closed)
+- Color-coded section headers (no icons, colored text)
+- Collapsible sections with program counts
+- Inline editing for program fields
+- Quick Add row for each section
+- Search and filter functionality
+- Dividers between sections
 
-### Frontend
-- Login page with Google OAuth
-- Dashboard with stat cards, board breakdown, recent activity
-- Recruiting Board with 5 collapsible sections, inline editing, search/filters
-- University Knowledge Base with division tabs, search, add-to-board
-- Needs Follow-Up with overdue list and mark-sent action
-- Program Detail with full edit, coaches management, interaction timeline
-- **Dark/Light Theme System**:
-  - Theme toggle button in header (sun/moon icons)
-  - CSS variables for all colors (index.css)
-  - ThemeProvider context (lib/theme.js)
-  - localStorage persistence
-  - All pages and dialogs support both themes
+### Calendar Page
+- Monthly calendar view with navigation
+- Events displayed on calendar days
+- Upcoming follow-ups sidebar
+- This Month stats
+- Event type legend
+- Theme-aware styling
 
-## Prioritized Backlog
+### Knowledge Base (Schools)
+- University cards with filters
+- Division, Region, Conference filters
+- Add to Board functionality
+- Search functionality
 
-### P0 (Done)
-- [x] Auth flow (Google OAuth)
-- [x] Recruiting Board with 5 sections
-- [x] University Knowledge Base
-- [x] Dashboard
-- [x] Needs Follow-Up
-- [x] Program Detail
-- [x] CRUD for Programs, Coaches, Interactions
-- [x] Automation rules
-- [x] Seed data
-- [x] Dark/Light theme toggle
+### Tasks (Follow-ups)
+- List of programs requiring follow-up
+- Mark as sent functionality
+- Priority indicators
+
+### Settings
+- Theme selection (Dark/Light/System)
+- Profile section
+- Notifications toggles
+- Privacy & Data Export
+
+### Placeholder Pages
+- Inbox (coming soon)
+- Analytics (coming soon)
+
+## What's Been Completed (Feb 12, 2026)
+
+### Session Updates
+1. ✅ Implemented dark/light theme toggle system
+2. ✅ Created new Dashboard design matching reference image
+3. ✅ Added left sidebar navigation
+4. ✅ Created Calendar page
+5. ✅ Added Calendar, Dashboard links to sidebar
+6. ✅ Removed icons from Dashboard stat cards
+7. ✅ Removed icons from Pipeline funnel cards
+8. ✅ Added colored text to Pipeline section headers
+9. ✅ Added divider lines between sections
+10. ✅ Added theme settings to Settings page
+11. ✅ Fixed light theme support across all pages
+12. ✅ Removed "Volleyball Recruiting 2028" from header
+13. ✅ Removed Add School button from Dashboard
+
+## Tech Stack
+- React 18
+- Tailwind CSS with CSS variables for theming
+- Shadcn/UI components
+- FastAPI backend
+- MongoDB database
+- Google OAuth authentication
+
+## CSS Theme Variables
+- `--t-bg`: Background color
+- `--t-surface`: Card/surface background
+- `--t-surface-alt`: Alternative surface color
+- `--t-border`: Border color
+- `--t-text`: Primary text color
+- `--t-text-secondary`: Secondary text
+- `--t-text-muted`: Muted text
+- `--t-sidebar-bg`: Sidebar background
+- `--t-header-bg`: Header background
+
+## Backlog
 
 ### P1 (Next)
-- [ ] Bulk actions (select multiple programs, update status)
+- [ ] Bulk actions for programs
 - [ ] Export data to CSV
 - [ ] Email notifications for due follow-ups
-- [ ] Settings page for athlete name/preferences
+- [ ] Functional Inbox page
 
 ### P2 (Future)
-- [ ] Calendar view for follow-up scheduling
+- [ ] Analytics dashboard with charts
 - [ ] Mobile-responsive optimization
 - [ ] Activity log/audit trail
 - [ ] Sharing/collaboration between family members
