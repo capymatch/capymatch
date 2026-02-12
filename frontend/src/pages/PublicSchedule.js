@@ -85,7 +85,8 @@ function EventCard({ event }) {
 }
 
 export default function PublicSchedule() {
-  const { tenantId } = useParams();
+  const { shortId, tenantId: legacyTenantId } = useParams();
+  const tenantId = legacyTenantId || (shortId ? `tenant_${shortId}` : "");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

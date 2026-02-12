@@ -15,7 +15,7 @@ export default function ProfilePage() {
     Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
       .then(([profRes, linkRes]) => {
         setProfile(profRes.data);
-        setShareLink(`${window.location.origin}/schedule/${linkRes.data.tenant_id}`);
+        setShareLink(`${window.location.origin}/s/${linkRes.data.tenant_id.replace("tenant_", "")}`);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
