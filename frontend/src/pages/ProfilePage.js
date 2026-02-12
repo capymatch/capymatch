@@ -110,7 +110,7 @@ export default function ProfilePage() {
       )}
 
       {profile && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Athlete Info Card */}
           <div data-testid="profile-athlete-info-card" className="rounded-xl p-6 border space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Athlete Info</h3>
