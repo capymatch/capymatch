@@ -1,53 +1,109 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { useEffect, useState, useRef } from "react";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import api from "./lib/api";
+import Layout from "./components/Layout";
+import LoginPage from "./pages/LoginPage";
+import RecruitingBoard from "./pages/RecruitingBoard";
+import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
+import Dashboard from "./pages/Dashboard";
+import NeedsFollowUp from "./pages/NeedsFollowUp";
+import ProgramDetail from "./pages/ProgramDetail";
+import { Toaster } from "./components/ui/sonner";
+import "./App.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+function AuthCallback() {
+  const navigate = useNavigate();
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace("#", ""));
+    const sessionId = params.get("session_id");
+
+    if (!sessionId) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    api.post("/auth/session", { session_id: sessionId })
+      .then((res) => {
+        navigate("/", { replace: true, state: { user: res.data } });
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, [navigate]);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div className="flex items-center justify-center min-h-screen bg-[#0f172a]">
+      <div className="text-slate-400 text-lg">Signing in...</div>
     </div>
   );
-};
+}
+
+function ProtectedRoute({ children }) {
+  const [authState, setAuthState] = useState(null); // null=checking, true/false
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.user) {
+      setUser(location.state.user);
+      setAuthState(true);
+      return;
+    }
+    api.get("/auth/me")
+      .then((res) => { setUser(res.data); setAuthState(true); })
+      .catch(() => { setAuthState(false); navigate("/login", { replace: true }); });
+  }, [navigate, location.state]);
+
+  if (authState === null) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0f172a]">
+        <div className="text-slate-400 text-lg">Loading...</div>
+      </div>
+    );
+  }
+  if (authState === false) return null;
+  return children(user);
+}
+
+function AppRouter() {
+  const location = useLocation();
+  if (location.hash?.includes("session_id=")) {
+    return <AuthCallback />;
+  }
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={
+        <ProtectedRoute>
+          {(user) => <Layout user={user} />}
+        </ProtectedRoute>
+      }>
+        <Route index element={<Dashboard />} />
+        <Route path="board" element={<RecruitingBoard />} />
+        <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
+        <Route path="follow-ups" element={<NeedsFollowUp />} />
+        <Route path="programs/:programId" element={<ProgramDetail />} />
+      </Route>
+    </Routes>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
+    <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AppRouter />
       </BrowserRouter>
-    </div>
+      <Toaster richColors position="top-right" />
+    </>
   );
 }
 
