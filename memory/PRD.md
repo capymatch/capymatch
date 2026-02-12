@@ -31,20 +31,21 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar management, p
 ## Completed Features
 
 ### Core CRM
-- Dashboard with stat cards, pipeline funnel (clickable), events
+- Dashboard with stat cards, pipeline funnel, events
 - Pipeline/Recruiting Board with Kanban stages, inline editing
 - Calendar with event CRUD
-- University Knowledge Base with search
+- University Knowledge Base with search (45 schools)
 - Follow-up task tracking
 
-### Profile Page (Updated Feb 2026)
-- Dedicated page at `/profile` with 5 distinct card sections:
-  - Athlete Info (photo, name, position, grad year, height, weight, jersey)
-  - Physical Info (handed, reach, touch, wingspan, GPA)
-  - Team & Location (club, high school, city, state)
-  - Media & Bio (video link, bio text)
-  - Contact Info (athlete contact + club coach)
-- Share link for public schedule page
+### Onboarding Experience (Feb 2026)
+- **Guided Tour**: 8-step spotlight overlay on first login walking through Dashboard, Pipeline, Calendar, Inbox, Schools, and Profile
+- **Onboarding Checklist**: Dashboard card tracking real setup progress (profile, schools, Gmail, events) with live completion states
+- Both persist dismissal via localStorage
+- Tour targets sidebar nav items with spotlight cutout and tooltip
+
+### Profile Page
+- Dedicated page at `/profile` with 5 distinct card sections
+- Shortened share link (`/s/{id}` instead of `/schedule/tenant_{id}`)
 
 ### Gmail Integration
 - OAuth connect/disconnect
@@ -64,22 +65,16 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar management, p
 - Auto-logging on public profile visits
 - .edu domain detection, dashboard widget
 
-### Settings
-- Appearance/theme management
-- Gmail connection management
+### Public Schedule Page
+- YouTube embed support (converts watch URLs to embed format)
+- Backwards-compatible URL routing
 
-## Key API Endpoints
-- `/api/auth/*` - Authentication
-- `/api/programs`, `/api/coaches`, `/api/interactions` - CRUD
-- `/api/events` - Calendar CRUD
-- `/api/follow-ups` - Follow-up tracking
-- `/api/dashboard`, `/api/reminders` - Dashboard data
-- `/api/athlete-profile`, `/api/profile-views` - Profile management
-- `/api/public/schedule/{tenant_id}` - Public schedule
-- `/api/tenant`, `/api/share-link` - Settings
-- `/api/knowledge-base`, `/api/seed` - University data
-- `/api/gmail/*` - Gmail integration
-- `/api/ai/draft-email` - AI email generation
+### UI Cleanup (Feb 2026)
+- Removed hardcoded fake notification badges from header
+- Removed non-functional "Add Group" sidebar button
+- Header icons now navigate to relevant pages (tasks -> /follow-ups, mail -> /inbox)
+- Removed header search field
+- Dropdown spacing improvements in pipeline InlineSelect
 
 ## Prioritized Backlog
 
@@ -87,10 +82,14 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar management, p
 - App renaming (user hasn't decided on name yet)
 - Email templates library
 - Bulk email sending
+- Page title in header breadcrumb
+- Dashboard stat cards should be clickable/navigable
 
 ### P2
 - Mobile-responsive improvements
 - School match scoring
+- Empty state illustrations
+- Dashboard quick actions row
 
 ### P3
 - Coach contact import/export
