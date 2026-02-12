@@ -59,7 +59,7 @@ function InlineDateInput({ value, onChange }) {
       type="date"
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-white border border-gray-200 hover:border-purple-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100 cursor-pointer text-gray-600 transition-all"
+      className="bg-white border border-gray-200 hover:border-gray-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-100 cursor-pointer text-gray-600 transition-all"
     />
   );
 }
