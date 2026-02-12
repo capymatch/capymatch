@@ -419,6 +419,7 @@ async def send_email(data: ComposeEmail, request: Request):
 @router.post("/reply")
 async def reply_email(data: ReplyEmail, request: Request):
     user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
     creds = await get_gmail_credentials(user["user_id"])
     if not creds:
         raise HTTPException(status_code=403, detail="Gmail not connected")
@@ -467,6 +468,37 @@ async def reply_email(data: ReplyEmail, request: Request):
         ).execute()
 
         logger.info(f"Reply sent by {user['user_id']} in thread {data.thread_id}")
+        
+        # Auto-update program status when replying to a coach
+        recipient_email = reply_to.strip().lower()
+        if "<" in recipient_email and ">" in recipient_email:
+            recipient_email = recipient_email.split("<")[1].split(">")[0].strip()
+        
+        coach = await db.coaches.find_one(
+            {"tenant_id": tenant_id, "email": {"$regex": f"^{recipient_email}$", "$options": "i"}},
+            {"_id": 0, "program_id": 1}
+        )
+        
+        if coach:
+            program = await db.programs.find_one(
+                {"program_id": coach["program_id"], "tenant_id": tenant_id},
+                {"_id": 0, "recruiting_status": 1, "reply_status": 1}
+            )
+            if program:
+                updates = {"updated_at": datetime.now(timezone.utc).isoformat()}
+                if program.get("recruiting_status") in ["Researching", "", None]:
+                    updates["recruiting_status"] = "Contacted"
+                    updates["initial_contact_sent"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+                if program.get("reply_status") in ["No Reply", "", None]:
+                    updates["reply_status"] = "Awaiting Reply"
+                
+                if len(updates) > 1:
+                    await db.programs.update_one(
+                        {"program_id": coach["program_id"], "tenant_id": tenant_id},
+                        {"$set": updates}
+                    )
+                    logger.info(f"Auto-updated program {coach['program_id']}: status=Contacted, reply=Awaiting Reply")
+        
         return {"id": sent["id"], "thread_id": sent.get("threadId", ""), "status": "sent"}
 
     except Exception as e:
