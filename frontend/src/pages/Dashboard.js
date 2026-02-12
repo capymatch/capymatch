@@ -68,12 +68,12 @@ export default function Dashboard() {
               <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Total Schools</p>
               <p className="font-heading text-4xl font-black mt-1" style={{ color: "var(--t-text)" }}>{data.total_schools}</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center">
-              <Users className="w-7 h-7 text-slate-600" strokeWidth={1.5} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+              <Users className="w-7 h-7" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
             </div>
           </div>
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <button onClick={() => navigate("/board")} className="text-slate-600 text-xs font-medium hover:text-slate-800 flex items-center gap-1 transition-colors">
+          <div className="mt-4 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <button onClick={() => navigate("/board")} className="text-xs font-medium flex items-center gap-1 transition-colors" style={{ color: "var(--t-accent)" }}>
               View Board <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
@@ -85,12 +85,12 @@ export default function Dashboard() {
               <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Follow-Ups Due</p>
               <p className="font-heading text-4xl font-black mt-1" style={{ color: "var(--t-text)" }}>{data.follow_ups_due}</p>
             </div>
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${data.follow_ups_due > 0 ? "bg-orange-50" : "bg-green-50"}`}>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${data.follow_ups_due > 0 ? "bg-orange-500/20" : "bg-green-500/20"}`}>
               <Bell className={`w-7 h-7 ${data.follow_ups_due > 0 ? "text-orange-500" : "text-green-500"}`} strokeWidth={1.5} />
             </div>
           </div>
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <button onClick={() => navigate("/follow-ups")} className="text-orange-600 text-xs font-medium hover:text-orange-800 flex items-center gap-1 transition-colors">
+          <div className="mt-4 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <button onClick={() => navigate("/follow-ups")} className="text-orange-500 text-xs font-medium flex items-center gap-1 transition-colors">
               {data.follow_ups_due > 0 ? "Action needed" : "All caught up"} <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
@@ -104,12 +104,12 @@ export default function Dashboard() {
                 {(data.status_counts?.["Contacted - Awaiting Reply"] || 0) + (data.status_counts?.["Active Conversations"] || 0)}
               </p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
-              <TrendingUp className="w-7 h-7 text-blue-600" strokeWidth={1.5} />
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+              <TrendingUp className="w-7 h-7 text-blue-500" strokeWidth={1.5} />
             </div>
           </div>
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <button onClick={() => navigate("/knowledge-base")} className="text-blue-600 text-xs font-medium hover:text-blue-800 flex items-center gap-1 transition-colors">
+          <div className="mt-4 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <button onClick={() => navigate("/knowledge-base")} className="text-blue-500 text-xs font-medium flex items-center gap-1 transition-colors">
               Browse Universities <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
@@ -166,7 +166,7 @@ export default function Dashboard() {
           {data.recent_interactions && data.recent_interactions.length > 0 ? (
             <div className="space-y-1">
               {data.recent_interactions.map((int, i) => (
-                <div key={int.interaction_id || i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid={`activity-${i}`}>
+                <div key={int.interaction_id || i} className="flex items-start gap-3 p-3 rounded-lg transition-colors" style={{ backgroundColor: "transparent" }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"} data-testid={`activity-${i}`}>
                   <div className="w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ring-2" style={{ backgroundColor: "var(--t-accent)", ringColor: "var(--t-border)" }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{int.university_name}</p>
@@ -180,9 +180,9 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="py-8 text-center">
-              <Calendar className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-              <p className="text-gray-400 text-sm">No recent activity</p>
-              <p className="text-gray-300 text-xs mt-1">Interactions will appear here</p>
+              <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No recent activity</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Interactions will appear here</p>
             </div>
           )}
         </div>
