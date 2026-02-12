@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
-  LogOut, Search, Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
+  LogOut, Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
