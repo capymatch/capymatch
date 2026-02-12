@@ -78,7 +78,7 @@ export default function ProfilePage() {
 
       {/* Share Link */}
       {shareLink && (
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "2rem" }}>
           <div className="flex items-center gap-2 mb-3">
             <ExternalLink className="w-4 h-4 text-purple-500" />
             <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Public Schedule Link</span>
