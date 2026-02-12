@@ -96,6 +96,69 @@ export default function Dashboard() {
         <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Your recruiting overview</p>
       </div>
 
+      {/* Onboarding Checklist */}
+      {showOnboarding && (
+        <div
+          className="rounded-xl border overflow-hidden"
+          style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(168, 85, 247, 0.25)" }}
+          data-testid="onboarding-card"
+        >
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-4.5 h-4.5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Get started with Recruiting HQ</h3>
+                <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{completedCount} of {onboardingSteps.length} complete</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Progress bar */}
+              <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500"
+                  style={{ width: `${(completedCount / onboardingSteps.length) * 100}%` }}
+                />
+              </div>
+              <button
+                onClick={dismissOnboarding}
+                className="p-1.5 rounded-lg transition-colors"
+                style={{ color: "var(--t-text-muted)" }}
+                data-testid="dismiss-onboarding-btn"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+            {onboardingSteps.map((s) => (
+              <button
+                key={s.key}
+                onClick={s.action}
+                className="flex items-center gap-4 w-full px-5 py-3.5 text-left transition-colors group"
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                data-testid={`onboarding-step-${s.key}`}
+              >
+                {s.done ? (
+                  <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                ) : (
+                  <Circle className="w-5 h-5 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium ${s.done ? "line-through opacity-50" : ""}`} style={{ color: "var(--t-text)" }}>{s.label}</p>
+                  {!s.done && <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{s.description}</p>}
+                </div>
+                {!s.done && (
+                  <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--t-text-muted)" }} />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-4 gap-4">
         {[
