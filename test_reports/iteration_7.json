@@ -1,0 +1,96 @@
+{
+  "summary": "Public Athlete Schedule feature testing complete. All backend APIs (21/21 tests passed - 100% success) and Frontend UI (100% features verified) working correctly. The public schedule page at /schedule/{tenant_id} loads without authentication and displays athlete profile with upcoming events.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/athlete-profile returns 401 without auth",
+    "Backend: PUT /api/athlete-profile returns 401 without auth",
+    "Backend: POST /api/athlete-profile/photo returns 401 without auth",
+    "Backend: GET /api/share-link returns 401 without auth",
+    "Backend: GET /api/athlete-profile returns 200 with auth and all profile fields",
+    "Backend: PUT /api/athlete-profile updates athlete_name, position, grad_year, height, club_team, gpa",
+    "Backend: PUT /api/athlete-profile updates contact_email, contact_phone",
+    "Backend: PUT /api/athlete-profile updates parent_name, parent_email, parent_phone",
+    "Backend: PUT /api/athlete-profile updates video_link",
+    "Backend: PUT /api/athlete-profile updates bio",
+    "Backend: PUT /api/athlete-profile updates city, state",
+    "Backend: POST /api/athlete-profile/photo accepts valid base64 photo data",
+    "Backend: POST /api/athlete-profile/photo returns 400 when photo_data missing",
+    "Backend: POST /api/athlete-profile/photo returns 400 for empty photo_data",
+    "Backend: GET /api/share-link returns tenant_id",
+    "Backend: GET /api/public/schedule/{tenant_id} returns 200 with profile + events WITHOUT auth",
+    "Backend: GET /api/public/schedule/{invalid_id} returns 404",
+    "Backend: Public schedule works without any auth cookie",
+    "Backend: Public schedule profile contains all expected fields",
+    "Backend: Public schedule events have correct structure",
+    "Backend: Profile updates persist correctly (Create → GET verification)",
+    "Frontend: Public schedule page /schedule/{tenant_id} loads without login (data-testid='public-schedule')",
+    "Frontend: Public page shows athlete name (data-testid='athlete-name')",
+    "Frontend: Public page shows position, grad year, height badges",
+    "Frontend: Public page shows club team, school, city/state, GPA, jersey #",
+    "Frontend: Public page shows 'Watch Highlights' button (data-testid='video-link')",
+    "Frontend: Public page shows 'Email' button (data-testid='email-link')",
+    "Frontend: Public page shows 'Call' button (data-testid='phone-link')",
+    "Frontend: Public page shows Parent/Guardian contact section",
+    "Frontend: Public page shows 'Upcoming Events' section with events list",
+    "Frontend: Public page shows 'Powered by Recruiting HQ' footer",
+    "Frontend: Invalid tenant_id shows 'Athlete Not Found' error page",
+    "Frontend: Settings page loads (data-testid='settings-page')",
+    "Frontend: Settings page has 'Athlete Profile' section with all 17 form fields",
+    "Frontend: Settings page has 'Public Schedule Link' input (data-testid='share-link-input')",
+    "Frontend: Settings page has 'Copy' button (data-testid='copy-share-link-btn')",
+    "Frontend: Settings page has photo upload button (data-testid='upload-photo-btn')",
+    "Frontend: Settings page has 'Save Profile' button (data-testid='save-profile-btn')",
+    "Frontend: Save Profile button works - 'Profile saved' toast appears",
+    "Frontend: Copy button works - 'Link copied' toast appears"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_athlete_profile_api.py",
+    "/app/test_reports/pytest/athlete_profile_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_athlete_profile_api.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)",
+    "frontend": "100% (all UI features verified)"
+  },
+  "test_credentials": "Session token: sess_visual_94cd37ba (user_id: user_test_visual, tenant_id: tenant_19adfbd08518)",
+  "seed_data_creation": "Test data was pre-seeded by main agent: profile for TEST_Clara Smith + 4 upcoming events",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Public Schedule feature fully implemented and working. Backend: /api/athlete-profile (CRUD with auth), /api/athlete-profile/photo (photo upload), /api/share-link (get tenant_id), /api/public/schedule/{tenant_id} (NO auth required). Frontend: PublicSchedule.js at /schedule/:tenantId (public page), SettingsPage.js has Athlete Profile form with share link. All data-testids in place for automated testing. Profile fields: athlete_name, grad_year, position, height, club_team, jersey_number, high_school, gpa, contact_email, contact_phone, parent_name, parent_email, parent_phone, video_link, photo_url, bio, city, state.",
+  "features_verified": {
+    "backend_athlete_profile_api": {
+      "GET /api/athlete-profile": "Returns profile with all fields (auth required)",
+      "PUT /api/athlete-profile": "Updates profile fields (auth required)",
+      "POST /api/athlete-profile/photo": "Uploads base64 photo (auth required)",
+      "GET /api/share-link": "Returns tenant_id for share URL (auth required)",
+      "GET /api/public/schedule/{tenant_id}": "Returns profile + events (NO auth - public)"
+    },
+    "frontend_public_schedule_ui": {
+      "athlete_hero": "Photo, name, position/grad_year/height badges, club/school/city/GPA info, bio",
+      "action_buttons": ["Watch Highlights", "Email", "Call"],
+      "parent_section": "Parent/Guardian name, email, phone",
+      "events_sections": ["Upcoming Events", "Past Events"],
+      "404_handling": "Shows 'Athlete Not Found' for invalid tenant_id"
+    },
+    "frontend_settings_profile_form": {
+      "share_link_section": "Public Schedule Link with Copy button",
+      "photo_section": "Photo upload with hover camera icon",
+      "profile_fields": ["Full Name", "Graduation Year", "Position", "Height", "Jersey #", "GPA", "Club Team", "High School", "City", "State", "Highlights Video Link", "Bio"],
+      "contact_fields": ["Email", "Phone"],
+      "parent_fields": ["Parent Name", "Parent Email", "Parent Phone"],
+      "save_button": "Save Profile with success toast"
+    }
+  }
+}
