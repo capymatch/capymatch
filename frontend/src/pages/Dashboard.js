@@ -124,18 +124,18 @@ export default function Dashboard() {
             <BarChart3 className="w-5 h-5" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
             <h3 className="font-heading text-lg font-bold" style={{ color: "var(--t-text)" }}>Pipeline Breakdown</h3>
           </div>
-          <div className="space-y-10">
+          <div>
             {STAGE_CONFIG.map((stage) => {
               const count = data.status_counts?.[stage.key] || 0;
               const pct = data.total_schools > 0 ? Math.round((count / data.total_schools) * 100) : 0;
               return (
-                <div key={stage.key} className="group" data-testid={`breakdown-${stage.key.toLowerCase().replace(/\s+/g, "-")}`}>
+                <div key={stage.key} className="group py-4" data-testid={`breakdown-${stage.key.toLowerCase().replace(/\s+/g, "-")}`}>
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-lg ${stage.bg} flex items-center justify-center flex-shrink-0`}>
                       <stage.icon className={`w-4 h-4 ${stage.text}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{stage.key}</span>
                         <span className="text-sm font-semibold" style={{ color: "var(--t-text-secondary)" }}>{count}</span>
                       </div>
