@@ -167,12 +167,12 @@ export default function Dashboard() {
             <div className="space-y-1">
               {data.recent_interactions.map((int, i) => (
                 <div key={int.interaction_id || i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid={`activity-${i}`}>
-                  <div className="w-2 h-2 mt-1.5 rounded-full bg-slate-400 flex-shrink-0 ring-2 ring-slate-100" />
+                  <div className="w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ring-2" style={{ backgroundColor: "var(--t-accent)", ringColor: "var(--t-border)" }} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{int.university_name}</p>
                     <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{int.type}{int.outcome ? ` - ${int.outcome}` : ""}</p>
                   </div>
-                  <span className="text-gray-300 text-[11px] whitespace-nowrap mt-0.5">
+                  <span className="text-[11px] whitespace-nowrap mt-0.5" style={{ color: "var(--t-text-faint)" }}>
                     {int.date_time ? new Date(int.date_time).toLocaleDateString() : ""}
                   </span>
                 </div>

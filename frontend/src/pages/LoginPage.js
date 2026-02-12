@@ -8,22 +8,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center" data-testid="login-page">
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--t-bg)" }} data-testid="login-page">
       <div className="max-w-md w-full mx-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-lg">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Activity className="w-8 h-8 text-slate-600" strokeWidth={1.5} />
+        <div className="rounded-xl p-8 text-center shadow-lg border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+            <Activity className="w-8 h-8" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
           </div>
-          <h1 className="font-heading text-3xl font-bold text-gray-900 mb-2" data-testid="login-title">
+          <h1 className="font-heading text-3xl font-bold mb-2" style={{ color: "var(--t-text)" }} data-testid="login-title">
             Volleyball Recruiting CRM
           </h1>
-          <p className="text-gray-500 mb-8 text-sm">
+          <p className="mb-8 text-sm" style={{ color: "var(--t-text-muted)" }}>
             Track your college volleyball recruiting journey. Manage programs, coaches, and conversations all in one place.
           </p>
           <button
             onClick={handleLogin}
             data-testid="google-login-btn"
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-all duration-200 hover:shadow-md"
+            className="w-full flex items-center justify-center gap-3 font-medium py-3 px-4 rounded-lg border transition-all duration-200 hover:shadow-md"
+            style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -33,7 +34,7 @@ export default function LoginPage() {
             </svg>
             Sign in with Google
           </button>
-          <p className="text-gray-400 text-xs mt-6">
+          <p className="text-xs mt-6" style={{ color: "var(--t-text-faint)" }}>
             For volleyball athlete families managing their recruiting process
           </p>
         </div>
