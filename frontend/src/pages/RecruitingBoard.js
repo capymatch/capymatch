@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
 import { STATUS_GROUPS, RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, NEXT_ACTIONS, DIVISIONS, REGIONS } from "../lib/constants";
 import {
