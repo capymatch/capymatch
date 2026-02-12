@@ -477,7 +477,7 @@ export default function RecruitingBoard() {
             style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
-        <div className="w-px h-6 bg-gray-200" />
+        <div className="w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
         <Select value={filterDivision} onValueChange={setFilterDivision}>
           <SelectTrigger data-testid="filter-division" className="w-36 bg-gray-50 border-gray-200 text-gray-700 rounded-lg">
             <Filter className="w-3 h-3 mr-1.5 text-gray-400" /><SelectValue placeholder="Division" />
