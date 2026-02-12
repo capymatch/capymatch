@@ -8,6 +8,8 @@ router = APIRouter(prefix="/api")
 
 @router.get("/dashboard")
 async def get_dashboard(request: Request):
+    from routes.notifications import create_notification
+    
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     total = await db.programs.count_documents({"tenant_id": tenant_id})
@@ -15,6 +17,37 @@ async def get_dashboard(request: Request):
     follow_ups_due = await db.programs.count_documents({
         "tenant_id": tenant_id, "next_action_due": {"$ne": "", "$lte": today}
     })
+    
+    # Check for follow-ups due today and create notifications if not already created
+    if follow_ups_due > 0:
+        # Check if we already created a follow-up notification today
+        today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0).isoformat()
+        existing_notif = await db.notifications.find_one({
+            "tenant_id": tenant_id,
+            "type": "follow_up_due",
+            "created_at": {"$gte": today_start}
+        })
+        
+        if not existing_notif:
+            # Get the schools with follow-ups due
+            due_programs = await db.programs.find({
+                "tenant_id": tenant_id, 
+                "next_action_due": {"$ne": "", "$lte": today}
+            }, {"_id": 0, "university_name": 1}).to_list(5)
+            
+            school_names = [p.get("university_name", "Unknown") for p in due_programs[:3]]
+            schools_text = ", ".join(school_names)
+            if follow_ups_due > 3:
+                schools_text += f" +{follow_ups_due - 3} more"
+            
+            await create_notification(
+                tenant_id=tenant_id,
+                notif_type="follow_up_due",
+                title=f"{follow_ups_due} Follow-up{'s' if follow_ups_due > 1 else ''} Due Today",
+                message=schools_text,
+                data={"count": follow_ups_due}
+            )
+    
     status_groups = {
         "Active - Not Contacted": ["Not Contacted"],
         "Contacted - Awaiting Reply": ["Contacted", "No Response Yet", "Video Viewed"],
