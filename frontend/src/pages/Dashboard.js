@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronRight, Calendar, MapPin, Clock } from "lucide-react";
+import { ChevronRight, Calendar, MapPin, Clock, Eye, AlertTriangle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [programs, setPrograms] = useState([]);
   const [events, setEvents] = useState([]);
+  const [reminders, setReminders] = useState([]);
+  const [profileViews, setProfileViews] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -16,11 +18,15 @@ export default function Dashboard() {
       api.get("/dashboard"),
       api.get("/programs"),
       api.get("/events"),
+      api.get("/reminders").catch(() => ({ data: { reminders: [], total_overdue: 0 } })),
+      api.get("/profile-views").catch(() => ({ data: { views: [], total: 0, today: 0, this_week: 0 } })),
     ])
-      .then(([dashRes, progRes, evtRes]) => {
+      .then(([dashRes, progRes, evtRes, remRes, viewsRes]) => {
         setData(dashRes.data);
         setPrograms(progRes.data);
         setEvents(evtRes.data);
+        setReminders(remRes.data.reminders || []);
+        setProfileViews(viewsRes.data);
       })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
