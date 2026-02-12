@@ -1,115 +1,114 @@
-# Volleyball Recruiting CRM - PRD
+# Volleyball Recruiting CRM - Product Requirements Document
 
 ## Original Problem Statement
-Build a "Family Recruiting CRM" application for tracking student-athlete recruitment with universities.
+Build a Volleyball Recruiting CRM with native Gmail integration for managing college volleyball recruiting. The app allows tracking programs, coaches, interactions, and email communications in one place.
 
-## Architecture
-- **Frontend**: React + Tailwind CSS + Shadcn/UI
-- **Backend**: FastAPI (Python)
-- **Database**: MongoDB (motor async driver)
-- **Auth**: Emergent-managed Google OAuth
-- **Theming**: CSS variables with class-based dark/light mode
+## Core Architecture
+- **Frontend**: React + Tailwind CSS + Shadcn/UI, port 3000
+- **Backend**: FastAPI (Python) + MongoDB (Motor async driver), port 8001
+- **Auth**: Google OAuth via Emergent-managed auth
+- **Email**: Gmail API via separate Google OAuth 2.0 flow
+- **Theme**: Purple gradient, dark/light mode support
 
-## Core Features Implemented
+## What's Been Implemented
 
-### Navigation & Layout
-- Left sidebar navigation with: Dashboard, Pipeline, Calendar, Inbox, Tasks, Schools, Analytics, Settings
-- Top header with search and notifications
-- User profile section in sidebar
-- Full light/dark theme support
+### Completed (Pre-existing)
+- Full UI/UX redesign with purple gradient theme (light/dark mode)
+- Dashboard with stats, pipeline funnel, recent activity, schools requiring action
+- Pipeline (Kanban-style) recruiting board
+- Calendar page
+- Settings page (theme toggles, profile, notifications, privacy)
+- Google OAuth user authentication
+- Programs/Coaches/Interactions CRUD
+- University Knowledge Base with seed data
+- Follow-ups management
+- Placeholder pages for Inbox, Tasks, Schools, Analytics
 
-### Dashboard
-- Stats cards (Active Schools, Offers Received, Follow-ups Due)
-- Recruiting Pipeline progress bars
-- Recent Activity section
-- Schools Requiring Action list
-- Quick stats by Division and Priority
-- Clean design without icons in stat cards
+### Completed - Feb 12, 2026: Gmail Integration Phase 1 + 2
+- **Gmail OAuth 2.0 Authentication**: Separate OAuth flow for Gmail API access
+  - `/api/gmail/connect` - Initiates Google OAuth flow
+  - `/api/gmail/callback` - Handles OAuth callback, stores tokens
+  - `/api/gmail/status` - Check connection status
+  - `/api/gmail/disconnect` - Disconnect Gmail account
+- **Email Syncing (Inbound)**: Live Gmail API integration
+  - `/api/gmail/emails` - List emails with pagination & search
+  - `/api/gmail/emails/{id}` - Get full email content with body parsing
+  - `/api/gmail/threads/{thread_id}` - Get full email thread/conversation
+- **Email Sending (Outbound)**:
+  - `/api/gmail/send` - Compose and send new emails
+  - `/api/gmail/reply` - Reply to emails preserving threads
+  - `/api/gmail/emails/{id}/toggle-read` - Mark read/unread
+- **Frontend Inbox Page**: Full email client UI
+  - Email list with sender avatars, unread indicators, date formatting
+  - Threaded conversation view
+  - Compose new email modal
+  - Reply functionality
+  - Search emails
+  - Pagination (load more)
+  - "Connect Gmail" prompt for disconnected state
+- **Settings Gmail Section**: Connect/disconnect Gmail in settings page
+- **Token Management**: Auto-refresh expired tokens, secure storage in MongoDB
 
-### Pipeline (Recruiting Board)
-- Kanban-style funnel view (5 columns: Not Contacted, Contacted, Active, Offers, Closed)
-- Color-coded section headers (no icons, colored text)
-- Collapsible sections with program counts
-- Inline editing for program fields
-- Quick Add row for each section
-- Search and filter functionality
-- Dividers between sections
+### Testing Status
+- All 14 backend route tests passed (auth protection verified)
+- All frontend UI components verified
+- Test report: `/app/test_reports/iteration_5.json`
 
-### Calendar Page
-- Monthly calendar view with navigation
-- Events displayed on calendar days
-- Upcoming follow-ups sidebar
-- This Month stats
-- Event type legend
-- Theme-aware styling
+## Database Collections
+- `users` - User accounts
+- `user_sessions` - Auth sessions
+- `tenants` - Multi-tenant support
+- `programs` - Recruiting programs
+- `coaches` - Coach contacts
+- `interactions` - Communication log
+- `university_knowledge_base` - University directory
+- `gmail_tokens` - Gmail OAuth tokens per user
+- `gmail_oauth_states` - OAuth state verification (ephemeral)
 
-### Knowledge Base (Schools)
-- University cards with filters
-- Division, Region, Conference filters
-- Add to Board functionality
-- Search functionality
+## Key Files
+- `/app/backend/server.py` - Main FastAPI server with CRM routes
+- `/app/backend/gmail_routes.py` - Gmail OAuth and email routes
+- `/app/frontend/src/pages/Inbox.js` - Full email inbox UI
+- `/app/frontend/src/pages/SettingsPage.js` - Settings with Gmail connection
+- `/app/frontend/src/pages/Dashboard.js` - Dashboard
+- `/app/frontend/src/pages/RecruitingBoard.js` - Pipeline view
+- `/app/frontend/src/components/Layout.js` - Sidebar layout
+- `/app/frontend/src/App.js` - Router
+- `/app/frontend/src/lib/api.js` - API client
 
-### Tasks (Follow-ups)
-- List of programs requiring follow-up
-- Mark as sent functionality
-- Priority indicators
+## Environment Variables
+### Backend (.env)
+- `MONGO_URL` - MongoDB connection string
+- `DB_NAME` - Database name
+- `CORS_ORIGINS` - CORS configuration
+- `GMAIL_CLIENT_ID` - Google OAuth client ID
+- `GMAIL_CLIENT_SECRET` - Google OAuth client secret
+- `GMAIL_REDIRECT_URI` - OAuth callback URL
 
-### Settings
-- Theme selection (Dark/Light/System)
-- Profile section
-- Notifications toggles
-- Privacy & Data Export
+### Frontend (.env)
+- `REACT_APP_BACKEND_URL` - Backend API URL
 
-### Placeholder Pages
-- Inbox (coming soon)
-- Analytics (coming soon)
+## Prioritized Backlog
 
-## What's Been Completed (Feb 12, 2026)
+### P0 - In Progress
+- [x] Gmail Integration Phase 1: Authentication & Setup
+- [x] Gmail Integration Phase 2: Email Syncing (Inbound) + Sending
 
-### Session Updates
-1. ✅ Implemented dark/light theme toggle system
-2. ✅ Created new Dashboard design matching reference image
-3. ✅ Added left sidebar navigation
-4. ✅ Created Calendar page
-5. ✅ Added Calendar, Dashboard links to sidebar
-6. ✅ Removed icons from Dashboard stat cards
-7. ✅ Removed icons from Pipeline funnel cards
-8. ✅ Added colored text to Pipeline section headers
-9. ✅ Added divider lines between sections
-10. ✅ Added theme settings to Settings page
-11. ✅ Fixed light theme support across all pages
-12. ✅ Removed "Volleyball Recruiting 2028" from header
-13. ✅ Removed Add School button from Dashboard
+### P1 - Next
+- Gmail Integration Phase 3: UI Enhancements
+  - Associate emails with schools/coaches in pipeline
+  - Email history within program detail views
+  - Unread count badges in sidebar
+- Gmail Push Notifications (Pub/Sub watch for real-time sync)
 
-## Tech Stack
-- React 18
-- Tailwind CSS with CSS variables for theming
-- Shadcn/UI components
-- FastAPI backend
-- MongoDB database
-- Google OAuth authentication
-
-## CSS Theme Variables
-- `--t-bg`: Background color
-- `--t-surface`: Card/surface background
-- `--t-surface-alt`: Alternative surface color
-- `--t-border`: Border color
-- `--t-text`: Primary text color
-- `--t-text-secondary`: Secondary text
-- `--t-text-muted`: Muted text
-- `--t-sidebar-bg`: Sidebar background
-- `--t-header-bg`: Header background
-
-## Backlog
-
-### P1 (Next)
-- [ ] Bulk actions for programs
-- [ ] Export data to CSV
-- [ ] Email notifications for due follow-ups
-- [ ] Functional Inbox page
-
-### P2 (Future)
-- [ ] Analytics dashboard with charts
-- [ ] Mobile-responsive optimization
-- [ ] Activity log/audit trail
-- [ ] Sharing/collaboration between family members
+### P2 - Future
+- Gmail Integration Phase 4: Templates
+  - Email template library for recruiting emails
+  - Template variables (coach name, school, etc.)
+- Gmail Integration Phase 5: Automation
+  - Detect coach replies to update recruiting status
+  - No-reply reminders
+  - Smart next-action suggestions
+- Build out Tasks page functionality
+- Build out Schools page functionality
+- Build out Analytics page with charts/graphs
