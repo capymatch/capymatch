@@ -554,35 +554,42 @@ export default function CalendarPage() {
               <h3 className="font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h3>
             </div>
             {upcomingUserEvents.length > 0 ? (
-              <div className="space-y-3">
-                {upcomingUserEvents.map((evt) => (
-                  <div
-                    key={evt.event_id}
-                    onClick={() => { setEditEvent(evt); setShowModal(true); }}
-                    className="flex items-start gap-3 p-3 rounded-lg transition-colors cursor-pointer"
-                    style={{ backgroundColor: "var(--t-surface-alt)" }}
-                  >
-                    <div className={`w-2.5 h-2.5 rounded-full mt-1.5 ${EVENT_COLORS[evt.event_type] || "bg-gray-500"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{evt.title}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Calendar className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
-                        <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-                          {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` - ${formatDate(evt.end_date)}` : ""}
+              <div className="space-y-2.5">
+                {upcomingUserEvents.map((evt) => {
+                  const color = EVENT_COLORS[evt.event_type] || "bg-gray-500";
+                  const colorMap = { Camp: "border-purple-500", Showcase: "border-blue-500", Tournament: "border-amber-500", Visit: "border-emerald-500", Tryout: "border-pink-500", Meeting: "border-cyan-500", Deadline: "border-red-500", Other: "border-gray-500" };
+                  const typeBg = { Camp: "bg-purple-500/15 text-purple-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
+                  return (
+                    <div
+                      key={evt.event_id}
+                      onClick={() => { setEditEvent(evt); setShowModal(true); }}
+                      className={`flex rounded-lg overflow-hidden cursor-pointer transition-all hover:translate-x-0.5`}
+                      style={{ backgroundColor: "var(--t-surface-alt)" }}
+                    >
+                      <div className={`w-1 flex-shrink-0 ${color}`} />
+                      <div className="flex-1 px-3.5 py-3 flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold truncate" style={{ color: "var(--t-text)" }}>{evt.title}</p>
+                          <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                            <span className="text-xs flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+                              <Calendar className="w-3 h-3 flex-shrink-0" />
+                              {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
+                            </span>
+                            {evt.location && (
+                              <span className="text-xs flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+                                <MapPin className="w-3 h-3 flex-shrink-0" />
+                                {evt.location}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className={`text-[10px] font-medium px-2 py-1 rounded-md flex-shrink-0 ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>
+                          {evt.event_type}
                         </span>
                       </div>
-                      {evt.location && (
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <MapPin className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
-                          <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{evt.location}</span>
-                        </div>
-                      )}
-                      <span className="text-[10px] mt-1 inline-block px-1.5 py-0.5 rounded" style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-muted)" }}>
-                        {evt.event_type}
-                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-6">
