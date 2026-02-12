@@ -272,11 +272,12 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
           <button
             onClick={() => navigate(`/programs/${p.program_id}`)}
             data-testid={`program-link-${p.program_id}`}
-            className="text-gray-900 hover:text-slate-600 font-semibold text-sm truncate block transition-colors"
+            className="font-semibold text-sm truncate block transition-colors"
+            style={{ color: "var(--t-text)" }}
           >
             {p.university_name}
           </button>
-          <span className="text-[11px] text-gray-400">{p.mascot}</span>
+          <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{p.mascot}</span>
         </div>
       </div>
 
