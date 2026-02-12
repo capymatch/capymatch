@@ -85,8 +85,8 @@ function AddProgramDialog({ onAdd }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid="add-program-btn" className="bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-200 hover:shadow-lg hover:shadow-purple-200 transition-all">
-          <Plus className="w-4 h-4 mr-2" /> Add Program
+        <Button data-testid="add-program-btn" className="bg-slate-700 hover:bg-slate-800 text-white shadow-md shadow-slate-200 hover:shadow-lg hover:shadow-slate-200 transition-all">
+          <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add Program
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-white border-gray-200 text-gray-900 sm:max-w-md">
