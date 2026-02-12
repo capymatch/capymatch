@@ -252,16 +252,16 @@ export default function ProgramDetail() {
 
         {/* Right: Coaches + Interactions */}
         <div className="space-y-4">
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="font-heading text-lg text-gray-900">Coaches</CardTitle>
+              <CardTitle className="font-heading text-lg" style={{ color: "var(--t-text)" }}>Coaches</CardTitle>
               <Dialog open={coachOpen} onOpenChange={(open) => { setCoachOpen(open); if (!open) { setEditingCoach(null); setCoachForm({ coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" }); } }}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" data-testid="add-coach-btn" className="text-xs border-gray-300 text-gray-600 hover:bg-gray-100 h-7">
+                  <Button size="sm" variant="outline" data-testid="add-coach-btn" className="text-xs h-7" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <Plus className="w-3 h-3 mr-1" /> Add
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-white border-gray-200 text-gray-900">
+                <DialogContent style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
                   <DialogHeader>
                     <DialogTitle className="font-heading">{editingCoach ? "Edit Coach" : "Add Coach"}</DialogTitle>
                   </DialogHeader>
@@ -279,35 +279,37 @@ export default function ProgramDetail() {
             </CardHeader>
             <CardContent>
               {coaches.length === 0 ? (
-                <p className="text-gray-400 text-sm py-2">No coaches yet</p>
+                <p className="text-sm py-2" style={{ color: "var(--t-text-muted)" }}>No coaches yet</p>
               ) : (
                 <div className="space-y-2">
                   {coaches.map((c) => (
-                    <div key={c.coach_id} className="p-3 rounded-lg bg-gray-50 border border-gray-200" data-testid={`coach-${c.coach_id}`}>
+                    <div key={c.coach_id} className="p-3 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }} data-testid={`coach-${c.coach_id}`}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-gray-900 text-sm font-medium flex items-center gap-1">
-                            <User className="w-3 h-3 text-gray-400" /> {c.coach_name}
+                          <p className="text-sm font-medium flex items-center gap-1" style={{ color: "var(--t-text)" }}>
+                            <User className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} /> {c.coach_name}
                           </p>
-                          <p className="text-gray-500 text-xs">{c.role}</p>
+                          <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>{c.role}</p>
                         </div>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => { setEditingCoach(c); setCoachForm({ coach_name: c.coach_name, role: c.role, email: c.email, phone: c.phone, notes: c.notes }); setCoachOpen(true); }}
                             data-testid={`edit-coach-${c.coach_id}`}
-                            className="text-gray-400 hover:text-slate-700 text-xs px-1"
+                            className="text-xs px-1 transition-colors"
+                            style={{ color: "var(--t-text-muted)" }}
                           >Edit</button>
                           <button
                             onClick={() => handleDeleteCoach(c.coach_id)}
                             data-testid={`delete-coach-${c.coach_id}`}
-                            className="text-gray-400 hover:text-red-500 text-xs px-1"
+                            className="text-xs px-1 hover:text-red-500 transition-colors"
+                            style={{ color: "var(--t-text-muted)" }}
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
-                      {c.email && <p className="text-slate-700 text-xs flex items-center gap-1 mt-1"><Mail className="w-3 h-3" />{c.email}</p>}
-                      {c.phone && <p className="text-gray-500 text-xs flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</p>}
+                      {c.email && <p className="text-xs flex items-center gap-1 mt-1" style={{ color: "var(--t-accent)" }}><Mail className="w-3 h-3" />{c.email}</p>}
+                      {c.phone && <p className="text-xs flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
                     </div>
                   ))}
                 </div>
@@ -315,16 +317,16 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="font-heading text-lg text-gray-900">Interactions</CardTitle>
+              <CardTitle className="font-heading text-lg" style={{ color: "var(--t-text)" }}>Interactions</CardTitle>
               <Dialog open={intOpen} onOpenChange={setIntOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" data-testid="add-interaction-btn" className="text-xs border-gray-300 text-gray-600 hover:bg-gray-100 h-7">
+                  <Button size="sm" variant="outline" data-testid="add-interaction-btn" className="text-xs h-7" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <Plus className="w-3 h-3 mr-1" /> Add
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-white border-gray-200 text-gray-900">
+                <DialogContent style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
                   <DialogHeader>
                     <DialogTitle className="font-heading">Add Interaction</DialogTitle>
                   </DialogHeader>
@@ -334,12 +336,13 @@ export default function ProgramDetail() {
                     <FieldInput label="Date/Time" value={intForm.date_time} onChange={(v) => setIntForm({ ...intForm, date_time: v })} type="datetime-local" testId="int-datetime-input" />
                     <FieldInput label="Coach Email" value={intForm.coach_email} onChange={(v) => setIntForm({ ...intForm, coach_email: v })} testId="int-coach-email-input" />
                     <div>
-                      <Label className="text-gray-500 text-xs">Notes</Label>
+                      <Label className="text-xs" style={{ color: "var(--t-text-muted)" }}>Notes</Label>
                       <Textarea
                         value={intForm.notes}
                         onChange={(e) => setIntForm({ ...intForm, notes: e.target.value })}
                         data-testid="int-notes-input"
-                        className="bg-white border-gray-300 text-gray-900 mt-1"
+                        className="mt-1"
+                        style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
                       />
                     </div>
                     <Button onClick={handleAddInteraction} data-testid="submit-interaction" className="w-full bg-slate-700 hover:bg-slate-800 text-white">
@@ -351,19 +354,19 @@ export default function ProgramDetail() {
             </CardHeader>
             <CardContent>
               {interactions.length === 0 ? (
-                <p className="text-gray-400 text-sm py-2">No interactions yet</p>
+                <p className="text-sm py-2" style={{ color: "var(--t-text-muted)" }}>No interactions yet</p>
               ) : (
                 <div className="space-y-2 max-h-[400px] overflow-y-auto">
                   {interactions.map((int) => (
-                    <div key={int.interaction_id} className="p-3 rounded-lg bg-gray-50 border border-gray-200" data-testid={`interaction-${int.interaction_id}`}>
+                    <div key={int.interaction_id} className="p-3 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }} data-testid={`interaction-${int.interaction_id}`}>
                       <div className="flex items-center justify-between">
-                        <Badge className="bg-slate-100 text-slate-800 text-[10px] border border-slate-200">{int.type}</Badge>
-                        <span className="text-gray-400 text-[10px]">
+                        <Badge className="bg-slate-500/20 text-slate-400 text-[10px] border border-slate-500/30">{int.type}</Badge>
+                        <span className="text-[10px]" style={{ color: "var(--t-text-faint)" }}>
                           {int.date_time ? new Date(int.date_time).toLocaleDateString() : ""}
                         </span>
                       </div>
-                      <p className="text-gray-700 text-xs mt-1">{int.outcome}</p>
-                      {int.notes && <p className="text-gray-500 text-xs mt-0.5">{int.notes}</p>}
+                      <p className="text-xs mt-1" style={{ color: "var(--t-text-secondary)" }}>{int.outcome}</p>
+                      {int.notes && <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{int.notes}</p>}
                     </div>
                   ))}
                 </div>
