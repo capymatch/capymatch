@@ -1,8 +1,57 @@
 import { useState, useEffect } from "react";
-import { Settings, User, Bell, Shield, Moon, Sun, Monitor, Palette } from "lucide-react";
+import { Settings, User, Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import api from "../lib/api";
+import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 
 export default function SettingsPage() {
   const [theme, setTheme] = useState("dark");
+  const [gmailStatus, setGmailStatus] = useState(null);
+  const [gmailLoading, setGmailLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Check for Gmail callback result
+  useEffect(() => {
+    const gmailResult = searchParams.get("gmail");
+    if (gmailResult === "connected") {
+      toast.success("Gmail connected successfully!");
+      searchParams.delete("gmail");
+      setSearchParams(searchParams, { replace: true });
+    } else if (gmailResult === "error") {
+      const reason = searchParams.get("reason") || "unknown";
+      toast.error(`Gmail connection failed: ${reason}`);
+      searchParams.delete("gmail");
+      searchParams.delete("reason");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  // Load Gmail status
+  useEffect(() => {
+    api.get("/gmail/status")
+      .then((res) => setGmailStatus(res.data))
+      .catch(() => setGmailStatus({ connected: false }))
+      .finally(() => setGmailLoading(false));
+  }, []);
+
+  const handleConnectGmail = async () => {
+    try {
+      const res = await api.get("/gmail/connect");
+      window.location.href = res.data.auth_url;
+    } catch {
+      toast.error("Failed to start Gmail connection");
+    }
+  };
+
+  const handleDisconnectGmail = async () => {
+    try {
+      await api.post("/gmail/disconnect");
+      setGmailStatus({ connected: false });
+      toast.success("Gmail disconnected");
+    } catch {
+      toast.error("Failed to disconnect Gmail");
+    }
+  };
 
   useEffect(() => {
     // Get saved theme from localStorage
@@ -92,6 +141,63 @@ export default function SettingsPage() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Gmail Integration Section */}
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+            <Mail className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Gmail Integration</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Connect your Gmail to send and receive emails</p>
+          </div>
+        </div>
+
+        {gmailLoading ? (
+          <div className="flex items-center gap-3 py-4">
+            <Loader2 className="w-5 h-5 animate-spin text-purple-500" />
+            <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Checking connection...</span>
+          </div>
+        ) : gmailStatus?.connected ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)" }}>
+              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Connected</p>
+                <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }} data-testid="gmail-connected-email">
+                  {gmailStatus.gmail_email}
+                </p>
+              </div>
+              <button
+                data-testid="disconnect-gmail-btn"
+                onClick={handleDisconnectGmail}
+                className="px-4 py-2 text-sm rounded-lg border transition-colors text-red-500 hover:bg-red-500/10"
+                style={{ borderColor: "var(--t-border)" }}
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+              <XCircle className="w-5 h-5 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+              <div className="flex-1">
+                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>No Gmail account connected</p>
+              </div>
+              <button
+                data-testid="connect-gmail-settings-btn"
+                onClick={handleConnectGmail}
+                className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                Connect
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Profile Section */}
