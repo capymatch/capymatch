@@ -160,6 +160,42 @@ export default function PublicSchedule() {
                 {profile.gpa && <span>GPA: {profile.gpa}</span>}
               </div>
 
+              {/* Physical Stats */}
+              {(profile.weight || profile.handed || profile.standing_reach || profile.approach_touch || profile.block_touch || profile.wingspan) && (
+                <div className="flex flex-wrap gap-3 mt-4 justify-center sm:justify-start">
+                  {profile.weight && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      {profile.weight} lbs
+                    </span>
+                  )}
+                  {profile.handed && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      {profile.handed} Handed
+                    </span>
+                  )}
+                  {profile.standing_reach && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      Reach: {profile.standing_reach}
+                    </span>
+                  )}
+                  {profile.approach_touch && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      Approach: {profile.approach_touch}
+                    </span>
+                  )}
+                  {profile.block_touch && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      Block: {profile.block_touch}
+                    </span>
+                  )}
+                  {profile.wingspan && (
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10">
+                      Wingspan: {profile.wingspan}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {profile.bio && (
                 <p className="mt-4 text-gray-400 text-sm max-w-lg leading-relaxed">{profile.bio}</p>
               )}
