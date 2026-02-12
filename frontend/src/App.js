@@ -65,8 +65,8 @@ function ProtectedRoute({ children }) {
 
   if (authState === null) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#f5f5f7]">
-        <div className="text-gray-400 text-lg">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "var(--t-bg)" }}>
+        <div style={{ color: "var(--t-text-muted)" }} className="text-lg">Loading...</div>
       </div>
     );
   }
