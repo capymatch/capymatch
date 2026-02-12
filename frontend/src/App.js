@@ -64,8 +64,8 @@ function ProtectedRoute({ children }) {
 
   if (authState === null) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0f172a]">
-        <div className="text-slate-400 text-lg">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-[#f5f5f7]">
+        <div className="text-gray-400 text-lg">Loading...</div>
       </div>
     );
   }
