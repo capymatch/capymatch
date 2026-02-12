@@ -11,6 +11,9 @@ export default function Dashboard() {
   const [reminders, setReminders] = useState([]);
   const [profileViews, setProfileViews] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() => localStorage.getItem("onboarding_dismissed") === "true");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,13 +23,17 @@ export default function Dashboard() {
       api.get("/events"),
       api.get("/reminders").catch(() => ({ data: { reminders: [], total_overdue: 0 } })),
       api.get("/profile-views").catch(() => ({ data: { views: [], total: 0, today: 0, this_week: 0 } })),
+      api.get("/athlete-profile").catch(() => ({ data: {} })),
+      api.get("/gmail/status").catch(() => ({ data: { connected: false } })),
     ])
-      .then(([dashRes, progRes, evtRes, remRes, viewsRes]) => {
+      .then(([dashRes, progRes, evtRes, remRes, viewsRes, profRes, gmailRes]) => {
         setData(dashRes.data);
         setPrograms(progRes.data);
         setEvents(evtRes.data);
         setReminders(remRes.data.reminders || []);
         setProfileViews(viewsRes.data);
+        setProfile(profRes.data);
+        setGmailConnected(gmailRes.data?.connected || false);
       })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
