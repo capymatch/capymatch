@@ -397,6 +397,18 @@ export default function RecruitingBoard() {
   const [filterRegion, setFilterRegion] = useState("all");
   const [collapsed, setCollapsed] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Auto-scroll to section from URL hash
+  useEffect(() => {
+    if (!loading && location.hash) {
+      const sectionId = location.hash.replace("#", "");
+      const el = document.getElementById(`pipeline-${sectionId}`);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+      }
+    }
+  }, [loading, location.hash]);
 
   const fetchPrograms = async () => {
     try {
