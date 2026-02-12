@@ -73,8 +73,8 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
-            <button onClick={() => navigate("/board")} className="text-purple-600 text-xs font-medium hover:text-purple-800 flex items-center gap-1 transition-colors">
-              View Board <ArrowRight className="w-3 h-3" />
+            <button onClick={() => navigate("/board")} className="text-slate-600 text-xs font-medium hover:text-slate-800 flex items-center gap-1 transition-colors">
+              View Board <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
             </button>
           </div>
         </div>
