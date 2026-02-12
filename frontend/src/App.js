@@ -99,12 +99,12 @@ function AppRouter() {
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <BrowserRouter>
         <AppRouter />
       </BrowserRouter>
       <Toaster richColors position="top-right" />
-    </>
+    </ThemeProvider>
   );
 }
 
