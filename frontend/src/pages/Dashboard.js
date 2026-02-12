@@ -96,11 +96,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow" data-testid="stat-pipeline">
+        <div className="bg-white dark:bg-[#141e30] rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow" style={{ borderColor: "var(--t-border)" }} data-testid="stat-pipeline">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Active Pipeline</p>
-              <p className="font-heading text-4xl font-black text-gray-900 mt-1">
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Active Pipeline</p>
+              <p className="font-heading text-4xl font-black mt-1" style={{ color: "var(--t-text)" }}>
                 {(data.status_counts?.["Contacted - Awaiting Reply"] || 0) + (data.status_counts?.["Active Conversations"] || 0)}
               </p>
             </div>
