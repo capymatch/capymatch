@@ -474,3 +474,19 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+function FieldRow({ label, value, onChange, placeholder, testId }) {
+  return (
+    <div>
+      <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-muted)" }}>{label}</label>
+      <input
+        data-testid={testId}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50"
+        style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+      />
+    </div>
+  );
+}
