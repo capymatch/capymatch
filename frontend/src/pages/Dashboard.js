@@ -39,16 +39,16 @@ export default function Dashboard() {
   const offersCount = programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length;
   const followUpsDue = data.follow_ups_due || 0;
 
-  // Funnel stages with counts from real data
+  // Funnel stages with counts from real data — each maps to a pipeline section key
   const funnelStages = [
-    { label: "Not Contacted", count: programs.filter(p => p.recruiting_status === "Not Contacted").length, color: "#6366f1" },
-    { label: "Contacted", count: programs.filter(p => p.recruiting_status === "Contacted").length, color: "#8b5cf6" },
-    { label: "Video Viewed", count: programs.filter(p => p.recruiting_status === "Video Viewed").length, color: "#a78bfa" },
-    { label: "No Response Yet", count: programs.filter(p => p.recruiting_status === "No Response Yet").length, color: "#fbbf24" },
-    { label: "Some Interest", count: programs.filter(p => p.recruiting_status === "Some Interest").length, color: "#f59e0b" },
-    { label: "Active Conversation", count: programs.filter(p => p.recruiting_status === "Active Conversation").length, color: "#f97316" },
-    { label: "Offered", count: programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length, color: "#22c55e" },
-    { label: "Closed", count: programs.filter(p => p.recruiting_status === "Not a Fit / Closed").length, color: "#64748b" },
+    { label: "Not Contacted", count: programs.filter(p => p.recruiting_status === "Not Contacted").length, color: "#6366f1", sectionKey: "not_contacted" },
+    { label: "Contacted", count: programs.filter(p => p.recruiting_status === "Contacted").length, color: "#8b5cf6", sectionKey: "contacted" },
+    { label: "Video Viewed", count: programs.filter(p => p.recruiting_status === "Video Viewed").length, color: "#a78bfa", sectionKey: "contacted" },
+    { label: "No Response Yet", count: programs.filter(p => p.recruiting_status === "No Response Yet").length, color: "#fbbf24", sectionKey: "contacted" },
+    { label: "Some Interest", count: programs.filter(p => p.recruiting_status === "Some Interest").length, color: "#f59e0b", sectionKey: "active" },
+    { label: "Active Conversation", count: programs.filter(p => p.recruiting_status === "Active Conversation").length, color: "#f97316", sectionKey: "active" },
+    { label: "Offered", count: programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length, color: "#22c55e", sectionKey: "offers" },
+    { label: "Closed", count: programs.filter(p => p.recruiting_status === "Not a Fit / Closed").length, color: "#64748b", sectionKey: "closed" },
   ];
   const maxFunnel = Math.max(...funnelStages.map(s => s.count), 1);
 
