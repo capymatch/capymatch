@@ -361,31 +361,31 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Sections */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {PIPELINE.map((stage) => {
           const stagePrograms = programs.filter((p) => stage.statuses.includes(p.recruiting_status));
           const isCollapsed = collapsed[stage.key];
           const isEmpty = stagePrograms.length === 0;
 
           return (
-            <div key={stage.key} data-testid={`section-${stage.key}`} className="transition-all duration-300">
-              {/* Section Header */}
+            <div key={stage.key} data-testid={`section-${stage.key}`}>
+              {/* Section Header — standalone divider */}
               <button
                 onClick={() => toggleSection(stage.key)}
                 data-testid={`toggle-${stage.key}`}
-                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 ${
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${
                   isEmpty
-                    ? "bg-gray-50/50 border-gray-100 hover:bg-gray-50"
-                    : "bg-white border-gray-100 hover:shadow-sm shadow-xs"
+                    ? "bg-gray-50/80 border-gray-100 hover:bg-gray-50"
+                    : "bg-white border-gray-100 hover:shadow-sm shadow-sm"
                 } border-l-4 ${stage.border}`}
               >
                 {isCollapsed ? (
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                  <ChevronRight className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 ) : (
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                  <ChevronDown className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 )}
                 <div className={`w-7 h-7 rounded-lg ${stage.bg} flex items-center justify-center`}>
-                  <stage.icon className={`w-3.5 h-3.5 ${stage.text}`} />
+                  <stage.icon className={`w-3.5 h-3.5 ${stage.text}`} strokeWidth={1.5} />
                 </div>
                 <span className={`font-heading font-bold text-sm tracking-wide ${isEmpty ? "text-gray-400" : "text-gray-800"}`}>
                   {stage.label === "Not Contacted" ? "Active - Not Contacted" :
@@ -399,31 +399,29 @@ export default function RecruitingBoard() {
                 </Badge>
               </button>
 
-              {/* Section Content */}
+              {/* Column headers + rows — separate from the section header */}
               {!isCollapsed && (
-                <div className="mt-2 ml-1">
+                <>
                   {isEmpty ? (
-                    <div className="py-8 text-center">
-                      <div className={`w-10 h-10 rounded-full ${stage.bg} flex items-center justify-center mx-auto mb-3 opacity-50`}>
-                        <stage.icon className={`w-5 h-5 ${stage.text}`} />
-                      </div>
+                    <div className="py-6 text-center">
                       <p className="text-gray-400 text-sm">No programs in this stage</p>
-                      <p className="text-gray-300 text-xs mt-1">Add from Knowledge Base or create a new program</p>
                     </div>
                   ) : (
                     <>
                       <ColumnHeaders />
-                      {stagePrograms.map((p) => (
-                        <ProgramRow
-                          key={p.program_id}
-                          p={p}
-                          navigate={navigate}
-                          handleInlineUpdate={handleInlineUpdate}
-                        />
-                      ))}
+                      <div className="space-y-1.5">
+                        {stagePrograms.map((p) => (
+                          <ProgramRow
+                            key={p.program_id}
+                            p={p}
+                            navigate={navigate}
+                            handleInlineUpdate={handleInlineUpdate}
+                          />
+                        ))}
+                      </div>
                     </>
                   )}
-                </div>
+                </>
               )}
             </div>
           );
