@@ -524,9 +524,6 @@ export default function RecruitingBoard() {
                 ) : (
                   <ChevronDown className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 )}
-                <div className={`w-7 h-7 rounded-lg ${stage.bg} flex items-center justify-center`}>
-                  <stage.icon className={`w-3.5 h-3.5 ${stage.text}`} strokeWidth={1.5} />
-                </div>
                 <span className={`font-heading font-bold text-sm tracking-wide`} style={{ color: isEmpty ? "var(--t-text-muted)" : "var(--t-text)" }}>
                   {stage.label === "Not Contacted" ? "Active - Not Contacted" :
                    stage.label === "Contacted" ? "Contacted - Awaiting Reply" :
