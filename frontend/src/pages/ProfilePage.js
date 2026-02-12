@@ -69,7 +69,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div data-testid="profile-page" className="max-w-3xl mx-auto space-y-8">
+    <div data-testid="profile-page" className="max-w-3xl mx-auto space-y-10">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Athlete Profile</h1>
