@@ -1,98 +1,165 @@
-# Volleyball Recruiting CRM - PRD
+# Recruiting HQ - Product Requirements Document
 
 ## Original Problem Statement
-Build a Volleyball Recruiting CRM with Gmail integration, calendar management, public athlete profiles, and AI-powered recruiting tools.
+Build a Volleyball Recruiting CRM for athletes to track schools, email coaches via Gmail integration, and manage their path to playing college ball. The app includes AI-powered features, a public shareable profile, and comprehensive recruiting pipeline management.
 
-## Core Architecture
-- **Frontend**: React + Tailwind CSS + Shadcn/UI
-- **Backend**: Python FastAPI + MongoDB (motor)
-- **Auth**: Google OAuth 2.0 (Emergent-managed)
-- **Gmail**: Google Gmail API via OAuth 2.0
-- **AI**: Claude Sonnet 4.5 via Emergent LLM Key (emergentintegrations)
+## User Personas
+- **Primary**: High school volleyball athletes (and their families) navigating the college recruiting process
+- **Secondary**: Club coaches helping athletes with recruiting
 
-## Backend Structure (Refactored Feb 2026)
-```
-/app/backend/
-├── server.py          # Slim entry point: app setup, middleware, router inclusion
-├── database.py        # Shared MongoDB connection (db, client)
-├── auth.py            # Shared auth helpers (get_current_user, get_tenant_id)
-├── models.py          # All Pydantic models
-├── routes/
-│   ├── auth_routes.py # /api/auth/* endpoints
-│   ├── programs.py    # /api/programs, /api/coaches, /api/interactions, /api/follow-ups
-│   ├── events.py      # /api/events CRUD
-│   ├── dashboard.py   # /api/dashboard, /api/reminders
-│   ├── profile.py     # /api/athlete-profile, /api/public/schedule, /api/profile-views, /api/tenant, /api/share-link
-│   ├── knowledge.py   # /api/knowledge-base, /api/seed
-│   ├── ai.py          # /api/ai/draft-email
-│   └── gmail.py       # /api/gmail/* endpoints
-```
+## Core Features (Implemented)
 
-## Completed Features
+### Authentication & User Management
+- Google OAuth 2.0 sign-in
+- Tenant-based data isolation
 
-### Core CRM
-- Dashboard with stat cards, pipeline funnel, events
-- Pipeline/Recruiting Board with Kanban stages, inline editing
-- Calendar with event CRUD
-- University Knowledge Base with search (45 schools)
-- Follow-up task tracking
+### Dashboard
+- AI-powered widgets (Smart Follow-Up Reminders, Coach Activity Tracking)
+- Key stats overview
+- Upcoming events display
+- Onboarding checklist for new users
 
-### Onboarding Experience (Feb 2026)
-- **Guided Tour**: 8-step spotlight overlay on first login walking through Dashboard, Pipeline, Calendar, Inbox, Schools, and Profile
-- **Onboarding Checklist**: Dashboard card tracking real setup progress (profile, schools, Gmail, events) with live completion states
-- Both persist dismissal via localStorage
-- Tour targets sidebar nav items with spotlight cutout and tooltip
+### Athlete Profile
+- Personal info (name, grad year, position, height, weight, jersey)
+- Physical stats (reach, touch, wingspan, GPA)
+- Team & location info
+- Media links (Hudl Profile, YouTube highlights, bio)
+- Contact info (athlete + club coach)
+- Photo upload
 
-### Profile Page
-- Dedicated page at `/profile` with 5 distinct card sections
-- Shortened share link (`/s/{id}` instead of `/schedule/tenant_{id}`)
+### Public Profile Page
+- Shareable URL: `/s/<id>`
+- Displays athlete info, stats, events
+- YouTube video embedding
+- Hudl Profile button
+- Contact buttons (email, phone)
+
+### Recruiting Pipeline (Kanban Board)
+- School/program tracking
+- Stage management (Researching → Contacted → Responded → Visited → Applied → Committed)
+- Coach contact management
+- Notes and activity logging
 
 ### Gmail Integration
-- OAuth connect/disconnect
-- Email listing filtered to .edu + known coaches
-- Thread view, compose, reply, search
-- Coach vs New contact tagging
+- Native Gmail connection via OAuth
+- Send/receive recruiting emails
+- AI-powered email drafts (Claude Sonnet 4.5)
+- Email tracking and history
 
-### AI Email Drafts (Claude Sonnet 4.5)
-- One-click personalized email generation
-- 4 email types: Introduction, Follow-Up, Thank You, Interest Update
+### Calendar/Events
+- Event management (Camps, Showcases, Tournaments, Visits, etc.)
+- Date/time/location tracking
+- Public schedule sharing
 
-### Smart Follow-Up Reminders
-- Dashboard widget showing overdue follow-ups
-- Coach info, last interaction, quick action
+### Onboarding Experience
+- Guided tour (react-joyride) for first-time users
+- Dashboard checklist tracking setup completion
+- "Replay Tour" option in Settings
 
-### Profile View Tracking
-- Auto-logging on public profile visits
-- .edu domain detection, dashboard widget
+### Landing Page
+- Professional marketing page at root URL
+- Feature highlights
+- Google sign-in CTA
 
-### Public Schedule Page
-- YouTube embed support (converts watch URLs to embed format)
-- Backwards-compatible URL routing
+## Tech Stack
+- **Frontend**: React, Tailwind CSS, react-router-dom, lucide-react, react-joyride
+- **Backend**: Python, FastAPI, Motor (async MongoDB)
+- **Database**: MongoDB
+- **Integrations**: Google OAuth 2.0, Gmail API, Anthropic Claude Sonnet 4.5
 
-### UI Cleanup (Feb 2026)
-- Removed hardcoded fake notification badges from header
-- Removed non-functional "Add Group" sidebar button
-- Header icons now navigate to relevant pages (tasks -> /follow-ups, mail -> /inbox)
-- Removed header search field
-- Dropdown spacing improvements in pipeline InlineSelect
+## Architecture
+```
+/app
+├── backend/
+│   ├── server.py          # FastAPI app entry point
+│   ├── routes/            # Modular endpoint files
+│   │   ├── ai.py
+│   │   ├── auth_routes.py
+│   │   ├── dashboard.py
+│   │   ├── events.py
+│   │   ├── gmail.py
+│   │   ├── knowledge.py
+│   │   ├── profile.py
+│   │   └── programs.py
+│   └── shared/            # Shared utilities
+│       ├── auth.py
+│       └── database.py
+├── frontend/
+│   └── src/
+│       ├── App.js
+│       ├── components/
+│       │   ├── OnboardingChecklist.js
+│       │   ├── Tour.js
+│       │   └── layout/Layout.js
+│       └── pages/
+│           ├── LandingPage.js
+│           ├── Dashboard.js
+│           ├── ProfilePage.js
+│           ├── PublicSchedule.js
+│           ├── RecruitingBoard.js
+│           └── ...
+```
 
-## Prioritized Backlog
+## Pending Tasks
 
-### P1
-- App renaming (user hasn't decided on name yet)
-- Email templates library
-- Bulk email sending
-- Page title in header breadcrumb
-- Dashboard stat cards should be clickable/navigable
+### P1 - High Priority
+- **App Naming**: Need unique name (Vollura is taken)
 
-### P2
-- Mobile-responsive improvements
-- School match scoring
-- Empty state illustrations
-- Dashboard quick actions row
+### P2 - Medium Priority
+- **School Match Score**: Rate schools based on athlete preferences
+- **Recruiting Timeline**: Visual guide to NCAA dates/deadlines
+- **Camp/Tournament ROI**: Track which events lead to coach interactions
+- **Email Templates**: Pre-built templates for recruiting scenarios
+- **Bulk Outreach**: Send personalized emails to multiple coaches
 
-### P3
-- Coach contact import/export
-- Parent/Guardian read-only access
-- Recruiting timeline with NCAA deadlines
-- Camp/Tournament ROI tracking
+### P3 - Lower Priority
+- **Parent/Guardian Access**: Read-only dashboard for families
+
+## Changelog
+
+### 2025-02-12
+- Added Hudl Profile Link field to athlete profile
+- Field displays on public profile as orange button
+
+### Previous Session
+- Created professional landing page
+- Implemented onboarding tour and checklist
+- Refactored backend into modular routes structure
+- Added dynamic page titles to header
+- Fixed YouTube embed blocking issues
+- Shortened public profile URL to `/s/<id>`
+- Multiple UI spacing adjustments
+
+## API Endpoints
+
+### Profile
+- `GET /api/athlete-profile` - Get athlete profile
+- `PUT /api/athlete-profile` - Update athlete profile
+- `POST /api/athlete-profile/photo` - Upload photo
+- `GET /api/public/schedule/{tenant_id}` - Public profile data
+- `GET /api/profile-views` - View tracking stats
+- `GET /api/share-link` - Get shareable link
+
+### Programs/Schools
+- `GET /api/programs` - List tracked schools
+- `POST /api/programs` - Add school
+- `PUT /api/programs/{id}` - Update school
+- `DELETE /api/programs/{id}` - Remove school
+
+### Gmail
+- `GET /api/gmail/status` - Connection status
+- `POST /api/gmail/connect` - Initiate OAuth
+- `GET /api/gmail/callback` - OAuth callback
+- `GET /api/gmail/threads` - List email threads
+- `POST /api/gmail/send` - Send email
+
+### Events
+- `GET /api/events` - List events
+- `POST /api/events` - Create event
+- `PUT /api/events/{id}` - Update event
+- `DELETE /api/events/{id}` - Delete event
+
+### AI
+- `POST /api/ai/draft-email` - Generate email draft
+- `GET /api/reminders` - Get smart follow-up reminders
+- `GET /api/dashboard` - Dashboard with AI insights
