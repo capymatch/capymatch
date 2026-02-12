@@ -158,10 +158,7 @@ export default function Dashboard() {
           {/* Priority Schools */}
           <div className="rounded-xl p-5 border border-white/10 bg-white/[0.02]">
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-amber-400" />
-                <h3 className="text-white font-semibold">Schools Requiring Action</h3>
-              </div>
+              <h3 className="text-white font-semibold">Schools Requiring Action</h3>
               <button 
                 onClick={() => navigate("/follow-ups")}
                 className="text-white/50 text-sm hover:text-white transition-colors flex items-center gap-1"
@@ -177,9 +174,6 @@ export default function Dashboard() {
                     onClick={() => navigate(`/programs/${prog.program_id}`)}
                     className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group"
                   >
-                    <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    </div>
                     <div 
                       className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold"
                       style={{ backgroundColor: avatarColors[i % avatarColors.length] }}
@@ -207,7 +201,6 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Users className="w-8 h-8 text-white/20 mx-auto mb-2" />
                 <p className="text-white/40 text-sm">No schools added yet</p>
                 <button 
                   onClick={() => navigate("/knowledge-base")}
@@ -218,6 +211,9 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+
+          {/* Divider */}
+          <div className="border-t border-white/10" />
 
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
