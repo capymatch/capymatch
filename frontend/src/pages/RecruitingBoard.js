@@ -289,15 +289,15 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
       </div>
 
       {/* Conference + Region */}
-      <div className="text-xs text-gray-500 truncate">
+      <div className="text-xs truncate" style={{ color: "var(--t-text-secondary)" }}>
         {p.conference}
-        {p.region && <span className="text-gray-300 mx-1">/</span>}
-        <span className="text-gray-400">{p.region}</span>
+        {p.region && <span className="mx-1" style={{ color: "var(--t-text-faint)" }}>/</span>}
+        <span style={{ color: "var(--t-text-muted)" }}>{p.region}</span>
       </div>
 
       {/* Coach */}
-      <div className="text-xs text-gray-600 truncate">
-        {p.primary_coach || <span className="text-gray-300 italic">No coach</span>}
+      <div className="text-xs truncate" style={{ color: "var(--t-text-secondary)" }}>
+        {p.primary_coach || <span style={{ color: "var(--t-text-faint)" }} className="italic">No coach</span>}
       </div>
 
       {/* Status */}
