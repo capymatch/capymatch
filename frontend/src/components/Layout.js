@@ -98,25 +98,6 @@ export default function Layout({ user }) {
             Add Group
           </button>
         </div>
-
-        {/* User Profile Section */}
-        <div className="p-4 border-t" style={{ borderColor: "var(--t-border)" }}>
-          <div 
-            className="flex items-center gap-3 p-3 rounded-xl"
-            style={{ backgroundColor: "var(--t-surface-alt)" }}
-          >
-            <Avatar className="w-10 h-10 ring-2 ring-purple-500/30">
-              <AvatarImage src={user?.picture} alt={user?.name} />
-              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-sm font-bold">
-                {user?.name?.charAt(0) || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{user?.name || "User"}</p>
-              <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{user?.email || "user@example.com"}</p>
-            </div>
-          </div>
-        </div>
       </aside>
 
       {/* Main Content */}
