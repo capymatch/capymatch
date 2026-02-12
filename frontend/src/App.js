@@ -13,6 +13,7 @@ import Inbox from "./pages/Inbox";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
 import CalendarPage from "./pages/CalendarPage";
+import PublicSchedule from "./pages/PublicSchedule";
 import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
@@ -86,6 +87,7 @@ function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/" element={
         <ProtectedRoute>
           {(user) => <Layout user={user} />}
