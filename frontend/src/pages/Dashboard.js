@@ -124,7 +124,7 @@ export default function Dashboard() {
             <BarChart3 className="w-5 h-5" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
             <h3 className="font-heading text-lg font-bold" style={{ color: "var(--t-text)" }}>Pipeline Breakdown</h3>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {STAGE_CONFIG.map((stage) => {
               const count = data.status_counts?.[stage.key] || 0;
               const pct = data.total_schools > 0 ? Math.round((count / data.total_schools) * 100) : 0;
@@ -135,7 +135,7 @@ export default function Dashboard() {
                       <stage.icon className={`w-4 h-4 ${stage.text}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{stage.key}</span>
                         <span className="text-sm font-semibold" style={{ color: "var(--t-text-secondary)" }}>{count}</span>
                       </div>
