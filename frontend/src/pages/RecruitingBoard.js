@@ -150,7 +150,8 @@ function InlineDateInput({ value, onChange }) {
       type="date"
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-white border border-gray-200 hover:border-gray-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-100 cursor-pointer text-gray-600 transition-all"
+      className="t-input border rounded-md px-2 py-1 text-xs focus:outline-none cursor-pointer transition-all"
+      style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
     />
   );
 }
