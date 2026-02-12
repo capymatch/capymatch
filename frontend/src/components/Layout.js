@@ -212,6 +212,9 @@ export default function Layout({ user }) {
           <Outlet />
         </main>
       </div>
+
+      {/* Guided Tour */}
+      {showTour && <Tour onComplete={() => setShowTour(false)} />}
     </div>
   );
 }
