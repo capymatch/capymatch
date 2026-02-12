@@ -43,7 +43,7 @@ export default function Dashboard() {
   return (
     <div data-testid="dashboard" className="space-y-8 max-w-6xl mx-auto">
       {/* Welcome Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 p-8 text-white shadow-xl shadow-purple-200/50">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-700 via-slate-800 to-gray-900 p-8 text-white shadow-xl shadow-slate-200/50">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-1/3 w-32 h-32 bg-white/5 rounded-full translate-y-1/2" />
         <div className="relative z-10">
