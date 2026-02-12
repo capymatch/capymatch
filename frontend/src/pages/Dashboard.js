@@ -68,8 +68,8 @@ export default function Dashboard() {
               <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Total Schools</p>
               <p className="font-heading text-4xl font-black text-gray-900 mt-1">{data.total_schools}</p>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center">
-              <Users className="w-7 h-7 text-purple-600" />
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center">
+              <Users className="w-7 h-7 text-slate-600" strokeWidth={1.5} />
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
