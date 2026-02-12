@@ -145,7 +145,7 @@ export default function Tour({ onComplete }) {
 
       {/* Tooltip */}
       <div
-        className="w-[420px] rounded-2xl border p-8 shadow-2xl z-10"
+        className="w-[560px] rounded-3xl border p-10 shadow-2xl z-10"
         style={{
           ...getTooltipStyle(),
           backgroundColor: "#1a1a2e",
@@ -154,14 +154,14 @@ export default function Tour({ onComplete }) {
         data-testid="tour-tooltip"
       >
         {/* Step indicator */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2.5">
             {TOUR_STEPS.map((_, i) => (
               <div
                 key={i}
-                className="h-1.5 rounded-full transition-all duration-300"
+                className="h-2 rounded-full transition-all duration-300"
                 style={{
-                  width: i === step ? 28 : 8,
+                  width: i === step ? 36 : 10,
                   backgroundColor: i === step ? "#a855f7" : i < step ? "#a855f7" : "rgba(255,255,255,0.15)",
                 }}
               />
@@ -169,36 +169,36 @@ export default function Tour({ onComplete }) {
           </div>
           <button
             onClick={finish}
-            className="p-1.5 rounded-lg text-gray-500 hover:text-gray-300 transition-colors"
+            className="p-2 rounded-lg text-gray-500 hover:text-gray-300 transition-colors"
             data-testid="tour-skip-btn"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Content */}
         {current.position === "center" && step === 0 && (
-          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-5 mx-auto">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-6 mx-auto">
+            <Sparkles className="w-10 h-10 text-white" />
           </div>
         )}
-        <h3 className="text-xl font-bold text-white mb-2">{current.title}</h3>
-        <p className="text-base text-gray-400 leading-relaxed">{current.description}</p>
+        <h3 className="text-2xl font-bold text-white mb-3 text-center">{current.title}</h3>
+        <p className="text-lg text-gray-400 leading-relaxed text-center">{current.description}</p>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center justify-between mt-8">
           {step > 0 ? (
             <button
               onClick={prev}
-              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-base text-gray-400 hover:text-white transition-colors"
               data-testid="tour-prev-btn"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-5 h-5" /> Back
             </button>
           ) : (
             <button
               onClick={finish}
-              className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+              className="text-base text-gray-500 hover:text-gray-300 transition-colors"
               data-testid="tour-skip-all-btn"
             >
               Skip tour
@@ -206,11 +206,11 @@ export default function Tour({ onComplete }) {
           )}
           <button
             onClick={next}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+            className="flex items-center gap-2.5 px-8 py-3 rounded-xl text-base font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-colors"
             data-testid="tour-next-btn"
           >
             {step === TOUR_STEPS.length - 1 ? "Get Started" : step === 0 ? "Start Tour" : "Next"}
-            {step < TOUR_STEPS.length - 1 && <ArrowRight className="w-4 h-4" />}
+            {step < TOUR_STEPS.length - 1 && <ArrowRight className="w-5 h-5" />}
           </button>
         </div>
       </div>
