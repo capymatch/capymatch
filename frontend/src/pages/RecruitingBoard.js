@@ -262,6 +262,49 @@ function ColumnHeaders() {
   );
 }
 
+/* ── Quick Add Row ── */
+function QuickAddRow({ onAdd }) {
+  const [name, setName] = useState("");
+  const [adding, setAdding] = useState(false);
+
+  const handleAdd = async () => {
+    if (!name.trim()) return;
+    setAdding(true);
+    try {
+      await api.post("/programs", { university_name: name.trim() });
+      toast.success(`${name.trim()} added`);
+      setName("");
+      onAdd();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to add");
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleAdd();
+    if (e.key === "Escape") setName("");
+  };
+
+  return (
+    <div className="flex items-center gap-2 px-4 py-2.5 mt-1">
+      <Plus className="w-4 h-4 text-gray-300 flex-shrink-0" strokeWidth={1.5} />
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onBlur={() => { if (name.trim()) handleAdd(); }}
+        placeholder="Add university name"
+        disabled={adding}
+        data-testid="quick-add-input"
+        className="bg-transparent text-sm text-gray-500 placeholder:text-gray-300 focus:text-gray-800 outline-none border-none w-64 py-0.5"
+      />
+    </div>
+  );
+}
+
 /* ── Main Board ── */
 export default function RecruitingBoard() {
   const [programs, setPrograms] = useState([]);
