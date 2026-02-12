@@ -3,36 +3,38 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import {
   RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS,
-  SCHOLARSHIP_TYPES, NEXT_ACTIONS, INTERACTION_TYPES, INTERACTION_OUTCOMES,
-  COACH_ROLES, DIVISION_COLORS, PRIORITY_COLORS,
+  SCHOLARSHIP_TYPES, NEXT_ACTIONS, INTERACTION_TYPES, INTERACTION_OUTCOMES, COACH_ROLES,
 } from "../lib/constants";
-import {
-  ArrowLeft, Save, Trash2, Plus, User, Mail, Phone, MessageSquare, Calendar, ExternalLink,
-} from "lucide-react";
+import { ArrowLeft, Save, Trash2, Plus, User, Mail, Phone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
-import { Separator } from "../components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 import { toast } from "sonner";
+
+const DIVISION_BADGE = {
+  D1: "bg-emerald-100 text-emerald-700",
+  D2: "bg-blue-100 text-blue-700",
+  D3: "bg-purple-100 text-purple-700",
+  NAIA: "bg-orange-100 text-orange-700",
+  JUCO: "bg-yellow-100 text-yellow-700",
+};
 
 function FieldSelect({ label, value, options, onChange, testId }) {
   return (
     <div>
-      <Label className="text-slate-400 text-xs">{label}</Label>
+      <Label className="text-gray-500 text-xs">{label}</Label>
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="w-full bg-[#0f172a] border border-[#334155] text-white rounded-md px-3 py-2 mt-1 text-sm focus:border-blue-500 focus:outline-none"
+        className="w-full bg-white border border-gray-300 text-gray-900 rounded-md px-3 py-2 mt-1 text-sm focus:border-purple-400 focus:outline-none focus:ring-1 focus:ring-purple-200"
       >
         <option value="">Select</option>
-        {options.map((o) => (
-          <option key={o} value={o}>{o}</option>
-        ))}
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>
   );
@@ -41,13 +43,13 @@ function FieldSelect({ label, value, options, onChange, testId }) {
 function FieldInput({ label, value, onChange, type = "text", testId }) {
   return (
     <div>
-      <Label className="text-slate-400 text-xs">{label}</Label>
+      <Label className="text-gray-500 text-xs">{label}</Label>
       <Input
         type={type}
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         data-testid={testId}
-        className="bg-[#0f172a] border-[#334155] text-white mt-1"
+        className="bg-white border-gray-300 text-gray-900 mt-1 focus:border-purple-400 focus:ring-purple-200"
       />
     </div>
   );
@@ -62,13 +64,9 @@ export default function ProgramDetail() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({});
-
-  // Coach dialog
   const [coachOpen, setCoachOpen] = useState(false);
   const [coachForm, setCoachForm] = useState({ coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" });
   const [editingCoach, setEditingCoach] = useState(null);
-
-  // Interaction dialog
   const [intOpen, setIntOpen] = useState(false);
   const [intForm, setIntForm] = useState({ type: "Email", outcome: "No Response", notes: "", message_copy: "", links: "", coach_email: "", date_time: "" });
 
@@ -99,9 +97,7 @@ export default function ProgramDetail() {
         "last_follow_up", "follow_up_days", "next_action", "next_action_due", "scholarship_type",
         "roster_needs", "events_seen", "video_link", "coach_contract_expiration", "notes",
       ];
-      fields.forEach((f) => {
-        if (form[f] !== program[f]) updates[f] = form[f];
-      });
+      fields.forEach((f) => { if (form[f] !== program[f]) updates[f] = form[f]; });
       if (Object.keys(updates).length === 0) { toast.info("No changes"); setSaving(false); return; }
       await api.put(`/programs/${programId}`, updates);
       toast.success("Program updated");
@@ -168,7 +164,7 @@ export default function ProgramDetail() {
 
   const setField = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
-  if (loading) return <div className="text-slate-400 text-center py-12" data-testid="detail-loading">Loading...</div>;
+  if (loading) return <div className="text-gray-400 text-center py-12" data-testid="detail-loading">Loading...</div>;
   if (!program) return null;
 
   return (
@@ -176,16 +172,16 @@ export default function ProgramDetail() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/board")} data-testid="back-to-board" className="text-slate-400 hover:text-white">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/board")} data-testid="back-to-board" className="text-gray-500 hover:text-gray-800">
             <ArrowLeft className="w-4 h-4 mr-1" /> Board
           </Button>
-          <h2 className="font-heading text-2xl font-bold text-white" data-testid="detail-title">{program.university_name}</h2>
-          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${DIVISION_COLORS[program.division] || "bg-slate-600 text-white"}`}>
+          <h2 className="font-heading text-2xl font-bold text-gray-900" data-testid="detail-title">{program.university_name}</h2>
+          <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${DIVISION_BADGE[program.division] || "bg-gray-100 text-gray-700"}`}>
             {program.division}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleSave} disabled={saving} data-testid="save-program" className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button size="sm" onClick={handleSave} disabled={saving} data-testid="save-program" className="bg-purple-600 hover:bg-purple-700 text-white">
             <Save className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Save"}
           </Button>
           <Button size="sm" variant="destructive" onClick={handleDelete} data-testid="delete-program">
@@ -197,9 +193,9 @@ export default function ProgramDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Program Fields */}
         <div className="lg:col-span-2 space-y-4">
-          <Card className="bg-[#1e293b] border-[#334155]">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-white">Program Info</CardTitle>
+              <CardTitle className="font-heading text-lg text-gray-900">Program Info</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <FieldInput label="University Name" value={form.university_name} onChange={(v) => setField("university_name", v)} testId="field-university-name" />
@@ -212,9 +208,9 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1e293b] border-[#334155]">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-white">Recruiting Status</CardTitle>
+              <CardTitle className="font-heading text-lg text-gray-900">Recruiting Status</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <FieldSelect label="Recruiting Status" value={form.recruiting_status} options={RECRUITING_STATUSES} onChange={(v) => setField("recruiting_status", v)} testId="field-recruiting-status" />
@@ -229,9 +225,9 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1e293b] border-[#334155]">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="font-heading text-lg text-white">Additional Info</CardTitle>
+              <CardTitle className="font-heading text-lg text-gray-900">Additional Info</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
               <FieldInput label="Roster Needs" value={form.roster_needs} onChange={(v) => setField("roster_needs", v)} testId="field-roster-needs" />
@@ -239,12 +235,12 @@ export default function ProgramDetail() {
               <FieldInput label="Video Link" value={form.video_link} onChange={(v) => setField("video_link", v)} testId="field-video-link" />
               <FieldInput label="Coach Contract Expiration" value={form.coach_contract_expiration} onChange={(v) => setField("coach_contract_expiration", v)} type="date" testId="field-contract-exp" />
               <div className="col-span-2">
-                <Label className="text-slate-400 text-xs">Notes</Label>
+                <Label className="text-gray-500 text-xs">Notes</Label>
                 <Textarea
                   value={form.notes || ""}
                   onChange={(e) => setField("notes", e.target.value)}
                   data-testid="field-notes"
-                  className="bg-[#0f172a] border-[#334155] text-white mt-1 min-h-[80px]"
+                  className="bg-white border-gray-300 text-gray-900 mt-1 min-h-[80px] focus:border-purple-400"
                 />
               </div>
             </CardContent>
@@ -253,17 +249,16 @@ export default function ProgramDetail() {
 
         {/* Right: Coaches + Interactions */}
         <div className="space-y-4">
-          {/* Coaches */}
-          <Card className="bg-[#1e293b] border-[#334155]">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="font-heading text-lg text-white">Coaches</CardTitle>
+              <CardTitle className="font-heading text-lg text-gray-900">Coaches</CardTitle>
               <Dialog open={coachOpen} onOpenChange={(open) => { setCoachOpen(open); if (!open) { setEditingCoach(null); setCoachForm({ coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" }); } }}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" data-testid="add-coach-btn" className="text-xs border-[#334155] text-slate-300 hover:bg-[#334155] h-7">
+                  <Button size="sm" variant="outline" data-testid="add-coach-btn" className="text-xs border-gray-300 text-gray-600 hover:bg-gray-100 h-7">
                     <Plus className="w-3 h-3 mr-1" /> Add
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#1e293b] border-[#334155] text-white">
+                <DialogContent className="bg-white border-gray-200 text-gray-900">
                   <DialogHeader>
                     <DialogTitle className="font-heading">{editingCoach ? "Edit Coach" : "Add Coach"}</DialogTitle>
                   </DialogHeader>
@@ -272,7 +267,7 @@ export default function ProgramDetail() {
                     <FieldSelect label="Role" value={coachForm.role} options={COACH_ROLES} onChange={(v) => setCoachForm({ ...coachForm, role: v })} testId="coach-role-input" />
                     <FieldInput label="Email" value={coachForm.email} onChange={(v) => setCoachForm({ ...coachForm, email: v })} testId="coach-email-input" />
                     <FieldInput label="Phone" value={coachForm.phone} onChange={(v) => setCoachForm({ ...coachForm, phone: v })} testId="coach-phone-input" />
-                    <Button onClick={handleAddCoach} data-testid="submit-coach" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Button onClick={handleAddCoach} data-testid="submit-coach" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                       {editingCoach ? "Update" : "Add"} Coach
                     </Button>
                   </div>
@@ -281,35 +276,35 @@ export default function ProgramDetail() {
             </CardHeader>
             <CardContent>
               {coaches.length === 0 ? (
-                <p className="text-slate-500 text-sm py-2">No coaches yet</p>
+                <p className="text-gray-400 text-sm py-2">No coaches yet</p>
               ) : (
                 <div className="space-y-2">
                   {coaches.map((c) => (
-                    <div key={c.coach_id} className="p-2 rounded-lg bg-[#0f172a] border border-[#334155]" data-testid={`coach-${c.coach_id}`}>
+                    <div key={c.coach_id} className="p-3 rounded-lg bg-gray-50 border border-gray-200" data-testid={`coach-${c.coach_id}`}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-white text-sm font-medium flex items-center gap-1">
-                            <User className="w-3 h-3 text-slate-400" /> {c.coach_name}
+                          <p className="text-gray-900 text-sm font-medium flex items-center gap-1">
+                            <User className="w-3 h-3 text-gray-400" /> {c.coach_name}
                           </p>
-                          <p className="text-slate-400 text-xs">{c.role}</p>
+                          <p className="text-gray-500 text-xs">{c.role}</p>
                         </div>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => { setEditingCoach(c); setCoachForm({ coach_name: c.coach_name, role: c.role, email: c.email, phone: c.phone, notes: c.notes }); setCoachOpen(true); }}
                             data-testid={`edit-coach-${c.coach_id}`}
-                            className="text-slate-500 hover:text-blue-400 text-xs px-1"
+                            className="text-gray-400 hover:text-purple-600 text-xs px-1"
                           >Edit</button>
                           <button
                             onClick={() => handleDeleteCoach(c.coach_id)}
                             data-testid={`delete-coach-${c.coach_id}`}
-                            className="text-slate-500 hover:text-red-400 text-xs px-1"
+                            className="text-gray-400 hover:text-red-500 text-xs px-1"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
-                      {c.email && <p className="text-blue-400 text-xs flex items-center gap-1 mt-1"><Mail className="w-3 h-3" />{c.email}</p>}
-                      {c.phone && <p className="text-slate-400 text-xs flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</p>}
+                      {c.email && <p className="text-purple-600 text-xs flex items-center gap-1 mt-1"><Mail className="w-3 h-3" />{c.email}</p>}
+                      {c.phone && <p className="text-gray-500 text-xs flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</p>}
                     </div>
                   ))}
                 </div>
@@ -317,17 +312,16 @@ export default function ProgramDetail() {
             </CardContent>
           </Card>
 
-          {/* Interactions */}
-          <Card className="bg-[#1e293b] border-[#334155]">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="font-heading text-lg text-white">Interactions</CardTitle>
+              <CardTitle className="font-heading text-lg text-gray-900">Interactions</CardTitle>
               <Dialog open={intOpen} onOpenChange={setIntOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" data-testid="add-interaction-btn" className="text-xs border-[#334155] text-slate-300 hover:bg-[#334155] h-7">
+                  <Button size="sm" variant="outline" data-testid="add-interaction-btn" className="text-xs border-gray-300 text-gray-600 hover:bg-gray-100 h-7">
                     <Plus className="w-3 h-3 mr-1" /> Add
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#1e293b] border-[#334155] text-white">
+                <DialogContent className="bg-white border-gray-200 text-gray-900">
                   <DialogHeader>
                     <DialogTitle className="font-heading">Add Interaction</DialogTitle>
                   </DialogHeader>
@@ -337,15 +331,15 @@ export default function ProgramDetail() {
                     <FieldInput label="Date/Time" value={intForm.date_time} onChange={(v) => setIntForm({ ...intForm, date_time: v })} type="datetime-local" testId="int-datetime-input" />
                     <FieldInput label="Coach Email" value={intForm.coach_email} onChange={(v) => setIntForm({ ...intForm, coach_email: v })} testId="int-coach-email-input" />
                     <div>
-                      <Label className="text-slate-400 text-xs">Notes</Label>
+                      <Label className="text-gray-500 text-xs">Notes</Label>
                       <Textarea
                         value={intForm.notes}
                         onChange={(e) => setIntForm({ ...intForm, notes: e.target.value })}
                         data-testid="int-notes-input"
-                        className="bg-[#0f172a] border-[#334155] text-white mt-1"
+                        className="bg-white border-gray-300 text-gray-900 mt-1"
                       />
                     </div>
-                    <Button onClick={handleAddInteraction} data-testid="submit-interaction" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Button onClick={handleAddInteraction} data-testid="submit-interaction" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                       Add Interaction
                     </Button>
                   </div>
@@ -354,19 +348,19 @@ export default function ProgramDetail() {
             </CardHeader>
             <CardContent>
               {interactions.length === 0 ? (
-                <p className="text-slate-500 text-sm py-2">No interactions yet</p>
+                <p className="text-gray-400 text-sm py-2">No interactions yet</p>
               ) : (
                 <div className="space-y-2 max-h-[400px] overflow-y-auto">
                   {interactions.map((int) => (
-                    <div key={int.interaction_id} className="p-2 rounded-lg bg-[#0f172a] border border-[#334155]" data-testid={`interaction-${int.interaction_id}`}>
+                    <div key={int.interaction_id} className="p-3 rounded-lg bg-gray-50 border border-gray-200" data-testid={`interaction-${int.interaction_id}`}>
                       <div className="flex items-center justify-between">
-                        <Badge className="bg-blue-900 text-blue-200 text-[10px]">{int.type}</Badge>
-                        <span className="text-slate-500 text-[10px]">
+                        <Badge className="bg-purple-100 text-purple-700 text-[10px] border border-purple-200">{int.type}</Badge>
+                        <span className="text-gray-400 text-[10px]">
                           {int.date_time ? new Date(int.date_time).toLocaleDateString() : ""}
                         </span>
                       </div>
-                      <p className="text-slate-300 text-xs mt-1">{int.outcome}</p>
-                      {int.notes && <p className="text-slate-500 text-xs mt-0.5">{int.notes}</p>}
+                      <p className="text-gray-700 text-xs mt-1">{int.outcome}</p>
+                      {int.notes && <p className="text-gray-500 text-xs mt-0.5">{int.notes}</p>}
                     </div>
                   ))}
                 </div>
