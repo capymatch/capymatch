@@ -160,7 +160,7 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-6" data-testid="recent-activity">
           <div className="flex items-center gap-2 mb-5">
-            <Calendar className="w-5 h-5 text-purple-600" />
+            <Calendar className="w-5 h-5 text-slate-600" strokeWidth={1.5} />
             <h3 className="font-heading text-lg font-bold text-gray-900">Recent Activity</h3>
           </div>
           {data.recent_interactions && data.recent_interactions.length > 0 ? (
