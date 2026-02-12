@@ -1,27 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../lib/api";
 import { DIVISIONS, DIVISION_COLORS, REGIONS } from "../lib/constants";
-import { Search, Filter, Plus, BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
+import { Separator } from "../components/ui/separator";
 import { toast } from "sonner";
+
+const CONFERENCES = [
+  "ACC", "Big 12", "Big East", "Big Ten", "Pac-12", "SEC",
+  "CCAA", "GLVC", "Landmark", "MIAA", "NCAC", "NESCAC", "NEWMAC",
+  "NSIC", "RMAC", "SAA", "SAC", "SCAC", "SCIAC", "Sunshine State", "UAA",
+  "Centennial",
+];
 
 export default function UniversityKnowledgeBase() {
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [activeDivision, setActiveDivision] = useState("all");
+  const [filterDivision, setFilterDivision] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
-  const [collapsed, setCollapsed] = useState({});
+  const [filterConference, setFilterConference] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
   const [adding, setAdding] = useState({});
 
-  const fetchUniversities = async () => {
+  const fetchUniversities = useCallback(async () => {
     try {
       const params = {};
       if (search) params.search = search;
       if (filterRegion && filterRegion !== "all") params.region = filterRegion;
+      if (filterDivision && filterDivision !== "all") params.division = filterDivision;
+      if (filterConference && filterConference !== "all") params.conference = filterConference;
       const res = await api.get("/knowledge-base", { params });
       setUniversities(res.data);
     } catch {
@@ -29,9 +40,9 @@ export default function UniversityKnowledgeBase() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, filterRegion, filterDivision, filterConference]);
 
-  useEffect(() => { fetchUniversities(); }, [search, filterRegion]);
+  useEffect(() => { fetchUniversities(); }, [fetchUniversities]);
 
   const addToBoard = async (uni) => {
     setAdding((prev) => ({ ...prev, [uni.university_name]: true }));
@@ -45,12 +56,25 @@ export default function UniversityKnowledgeBase() {
     }
   };
 
-  const toggleSection = (div) => setCollapsed((prev) => ({ ...prev, [div]: !prev[div] }));
+  const resetFilters = () => {
+    setFilterDivision("all");
+    setFilterRegion("all");
+    setFilterConference("all");
+    setSearch("");
+  };
 
-  const divisionGroups = ["D1", "D2", "D3", "NAIA", "JUCO"];
-  const filteredUnis = activeDivision === "all"
-    ? universities
-    : universities.filter((u) => u.division === activeDivision);
+  const hasFilters = filterDivision !== "all" || filterRegion !== "all" || filterConference !== "all" || search !== "";
+
+  const activeFilterTags = [];
+  if (filterDivision !== "all") activeFilterTags.push({ label: filterDivision, key: "div", clear: () => setFilterDivision("all") });
+  if (filterRegion !== "all") activeFilterTags.push({ label: filterRegion, key: "reg", clear: () => setFilterRegion("all") });
+  if (filterConference !== "all") activeFilterTags.push({ label: filterConference, key: "conf", clear: () => setFilterConference("all") });
+
+  const sorted = [...universities].sort((a, b) => {
+    if (sortBy === "name") return a.university_name.localeCompare(b.university_name);
+    if (sortBy === "division") return a.division.localeCompare(b.division);
+    return 0;
+  });
 
   if (loading) {
     return <div className="text-slate-400 text-center py-12" data-testid="kb-loading">Loading knowledge base...</div>;
@@ -58,129 +82,232 @@ export default function UniversityKnowledgeBase() {
 
   return (
     <div data-testid="knowledge-base" className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <BookOpen className="w-6 h-6 text-blue-400" />
-          <h2 className="font-heading text-2xl font-bold text-white" data-testid="kb-title">University Knowledge Base</h2>
-        </div>
-        <span className="text-slate-400 text-sm">{filteredUnis.length} universities</span>
+        <h2 className="font-heading text-2xl font-bold text-white" data-testid="kb-title">University Knowledge Base</h2>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap" data-testid="kb-filters">
-        <div className="relative flex-1 max-w-xs">
+      {/* Search Bar */}
+      <div className="flex items-center gap-4 bg-[#1e293b] border border-[#334155] rounded-lg p-4">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <Input
             data-testid="kb-search"
-            placeholder="Search universities..."
+            placeholder="Search by College Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-[#1e293b] border-[#334155] text-white placeholder:text-slate-500"
+            className="pl-9 bg-[#0f172a] border-[#334155] text-white placeholder:text-slate-500 h-10"
           />
         </div>
-        {/* Division tabs */}
-        <div className="flex items-center gap-1" data-testid="kb-division-tabs">
-          <button
-            onClick={() => setActiveDivision("all")}
-            data-testid="kb-tab-all"
-            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${
-              activeDivision === "all" ? "bg-slate-600 text-white" : "bg-[#1e293b] text-slate-400 hover:text-white"
-            }`}
-          >
-            All
-          </button>
-          {divisionGroups.map((d) => (
-            <button
-              key={d}
-              onClick={() => setActiveDivision(d)}
-              data-testid={`kb-tab-${d.toLowerCase()}`}
-              className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${
-                activeDivision === d
-                  ? `${DIVISION_COLORS[d]} shadow-md`
-                  : "bg-[#1e293b] text-slate-400 hover:text-white"
-              }`}
-            >
-              {d}
-            </button>
-          ))}
-        </div>
-        <Select value={filterRegion} onValueChange={setFilterRegion}>
-          <SelectTrigger data-testid="kb-filter-region" className="w-36 bg-[#1e293b] border-[#334155] text-white">
-            <Filter className="w-3 h-3 mr-1" /><SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#1e293b] border-[#334155]">
-            <SelectItem value="all">All Regions</SelectItem>
-            {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <span className="text-slate-400 text-sm whitespace-nowrap" data-testid="kb-count">
+          {sorted.length} colleges found
+        </span>
       </div>
 
-      {/* Display grouped by division */}
-      {(activeDivision === "all" ? divisionGroups : [activeDivision]).map((div) => {
-        const divUnis = filteredUnis.filter((u) => u.division === div);
-        if (divUnis.length === 0) return null;
-        const isCollapsed = collapsed[div];
-
-        return (
-          <div key={div} className="section-enter" data-testid={`kb-section-${div.toLowerCase()}`}>
-            <button
-              onClick={() => toggleSection(div)}
-              data-testid={`kb-toggle-${div.toLowerCase()}`}
-              className="w-full flex items-center gap-2 px-4 py-2 rounded-t-lg border border-[#334155] bg-[#1e293b] hover:bg-[#334155]/50 transition-colors"
-            >
-              {isCollapsed ? <ChevronRight className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-              <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${DIVISION_COLORS[div]}`}>{div}</span>
-              <span className="font-heading font-bold text-sm text-white">Division {div === "D1" ? "1" : div === "D2" ? "2" : div === "D3" ? "3" : div}</span>
-              <Badge className="ml-2 bg-slate-700 text-slate-300 text-xs">{divUnis.length} programs</Badge>
-            </button>
-
-            {!isCollapsed && (
-              <div className="table-scroll border border-t-0 border-[#334155] rounded-b-lg bg-[#1e293b]/50">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="border-b border-[#334155]">
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">University</th>
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">Conference</th>
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">Region</th>
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">Website</th>
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">Mascot</th>
-                      <th className="px-3 py-2 text-left text-slate-400 font-medium uppercase tracking-wider">Notes</th>
-                      <th className="px-3 py-2 text-right text-slate-400 font-medium uppercase tracking-wider">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {divUnis.map((uni) => (
-                      <tr key={uni.university_name} className="border-b border-[#334155]/50 hover:bg-[#334155]/30 transition-colors" data-testid={`kb-row-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
-                        <td className="px-3 py-2 text-white font-medium">{uni.university_name}</td>
-                        <td className="px-3 py-2 text-slate-300">{uni.conference}</td>
-                        <td className="px-3 py-2 text-slate-300">{uni.region}</td>
-                        <td className="px-3 py-2">
-                          {uni.website && <a href={uni.website} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 text-xs">Visit</a>}
-                        </td>
-                        <td className="px-3 py-2 text-slate-400">{uni.mascot}</td>
-                        <td className="px-3 py-2 text-slate-500 truncate max-w-[200px]">{uni.notes}</td>
-                        <td className="px-3 py-2 text-right">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => addToBoard(uni)}
-                            disabled={adding[uni.university_name]}
-                            data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                            className="text-xs border-blue-600 text-blue-400 hover:bg-blue-600/20 h-7"
-                          >
-                            <Plus className="w-3 h-3 mr-1" />
-                            {adding[uni.university_name] ? "Adding..." : "Add to Board"}
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+      {/* Main Layout: Sidebar + Cards */}
+      <div className="flex gap-6">
+        {/* Left Sidebar Filters */}
+        <aside className="w-64 flex-shrink-0" data-testid="kb-sidebar-filters">
+          <div className="bg-[#1e293b] border border-[#334155] rounded-lg p-4 sticky top-20">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-slate-400" />
+                <span className="font-heading font-bold text-white text-sm">Filters</span>
               </div>
-            )}
+              {hasFilters && (
+                <button
+                  onClick={resetFilters}
+                  data-testid="kb-reset-filters"
+                  className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                >
+                  <RotateCcw className="w-3 h-3" /> Reset
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-5">
+              {/* Division */}
+              <div>
+                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Division</label>
+                <Select value={filterDivision} onValueChange={setFilterDivision}>
+                  <SelectTrigger data-testid="kb-filter-division" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                    <SelectItem value="all">Any</SelectItem>
+                    {DIVISIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Region */}
+              <div>
+                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Region</label>
+                <Select value={filterRegion} onValueChange={setFilterRegion}>
+                  <SelectTrigger data-testid="kb-filter-region" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                    <SelectItem value="all">Any</SelectItem>
+                    {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Conference */}
+              <div>
+                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Conference</label>
+                <Select value={filterConference} onValueChange={setFilterConference}>
+                  <SelectTrigger data-testid="kb-filter-conference" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                    <SelectItem value="all">Any</SelectItem>
+                    {CONFERENCES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator className="bg-[#334155]" />
+
+              {/* Sort */}
+              <div>
+                <label className="text-slate-400 text-xs font-medium uppercase tracking-wider block mb-1.5">Sort By</label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger data-testid="kb-sort" className="bg-[#0f172a] border-[#334155] text-white h-9 text-sm">
+                    <ArrowUpDown className="w-3 h-3 mr-1" /><SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1e293b] border-[#334155]">
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="division">Division</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
-        );
-      })}
+        </aside>
+
+        {/* Main Content - Card List */}
+        <div className="flex-1 space-y-3" data-testid="kb-card-list">
+          {/* Active filter tags */}
+          {activeFilterTags.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap" data-testid="kb-active-filters">
+              {activeFilterTags.map((tag) => (
+                <Badge
+                  key={tag.key}
+                  className="bg-blue-900/50 text-blue-300 border border-blue-700 px-2 py-1 text-xs cursor-pointer hover:bg-blue-900/80 transition-colors"
+                  onClick={tag.clear}
+                >
+                  {tag.label} &times;
+                </Badge>
+              ))}
+            </div>
+          )}
+          {activeFilterTags.length === 0 && (
+            <p className="text-slate-500 text-sm" data-testid="kb-no-filters">No filters selected</p>
+          )}
+
+          {/* University Cards */}
+          {sorted.length === 0 ? (
+            <div className="text-center py-12 text-slate-500">No universities found matching your filters</div>
+          ) : (
+            sorted.map((uni) => (
+              <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UniversityCard({ uni, adding, addToBoard }) {
+  const divColor = DIVISION_COLORS[uni.division] || "bg-slate-600 text-white";
+  const divFull = uni.division === "D1" ? "NCAA I" : uni.division === "D2" ? "NCAA II" : uni.division === "D3" ? "NCAA III" : uni.division;
+
+  return (
+    <div
+      className="bg-[#1e293b] border border-[#334155] rounded-lg p-5 hover:border-[#475569] transition-all duration-200 group"
+      data-testid={`kb-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+    >
+      {/* Top Row: Name + Location + Division + Actions */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          {/* Division Badge Icon */}
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
+            {uni.division}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            {/* University Name */}
+            <h3 className="text-white font-heading font-bold text-lg leading-tight">{uni.university_name}</h3>
+
+            {/* Location / Conference */}
+            <div className="flex items-center gap-3 mt-1 text-sm text-slate-400 flex-wrap">
+              {uni.region && (
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5" /> {uni.region}
+                </span>
+              )}
+              {uni.conference && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5" /> {divFull} | {uni.conference}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => addToBoard(uni)}
+            disabled={adding[uni.university_name]}
+            data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+            className="text-xs border-blue-600/50 text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 h-8 gap-1.5 transition-colors"
+          >
+            <BookmarkPlus className="w-3.5 h-3.5" />
+            {adding[uni.university_name] ? "Adding..." : "Add to Board"}
+          </Button>
+          {uni.website && (
+            <a
+              href={uni.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid={`visit-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border border-[#334155] text-slate-300 hover:bg-[#334155] hover:text-white rounded-md transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Visit
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Tags Row */}
+      <div className="flex items-center gap-2 mt-3 flex-wrap">
+        {uni.division && (
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${divColor}`}>
+            <Trophy className="w-3 h-3" /> {uni.division}
+          </span>
+        )}
+        {uni.region && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-slate-700/60 text-slate-300 border border-slate-600">
+            <MapPin className="w-3 h-3" /> {uni.region}
+          </span>
+        )}
+        {uni.mascot && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-slate-700/60 text-slate-300 border border-slate-600">
+            {uni.mascot}
+          </span>
+        )}
+        {uni.notes && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-900/40 text-amber-300 border border-amber-700/50">
+            {uni.notes}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
