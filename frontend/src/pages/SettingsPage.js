@@ -48,19 +48,19 @@ export default function SettingsPage() {
     <div data-testid="settings-page" className="max-w-3xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-white/50 text-sm mt-1">Manage your preferences and account settings</p>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Settings</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Manage your preferences and account settings</p>
       </div>
 
       {/* Theme Section */}
-      <div className="rounded-xl p-6 border border-white/10 bg-white/[0.02]">
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <Palette className="w-5 h-5 text-purple-400" />
+            <Palette className="w-5 h-5 text-purple-500" />
           </div>
           <div>
-            <h2 className="text-white font-semibold text-lg">Appearance</h2>
-            <p className="text-white/50 text-sm">Customize how the app looks</p>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Appearance</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Customize how the app looks</p>
           </div>
         </div>
 
@@ -73,11 +73,16 @@ export default function SettingsPage() {
               className={`p-4 rounded-xl border-2 transition-all text-left ${
                 theme === option.value
                   ? "border-purple-500 bg-purple-500/10"
-                  : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]"
+                  : ""
               }`}
+              style={{ 
+                borderColor: theme === option.value ? undefined : "var(--t-border)",
+                backgroundColor: theme === option.value ? undefined : "var(--t-surface-alt)"
+              }}
             >
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${
-                theme === option.value ? "bg-purple-500/30" : "bg-white/10"
+                theme === option.value ? "bg-purple-500/30" : ""
+              }`} style={{ backgroundColor: theme === option.value ? undefined : "var(--t-surface)" }}>
               }`}>
                 <option.icon className={`w-5 h-5 ${theme === option.value ? "text-purple-400" : "text-white/60"}`} />
               </div>
