@@ -228,7 +228,8 @@ function PipelineFunnel({ programs }) {
         return (
           <div
             key={stage.key}
-            className={`relative p-4 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden`}
+            className={`relative p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden`}
+            style={{ backgroundColor: "var(--t-funnel-bg)", borderColor: "var(--t-border)" }}
             data-testid={`funnel-${stage.key}`}
           >
             {/* Top gradient bar */}
