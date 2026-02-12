@@ -121,7 +121,7 @@ export default function Dashboard() {
         {/* Pipeline Breakdown - wider */}
         <div className="lg:col-span-3 bg-white dark:bg-[#141e30] rounded-xl border shadow-sm p-6" style={{ borderColor: "var(--t-border)" }} data-testid="status-breakdown">
           <div className="flex items-center gap-2 mb-5">
-            <BarChart3 className="w-5 h-5 text-slate-600" strokeWidth={1.5} />
+            <BarChart3 className="w-5 h-5" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
             <h3 className="font-heading text-lg font-bold" style={{ color: "var(--t-text)" }}>Pipeline Breakdown</h3>
           </div>
           <div className="space-y-4">
@@ -151,7 +151,8 @@ export default function Dashboard() {
           <button
             onClick={() => navigate("/board")}
             data-testid="go-to-board-btn"
-            className="mt-5 flex items-center gap-1 text-slate-600 hover:text-slate-800 text-sm font-medium transition-colors"
+            className="mt-5 flex items-center gap-1 text-sm font-medium transition-colors"
+            style={{ color: "var(--t-accent)" }}
           >
             Go to Recruiting Board <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
           </button>
@@ -160,7 +161,7 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <div className="lg:col-span-2 bg-white dark:bg-[#141e30] rounded-xl border shadow-sm p-6" style={{ borderColor: "var(--t-border)" }} data-testid="recent-activity">
           <div className="flex items-center gap-2 mb-5">
-            <Calendar className="w-5 h-5 text-slate-600" strokeWidth={1.5} />
+            <Calendar className="w-5 h-5" style={{ color: "var(--t-accent)" }} strokeWidth={1.5} />
             <h3 className="font-heading text-lg font-bold" style={{ color: "var(--t-text)" }}>Recent Activity</h3>
           </div>
           {data.recent_interactions && data.recent_interactions.length > 0 ? (
