@@ -112,7 +112,7 @@ function InlineSelect({ value, options, onChange }) {
         <svg className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""} ${currentColor ? "opacity-70" : "opacity-40"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       {isOpen && (
-        <div className="absolute z-50 mt-1 left-0 min-w-[160px] bg-white rounded-lg border border-gray-200 shadow-xl py-1 animate-in fade-in-0 zoom-in-95 duration-100">
+        <div className="absolute z-50 mt-1 left-0 min-w-[160px] rounded-lg border py-1 animate-in fade-in-0 zoom-in-95 duration-100" style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)", boxShadow: "var(--t-dropdown-shadow)" }}>
           <button
             type="button"
             onClick={() => { onChange(""); setIsOpen(false); }}
