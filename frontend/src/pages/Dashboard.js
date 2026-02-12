@@ -90,12 +90,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6" data-testid="dashboard">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Dashboard</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Your recruiting overview</p>
-      </div>
-
       {/* Onboarding Checklist */}
       {showOnboarding && (
         <div

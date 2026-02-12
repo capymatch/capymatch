@@ -71,8 +71,6 @@ export default function NeedsFollowUp() {
     <div data-testid="needs-follow-up" className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Bell className="w-6 h-6 text-orange-500" />
-          <h2 className="font-heading text-2xl font-bold" style={{ color: "var(--t-text)" }} data-testid="followup-title">Needs Follow-Up</h2>
           <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/30">{programs.length} due</Badge>
         </div>
       </div>

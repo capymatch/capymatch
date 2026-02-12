@@ -371,10 +371,7 @@ export default function CalendarPage() {
     <div data-testid="calendar-page" className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Calendar</h1>
-          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Track camps, showcases, and recruiting events</p>
-        </div>
+        <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Track camps, showcases, and recruiting events</p>
         <button
           data-testid="add-event-btn"
           onClick={() => handleAddEvent(null)}

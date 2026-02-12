@@ -484,12 +484,9 @@ export default function Inbox() {
     <div data-testid="inbox-page" className="flex flex-col h-[calc(100vh-7rem)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Inbox</h1>
-          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+        <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
             Coach conversations &middot; {gmailStatus.gmail_email}
-          </p>
-        </div>
+        </p>
         <div className="flex items-center gap-2">
           <button
             data-testid="refresh-btn"

@@ -88,12 +88,6 @@ export default function SettingsPage() {
 
   return (
     <div data-testid="settings-page" className="max-w-3xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Settings</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Manage your preferences and integrations</p>
-      </div>
-
       {/* Theme Section */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">

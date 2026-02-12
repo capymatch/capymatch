@@ -70,12 +70,6 @@ export default function ProfilePage() {
 
   return (
     <div data-testid="profile-page" className="max-w-3xl mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Athlete Profile</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>This info appears on your public schedule page and in outreach emails</p>
-      </div>
-
       {/* Share Link */}
       {shareLink && (
         <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>

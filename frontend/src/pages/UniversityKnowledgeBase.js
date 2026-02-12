@@ -82,11 +82,6 @@ export default function UniversityKnowledgeBase() {
 
   return (
     <div data-testid="knowledge-base" className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-heading text-2xl font-bold" style={{ color: "var(--t-text)" }} data-testid="kb-title">University Knowledge Base</h2>
-      </div>
-
       {/* Search Bar */}
       <div className="flex items-center gap-4 rounded-lg p-4 shadow-sm border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="relative flex-1">
