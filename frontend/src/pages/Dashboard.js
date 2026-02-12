@@ -62,11 +62,11 @@ export default function Dashboard() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5" data-testid="stat-cards">
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow" data-testid="stat-total-schools">
+        <div className="bg-white dark:bg-[#141e30] rounded-xl border p-6 shadow-sm hover:shadow-md transition-shadow" style={{ borderColor: "var(--t-border)" }} data-testid="stat-total-schools">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Total Schools</p>
-              <p className="font-heading text-4xl font-black text-gray-900 mt-1">{data.total_schools}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Total Schools</p>
+              <p className="font-heading text-4xl font-black mt-1" style={{ color: "var(--t-text)" }}>{data.total_schools}</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center">
               <Users className="w-7 h-7 text-slate-600" strokeWidth={1.5} />
