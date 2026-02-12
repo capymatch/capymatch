@@ -38,18 +38,109 @@ const PRIORITY_DOT = {
   "Very High": "bg-red-500 animate-pulse",
 };
 
+/* ── Color maps ── */
+const STATUS_COLORS = {
+  "Not Contacted": { bg: "bg-rose-400", text: "text-white", hover: "hover:bg-rose-500" },
+  "Contacted": { bg: "bg-emerald-400", text: "text-white", hover: "hover:bg-emerald-500" },
+  "No Response Yet": { bg: "bg-amber-400", text: "text-white", hover: "hover:bg-amber-500" },
+  "Video Viewed": { bg: "bg-cyan-400", text: "text-white", hover: "hover:bg-cyan-500" },
+  "Some Interest": { bg: "bg-blue-400", text: "text-white", hover: "hover:bg-blue-500" },
+  "Active Conversation": { bg: "bg-blue-500", text: "text-white", hover: "hover:bg-blue-600" },
+  "Offer / Commit Talk": { bg: "bg-amber-500", text: "text-white", hover: "hover:bg-amber-600" },
+  "Not a Fit / Closed": { bg: "bg-gray-400", text: "text-white", hover: "hover:bg-gray-500" },
+};
+
+const REPLY_COLORS = {
+  "No Reply": { bg: "bg-rose-300", text: "text-white", hover: "hover:bg-rose-400" },
+  "Awaiting Reply": { bg: "bg-orange-400", text: "text-white", hover: "hover:bg-orange-500" },
+  "Reply Received": { bg: "bg-emerald-500", text: "text-white", hover: "hover:bg-emerald-600" },
+};
+
+const PRIORITY_INLINE_COLORS = {
+  "Low": { bg: "bg-gray-200", text: "text-gray-700", hover: "hover:bg-gray-300" },
+  "Medium": { bg: "bg-blue-200", text: "text-blue-800", hover: "hover:bg-blue-300" },
+  "High": { bg: "bg-orange-300", text: "text-orange-900", hover: "hover:bg-orange-400" },
+  "Very High": { bg: "bg-red-400", text: "text-white", hover: "hover:bg-red-500" },
+};
+
+const ACTION_COLORS = {
+  "Send Email": { bg: "bg-sky-200", text: "text-sky-800", hover: "hover:bg-sky-300" },
+  "Follow Up": { bg: "bg-violet-200", text: "text-violet-800", hover: "hover:bg-violet-300" },
+  "Send Video": { bg: "bg-pink-200", text: "text-pink-800", hover: "hover:bg-pink-300" },
+  "Schedule Visit": { bg: "bg-teal-200", text: "text-teal-800", hover: "hover:bg-teal-300" },
+  "Application": { bg: "bg-amber-200", text: "text-amber-800", hover: "hover:bg-amber-300" },
+  "Phone Call": { bg: "bg-emerald-200", text: "text-emerald-800", hover: "hover:bg-emerald-300" },
+  "Other": { bg: "bg-gray-200", text: "text-gray-700", hover: "hover:bg-gray-300" },
+};
+
+function getColorMap(options) {
+  if (options === RECRUITING_STATUSES) return STATUS_COLORS;
+  if (options === REPLY_STATUSES) return REPLY_COLORS;
+  if (options === PRIORITIES) return PRIORITY_INLINE_COLORS;
+  if (options === NEXT_ACTIONS) return ACTION_COLORS;
+  return null;
+}
+
 /* ── Inline editable components ── */
 function InlineSelect({ value, options, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = React.useRef(null);
+  const colorMap = getColorMap(options);
+
+  React.useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setIsOpen(false);
+    }
+    if (isOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isOpen]);
+
+  const currentColor = colorMap && value ? colorMap[value] : null;
+
   return (
-    <select
-      value={value || ""}
-      onChange={(e) => onChange(e.target.value)}
-      className="bg-white border border-gray-200 hover:border-gray-300 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-100 cursor-pointer text-gray-700 transition-all appearance-none"
-      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 6px center', paddingRight: '22px' }}
-    >
-      <option value="">-</option>
-      {options.map((o) => <option key={o} value={o}>{o}</option>)}
-    </select>
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`rounded-md px-2.5 py-1 text-xs font-medium cursor-pointer transition-all whitespace-nowrap flex items-center gap-1 ${
+          currentColor
+            ? `${currentColor.bg} ${currentColor.text} ${currentColor.hover} shadow-sm`
+            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+        }`}
+      >
+        {value || "Select"}
+        <svg className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""} ${currentColor ? "opacity-70" : "opacity-40"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      {isOpen && (
+        <div className="absolute z-50 mt-1 left-0 min-w-[160px] bg-white rounded-lg border border-gray-200 shadow-xl py-1 animate-in fade-in-0 zoom-in-95 duration-100">
+          <button
+            type="button"
+            onClick={() => { onChange(""); setIsOpen(false); }}
+            className="w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:bg-gray-50 transition-colors"
+          >
+            - Clear -
+          </button>
+          {options.map((o) => {
+            const c = colorMap ? colorMap[o] : null;
+            return (
+              <button
+                key={o}
+                type="button"
+                onClick={() => { onChange(o); setIsOpen(false); }}
+                className={`w-full text-left px-3 py-1.5 text-xs font-medium transition-all ${
+                  c
+                    ? `${c.bg} ${c.text} ${c.hover} mx-1 my-0.5 rounded-md`
+                    : `text-gray-700 hover:bg-gray-50 ${value === o ? "bg-gray-100 font-semibold" : ""}`
+                }`}
+                style={c ? { width: "calc(100% - 8px)" } : undefined}
+              >
+                {o}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
