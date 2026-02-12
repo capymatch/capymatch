@@ -209,7 +209,7 @@ export default function UniversityKnowledgeBase() {
 
           {/* University Cards */}
           {sorted.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">No universities found matching your filters</div>
+            <div className="text-center py-12 text-gray-400">No universities found matching your filters</div>
           ) : (
             sorted.map((uni) => (
               <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
