@@ -86,7 +86,7 @@ export default function Dashboard() {
               <p className="font-heading text-4xl font-black text-gray-900 mt-1">{data.follow_ups_due}</p>
             </div>
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${data.follow_ups_due > 0 ? "bg-orange-50" : "bg-green-50"}`}>
-              <Bell className={`w-7 h-7 ${data.follow_ups_due > 0 ? "text-orange-500" : "text-green-500"}`} />
+              <Bell className={`w-7 h-7 ${data.follow_ups_due > 0 ? "text-orange-500" : "text-green-500"}`} strokeWidth={1.5} />
             </div>
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100">
