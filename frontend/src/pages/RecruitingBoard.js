@@ -116,7 +116,8 @@ function InlineSelect({ value, options, onChange }) {
           <button
             type="button"
             onClick={() => { onChange(""); setIsOpen(false); }}
-            className="w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:bg-gray-50 transition-colors"
+            className="w-full text-left px-3 py-1.5 text-xs transition-colors"
+            style={{ color: "var(--t-text-muted)" }}
           >
             - Clear -
           </button>
