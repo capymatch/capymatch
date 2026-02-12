@@ -107,12 +107,13 @@ async def get_gmail_credentials(user_id: str):
     if not token_doc:
         return None
 
+    client_id, client_secret, _, _ = _gmail_config()
     creds = Credentials(
         token=token_doc["access_token"],
         refresh_token=token_doc.get("refresh_token"),
         token_uri="https://oauth2.googleapis.com/token",
-        client_id=GMAIL_CLIENT_ID,
-        client_secret=GMAIL_CLIENT_SECRET,
+        client_id=client_id,
+        client_secret=client_secret,
     )
 
     # Check expiry
