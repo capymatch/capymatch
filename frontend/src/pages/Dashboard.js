@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Calendar, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [programs, setPrograms] = useState([]);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
