@@ -138,36 +138,36 @@ export default function SettingsPage() {
               <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full"></div>
             </div>
           </div>
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
+          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div>
-              <p className="text-white text-sm">Email Notifications</p>
-              <p className="text-white/40 text-xs">Receive updates via email</p>
+              <p className="text-sm" style={{ color: "var(--t-text)" }}>Email Notifications</p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Receive updates via email</p>
             </div>
-            <div className="w-10 h-6 bg-white/20 rounded-full relative cursor-pointer">
-              <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white/60 rounded-full"></div>
+            <div className="w-10 h-6 rounded-full relative cursor-pointer" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+              <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-gray-400 rounded-full"></div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Privacy Section */}
-      <div className="rounded-xl p-6 border border-white/10 bg-white/[0.02]">
+      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-green-400" />
+            <Shield className="w-5 h-5 text-green-500" />
           </div>
           <div>
-            <h2 className="text-white font-semibold text-lg">Privacy</h2>
-            <p className="text-white/50 text-sm">Control your data and privacy</p>
+            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Privacy</h2>
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Control your data and privacy</p>
           </div>
         </div>
         <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-white/5">
+          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div>
-              <p className="text-white text-sm">Data Export</p>
-              <p className="text-white/40 text-xs">Download all your recruiting data</p>
+              <p className="text-sm" style={{ color: "var(--t-text)" }}>Data Export</p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Download all your recruiting data</p>
             </div>
-            <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+            <button className="px-4 py-2 text-sm rounded-lg transition-colors" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>
               Export
             </button>
           </div>
