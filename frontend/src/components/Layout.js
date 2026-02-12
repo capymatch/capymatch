@@ -111,22 +111,6 @@ export default function Layout({ user }) {
           </div>
 
           <div className="flex items-center gap-5">
-            {/* Search */}
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-              <input
-                type="text"
-                placeholder="Search schools, coaches..."
-                className="w-72 pl-11 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-purple-500/50 transition-all"
-                style={{ 
-                  backgroundColor: "var(--t-input-bg)", 
-                  borderColor: "var(--t-border)", 
-                  color: "var(--t-text)" 
-                }}
-                data-testid="header-search"
-              />
-            </div>
-
             {/* Notification Icons */}
             <div className="flex items-center gap-1">
               <button className="relative p-2.5 rounded-xl transition-all" style={{ color: "var(--t-text-muted)" }}>
