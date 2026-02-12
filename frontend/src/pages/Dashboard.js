@@ -302,13 +302,15 @@ export default function Dashboard() {
       </div>
 
       {/* Smart Follow-Up Reminders */}
-      {reminders.length > 0 && (
-        <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
-          <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <AlertTriangle className="w-4 h-4 text-orange-500" />
-            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
+      <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
+        <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+          <AlertTriangle className="w-4 h-4 text-orange-500" />
+          <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
+          {reminders.length > 0 && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-500 font-medium ml-auto">{reminders.length} overdue</span>
-          </div>
+          )}
+        </div>
+        {reminders.length > 0 ? (
           <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
             {reminders.slice(0, 5).map((r) => (
               <div
@@ -342,27 +344,34 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="text-center py-8 px-5">
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No overdue follow-ups</p>
+            <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Set follow-up dates on your programs and reminders will appear here when they're due.</p>
+          </div>
+        )}
+      </div>
 
       {/* Profile Views */}
-      {profileViews && profileViews.total > 0 && (
-        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
-          <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <Eye className="w-4 h-4 text-emerald-500" />
-            <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
+      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
+        <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+          <Eye className="w-4 h-4 text-emerald-500" />
+          <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
+          {profileViews && (
             <div className="flex gap-3 ml-auto">
               <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">This week: {profileViews.this_week}</span>
             </div>
-          </div>
+          )}
+        </div>
+        {profileViews && profileViews.views.length > 0 ? (
           <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
             {profileViews.views.slice(0, 5).map((v, i) => (
               <div key={i} className="flex items-center gap-4 px-5 py-3">
                 <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
-                    {v.referer ? new URL(v.referer).hostname : "Direct visit"}
+                    {v.referer ? (() => { try { return new URL(v.referer).hostname; } catch { return "Unknown source"; } })() : "Direct visit"}
                     {v.is_edu && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500">.edu</span>}
                   </p>
                 </div>
@@ -372,8 +381,16 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="text-center py-8 px-5">
+            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No profile views yet</p>
+            <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, their visits will be tracked here.</p>
+            <button onClick={() => navigate("/settings")} className="mt-3 text-sm text-purple-500 hover:text-purple-400 transition-colors">
+              Set up your profile
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
