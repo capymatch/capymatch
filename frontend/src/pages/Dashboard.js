@@ -167,7 +167,7 @@ export default function Dashboard() {
             <div className="space-y-1">
               {data.recent_interactions.map((int, i) => (
                 <div key={int.interaction_id || i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors" data-testid={`activity-${i}`}>
-                  <div className="w-2 h-2 mt-1.5 rounded-full bg-purple-400 flex-shrink-0 ring-2 ring-purple-100" />
+                  <div className="w-2 h-2 mt-1.5 rounded-full bg-slate-400 flex-shrink-0 ring-2 ring-slate-100" />
                   <div className="flex-1 min-w-0">
                     <p className="text-gray-900 text-sm font-medium truncate">{int.university_name}</p>
                     <p className="text-gray-400 text-xs mt-0.5">{int.type}{int.outcome ? ` - ${int.outcome}` : ""}</p>
