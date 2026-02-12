@@ -151,9 +151,9 @@ export default function Dashboard() {
           <button
             onClick={() => navigate("/board")}
             data-testid="go-to-board-btn"
-            className="mt-5 flex items-center gap-1 text-purple-600 hover:text-purple-800 text-sm font-medium transition-colors"
+            className="mt-5 flex items-center gap-1 text-slate-600 hover:text-slate-800 text-sm font-medium transition-colors"
           >
-            Go to Recruiting Board <ArrowRight className="w-4 h-4" />
+            Go to Recruiting Board <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
           </button>
         </div>
 
