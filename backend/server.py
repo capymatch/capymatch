@@ -707,7 +707,7 @@ async def upload_athlete_photo(request: Request):
 # ─── Public Schedule (no auth required) ───
 
 @api_router.get("/public/schedule/{tenant_id}")
-async def public_schedule(tenant_id: str):
+async def public_schedule(tenant_id: str, request: Request):
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
         raise HTTPException(status_code=404, detail="Athlete not found")
@@ -720,11 +720,101 @@ async def public_schedule(tenant_id: str):
         {"tenant_id": tenant_id, "start_date": {"$lt": today}},
         {"_id": 0},
     ).sort("start_date", -1).to_list(20)
+
+    # Log profile view
+    forwarded = request.headers.get("x-forwarded-for", "")
+    visitor_ip = forwarded.split(",")[0].strip() if forwarded else request.client.host if request.client else ""
+    user_agent = request.headers.get("user-agent", "")
+    referer = request.headers.get("referer", "")
+    await db.profile_views.insert_one({
+        "view_id": f"pv_{uuid.uuid4().hex[:12]}",
+        "tenant_id": tenant_id,
+        "visitor_ip": visitor_ip,
+        "user_agent": user_agent,
+        "referer": referer,
+        "is_edu": ".edu" in referer.lower() or ".edu" in user_agent.lower(),
+        "viewed_at": datetime.now(timezone.utc).isoformat(),
+    })
+
     return {
         "profile": profile,
         "upcoming_events": events,
         "past_events": past_events,
     }
+
+# ─── Profile View Tracking ───
+
+@api_router.get("/profile-views")
+async def get_profile_views(request: Request):
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    views = await db.profile_views.find(
+        {"tenant_id": tenant_id}, {"_id": 0}
+    ).sort("viewed_at", -1).to_list(100)
+    # Aggregate stats
+    total = len(views)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    today_count = sum(1 for v in views if v.get("viewed_at", "").startswith(today))
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    week_count = sum(1 for v in views if v.get("viewed_at", "") >= week_ago)
+    return {
+        "views": views[:30],
+        "total": total,
+        "today": today_count,
+        "this_week": week_count,
+    }
+
+# ─── Smart Follow-Up Reminders ───
+
+@api_router.get("/reminders")
+async def get_reminders(request: Request):
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    # Get programs with overdue follow-ups
+    overdue = await db.programs.find({
+        "tenant_id": tenant_id,
+        "next_action_due": {"$ne": "", "$lte": today},
+        "recruiting_status": {"$nin": ["Not a Fit / Closed"]},
+    }, {"_id": 0}).sort("next_action_due", 1).to_list(50)
+
+    reminders = []
+    for p in overdue:
+        # Calculate days overdue
+        try:
+            due_date = datetime.strptime(p["next_action_due"], "%Y-%m-%d")
+            days_overdue = (datetime.now(timezone.utc).replace(tzinfo=None) - due_date).days
+        except ValueError:
+            days_overdue = 0
+
+        # Get coach info
+        coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(5)
+        head_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
+
+        # Get last interaction
+        last_interaction = await db.interactions.find_one(
+            {"tenant_id": tenant_id, "program_id": p["program_id"]},
+            {"_id": 0},
+            sort=[("date_time", -1)],
+        )
+
+        reminders.append({
+            "program_id": p["program_id"],
+            "university_name": p.get("university_name", ""),
+            "division": p.get("division", ""),
+            "recruiting_status": p.get("recruiting_status", ""),
+            "reply_status": p.get("reply_status", ""),
+            "next_action": p.get("next_action", ""),
+            "next_action_due": p.get("next_action_due", ""),
+            "days_overdue": days_overdue,
+            "coach_name": head_coach.get("coach_name", "") if head_coach else "",
+            "coach_email": head_coach.get("email", "") if head_coach else "",
+            "last_interaction_date": last_interaction.get("date_time", "")[:10] if last_interaction else "",
+            "last_interaction_type": last_interaction.get("type", "") if last_interaction else "",
+        })
+
+    return {"reminders": reminders, "total_overdue": len(reminders)}
 
 @api_router.get("/share-link")
 async def get_share_link(request: Request):
