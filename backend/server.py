@@ -173,6 +173,8 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
+    global reply_check_task
+    
     count = await db.university_knowledge_base.count_documents({})
     if count == 0:
         logger.info("Seeding university knowledge base...")
@@ -181,8 +183,22 @@ async def startup_event():
                 await hc.post("http://localhost:8001/api/seed")
             except Exception:
                 pass
+    
+    # Start background task for checking coach replies
+    reply_check_task = asyncio.create_task(check_coach_replies())
+    logger.info("Started background task: coach reply checker (runs every 10 minutes)")
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    global reply_check_task
+    
+    # Cancel background task
+    if reply_check_task:
+        reply_check_task.cancel()
+        try:
+            await reply_check_task
+        except asyncio.CancelledError:
+            pass
+    
     client.close()
