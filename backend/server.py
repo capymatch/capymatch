@@ -36,6 +36,123 @@ app.include_router(knowledge_router)
 app.include_router(ai_router)
 app.include_router(gmail_router)
 
+# ─── Background Task: Auto-detect coach replies ───
+
+reply_check_task = None
+
+async def check_coach_replies():
+    """Background task that checks for coach email replies every 10 minutes"""
+    from routes.gmail import get_gmail_credentials, get_gmail_service
+    from datetime import datetime, timezone
+    
+    while True:
+        try:
+            await asyncio.sleep(600)  # Wait 10 minutes between checks
+            
+            # Get all users with connected Gmail
+            gmail_tokens = await db.gmail_tokens.find({}, {"_id": 0, "user_id": 1}).to_list(1000)
+            
+            for token_doc in gmail_tokens:
+                user_id = token_doc["user_id"]
+                
+                try:
+                    # Get user's tenant_id
+                    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+                    if not user:
+                        continue
+                    tenant_id = user.get("tenant_id") or f"tenant_{user_id}"
+                    
+                    # Get Gmail credentials
+                    creds = await get_gmail_credentials(user_id)
+                    if not creds:
+                        continue
+                    
+                    # Get all coach emails for this tenant (programs with "No Reply" status)
+                    coaches = await db.coaches.find(
+                        {"tenant_id": tenant_id, "email": {"$ne": ""}},
+                        {"_id": 0, "email": 1, "program_id": 1}
+                    ).to_list(500)
+                    
+                    if not coaches:
+                        continue
+                    
+                    # Build a map of coach email -> program_id
+                    coach_email_to_program = {}
+                    for c in coaches:
+                        email = c.get("email", "").strip().lower()
+                        if email:
+                            coach_email_to_program[email] = c["program_id"]
+                    
+                    if not coach_email_to_program:
+                        continue
+                    
+                    # Get programs with "No Reply" status
+                    no_reply_programs = await db.programs.find(
+                        {"tenant_id": tenant_id, "reply_status": "No Reply"},
+                        {"_id": 0, "program_id": 1}
+                    ).to_list(500)
+                    
+                    no_reply_program_ids = {p["program_id"] for p in no_reply_programs}
+                    
+                    if not no_reply_program_ids:
+                        continue
+                    
+                    # Get Gmail service and check recent emails
+                    service = get_gmail_service(creds)
+                    
+                    # Search for emails from coach addresses in the last 24 hours
+                    coach_emails_list = list(coach_email_to_program.keys())
+                    
+                    # Build query for emails from coaches
+                    from_queries = [f"from:{email}" for email in coach_emails_list[:20]]  # Limit to avoid too long query
+                    query = f"({' OR '.join(from_queries)}) newer_than:1d"
+                    
+                    results = service.users().messages().list(
+                        userId="me",
+                        q=query,
+                        maxResults=50
+                    ).execute()
+                    
+                    messages = results.get("messages", [])
+                    
+                    for msg_ref in messages:
+                        msg = service.users().messages().get(
+                            userId="me",
+                            id=msg_ref["id"],
+                            format="metadata",
+                            metadataHeaders=["From"]
+                        ).execute()
+                        
+                        headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
+                        from_addr = headers.get("From", "").lower()
+                        
+                        # Check if this email is from a coach we're tracking
+                        for coach_email, program_id in coach_email_to_program.items():
+                            if coach_email in from_addr and program_id in no_reply_program_ids:
+                                # Update the program's reply_status
+                                await db.programs.update_one(
+                                    {"program_id": program_id, "tenant_id": tenant_id, "reply_status": "No Reply"},
+                                    {"$set": {
+                                        "reply_status": "Reply Received",
+                                        "priority": "Very High",
+                                        "updated_at": datetime.now(timezone.utc).isoformat()
+                                    }}
+                                )
+                                logger.info(f"Auto-updated reply status for program {program_id} (coach: {coach_email})")
+                                no_reply_program_ids.discard(program_id)  # Don't update twice
+                                break
+                
+                except Exception as e:
+                    logger.error(f"Error checking replies for user {user_id}: {e}")
+                    continue
+                    
+        except asyncio.CancelledError:
+            logger.info("Reply check task cancelled")
+            break
+        except Exception as e:
+            logger.error(f"Error in reply check background task: {e}")
+            await asyncio.sleep(60)  # Wait a minute before retrying on error
+
 # ─── Root ───
 
 @app.get("/api/")
