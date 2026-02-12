@@ -61,28 +61,28 @@ export default function Dashboard() {
     <div data-testid="dashboard" className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-white/50 text-sm mt-1">Welcome back! Here's your recruiting overview.</p>
+        <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Dashboard</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Welcome back! Here's your recruiting overview.</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}>
-          <p className="text-3xl font-bold text-white">{totalSchools}</p>
-          <p className="text-white/60 text-sm mt-1">Active Schools</p>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
         </div>
-        <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)" }}>
-          <p className="text-3xl font-bold text-white">{offersCount}</p>
-          <p className="text-white/60 text-sm mt-1">Offers Received</p>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{offersCount}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
         </div>
-        <div className="rounded-xl p-5 border border-white/10" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)" }}>
-          <p className="text-3xl font-bold text-white">{followUpsDue}</p>
-          <p className="text-white/60 text-sm mt-1">Follow-ups Due</p>
+        <div className="rounded-xl p-5 border" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-3xl font-bold" style={{ color: "var(--t-text)" }}>{followUpsDue}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Due</p>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-white/10" />
+      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
       {/* Main Grid */}
       <div className="grid grid-cols-12 gap-5">
