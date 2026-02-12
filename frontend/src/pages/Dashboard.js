@@ -136,10 +136,10 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-gray-700 text-sm font-medium">{stage.key}</span>
-                        <span className="text-gray-500 text-sm font-semibold">{count}</span>
+                        <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{stage.key}</span>
+                        <span className="text-sm font-semibold" style={{ color: "var(--t-text-secondary)" }}>{count}</span>
                       </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div className="w-full rounded-full h-2" style={{ backgroundColor: "var(--t-border)" }}>
                         <div className={`h-2 rounded-full ${stage.bar} transition-all duration-700`} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
