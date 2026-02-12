@@ -94,6 +94,7 @@ function AppRouter() {
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
         <Route path="pipeline" element={<RecruitingBoard />} />
+        <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
         <Route path="follow-ups" element={<NeedsFollowUp />} />
         <Route path="programs/:programId" element={<ProgramDetail />} />
