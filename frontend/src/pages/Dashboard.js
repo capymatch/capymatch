@@ -94,7 +94,7 @@ export default function Dashboard() {
           {/* Progress Funnel */}
           <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <h3 className="font-semibold mb-5" style={{ color: "var(--t-text)" }}>Recruiting Pipeline</h3>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {funnelStages.map((stage, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-sm w-36 truncate" style={{ color: "var(--t-text-muted)" }}>{stage.label}</span>
