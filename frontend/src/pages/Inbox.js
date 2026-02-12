@@ -256,6 +256,7 @@ export default function Inbox() {
   const [replyTo, setReplyTo] = useState(null);
   const [nextPageToken, setNextPageToken] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const navigate = useNavigate();
 
   // Check Gmail connection
   useEffect(() => {
