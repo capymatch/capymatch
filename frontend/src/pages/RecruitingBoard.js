@@ -238,7 +238,7 @@ function PipelineFunnel({ programs }) {
               <div className={`w-8 h-8 rounded-lg ${stage.bg} flex items-center justify-center`}>
                 <stage.icon className={`w-4 h-4 ${stage.text}`} />
               </div>
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-tight">{stage.label}</span>
+              <span className="text-xs font-medium uppercase tracking-wider leading-tight" style={{ color: "var(--t-text-secondary)" }}>{stage.label}</span>
             </div>
             <div className="flex items-end justify-between">
               <span className="font-heading text-3xl font-black text-gray-900">{count}</span>
