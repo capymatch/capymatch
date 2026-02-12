@@ -175,7 +175,7 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
           <button
             onClick={() => navigate(`/programs/${p.program_id}`)}
             data-testid={`program-link-${p.program_id}`}
-            className="text-gray-900 hover:text-purple-600 font-semibold text-sm truncate block transition-colors"
+            className="text-gray-900 hover:text-slate-600 font-semibold text-sm truncate block transition-colors"
           >
             {p.university_name}
           </button>
