@@ -1,103 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { Check, ChevronRight, Calendar, X, TrendingUp, Users, Award, Clock, Send, Mail, School } from "lucide-react";
+import { Check, ChevronRight, Calendar, X } from "lucide-react";
 import { toast } from "sonner";
-
-// Glassmorphism Card Component
-const GlassCard = ({ children, className = "", hover = true }) => (
-  <div 
-    className={`rounded-2xl backdrop-blur-sm border border-white/[0.08] ${hover ? 'hover:border-white/[0.15] transition-all duration-300' : ''} ${className}`}
-    style={{ 
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
-    }}
-  >
-    {children}
-  </div>
-);
-
-// Stat Card Component
-const StatCard = ({ value, subValue, label, icon: Icon, gradient }) => (
-  <GlassCard className="p-5 relative overflow-hidden group">
-    <div 
-      className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-      style={{ background: gradient }}
-    />
-    <div className="relative flex items-start justify-between">
-      <div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-bold text-white tracking-tight">{value}</span>
-          {subValue && <span className="text-xl text-white/50">{subValue}</span>}
-        </div>
-        <p className="text-white/50 text-sm mt-1 font-medium">{label}</p>
-      </div>
-      <div 
-        className="w-12 h-12 rounded-xl flex items-center justify-center"
-        style={{ background: gradient }}
-      >
-        <Icon className="w-6 h-6 text-white" strokeWidth={1.5} />
-      </div>
-    </div>
-  </GlassCard>
-);
-
-// School Avatar
-const SchoolAvatar = ({ name, color, size = "md" }) => {
-  const sizes = { sm: "w-8 h-8 text-xs", md: "w-11 h-11 text-sm", lg: "w-14 h-14 text-base" };
-  return (
-    <div 
-      className={`${sizes[size]} rounded-xl flex items-center justify-center text-white font-bold shadow-lg`}
-      style={{ background: color }}
-    >
-      {name?.charAt(0) || "?"}
-    </div>
-  );
-};
-
-// Checkmark Badge
-const CheckBadge = ({ variant = "success" }) => {
-  const colors = {
-    success: "from-emerald-500 to-emerald-600",
-    warning: "from-amber-500 to-orange-500",
-    info: "from-blue-500 to-indigo-500"
-  };
-  return (
-    <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${colors[variant]} flex items-center justify-center shadow-lg`}>
-      <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-    </div>
-  );
-};
-
-// Section Header
-const SectionHeader = ({ title, onViewAll }) => (
-  <div className="flex items-center justify-between mb-5">
-    <h3 className="text-white font-semibold text-lg">{title}</h3>
-    {onViewAll && (
-      <button 
-        onClick={onViewAll}
-        className="text-white/40 text-sm hover:text-purple-400 transition-colors flex items-center gap-1 group"
-      >
-        View all 
-        <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-      </button>
-    )}
-  </div>
-);
-
-// Action Button
-const ActionButton = ({ children, variant = "default" }) => {
-  const variants = {
-    default: "bg-white/10 hover:bg-white/20 text-white/80",
-    primary: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/25",
-    amber: "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-lg shadow-amber-500/25"
-  };
-  return (
-    <button className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${variants[variant]}`}>
-      {children}
-    </button>
-  );
-};
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -121,322 +26,368 @@ export default function Dashboard() {
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center py-32" data-testid="dashboard-loading">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-          <span className="text-white/50 text-sm font-medium">Loading dashboard...</span>
-        </div>
+        <div className="w-8 h-8 border-2 border-purple-400/30 border-t-purple-500 rounded-full animate-spin" />
       </div>
     );
   }
 
-  // Funnel stages with gradients
+  // Funnel data with specific colors matching the image
   const funnelStages = [
-    { label: "Not Contacted", count: programs.filter(p => p.recruiting_status === "Not Contacted").length || 16, gradient: "linear-gradient(90deg, #ef4444, #dc2626)" },
-    { label: "Contacted", count: programs.filter(p => p.recruiting_status === "Contacted").length || 8, gradient: "linear-gradient(90deg, #22c55e, #16a34a)" },
-    { label: "Video Viewed", count: programs.filter(p => p.recruiting_status === "Video Viewed").length || 2, gradient: "linear-gradient(90deg, #06b6d4, #0891b2)" },
-    { label: "No Response Yet", count: programs.filter(p => p.recruiting_status === "No Response Yet").length || 5, gradient: "linear-gradient(90deg, #f59e0b, #d97706)", showOverdue: true },
-    { label: "Some Interest", count: programs.filter(p => p.recruiting_status === "Some Interest").length || 7, gradient: "linear-gradient(90deg, #eab308, #ca8a04)" },
-    { label: "Active Conversation", count: programs.filter(p => p.recruiting_status === "Active Conversation").length || 2, gradient: "linear-gradient(90deg, #f97316, #ea580c)" },
-    { label: "Offered", count: programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length || 3, gradient: "linear-gradient(90deg, #a855f7, #9333ea)" },
-    { label: "Closed", count: programs.filter(p => p.recruiting_status === "Not a Fit / Closed").length || 4, gradient: "linear-gradient(90deg, #64748b, #475569)" },
+    { label: "Not Contacted", count: 16, color: "#6366f1" },
+    { label: "Contacted", count: 8, color: "#818cf8" },
+    { label: "Video Viewed", count: 2, color: "#a78bfa" },
+    { label: "No Response Yet", count: 5, color: "#c4b5fd", showOverdue: true },
+    { label: "Some Interest", count: 7, color: "#fbbf24" },
+    { label: "Active Conversation:", count: 2, color: "#f59e0b" },
+    { label: "Offered", count: 3, color: "#f97316" },
+    { label: "Closed", count: 4, color: "#ef4444" },
   ];
-  const maxFunnel = Math.max(...funnelStages.map(s => s.count), 1);
+  const maxFunnel = Math.max(...funnelStages.map(s => s.count));
 
-  // Chart data
-  const chartDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const chartValues = [1, 2, 1, 3, 2, 4, 2];
-  const maxChart = Math.max(...chartValues);
-
-  // School colors
-  const schoolColors = [
-    "linear-gradient(135deg, #1e3a5f, #0f172a)",
-    "linear-gradient(135deg, #7c2d12, #431407)",
-    "linear-gradient(135deg, #dc2626, #991b1b)",
-    "linear-gradient(135deg, #1e40af, #1e3a8a)",
-    "linear-gradient(135deg, #7e22ce, #6b21a8)",
+  // Chart data matching the image
+  const chartData = [
+    { day: "Mon", value: 1 },
+    { day: "Tue", value: 1 },
+    { day: "Wed", value: 1 },
+    { day: "Thu", value: 1 },
+    { day: "Fri", value: 1 },
+    { day: "Sat", value: 2 },
+    { day: "Sun", value: 2 },
+    { day: "Juv", value: 0 },
   ];
 
-  const formatDate = (d) => {
-    if (!d) return "TBD";
-    const date = new Date(d);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
-
-  const totalSchools = programs.length || 35;
-  const offersCount = programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length || 3;
-  const followUpsDue = data.follow_ups_due || 10;
+  // Schools data matching the image
+  const schoolsData = [
+    { name: "Ohio State University", date: "Apr 26", status: "Active", btnType: "gray", avatar: "🔵" },
+    { name: "University of North Florida", date: "Apr 27", status: "Recruiting", btnType: "gray", avatar: "🦅" },
+    { name: "Clemson University Camps", date: "Apr 20", status: "Ppical", btnType: "amber", avatar: "🐯" },
+    { name: "Butler University", date: "Apr 26", status: "urthonated", btnType: "gray", avatar: "🐕" },
+  ];
 
   return (
-    <div data-testid="dashboard" className="space-y-6 max-w-[1600px] mx-auto">
+    <div data-testid="dashboard" className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Recruiting Dashboard</h1>
-          <p className="text-white/40 text-sm mt-1">Track your volleyball recruiting journey</p>
-        </div>
+        <h1 className="text-2xl font-bold text-white">Recruiting Dashboard</h1>
         <button 
           onClick={() => navigate("/knowledge-base")}
-          className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25 flex items-center gap-2"
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
         >
-          <span className="text-lg">+</span> Add School
+          + Add School
         </button>
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-12 gap-4">
         
         {/* ===== LEFT COLUMN ===== */}
-        <div className="col-span-4 space-y-5">
-          {/* Stats */}
-          <div className="grid grid-cols-1 gap-4">
-            <StatCard 
-              value={totalSchools} 
-              label="Active Schools" 
-              icon={Users}
-              gradient="linear-gradient(135deg, #3b82f6, #1d4ed8)"
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <StatCard 
-                value={offersCount} 
-                subValue="Offers"
-                label="Priority" 
-                icon={Award}
-                gradient="linear-gradient(135deg, #a855f7, #7c3aed)"
-              />
-              <StatCard 
-                value={followUpsDue} 
-                subValue="/6"
-                label="Follow-Ups" 
-                icon={Clock}
-                gradient="linear-gradient(135deg, #22c55e, #16a34a)"
-              />
+        <div className="col-span-4 space-y-4">
+          {/* Stats Row */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-xl p-4" style={{ backgroundColor: "#1e3a5f" }}>
+              <p className="text-4xl font-bold text-white">35</p>
+              <p className="text-white/60 text-sm mt-1">Active Schools</p>
+            </div>
+            <div className="rounded-xl p-4" style={{ backgroundColor: "#4a2545" }}>
+              <p className="text-3xl font-bold text-white">3 <span className="text-xl font-normal">Offers</span></p>
+              <p className="text-white/60 text-sm mt-1">Priority</p>
+            </div>
+            <div className="rounded-xl p-4" style={{ backgroundColor: "#1a4a4a" }}>
+              <p className="text-3xl font-bold text-white">10 <span className="text-xl text-white/50">6</span></p>
+              <p className="text-white/60 text-sm mt-1">Follow-Ups Due</p>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-2">
-            <select className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-white/10 transition-all">
-              <option>Division ▾</option>
-            </select>
-            <select className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-white/10 transition-all">
-              <option>Region ▾</option>
-            </select>
-            <div className="px-3 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm flex items-center gap-2 cursor-pointer hover:bg-purple-500/30 transition-all">
-              Priority: High <X className="w-3.5 h-3.5 hover:text-white" />
+          <div className="flex flex-wrap gap-2 text-sm">
+            <div className="px-3 py-1.5 rounded bg-white/10 text-white/70 flex items-center gap-1">
+              Division <span className="text-white/40">▾</span> All <span className="text-white/40">▾</span>
+            </div>
+            <div className="px-3 py-1.5 rounded bg-white/10 text-white/70 flex items-center gap-1">
+              Region <span className="text-white/40">▾</span> All <span className="text-white/40">▾</span>
+            </div>
+            <div className="px-3 py-1.5 rounded bg-purple-900/50 text-purple-300 flex items-center gap-1">
+              Priority |wiitw · Attentii| <span className="text-white/40">▾</span>
+            </div>
+            <div className="px-3 py-1.5 rounded bg-slate-700/50 text-slate-300 flex items-center gap-1">
+              Prrensccd enerls <X className="w-3 h-3" />
             </div>
           </div>
 
           {/* Progress Funnel */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Progress Funnel" />
-            <div className="space-y-3">
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <h3 className="text-white font-semibold text-lg mb-4">Progress Funnel</h3>
+            <div className="space-y-2">
               {funnelStages.map((stage, i) => (
-                <div key={i} className="group">
-                  <div className="flex items-center gap-3">
-                    <span className="text-white/60 text-xs w-32 text-right font-medium">{stage.label}</span>
-                    <div className="flex-1 h-6 rounded-lg bg-white/5 overflow-hidden">
-                      <div 
-                        className="h-full rounded-lg transition-all duration-700 group-hover:opacity-80"
-                        style={{ 
-                          width: `${Math.max((stage.count / maxFunnel) * 100, 8)}%`,
-                          background: stage.gradient
-                        }}
-                      />
-                    </div>
-                    <span className="text-white font-bold text-sm w-8 text-right">{stage.count}</span>
-                    {stage.showOverdue && (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                        0 overdue
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 pt-4 border-t border-white/5 flex items-center gap-6 text-xs text-white/40">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-white/30"></span> Weekly signups
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-purple-500"></span> Emails: 7
-              </span>
-            </div>
-          </GlassCard>
-
-          {/* Key Insights Chart */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Weekly Activity" />
-            <div className="h-32 flex items-end justify-between gap-2 mt-2">
-              {chartDays.map((day, i) => (
-                <div key={day} className="flex-1 flex flex-col items-center gap-2">
-                  <div className="relative w-full flex justify-center">
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-white/70 text-sm w-40">{stage.label}</span>
+                  <div className="flex-1 h-6 rounded overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
                     <div 
-                      className="w-8 rounded-lg transition-all duration-500 hover:opacity-80 cursor-pointer"
+                      className="h-full rounded"
                       style={{ 
-                        height: `${(chartValues[i] / maxChart) * 80 + 20}px`,
-                        background: 'linear-gradient(180deg, #a855f7, #6366f1)'
+                        width: `${(stage.count / maxFunnel) * 100}%`,
+                        backgroundColor: stage.color
                       }}
                     />
-                    <span className="absolute -top-5 text-xs text-white/60 font-medium">{chartValues[i]}</span>
                   </div>
-                  <span className="text-[10px] text-white/40 font-medium">{day}</span>
+                  <span className="text-white font-semibold w-6 text-right">{stage.count}</span>
+                  {stage.showOverdue && (
+                    <span className="px-2 py-0.5 rounded text-xs bg-orange-900/50 text-orange-300">0 overdue</span>
+                  )}
                 </div>
               ))}
             </div>
-          </GlassCard>
+            <div className="mt-4 flex items-center gap-4 text-xs text-white/50">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-white/30"></span> Week ensign yn
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-orange-400"></span> Emails this week 7
+              </span>
+            </div>
+          </div>
+
+          {/* Key Insights Bar Chart */}
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-lg">Key Insights</h3>
+              <span className="text-white/50 text-sm">All● Acrayps ▽</span>
+            </div>
+            <div className="relative h-32">
+              {/* Y-axis labels */}
+              <div className="absolute left-0 top-0 bottom-8 w-6 flex flex-col justify-between text-xs text-white/40">
+                <span>3</span>
+                <span>2</span>
+                <span>1</span>
+                <span>0</span>
+              </div>
+              {/* Bars */}
+              <div className="ml-8 h-full flex items-end gap-2 pb-6">
+                {chartData.map((d, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                    <div 
+                      className="w-full rounded-t"
+                      style={{ 
+                        height: `${d.value * 25}px`,
+                        backgroundColor: i >= 5 ? "#f59e0b" : "#6366f1",
+                        minHeight: d.value > 0 ? "20px" : "0"
+                      }}
+                    >
+                      {d.value > 0 && (
+                        <span className="block text-center text-xs text-white/80 pt-1">{d.value}</span>
+                      )}
+                    </div>
+                    <span className="text-xs text-white/40">{d.day}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="text-xs text-white/50 flex items-center gap-1 mt-2">
+              <span className="w-2 h-2 rounded-full bg-orange-400"></span> Emails this week · 7
+            </div>
+          </div>
         </div>
 
         {/* ===== MIDDLE COLUMN ===== */}
-        <div className="col-span-3 space-y-5">
-          {/* Next Actions - Simple */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Upcoming Tasks" onViewAll={() => navigate("/follow-ups")} />
+        <div className="col-span-3 space-y-4">
+          {/* Next Actions List */}
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-lg">Next Actions</h3>
+              <span className="text-white/50 text-sm cursor-pointer hover:text-white">View all</span>
+            </div>
             <div className="space-y-3">
-              {[
-                { date: "Apr 15", status: "success" },
-                { date: "Apr 27", status: "success" },
-                { date: "Apr 29", status: "success" },
-                { date: "Apr 28", status: "warning" },
-              ].map((task, i) => (
-                <div key={i} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
+              {["Apr 15", "Apr 27", "Apr 29", "Apr 28"].map((date, i) => (
+                <div key={i} className="flex items-center gap-3">
                   <Calendar className="w-4 h-4 text-white/30" />
-                  <span className="text-white/50 text-sm w-14">{task.date}</span>
-                  <CheckBadge variant={task.status} />
+                  <span className="text-white/50 text-sm w-14">{date}</span>
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${i === 3 ? 'bg-orange-500' : 'bg-emerald-500'}`}>
+                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                  </div>
                   <span className="text-white text-sm font-medium">Send Follow-Up</span>
                 </div>
               ))}
-            </div>
-          </GlassCard>
-
-          {/* Activity Heatmap */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Activity Heatmap" />
-            <div className="grid grid-cols-7 gap-1.5 mt-2">
-              {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                <div key={i} className="text-center text-[10px] text-white/30 font-medium py-1">{d}</div>
-              ))}
-              {Array.from({length: 28}, (_, i) => {
-                const intensity = Math.random();
-                return (
-                  <div 
-                    key={i}
-                    className={`aspect-square rounded-md transition-all duration-300 cursor-pointer hover:scale-110 ${
-                      intensity > 0.7 ? 'bg-purple-500 shadow-lg shadow-purple-500/30' : 
-                      intensity > 0.4 ? 'bg-purple-500/50' : 
-                      intensity > 0.2 ? 'bg-purple-500/20' : 'bg-white/5'
-                    }`}
-                  />
-                );
-              })}
-            </div>
-            <div className="mt-4 flex items-center justify-between text-[10px] text-white/30">
-              <span>Less</span>
-              <div className="flex gap-1">
-                {['bg-white/5', 'bg-purple-500/20', 'bg-purple-500/50', 'bg-purple-500'].map((c, i) => (
-                  <span key={i} className={`w-3 h-3 rounded ${c}`}></span>
-                ))}
+              <div className="flex items-center gap-3 text-white/30 text-sm">
+                <Calendar className="w-4 h-4" />
+                <span>Sav all 2%</span>
               </div>
-              <span>More</span>
             </div>
-          </GlassCard>
+          </div>
+
+          {/* Key Insights Grid */}
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-white font-semibold text-lg">Key Insights</h3>
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(i => <span key={i} className="w-1.5 h-1.5 rounded-full bg-white/30"></span>)}
+              </div>
+            </div>
+            <div className="text-xs">
+              {/* Header */}
+              <div className="grid grid-cols-6 gap-1 text-white/40 mb-1">
+                <span></span>
+                <span className="text-center">Koot</span>
+                <span className="text-center">Moore</span>
+                <span className="text-center">Ves</span>
+                <span className="text-center">2%</span>
+                <span></span>
+              </div>
+              <div className="grid grid-cols-6 gap-1 text-white/40 mb-2">
+                <span></span>
+                <span className="text-center">Mon</span>
+                <span className="text-center">Tue</span>
+                <span className="text-center">Wed</span>
+                <span className="text-center">Thu</span>
+                <span className="text-center">Fri</span>
+              </div>
+              {/* Data rows */}
+              {[[0, 3, 3, 1, 3], [2, 3, 7, 0, 9], [3, 4, 5, 7, 0]].map((row, ri) => (
+                <div key={ri} className="grid grid-cols-6 gap-1 mb-1">
+                  <span></span>
+                  {row.map((val, ci) => (
+                    <span 
+                      key={ci} 
+                      className={`text-center py-1.5 rounded ${
+                        val >= 7 ? 'bg-purple-600 text-white' : 
+                        val >= 3 ? 'bg-purple-600/50 text-white/90' : 
+                        'text-white/50'
+                      }`}
+                    >
+                      {val}
+                    </span>
+                  ))}
+                </div>
+              ))}
+              {/* Footer row */}
+              <div className="grid grid-cols-6 gap-1 text-white/30 text-[10px] mt-2">
+                <span></span>
+                <span className="text-center">+15</span>
+                <span className="text-center">+1</span>
+                <span className="text-center">15</span>
+                <span className="text-center">38</span>
+                <span className="text-center">12</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ===== RIGHT COLUMN ===== */}
-        <div className="col-span-5 space-y-5">
-          {/* Priority Schools */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Priority Schools" onViewAll={() => navigate("/pipeline")} />
-            <div className="space-y-2">
-              {programs.slice(0, 4).map((prog, i) => (
-                <div 
-                  key={prog.program_id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group"
-                  onClick={() => navigate(`/programs/${prog.program_id}`)}
-                >
-                  <CheckBadge variant={i === 2 ? "warning" : "success"} />
-                  <SchoolAvatar name={prog.university_name} color={schoolColors[i % schoolColors.length]} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm group-hover:text-purple-300 transition-colors truncate">
-                      {prog.university_name}
-                    </p>
-                    <p className="text-white/40 text-xs">
-                      {formatDate(prog.next_action_due)} – {prog.recruiting_status?.split(' ')[0] || 'Active'}
-                    </p>
+        <div className="col-span-5 space-y-4">
+          {/* Next Actions with Schools */}
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-lg">Next Actions</h3>
+              <span className="text-white/50 text-sm cursor-pointer hover:text-white flex items-center gap-1">
+                View all <ChevronRight className="w-4 h-4" />
+              </span>
+            </div>
+            <div className="space-y-3">
+              {schoolsData.map((school, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                   </div>
-                  <ActionButton variant={i === 2 ? "amber" : "default"}>
-                    {i === 2 ? "Send Now" : "Follow Up"}
-                  </ActionButton>
-                  <span className="text-white/40 text-xs">{formatDate(prog.next_action_due)}</span>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center text-lg">
+                    {school.avatar}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm">{school.name}</p>
+                    <p className="text-white/40 text-xs">{school.date} – {school.status}</p>
+                  </div>
+                  <button 
+                    className={`px-3 py-1.5 rounded text-xs font-medium ${
+                      school.btnType === "amber" 
+                        ? "bg-amber-700 text-amber-100" 
+                        : "bg-slate-600 text-slate-200"
+                    }`}
+                  >
+                    {school.btnType === "amber" ? "Send Foxcht" : "Send Follow-Up"}
+                  </button>
+                  <span className="text-white/50 text-xs">{school.date}</span>
                 </div>
               ))}
             </div>
-          </GlassCard>
+          </div>
 
           {/* Recent Emails */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Recent Emails" onViewAll={() => navigate("/inbox")} />
-            <div className="space-y-2">
-              {(data.recent_interactions || []).slice(0, 2).map((int, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer">
-                  <div 
-                    className="w-11 h-11 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-                    style={{ background: i === 0 ? 'linear-gradient(135deg, #ec4899, #be185d)' : 'linear-gradient(135deg, #f97316, #c2410c)' }}
-                  >
-                    {int.university_name?.charAt(0) || "?"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm">
-                      {int.university_name?.split(' ').slice(0, 2).join(' ')} 
-                      <span className="text-white/40 font-normal ml-2">| Inbox</span>
-                    </p>
-                    <p className="text-white/40 text-xs truncate">{int.outcome || 'Email conversation...'}</p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-white/40 text-xs mb-1">2d ago</p>
-                    <span className="px-2 py-1 rounded-md text-[10px] font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                      {int.type || 'Email'}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {(!data.recent_interactions || data.recent_interactions.length === 0) && (
-                <div className="text-center py-6">
-                  <Mail className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                  <p className="text-white/40 text-sm">No recent emails</p>
-                </div>
-              )}
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-lg">Recent Emails</h3>
+              <span className="text-white/50 text-sm cursor-pointer hover:text-white flex items-center gap-1">
+                View all <ChevronRight className="w-4 h-4" />
+              </span>
             </div>
-          </GlassCard>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                  TH
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold text-sm">
+                    Tim Hinote <span className="text-white/40 font-normal">| Inbox</span>
+                  </p>
+                  <p className="text-white/40 text-xs">Loye to Loyola University Chicago</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-white/50 text-xs">Last email 2d ago<ChevronRight className="w-3 h-3 inline" /></p>
+                  <div className="flex gap-1 mt-1">
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-blue-600/50 text-blue-200">Some Interest</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] bg-purple-600 text-white">Apr 223</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center text-white text-sm font-bold">
+                  JO
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-semibold text-sm">
+                    Jason Oliver <span className="text-white/40 font-normal">| Oniox</span>
+                  </p>
+                  <p className="text-white/40 text-xs truncate">Hldy alco Glora. coitio nalti: no hop nere restive chid noot.</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-white/50 text-xs">2d ago</p>
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-slate-600 text-slate-200 mt-1 inline-block">Kpt 20</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Top Active Schools */}
-          <GlassCard className="p-5">
-            <SectionHeader title="Schools Needing Attention" onViewAll={() => navigate("/knowledge-base")} />
-            <div className="space-y-2">
-              {programs.slice(0, 3).map((school, i) => (
-                <div 
-                  key={school.program_id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer"
-                  onClick={() => navigate(`/programs/${school.program_id}`)}
-                >
-                  <SchoolAvatar name={school.university_name} color={schoolColors[(i + 2) % schoolColors.length]} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm truncate">{school.university_name}</p>
-                    <p className="text-white/40 text-xs">Last contact: {school.last_follow_up || 'Never'}</p>
+          <div className="rounded-xl p-4" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-lg">Top Active Schools</h3>
+              <span className="text-white/50 text-sm cursor-pointer hover:text-white flex items-center gap-1">
+                View all <ChevronRight className="w-4 h-4" />
+              </span>
+            </div>
+            <div className="space-y-3">
+              {[
+                { name: "Butler University", badge: "17 days without responding", badgePurple: true, avatar: "🐕" },
+                { name: "North Carolina State University", badge: "1 day without response", badgePurple: false, avatar: "🐺" },
+                { name: "Loyola University", badge: "1 day without responding", badgePurple: false, avatar: "🦁" },
+              ].map((school, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-lg">
+                    {school.avatar}
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-white/40 text-xs mb-1">{school.reply_status || 'Pending'}</p>
-                    <span className={`px-2 py-1 rounded-md text-[10px] font-medium ${
-                      i === 0 
-                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
-                        : 'bg-white/10 text-white/60'
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm">{school.name}</p>
+                    <p className="text-white/40 text-xs">Last email done responding <ChevronRight className="w-3 h-3 inline" /></p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-white/50 text-xs">{i === 0 ? "Last email 2d ago" : `${i === 1 ? "21" : "2d"} ago`} <ChevronRight className="w-3 h-3 inline" /></p>
+                    <span className={`px-2 py-0.5 rounded text-[10px] mt-1 inline-block ${
+                      school.badgePurple ? "bg-purple-600 text-white" : "bg-slate-600 text-slate-200"
                     }`}>
-                      {i === 0 ? '17 days waiting' : `${i + 1} day waiting`}
+                      {school.badge}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
-          </GlassCard>
+          </div>
         </div>
       </div>
     </div>
