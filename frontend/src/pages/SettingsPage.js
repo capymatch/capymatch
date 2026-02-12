@@ -505,3 +505,22 @@ function FieldRow({ label, value, onChange, placeholder, testId }) {
     </div>
   );
 }
+
+function SelectRow({ label, value, onChange, options, testId }) {
+  return (
+    <div>
+      <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-muted)" }}>{label}</label>
+      <select
+        data-testid={testId}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none"
+        style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt || "Select..."}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
