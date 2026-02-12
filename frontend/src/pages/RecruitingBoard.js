@@ -513,7 +513,7 @@ export default function RecruitingBoard() {
           const isEmpty = stagePrograms.length === 0;
 
           return (
-            <div key={stage.key} data-testid={`section-${stage.key}`}>
+            <div key={stage.key} id={`pipeline-${stage.key}`} data-testid={`section-${stage.key}`}>
               {/* Section Header — standalone divider */}
               <button
                 onClick={() => toggleSection(stage.key)}
