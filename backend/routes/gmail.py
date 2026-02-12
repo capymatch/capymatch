@@ -382,6 +382,7 @@ async def send_email(data: ComposeEmail, request: Request):
         if "<" in recipient_email and ">" in recipient_email:
             recipient_email = recipient_email.split("<")[1].split(">")[0].strip()
         
+        program_updated = None
         coach = await db.coaches.find_one(
             {"tenant_id": tenant_id, "email": {"$regex": f"^{recipient_email}$", "$options": "i"}},
             {"_id": 0, "program_id": 1}
@@ -390,7 +391,7 @@ async def send_email(data: ComposeEmail, request: Request):
         if coach:
             program = await db.programs.find_one(
                 {"program_id": coach["program_id"], "tenant_id": tenant_id},
-                {"_id": 0, "recruiting_status": 1, "reply_status": 1}
+                {"_id": 0, "recruiting_status": 1, "reply_status": 1, "university_name": 1}
             )
             if program:
                 updates = {"updated_at": datetime.now(timezone.utc).isoformat()}
@@ -408,8 +409,18 @@ async def send_email(data: ComposeEmail, request: Request):
                         {"$set": updates}
                     )
                     logger.info(f"Auto-updated program {coach['program_id']}: status=Contacted, reply=Awaiting Reply")
+                    program_updated = {
+                        "university_name": program.get("university_name", ""),
+                        "new_status": "Contacted",
+                        "new_reply_status": "Awaiting Reply"
+                    }
         
-        return {"id": sent["id"], "thread_id": sent.get("threadId", ""), "status": "sent"}
+        return {
+            "id": sent["id"], 
+            "thread_id": sent.get("threadId", ""), 
+            "status": "sent",
+            "program_updated": program_updated
+        }
 
     except Exception as e:
         logger.error(f"Error sending email: {e}")
