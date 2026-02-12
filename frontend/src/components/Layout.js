@@ -17,8 +17,8 @@ export default function Layout({ user }) {
   };
 
   const sidebarItems = [
-    { to: "/board", icon: LayoutGrid, label: "Dashboard" },
-    { to: "/pipeline", icon: LayoutGrid, label: "Pipeline" },
+    { to: "/board", icon: Home, label: "Dashboard" },
+    { to: "/pipeline", icon: Kanban, label: "Pipeline" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
