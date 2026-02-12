@@ -220,18 +220,18 @@ function AddProgramDialog({ onAdd }) {
 /* ── Pipeline Funnel ── */
 function PipelineFunnel({ programs }) {
   return (
-    <div className="flex items-center gap-2 p-1 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
+    <div className="flex items-center gap-2 p-2 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
       {PIPELINE.map((stage) => {
         const count = programs.filter((p) => stage.statuses.includes(p.recruiting_status)).length;
         return (
           <div
             key={stage.key}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg flex-1 justify-center"
+            className="flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center"
             data-testid={`funnel-${stage.key}`}
           >
-            <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stage.color} flex-shrink-0`} />
-            <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{stage.label}</span>
-            <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
+            <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${stage.color} flex-shrink-0`} />
+            <span className="text-sm font-medium" style={{ color: "var(--t-text-secondary)" }}>{stage.label}</span>
+            <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
       })}
