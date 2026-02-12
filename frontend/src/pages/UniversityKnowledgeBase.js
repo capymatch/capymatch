@@ -77,29 +77,29 @@ export default function UniversityKnowledgeBase() {
   });
 
   if (loading) {
-    return <div className="text-slate-400 text-center py-12" data-testid="kb-loading">Loading knowledge base...</div>;
+    return <div className="text-gray-400 text-center py-12" data-testid="kb-loading">Loading knowledge base...</div>;
   }
 
   return (
     <div data-testid="knowledge-base" className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-2xl font-bold text-white" data-testid="kb-title">University Knowledge Base</h2>
+        <h2 className="font-heading text-2xl font-bold text-gray-900" data-testid="kb-title">University Knowledge Base</h2>
       </div>
 
       {/* Search Bar */}
-      <div className="flex items-center gap-4 bg-[#1e293b] border border-[#334155] rounded-lg p-4">
+      <div className="flex items-center gap-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
             data-testid="kb-search"
             placeholder="Search by College Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-[#0f172a] border-[#334155] text-white placeholder:text-slate-500 h-10"
+            className="pl-9 bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 h-10"
           />
         </div>
-        <span className="text-slate-400 text-sm whitespace-nowrap" data-testid="kb-count">
+        <span className="text-gray-500 text-sm whitespace-nowrap" data-testid="kb-count">
           {sorted.length} colleges found
         </span>
       </div>
