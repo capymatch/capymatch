@@ -115,17 +115,11 @@ export default function Layout({ user }) {
           <div className="flex items-center gap-5">
             {/* Notification Icons */}
             <div className="flex items-center gap-1">
-              <button className="relative p-2.5 rounded-xl transition-all" style={{ color: "var(--t-text-muted)" }}>
+              <button onClick={() => navigate("/follow-ups")} className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-tasks-btn">
                 <CheckSquare className="w-5 h-5" strokeWidth={1.5} />
-                <span className="absolute top-1 right-1 w-4 h-4 bg-gradient-to-br from-red-500 to-pink-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">2</span>
               </button>
-              <button className="relative p-2.5 rounded-xl transition-all" style={{ color: "var(--t-text-muted)" }}>
+              <button onClick={() => navigate("/inbox")} className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-mail-btn">
                 <Mail className="w-5 h-5" strokeWidth={1.5} />
-                <span className="absolute top-1 right-1 w-4 h-4 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">3</span>
-              </button>
-              <button className="relative p-2.5 rounded-xl transition-all" style={{ color: "var(--t-text-muted)" }}>
-                <Bell className="w-5 h-5" strokeWidth={1.5} />
-                <span className="absolute top-1 right-1 w-4 h-4 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">5</span>
               </button>
             </div>
 
