@@ -172,6 +172,80 @@ export default function Layout({ user }) {
           </div>
 
           <div className="flex items-center gap-5">
+            {/* Notification Bell */}
+            <div className="relative" ref={notifRef}>
+              <button 
+                onClick={() => setNotifOpen(!notifOpen)}
+                className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" 
+                style={{ color: "var(--t-text-muted)" }} 
+                data-testid="header-notifications-btn"
+              >
+                <Bell className="w-5 h-5" strokeWidth={1.5} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-80 rounded-xl border shadow-xl overflow-hidden z-50"
+                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+                  data-testid="notifications-dropdown"
+                >
+                  <div className="px-4 py-3 border-b flex items-center justify-between" style={{ borderColor: "var(--t-border)" }}>
+                    <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Notifications</h3>
+                    {unreadCount > 0 && (
+                      <button 
+                        onClick={markAllRead}
+                        className="text-xs text-purple-500 hover:text-purple-400 font-medium"
+                      >
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-8 text-center">
+                        <Bell className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: "var(--t-text-muted)" }} />
+                        <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No notifications yet</p>
+                      </div>
+                    ) : (
+                      notifications.map((notif) => (
+                        <div
+                          key={notif.notification_id}
+                          onClick={() => {
+                            if (!notif.read) markNotificationRead(notif.notification_id);
+                            if (notif.type === "coach_reply") navigate("/inbox");
+                            else if (notif.type === "follow_up_due") navigate("/follow-ups");
+                            else if (notif.type === "profile_view_edu") navigate("/analytics");
+                            setNotifOpen(false);
+                          }}
+                          className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-purple-500/5" : ""}`}
+                          style={{ borderColor: "var(--t-border)" }}
+                        >
+                          <div className="flex gap-3">
+                            <div className="flex-shrink-0 mt-0.5">
+                              {getNotifIcon(notif.type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{notif.title}</p>
+                              <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{notif.message}</p>
+                              <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatTimeAgo(notif.created_at)}</p>
+                            </div>
+                            {!notif.read && (
+                              <div className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0 mt-1.5" />
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Notification Icons */}
             <div className="flex items-center gap-1">
               <button onClick={() => navigate("/follow-ups")} className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-tasks-btn">
