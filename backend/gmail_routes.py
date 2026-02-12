@@ -262,7 +262,7 @@ async def gmail_disconnect(request: Request):
 
 @gmail_router.get("/emails")
 async def list_emails(request: Request, page_token: Optional[str] = None, q: Optional[str] = None, max_results: int = 20):
-    """List emails from Gmail filtered to coach contacts only."""
+    """List emails from Gmail filtered to coach contacts and .edu addresses."""
     user = await get_current_user(request)
     creds = await get_gmail_credentials(user["user_id"])
     if not creds:
@@ -279,28 +279,17 @@ async def list_emails(request: Request, page_token: Optional[str] = None, q: Opt
         if page_token:
             params["pageToken"] = page_token
 
-        # Build Gmail search query filtering to coach emails
-        coach_query = ""
-        if coach_emails:
-            email_parts = " OR ".join(coach_emails)
-            coach_query = f"({email_parts})"
+        # Build Gmail search query: known coach emails + any .edu address
+        filter_parts = ["from:*.edu OR to:*.edu"]
+        for email in coach_emails:
+            filter_parts.append(email)
+        recruit_query = "(" + " OR ".join(filter_parts) + ")"
 
-        # Combine user search with coach filter
-        if q and coach_query:
-            params["q"] = f"{coach_query} {q}"
-        elif coach_query:
-            params["q"] = coach_query
-        elif q:
-            params["q"] = q
-
-        # If no coaches exist, return empty with a hint
-        if not coach_emails:
-            return {
-                "emails": [],
-                "next_page_token": None,
-                "result_size_estimate": 0,
-                "no_coaches": True,
-            }
+        # Combine user search with recruiting filter
+        if q:
+            params["q"] = f"{recruit_query} {q}"
+        else:
+            params["q"] = recruit_query
 
         results = service.users().messages().list(**params).execute()
         messages = results.get("messages", [])
