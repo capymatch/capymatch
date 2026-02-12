@@ -511,11 +511,8 @@ export default function RecruitingBoard() {
               <button
                 onClick={() => toggleSection(stage.key)}
                 data-testid={`toggle-${stage.key}`}
-                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${stageIdx === 0 ? "" : "mt-14"} ${
-                  isEmpty
-                    ? "bg-gray-50/80 border-gray-100 hover:bg-gray-50"
-                    : "bg-white border-gray-100 hover:shadow-sm shadow-sm"
-                } border-l-4 ${stage.border}`}
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${stageIdx === 0 ? "" : "mt-14"} border-l-4 ${stage.border}`}
+                style={{ backgroundColor: isEmpty ? "var(--t-surface-alt)" : "var(--t-section-bg)", borderColor: "var(--t-border)" }}
               >
                 {isCollapsed ? (
                   <ChevronRight className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
