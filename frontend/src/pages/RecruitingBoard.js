@@ -373,7 +373,7 @@ export default function RecruitingBoard() {
               <button
                 onClick={() => toggleSection(stage.key)}
                 data-testid={`toggle-${stage.key}`}
-                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 mt-10 ${
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${stageIdx === 0 ? "" : "mt-14"} ${
                   isEmpty
                     ? "bg-gray-50/80 border-gray-100 hover:bg-gray-50"
                     : "bg-white border-gray-100 hover:shadow-sm shadow-sm"
