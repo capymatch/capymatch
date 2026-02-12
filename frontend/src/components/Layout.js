@@ -14,12 +14,31 @@ export default function Layout({ user }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const profileRef = useRef(null);
+  const notifRef = useRef(null);
+
+  // Fetch notifications on mount and periodically
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get("/notifications");
+        setNotifications(res.data.notifications || []);
+        setUnreadCount(res.data.unread_count || 0);
+      } catch {}
+    };
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const handleClick = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -29,6 +48,41 @@ export default function Layout({ user }) {
     try { await api.post("/auth/logout"); } catch {}
     navigate("/login", { replace: true });
     toast.success("Logged out");
+  };
+
+  const markNotificationRead = async (notifId) => {
+    try {
+      await api.post(`/notifications/${notifId}/read`);
+      setNotifications(prev => prev.map(n => n.notification_id === notifId ? { ...n, read: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch {}
+  };
+
+  const markAllRead = async () => {
+    try {
+      await api.post("/notifications/read-all");
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch {}
+  };
+
+  const getNotifIcon = (type) => {
+    switch (type) {
+      case "coach_reply": return <MessageSquare className="w-4 h-4 text-green-500" />;
+      case "profile_view_edu": return <Eye className="w-4 h-4 text-blue-500" />;
+      case "follow_up_due": return <Clock className="w-4 h-4 text-orange-500" />;
+      default: return <Bell className="w-4 h-4 text-purple-500" />;
+    }
+  };
+
+  const formatTimeAgo = (dateStr) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
   };
 
   const sidebarItems = [
