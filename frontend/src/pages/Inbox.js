@@ -387,7 +387,7 @@ export default function Inbox() {
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>Inbox</h1>
           <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
-            {gmailStatus.gmail_email}
+            Coach conversations &middot; {gmailStatus.gmail_email}
           </p>
         </div>
         <div className="flex items-center gap-2">
