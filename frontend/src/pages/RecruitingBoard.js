@@ -112,11 +112,11 @@ function InlineSelect({ value, options, onChange }) {
         <svg className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""} ${currentColor ? "opacity-70" : "opacity-40"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       {isOpen && (
-        <div className="absolute z-50 mt-1 left-0 min-w-[180px] rounded-lg border p-1.5 space-y-1 animate-in fade-in-0 zoom-in-95 duration-100" style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)", boxShadow: "var(--t-dropdown-shadow)" }}>
+        <div className="absolute z-50 mt-1 left-0 min-w-[190px] rounded-xl border p-2 space-y-1.5 animate-in fade-in-0 zoom-in-95 duration-100" style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)", boxShadow: "var(--t-dropdown-shadow)" }}>
           <button
             type="button"
             onClick={() => { onChange(""); setIsOpen(false); }}
-            className="w-full text-left px-3 py-2 text-xs rounded-md transition-colors"
+            className="w-full text-left px-3 py-2.5 text-xs rounded-lg transition-colors"
             style={{ color: "var(--t-text-muted)" }}
           >
             - Clear -
@@ -128,7 +128,7 @@ function InlineSelect({ value, options, onChange }) {
                 key={o}
                 type="button"
                 onClick={() => { onChange(o); setIsOpen(false); }}
-                className={`w-full text-left px-3 py-2 text-xs font-medium rounded-md transition-all ${
+                className={`w-full text-left px-3 py-2.5 text-xs font-medium rounded-lg transition-all ${
                   c
                     ? `${c.bg} ${c.text} ${c.hover}`
                     : `text-gray-700 hover:bg-gray-50 ${value === o ? "bg-gray-100 font-semibold" : ""}`
