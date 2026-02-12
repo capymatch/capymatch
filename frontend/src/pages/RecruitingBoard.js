@@ -241,8 +241,8 @@ function PipelineFunnel({ programs }) {
               <span className="text-xs font-medium uppercase tracking-wider leading-tight" style={{ color: "var(--t-text-secondary)" }}>{stage.label}</span>
             </div>
             <div className="flex items-end justify-between">
-              <span className="font-heading text-3xl font-black text-gray-900">{count}</span>
-              {total > 0 && <span className="text-[11px] text-gray-400 mb-1">{pct}%</span>}
+              <span className="font-heading text-3xl font-black" style={{ color: "var(--t-text)" }}>{count}</span>
+              {total > 0 && <span className="text-[11px] mb-1" style={{ color: "var(--t-text-muted)" }}>{pct}%</span>}
             </div>
             {/* Mini bar */}
             <div className="mt-2 w-full bg-gray-100 rounded-full h-1.5">
