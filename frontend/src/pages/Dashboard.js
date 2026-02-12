@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronRight, Calendar, MapPin, Eye, AlertTriangle, Send, Sparkles } from "lucide-react";
+import { ChevronRight, Calendar, MapPin, Eye, AlertTriangle, Send, Sparkles, CheckCircle, Circle, ArrowRight, X, User, GraduationCap, Mail as MailIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
