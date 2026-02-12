@@ -45,6 +45,7 @@ reply_check_task = None
 async def check_coach_replies():
     """Background task that checks for coach email replies every 10 minutes"""
     from routes.gmail import get_gmail_credentials, get_gmail_service
+    from routes.notifications import create_notification
     from datetime import datetime, timezone
     
     while True:
@@ -69,44 +70,47 @@ async def check_coach_replies():
                     if not creds:
                         continue
                     
-                    # Get all coach emails for this tenant (programs with "No Reply" status)
+                    # Get all coach emails for this tenant
                     coaches = await db.coaches.find(
                         {"tenant_id": tenant_id, "email": {"$ne": ""}},
-                        {"_id": 0, "email": 1, "program_id": 1}
+                        {"_id": 0, "email": 1, "program_id": 1, "coach_name": 1}
                     ).to_list(500)
                     
                     if not coaches:
                         continue
                     
-                    # Build a map of coach email -> program_id
-                    coach_email_to_program = {}
+                    # Build a map of coach email -> {program_id, coach_name}
+                    coach_email_to_info = {}
                     for c in coaches:
                         email = c.get("email", "").strip().lower()
                         if email:
-                            coach_email_to_program[email] = c["program_id"]
+                            coach_email_to_info[email] = {
+                                "program_id": c["program_id"],
+                                "coach_name": c.get("coach_name", "")
+                            }
                     
-                    if not coach_email_to_program:
+                    if not coach_email_to_info:
                         continue
                     
-                    # Get programs with "No Reply" status
-                    no_reply_programs = await db.programs.find(
-                        {"tenant_id": tenant_id, "reply_status": "No Reply"},
-                        {"_id": 0, "program_id": 1}
+                    # Get programs with "No Reply" or "Awaiting Reply" status
+                    awaiting_programs = await db.programs.find(
+                        {"tenant_id": tenant_id, "reply_status": {"$in": ["No Reply", "Awaiting Reply"]}},
+                        {"_id": 0, "program_id": 1, "university_name": 1}
                     ).to_list(500)
                     
-                    no_reply_program_ids = {p["program_id"] for p in no_reply_programs}
+                    awaiting_program_map = {p["program_id"]: p.get("university_name", "") for p in awaiting_programs}
                     
-                    if not no_reply_program_ids:
+                    if not awaiting_program_map:
                         continue
                     
                     # Get Gmail service and check recent emails
                     service = get_gmail_service(creds)
                     
                     # Search for emails from coach addresses in the last 24 hours
-                    coach_emails_list = list(coach_email_to_program.keys())
+                    coach_emails_list = list(coach_email_to_info.keys())
                     
                     # Build query for emails from coaches
-                    from_queries = [f"from:{email}" for email in coach_emails_list[:20]]  # Limit to avoid too long query
+                    from_queries = [f"from:{email}" for email in coach_emails_list[:20]]
                     query = f"({' OR '.join(from_queries)}) newer_than:1d"
                     
                     results = service.users().messages().list(
@@ -129,19 +133,34 @@ async def check_coach_replies():
                         from_addr = headers.get("From", "").lower()
                         
                         # Check if this email is from a coach we're tracking
-                        for coach_email, program_id in coach_email_to_program.items():
-                            if coach_email in from_addr and program_id in no_reply_program_ids:
+                        for coach_email, info in coach_email_to_info.items():
+                            program_id = info["program_id"]
+                            if coach_email in from_addr and program_id in awaiting_program_map:
+                                university_name = awaiting_program_map[program_id]
+                                coach_name = info.get("coach_name", "A coach")
+                                
                                 # Update the program's reply_status
-                                await db.programs.update_one(
-                                    {"program_id": program_id, "tenant_id": tenant_id, "reply_status": "No Reply"},
+                                result = await db.programs.update_one(
+                                    {"program_id": program_id, "tenant_id": tenant_id, "reply_status": {"$in": ["No Reply", "Awaiting Reply"]}},
                                     {"$set": {
                                         "reply_status": "Reply Received",
                                         "priority": "Very High",
                                         "updated_at": datetime.now(timezone.utc).isoformat()
                                     }}
                                 )
-                                logger.info(f"Auto-updated reply status for program {program_id} (coach: {coach_email})")
-                                no_reply_program_ids.discard(program_id)  # Don't update twice
+                                
+                                if result.modified_count > 0:
+                                    # Create notification for coach reply
+                                    await create_notification(
+                                        tenant_id=tenant_id,
+                                        notif_type="coach_reply",
+                                        title="Coach Replied!",
+                                        message=f"{coach_name} from {university_name} replied to your email",
+                                        data={"program_id": program_id, "university_name": university_name, "coach_email": coach_email}
+                                    )
+                                    logger.info(f"Auto-updated reply status for program {program_id} (coach: {coach_email})")
+                                
+                                del awaiting_program_map[program_id]  # Don't update twice
                                 break
                 
                 except Exception as e:
