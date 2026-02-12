@@ -104,6 +104,30 @@ class MarkFollowUpSent(BaseModel):
     outcome: str = "No Response"
     reply_status: str = "No Reply"
 
+class EventCreate(BaseModel):
+    title: str
+    event_type: str = "Camp"
+    location: str = ""
+    description: str = ""
+    start_date: str = ""
+    end_date: str = ""
+    start_time: str = ""
+    end_time: str = ""
+    program_id: str = ""
+    color: str = "purple"
+
+class EventUpdate(BaseModel):
+    title: Optional[str] = None
+    event_type: Optional[str] = None
+    location: Optional[str] = None
+    description: Optional[str] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
+    program_id: Optional[str] = None
+    color: Optional[str] = None
+
 # ─── Auth Helpers ───
 
 async def get_current_user(request: Request):
