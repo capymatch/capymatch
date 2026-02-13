@@ -214,9 +214,16 @@ export default function Layout({ user }) {
                           key={notif.notification_id}
                           onClick={() => {
                             if (!notif.read) markNotificationRead(notif.notification_id);
-                            if (notif.type === "coach_reply") navigate("/inbox");
-                            else if (notif.type === "follow_up_due") navigate("/follow-ups");
-                            else if (notif.type === "profile_view_edu") navigate("/analytics");
+                            const pid = notif.data?.program_id;
+                            if (pid) {
+                              navigate(`/journey/${pid}`);
+                            } else if (notif.type === "coach_reply") {
+                              navigate("/inbox");
+                            } else if (notif.type === "follow_up_due") {
+                              navigate("/pipeline");
+                            } else if (notif.type === "profile_view_edu") {
+                              navigate("/analytics");
+                            }
                             setNotifOpen(false);
                           }}
                           className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-purple-500/5" : ""}`}
