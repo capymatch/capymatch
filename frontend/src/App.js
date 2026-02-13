@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import RecruitingBoard from "./pages/RecruitingBoard";
+import RecruitingJourney from "./pages/RecruitingJourney";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
 import NeedsFollowUp from "./pages/NeedsFollowUp";
