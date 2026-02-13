@@ -5,7 +5,7 @@ import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
   MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
   Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
-  Heart, Target, AlertCircle, CheckCircle2, FileText, Globe
+  Heart, Target, AlertCircle, CheckCircle2, FileText
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -347,7 +347,6 @@ export default function RecruitingJourney() {
   const [program, setProgram] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [coaches, setCoaches] = useState([]);
-  const [schoolInfo, setSchoolInfo] = useState(null);
   const [keyDates, setKeyDates] = useState([]);
   const [loading, setLoading] = useState(true);
   // UI state
