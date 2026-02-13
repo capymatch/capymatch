@@ -3,13 +3,18 @@ export const RECRUITING_STATUSES = [
   "Contacted",
   "No Response Yet",
   "Video Viewed",
+  "Applied",
   "Some Interest",
   "Active Conversation",
+  "Camp Attended",
   "Offer / Commit Talk",
+  "Offer Received",
+  "Committed",
   "Not a Fit / Closed",
+  "Not Interested",
 ];
 
-export const REPLY_STATUSES = ["No Reply", "Reply Received", "Awaiting Reply"];
+export const REPLY_STATUSES = ["No Reply", "Awaiting Reply", "Reply Received", "In Conversation"];
 
 export const PRIORITIES = ["Low", "Medium", "High", "Very High"];
 
@@ -55,7 +60,7 @@ export const STATUS_GROUPS = [
   {
     key: "contacted",
     label: "Contacted - Awaiting Reply",
-    statuses: ["Contacted", "No Response Yet", "Video Viewed"],
+    statuses: ["Contacted", "No Response Yet", "Video Viewed", "Applied"],
     color: "bg-green-900/60 border-green-800 text-green-200",
     badge: "bg-green-900 text-green-200",
     count_bg: "bg-green-900/40",
@@ -63,7 +68,7 @@ export const STATUS_GROUPS = [
   {
     key: "active",
     label: "Active Conversations",
-    statuses: ["Some Interest", "Active Conversation"],
+    statuses: ["Some Interest", "Active Conversation", "Camp Attended"],
     color: "bg-blue-900/60 border-blue-800 text-blue-200",
     badge: "bg-blue-900 text-blue-200",
     count_bg: "bg-blue-900/40",
@@ -71,7 +76,7 @@ export const STATUS_GROUPS = [
   {
     key: "offers",
     label: "Offers / Serious Interest",
-    statuses: ["Offer / Commit Talk"],
+    statuses: ["Offer / Commit Talk", "Offer Received", "Committed"],
     color: "bg-amber-900/60 border-amber-800 text-amber-200",
     badge: "bg-amber-900 text-amber-200",
     count_bg: "bg-amber-900/40",
@@ -79,7 +84,7 @@ export const STATUS_GROUPS = [
   {
     key: "closed",
     label: "Closed / Archived",
-    statuses: ["Not a Fit / Closed"],
+    statuses: ["Not a Fit / Closed", "Not Interested"],
     color: "bg-zinc-700/60 border-zinc-600 text-zinc-300",
     badge: "bg-zinc-700 text-zinc-300",
     count_bg: "bg-zinc-700/40",
