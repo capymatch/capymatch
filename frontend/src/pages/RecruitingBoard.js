@@ -334,9 +334,9 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
 
 /* ── Column Headers ── */
 function ColumnHeaders() {
-  const cols = ["University", "Div", "Coach", "Status", "Contact Sent", "Reply", "Next Action", "Due Date", "Priority", ""];
+  const cols = ["University", "Div", "Status", "Reply", "Due Date", "Priority", ""];
   return (
-    <div className="grid grid-cols-[1.8fr_0.5fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 mb-2 border rounded-lg" style={{ backgroundColor: "var(--t-colheader-bg)", borderColor: "var(--t-border)" }}>
+    <div className="grid grid-cols-[2fr_0.5fr_1.2fr_1.2fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 mb-2 border rounded-lg" style={{ backgroundColor: "var(--t-colheader-bg)", borderColor: "var(--t-border)" }}>
       {cols.map((col, i) => (
         <span key={i} className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>{col}</span>
       ))}
