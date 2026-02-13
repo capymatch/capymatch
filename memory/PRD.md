@@ -13,38 +13,51 @@ Build a Volleyball Recruiting CRM with Gmail integration, calendar, public athle
 - **BYPASSED** (not removed): `get_current_user` returns static user (`user_public_default`). All code preserved for re-enable.
 
 ## What's Been Implemented
-- Kanban-style recruiting pipeline
+- Kanban-style recruiting pipeline with status filtering and due date color coding
 - Gmail integration (send/receive emails)
 - Calendar for events
 - Athlete profile with Hudl link + public-facing page
 - Automated email status updates (Contacted/Awaiting Reply/Reply Received)
 - Background task polling Gmail for coach replies
-- Notification system (coach replies, follow-up reminders, .edu profile views)
-- Onboarding tour (resized to compact)
-- Auth bypass - app is fully public, no login required
+- Notification system with smart routing to Journey page
+- Onboarding tour (compact)
+- Auth bypass - app is fully public
 
 ### Journey Page Command Center (Feb 2026)
-The Journey page is now the central hub of the app with:
-1. **Inline Email Composer** - Send/reply to coaches with AI draft buttons (intro, follow-up, thank you, interest update)
-2. **Quick Status Controls** - Change recruiting status, reply status, priority from header dropdowns
-3. **Coach Contact Panel** - View/add/edit/delete coaches inline (replaced Quick Stats)
-4. **Follow-up Scheduler** - Set reminder dates and next actions
-5. **Log Interaction** - Quick-add phone calls, texts, camp meetings, notes to timeline
-6. **AI Next Steps** - Generate AI summary with actionable "Draft Email" button
-7. **School Info Card** - Division, conference, region, mascot from knowledge base
-8. **Interest Meter** - Track athlete interest (1-10) and school interest (1-10) visually
-9. **Key Dates** - Upcoming events and follow-up deadlines shown inline
+1. **Inline Email Composer** with AI draft buttons
+2. **Quick Status Controls** - change status/reply/priority from header
+3. **Coach Contact Panel** - view/add/edit/delete coaches
+4. **Follow-up Scheduler** - set dates and next actions
+5. **Log Interaction** - quick-add to timeline
+6. **AI Insights** - summary with actionable buttons
+7. **Interest Meter** - athlete + school interest (1-10)
+8. **Key Dates** - upcoming events and follow-up deadlines
+
+### Pipeline Board (Feb 2026)
+- Clean 6-column layout: University, Div, Status, Reply, Due Date, Priority
+- Status filter funnel with "All" button - click to show only one category
+- Due date color coding: red=past due, orange=within 14 days, white=normal
+- University name links directly to Journey page
+- Synced statuses: Camp Attended, Applied, Offer Received, Committed, Not Interested
+
+### Notifications (Feb 2026)
+- Click notification → redirects to school's Journey page (via program_id)
+- Fallback routing: inbox for coach replies, pipeline for follow-ups, analytics for profile views
 
 ## Completed (This Session - Feb 2026)
-- [x] Auth bypass: Backend mock user, frontend direct routing, no login screen
-- [x] Tour popup resized to compact (340px)
-- [x] Journey page rebuilt as command center with all 9 features
-- [x] Backend: Added athlete_interest and school_interest fields to Program model
-- [x] All tests passing: 19/19 backend, 100% frontend
+- [x] Auth bypass
+- [x] Tour popup resized
+- [x] Journey page rebuilt as command center (8 features)
+- [x] School Info card removed from Journey
+- [x] Pipeline cleanup: removed 3 columns, added status filter + due date colors
+- [x] Notification smart routing to Journey page
+- [x] Fixed datetime comparison bug in journey endpoint
+- [x] Mock data seeded for 6 programs
+- [x] All tests passing: 24/24 backend, 100% frontend (iteration_14)
 
 ## Backlog
 ### P1
-- App naming (user needs to decide, "Vollura" was taken)
+- App naming (user needs to decide)
 
 ### P2 - Recruiting Intelligence
 - School Match Score
@@ -57,6 +70,3 @@ The Journey page is now the central hub of the app with:
 
 ### P3 - Family Collaboration
 - Parent/Guardian read-only dashboard access
-
-### Refactoring
-- Move journey endpoints from programs.py to dedicated journey.py router
