@@ -542,9 +542,7 @@ export default function RecruitingBoard() {
               {!isCollapsed && (
                 <>
                   {isEmpty ? (
-                    <div className="py-4">
-                      <QuickAddRow onAdd={fetchPrograms} />
-                    </div>
+                    <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>No programs in this stage</div>
                   ) : (
                     <>
                       <ColumnHeaders />
@@ -558,7 +556,6 @@ export default function RecruitingBoard() {
                           />
                         ))}
                       </div>
-                      <QuickAddRow onAdd={fetchPrograms} />
                     </>
                   )}
                 </>
