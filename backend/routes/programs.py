@@ -404,11 +404,15 @@ async def get_program_journey(program_id: str, request: Request):
         d = item.get("date", "")
         try:
             if "T" in d:
-                return datetime.fromisoformat(d.replace("Z", "+00:00"))
+                dt = datetime.fromisoformat(d.replace("Z", "+00:00"))
             else:
-                return datetime.strptime(d, "%Y-%m-%d")
+                dt = datetime.strptime(d, "%Y-%m-%d")
+            # Ensure timezone-aware for consistent comparison
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt
         except:
-            return datetime.min
+            return datetime.min.replace(tzinfo=timezone.utc)
     
     timeline.sort(key=parse_date, reverse=True)
     
