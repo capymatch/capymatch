@@ -474,16 +474,18 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Action Bar ─── */}
-      <div className="flex gap-2 flex-wrap items-center">
-        <Button size="sm" variant={showLogForm ? "default" : "outline"} className={`text-xs h-8 ${showLogForm ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
-          onClick={() => { setShowLogForm(!showLogForm); setShowEmailComposer(false); }} style={showLogForm ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-log-btn">
-          <MessageSquare className="w-3.5 h-3.5 mr-1.5" />Log Interaction
-        </Button>
-        <Button size="sm" variant={showEmailComposer ? "default" : "outline"} className={`text-xs h-8 ${showEmailComposer ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
-          onClick={() => { setShowEmailComposer(!showEmailComposer); setShowLogForm(false); }} style={showEmailComposer ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-email-btn">
-          <Mail className="w-3.5 h-3.5 mr-1.5" />Send Email
-        </Button>
-        <AISummaryButton onClick={generateAiSummary} loading={aiLoading && !aiSummary} hasResult={!!aiSummary} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 flex gap-2 flex-wrap items-center">
+          <Button size="sm" variant={showLogForm ? "default" : "outline"} className={`text-xs h-8 ${showLogForm ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
+            onClick={() => { setShowLogForm(!showLogForm); setShowEmailComposer(false); }} style={showLogForm ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-log-btn">
+            <MessageSquare className="w-3.5 h-3.5 mr-1.5" />Log Interaction
+          </Button>
+          <Button size="sm" variant={showEmailComposer ? "default" : "outline"} className={`text-xs h-8 ${showEmailComposer ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
+            onClick={() => { setShowEmailComposer(!showEmailComposer); setShowLogForm(false); }} style={showEmailComposer ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-email-btn">
+            <Mail className="w-3.5 h-3.5 mr-1.5" />Send Email
+          </Button>
+          <AISummaryButton onClick={generateAiSummary} loading={aiLoading && !aiSummary} hasResult={!!aiSummary} />
+        </div>
       </div>
 
       {/* ─── Inline Forms ─── */}
