@@ -333,7 +333,7 @@ function AISummaryBlock({ summary, onRegenerate, onDraftEmail, regenerating }) {
         <p className="text-xs font-medium text-purple-300">{summary.suggested_action}</p>
       </div>
       {summary.action_type === "email" && (
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
+        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 mt-2" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
           <Mail className="w-3 h-3 mr-1" />Draft Email
         </Button>
       )}
