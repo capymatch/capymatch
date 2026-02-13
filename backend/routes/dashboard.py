@@ -8,7 +8,7 @@ router = APIRouter(prefix="/api")
 
 @router.get("/dashboard")
 async def get_dashboard(request: Request):
-    from routes.notifications import create_notification
+    from routes.notifications import create_notification, generate_weekly_summary
     
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
@@ -17,6 +17,9 @@ async def get_dashboard(request: Request):
     follow_ups_due = await db.programs.count_documents({
         "tenant_id": tenant_id, "next_action_due": {"$ne": "", "$lte": today}
     })
+    
+    # Generate weekly summary if one doesn't exist this week
+    await generate_weekly_summary(tenant_id)
     
     # Check for follow-ups due today and create notifications if not already created
     if follow_ups_due > 0:
