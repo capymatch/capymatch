@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
-  LogOut, Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
+  Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, X, MessageSquare, Eye, Clock
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -315,14 +315,6 @@ export default function Layout({ user }) {
                     >
                       <Settings className="w-4 h-4" strokeWidth={1.5} />
                       Settings
-                    </button>
-                    <button
-                      onClick={() => { setProfileOpen(false); handleLogout(); }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left text-red-500 hover:bg-red-500/10"
-                      data-testid="logout-btn"
-                    >
-                      <LogOut className="w-4 h-4" strokeWidth={1.5} />
-                      Log out
                     </button>
                   </div>
                 </div>
