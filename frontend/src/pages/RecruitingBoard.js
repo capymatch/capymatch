@@ -241,9 +241,20 @@ function PipelineFunnel({ programs, onFocusSection }) {
 
 /* ── Program Row ── */
 function ProgramRow({ p, navigate, handleInlineUpdate }) {
+  // Due date color logic
+  const getDueDateStyle = () => {
+    if (!p.next_action_due) return {};
+    const now = new Date();
+    const due = new Date(p.next_action_due);
+    const daysUntil = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+    if (daysUntil < 0) return { color: "#ef4444", fontWeight: 600 }; // red - past due
+    if (daysUntil <= 14) return { color: "#f97316", fontWeight: 600 }; // orange - 10-14 days
+    return { color: "var(--t-text-secondary)" }; // white/normal
+  };
+
   return (
     <div
-      className="group grid grid-cols-[1.8fr_0.5fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
+      className="group grid grid-cols-[2fr_0.5fr_1.2fr_1.2fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
       style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
@@ -254,9 +265,9 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
         <div className={`w-1.5 h-8 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
         <div className="min-w-0">
           <button
-            onClick={() => navigate(`/programs/${p.program_id}`)}
+            onClick={() => navigate(`/journey/${p.program_id}`)}
             data-testid={`program-link-${p.program_id}`}
-            className="font-semibold text-sm truncate block transition-colors"
+            className="font-semibold text-sm truncate block transition-colors hover:text-purple-400"
             style={{ color: "var(--t-text)" }}
           >
             {p.university_name}
@@ -272,19 +283,9 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
         </span>
       </div>
 
-      {/* Coach */}
-      <div className="text-xs truncate" style={{ color: "var(--t-text-secondary)" }}>
-        {p.primary_coach || <span style={{ color: "var(--t-text-faint)" }} className="italic">No coach</span>}
-      </div>
-
       {/* Status */}
       <div>
         <InlineSelect value={p.recruiting_status} options={RECRUITING_STATUSES} onChange={(v) => handleInlineUpdate(p.program_id, "recruiting_status", v)} />
-      </div>
-
-      {/* Initial Contact */}
-      <div>
-        <InlineDateInput value={p.initial_contact_sent} onChange={(v) => handleInlineUpdate(p.program_id, "initial_contact_sent", v)} />
       </div>
 
       {/* Reply */}
@@ -292,14 +293,9 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
         <InlineSelect value={p.reply_status} options={REPLY_STATUSES} onChange={(v) => handleInlineUpdate(p.program_id, "reply_status", v)} />
       </div>
 
-      {/* Next Action */}
+      {/* Due Date (color-coded) */}
       <div>
-        <InlineSelect value={p.next_action} options={NEXT_ACTIONS} onChange={(v) => handleInlineUpdate(p.program_id, "next_action", v)} />
-      </div>
-
-      {/* Due Date */}
-      <div>
-        <InlineDateInput value={p.next_action_due} onChange={(v) => handleInlineUpdate(p.program_id, "next_action_due", v)} />
+        <InlineDateInput value={p.next_action_due} onChange={(v) => handleInlineUpdate(p.program_id, "next_action_due", v)} style={getDueDateStyle()} />
       </div>
 
       {/* Priority */}
@@ -320,12 +316,6 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
           title="View Journey"
         >
           <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
-        </button>
-        <button
-          onClick={() => navigate(`/programs/${p.program_id}`)}
-          className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors"
-        >
-          <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
         </button>
       </div>
     </div>
