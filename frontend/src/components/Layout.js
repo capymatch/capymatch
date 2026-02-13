@@ -68,6 +68,7 @@ export default function Layout({ user }) {
       case "coach_reply": return <MessageSquare className="w-4 h-4 text-green-500" />;
       case "profile_view_edu": return <Eye className="w-4 h-4 text-blue-500" />;
       case "follow_up_due": return <Clock className="w-4 h-4 text-orange-500" />;
+      case "weekly_summary": return <Sparkles className="w-4 h-4 text-purple-500" />;
       default: return <Bell className="w-4 h-4 text-purple-500" />;
     }
   };
