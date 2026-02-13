@@ -360,9 +360,10 @@ export default function RecruitingJourney() {
   const [showAiBlock, setShowAiBlock] = useState(false);
 
   const generateAiSummary = async () => {
-    if (aiSummary && !showAiBlock) { setShowAiBlock(true); return; }
+    if (aiSummary && !showAiBlock) { setShowAiBlock(true); setShowLogForm(false); setShowEmailComposer(false); return; }
     if (aiSummary && showAiBlock) { setShowAiBlock(false); return; }
     setAiLoading(true);
+    setShowLogForm(false); setShowEmailComposer(false);
     try {
       const res = await api.post("/ai/journey-summary", { program_id: programId });
       setAiSummary(res.data);
