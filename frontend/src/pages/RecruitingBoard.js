@@ -516,6 +516,9 @@ export default function RecruitingBoard() {
       {/* Sections */}
       <div>
         {PIPELINE.map((stage, stageIdx) => {
+          // Hide sections not matching the active filter
+          if (activeFilter && activeFilter !== stage.key) return null;
+
           const stagePrograms = programs.filter((p) => stage.statuses.includes(p.recruiting_status));
           const isCollapsed = collapsed[stage.key];
           const isEmpty = stagePrograms.length === 0;
