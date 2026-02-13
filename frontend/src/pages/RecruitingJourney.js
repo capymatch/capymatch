@@ -366,15 +366,6 @@ export default function RecruitingJourney() {
       setTimeline(journeyRes.data.timeline || []);
       setCoaches(coachRes.data || []);
 
-      // Fetch school info from knowledge base
-      if (progRes.data?.university_name) {
-        try {
-          const kbRes = await api.get(`/knowledge-base?search=${encodeURIComponent(progRes.data.university_name)}`);
-          const match = kbRes.data?.find(u => u.university_name === progRes.data.university_name);
-          if (match) setSchoolInfo(match);
-        } catch {}
-      }
-
       // Fetch key dates (events linked to this program)
       try {
         const evtRes = await api.get("/events");
