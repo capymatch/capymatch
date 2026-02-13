@@ -216,7 +216,9 @@ export default function Layout({ user }) {
                           onClick={() => {
                             if (!notif.read) markNotificationRead(notif.notification_id);
                             const pid = notif.data?.program_id;
-                            if (pid) {
+                            if (notif.type === "weekly_summary") {
+                              navigate("/pipeline");
+                            } else if (pid) {
                               navigate(`/journey/${pid}`);
                             } else if (notif.type === "coach_reply") {
                               navigate("/inbox");
