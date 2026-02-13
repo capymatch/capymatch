@@ -217,16 +217,25 @@ function AddProgramDialog({ onAdd }) {
 }
 
 /* ── Pipeline Funnel ── */
-function PipelineFunnel({ programs, onFocusSection }) {
+function PipelineFunnel({ programs, onFocusSection, activeFilter }) {
   return (
     <div className="flex items-center gap-2 p-2 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
+      <div
+        onClick={() => onFocusSection(null)}
+        className={`flex items-center gap-3 px-5 py-4 rounded-lg justify-center cursor-pointer transition-all ${!activeFilter ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+        data-testid="funnel-all"
+      >
+        <span className={`text-sm font-medium ${!activeFilter ? "text-purple-400" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
+        <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{programs.length}</span>
+      </div>
       {PIPELINE.map((stage) => {
         const count = programs.filter((p) => stage.statuses.includes(p.recruiting_status)).length;
+        const isActive = activeFilter === stage.key;
         return (
           <div
             key={stage.key}
             onClick={() => onFocusSection(stage.key)}
-            className="flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center cursor-pointer transition-colors hover:bg-[var(--t-surface-alt)]"
+            className={`flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center cursor-pointer transition-all ${isActive ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${stage.key}`}
           >
             <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${stage.color} flex-shrink-0`} />
