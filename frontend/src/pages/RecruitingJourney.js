@@ -516,31 +516,6 @@ export default function RecruitingJourney() {
             </div>
           </div>
 
-          {/* School Info */}
-          {schoolInfo && (
-            <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="school-info-card">
-              <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Globe className="w-4 h-4 text-purple-400" />School Info</h3>
-              <div className="space-y-1.5 text-xs">
-                {[
-                  ["Division", schoolInfo.division],
-                  ["Conference", schoolInfo.conference],
-                  ["Region", schoolInfo.region],
-                  ["Mascot", schoolInfo.mascot],
-                ].filter(([, v]) => v).map(([k, v]) => (
-                  <div key={k} className="flex justify-between">
-                    <span style={{ color: "var(--t-text-muted)" }}>{k}</span>
-                    <span className="font-medium" style={{ color: "var(--t-text)" }}>{v}</span>
-                  </div>
-                ))}
-                {schoolInfo.website && (
-                  <a href={schoolInfo.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-purple-400 hover:text-purple-300 pt-1">
-                    <ExternalLink className="w-3 h-3" />Visit website
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Key Dates */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-dates-panel">
             <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Calendar className="w-4 h-4 text-purple-400" />Key Dates</h3>
