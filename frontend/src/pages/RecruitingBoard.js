@@ -471,7 +471,7 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Pipeline Funnel */}
-      <PipelineFunnel programs={programs} onFocusSection={focusSection} />
+      <PipelineFunnel programs={programs} onFocusSection={focusSection} activeFilter={activeFilter} />
 
       {/* Divider */}
       <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
