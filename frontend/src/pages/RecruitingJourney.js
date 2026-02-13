@@ -489,14 +489,14 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Inline Forms ─── */}
-      {showLogForm && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} />}
-      {showEmailComposer && <EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} />}
+      {showLogForm && <div className="mt-2"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
+      {showEmailComposer && <div className="mt-2"><EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} /></div>}
 
       {/* ─── AI Insights Block (same width as timeline) ─── */}
       {showAiBlock && aiSummary && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
-            <AISummaryBlock summary={aiSummary} onRegenerate={regenerateAiSummary} regenerating={aiLoading} onDraftEmail={() => { setShowEmailComposer(true); setShowLogForm(false); }} />
+            <AISummaryBlock summary={aiSummary} onRegenerate={regenerateAiSummary} regenerating={aiLoading} onDraftEmail={() => { setShowEmailComposer(true); setShowLogForm(false); setShowAiBlock(false); }} />
           </div>
         </div>
       )}
