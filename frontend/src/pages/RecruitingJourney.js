@@ -292,60 +292,50 @@ function FollowUpScheduler({ program, onSaved }) {
   );
 }
 
-// ─── AI Summary (inline in timeline header) ───
-function AISummary({ programId, universityName, onDraftEmail }) {
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const generate = async () => {
-    setLoading(true);
-    try {
-      const res = await api.post("/ai/journey-summary", { program_id: programId });
-      setSummary(res.data);
-      setExpanded(true);
-    } catch { toast.error("Failed to generate summary"); } finally { setLoading(false); }
-  };
-
+// ─── AI Summary (action bar + expandable block) ───
+function AISummaryButton({ onClick, loading, hasResult }) {
+  if (loading) return (
+    <Button size="sm" variant="outline" className="text-xs h-8 ml-auto" disabled style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }}>
+      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5 text-purple-500" />Analyzing...
+    </Button>
+  );
   return (
-    <div data-testid="ai-summary-section">
-      {!summary && !loading && (
-        <Button size="sm" onClick={generate} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7" data-testid="generate-summary-btn">
-          <Sparkles className="w-3 h-3 mr-1.5" />AI Insights
-        </Button>
+    <Button size="sm" variant={hasResult ? "default" : "outline"} className={`text-xs h-8 ml-auto ${hasResult ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
+      onClick={onClick} style={hasResult ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="generate-summary-btn">
+      <Sparkles className="w-3.5 h-3.5 mr-1.5" />AI Insights
+      {hasResult && <ChevronDown className="w-3 h-3 ml-1" />}
+    </Button>
+  );
+}
+
+function AISummaryBlock({ summary, onRegenerate, onDraftEmail, regenerating }) {
+  return (
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-insights-block">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}>
+          <Sparkles className="w-4 h-4 text-purple-400" />AI Insights
+        </h3>
+        <button onClick={onRegenerate} disabled={regenerating} className="text-[11px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
+          {regenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Regenerate
+        </button>
+      </div>
+      <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{summary.relationship_summary}</p>
+      {summary.key_highlights?.length > 0 && (
+        <ul className="space-y-1">
+          {summary.key_highlights.map((h, i) => (
+            <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
+              <CheckCircle2 className="w-3 h-3 text-purple-400 flex-shrink-0 mt-0.5" />{h}
+            </li>
+          ))}
+        </ul>
       )}
-      {loading && <div className="flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin text-purple-500" /><span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Analyzing...</span></div>}
-      {summary && (
-        <div>
-          <button onClick={() => setExpanded(!expanded)} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/15 transition-colors" data-testid="toggle-ai-insights">
-            <Sparkles className="w-3 h-3 text-purple-400" />
-            <span className="text-[11px] font-medium text-purple-400">AI Insights</span>
-            {expanded ? <ChevronUp className="w-3 h-3 text-purple-400" /> : <ChevronDown className="w-3 h-3 text-purple-400" />}
-          </button>
-          {expanded && (
-            <div className="absolute right-5 top-12 z-20 w-72 rounded-lg border p-3 shadow-xl space-y-2.5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-insights-dropdown">
-              <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{summary.relationship_summary}</p>
-              {summary.key_highlights?.length > 0 && (
-                <ul className="space-y-1">
-                  {summary.key_highlights.map((h, i) => (
-                    <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
-                      <CheckCircle2 className="w-3 h-3 text-purple-400 flex-shrink-0 mt-0.5" />{h}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <p className="text-[11px] font-medium text-purple-300">{summary.suggested_action}</p>
-              </div>
-              {summary.action_type === "email" && (
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full h-6" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
-                  <Mail className="w-3 h-3 mr-1" />Draft Email
-                </Button>
-              )}
-              <button onClick={generate} className="text-[10px] text-purple-400 hover:text-purple-300 font-medium">Regenerate</button>
-            </div>
-          )}
-        </div>
+      <div className="p-2.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
+        <p className="text-xs font-medium text-purple-300">{summary.suggested_action}</p>
+      </div>
+      {summary.action_type === "email" && (
+        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
+          <Mail className="w-3 h-3 mr-1" />Draft Email
+        </Button>
       )}
     </div>
   );
