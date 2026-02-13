@@ -33,19 +33,22 @@ async def get_dashboard(request: Request):
             due_programs = await db.programs.find({
                 "tenant_id": tenant_id, 
                 "next_action_due": {"$ne": "", "$lte": today}
-            }, {"_id": 0, "university_name": 1}).to_list(5)
+            }, {"_id": 0, "university_name": 1, "program_id": 1}).to_list(5)
             
             school_names = [p.get("university_name", "Unknown") for p in due_programs[:3]]
             schools_text = ", ".join(school_names)
             if follow_ups_due > 3:
                 schools_text += f" +{follow_ups_due - 3} more"
             
+            # Include first program_id for navigation
+            first_program_id = due_programs[0].get("program_id") if due_programs else None
+            
             await create_notification(
                 tenant_id=tenant_id,
                 notif_type="follow_up_due",
                 title=f"{follow_ups_due} Follow-up{'s' if follow_ups_due > 1 else ''} Due Today",
                 message=schools_text,
-                data={"count": follow_ups_due}
+                data={"count": follow_ups_due, "program_id": first_program_id}
             )
     
     status_groups = {
