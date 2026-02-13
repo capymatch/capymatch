@@ -24,6 +24,8 @@ class ProgramCreate(BaseModel):
     video_link: str = ""
     coach_contract_expiration: str = ""
     notes: str = ""
+    athlete_interest: int = 5
+    school_interest: int = 0
 
 
 class ProgramUpdate(BaseModel):
@@ -48,6 +50,8 @@ class ProgramUpdate(BaseModel):
     video_link: Optional[str] = None
     coach_contract_expiration: Optional[str] = None
     notes: Optional[str] = None
+    athlete_interest: Optional[int] = None
+    school_interest: Optional[int] = None
 
 
 class CoachCreate(BaseModel):
