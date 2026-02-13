@@ -401,8 +401,8 @@ export default function RecruitingBoard() {
 
   // Filter to show only one status section (or all)
   const focusSection = (key) => {
-    if (activeFilter === key) {
-      setActiveFilter(null); // toggle off
+    if (key === null || activeFilter === key) {
+      setActiveFilter(null);
       setCollapsed({});
     } else {
       setActiveFilter(key);
