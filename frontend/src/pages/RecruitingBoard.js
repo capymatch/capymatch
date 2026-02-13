@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
-import { STATUS_GROUPS, RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, NEXT_ACTIONS, DIVISIONS, REGIONS } from "../lib/constants";
+import { STATUS_GROUPS, RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS } from "../lib/constants";
 import {
   ChevronDown, ChevronRight, Search, Plus, Target,
-  Send, MessageCircle, Trophy, Archive, ArrowRight, ExternalLink, Sparkles
+  Send, MessageCircle, Trophy, Archive, ExternalLink, Sparkles
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
