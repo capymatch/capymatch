@@ -144,14 +144,14 @@ function InlineSelect({ value, options, onChange }) {
   );
 }
 
-function InlineDateInput({ value, onChange }) {
+function InlineDateInput({ value, onChange, style: extraStyle }) {
   return (
     <input
       type="date"
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
       className="t-input border rounded-md px-2 py-1 text-xs focus:outline-none cursor-pointer transition-all"
-      style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+      style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)", ...extraStyle }}
     />
   );
 }
