@@ -482,7 +482,7 @@ export default function RecruitingJourney() {
         {/* Timeline (left 2 cols) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex items-start justify-between gap-4 mb-4 relative">
               <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Timeline</h2>
               <div className="flex-shrink-0 max-w-[280px]" data-testid="ai-insights-inline">
                 <AISummary programId={programId} universityName={program.university_name} onDraftEmail={() => { setShowEmailComposer(true); setShowLogForm(false); }} />
