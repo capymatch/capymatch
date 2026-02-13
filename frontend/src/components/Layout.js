@@ -44,11 +44,8 @@ export default function Layout({ user }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const handleLogout = async () => {
-    try { await api.post("/auth/logout"); } catch {}
-    navigate("/login", { replace: true });
-    toast.success("Logged out");
-  };
+  // Auth bypassed: logout disabled
+  const handleLogout = () => {};
 
   const markNotificationRead = async (notifId) => {
     try {
