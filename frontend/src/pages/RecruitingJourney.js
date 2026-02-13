@@ -310,7 +310,7 @@ function AISummaryButton({ onClick, loading, hasResult }) {
 
 function AISummaryBlock({ summary, onRegenerate, onDraftEmail, regenerating }) {
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-insights-block">
+    <div className="rounded-xl border p-4 space-y-3 mt-2" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-insights-block">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}>
           <Sparkles className="w-4 h-4 text-purple-400" />AI Insights
