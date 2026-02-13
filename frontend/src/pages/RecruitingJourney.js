@@ -355,6 +355,28 @@ export default function RecruitingJourney() {
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showCoachForm, setShowCoachForm] = useState(false);
   const [editCoach, setEditCoach] = useState(null);
+  const [aiSummary, setAiSummary] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAiBlock, setShowAiBlock] = useState(false);
+
+  const generateAiSummary = async () => {
+    if (aiSummary && !showAiBlock) { setShowAiBlock(true); return; }
+    if (aiSummary && showAiBlock) { setShowAiBlock(false); return; }
+    setAiLoading(true);
+    try {
+      const res = await api.post("/ai/journey-summary", { program_id: programId });
+      setAiSummary(res.data);
+      setShowAiBlock(true);
+    } catch { toast.error("Failed to generate summary"); } finally { setAiLoading(false); }
+  };
+
+  const regenerateAiSummary = async () => {
+    setAiLoading(true);
+    try {
+      const res = await api.post("/ai/journey-summary", { program_id: programId });
+      setAiSummary(res.data);
+    } catch { toast.error("Failed to regenerate summary"); } finally { setAiLoading(false); }
+  };
 
   const fetchData = useCallback(async () => {
     try {
