@@ -13,7 +13,7 @@ async def create_notification(tenant_id: str, notif_type: str, title: str, messa
     doc = {
         "notification_id": notif_id,
         "tenant_id": tenant_id,
-        "type": notif_type,  # "coach_reply", "follow_up_due", "profile_view_edu"
+        "type": notif_type,
         "title": title,
         "message": message,
         "data": data or {},
@@ -21,6 +21,92 @@ async def create_notification(tenant_id: str, notif_type: str, title: str, messa
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.notifications.insert_one(doc)
+    return notif_id
+
+
+async def generate_weekly_summary(tenant_id: str):
+    """Generate a weekly recruiting summary notification if one hasn't been created this week."""
+    now = datetime.now(timezone.utc)
+    # Monday of this week
+    week_start = (now - timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start_iso = week_start.isoformat()
+
+    # Check if we already created one this week
+    existing = await db.notifications.find_one({
+        "tenant_id": tenant_id,
+        "type": "weekly_summary",
+        "created_at": {"$gte": week_start_iso}
+    })
+    if existing:
+        return None
+
+    today = now.strftime("%Y-%m-%d")
+    week_ago = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+    week_ago_iso = (now - timedelta(days=7)).isoformat()
+
+    # 1. Coach replies this week (interactions with outcome "Positive" from emails)
+    coach_replies = await db.interactions.count_documents({
+        "tenant_id": tenant_id,
+        "created_at": {"$gte": week_ago_iso},
+        "type": {"$in": ["Email", "email_received"]},
+        "outcome": "Positive"
+    })
+    # Also count reply_status changes
+    reply_programs = await db.programs.count_documents({
+        "tenant_id": tenant_id,
+        "reply_status": {"$in": ["Reply Received", "In Conversation"]}
+    })
+
+    # 2. Follow-ups due this week
+    next_week = (now + timedelta(days=7)).strftime("%Y-%m-%d")
+    follow_ups_due = await db.programs.count_documents({
+        "tenant_id": tenant_id,
+        "next_action_due": {"$ne": "", "$lte": next_week}
+    })
+
+    # 3. High-interest programs (school_interest >= 7)
+    high_interest = await db.programs.count_documents({
+        "tenant_id": tenant_id,
+        "school_interest": {"$gte": 7}
+    })
+
+    # 4. New interactions this week
+    new_interactions = await db.interactions.count_documents({
+        "tenant_id": tenant_id,
+        "created_at": {"$gte": week_ago_iso}
+    })
+
+    # Build summary lines
+    lines = []
+    if coach_replies > 0:
+        lines.append(f"{coach_replies} coach repl{'ies' if coach_replies != 1 else 'y'}")
+    if reply_programs > 0:
+        lines.append(f"{reply_programs} program{'s' if reply_programs != 1 else ''} in conversation")
+    if follow_ups_due > 0:
+        lines.append(f"{follow_ups_due} follow-up{'s' if follow_ups_due != 1 else ''} due")
+    if high_interest > 0:
+        lines.append(f"{high_interest} high-interest program{'s' if high_interest != 1 else ''}")
+    if new_interactions > 0:
+        lines.append(f"{new_interactions} new interaction{'s' if new_interactions != 1 else ''} logged")
+
+    if not lines:
+        lines.append("No activity yet — time to reach out!")
+
+    message = " • ".join(lines)
+
+    notif_id = await create_notification(
+        tenant_id=tenant_id,
+        notif_type="weekly_summary",
+        title="Weekly Recruiting Summary",
+        message=message,
+        data={
+            "coach_replies": coach_replies,
+            "reply_programs": reply_programs,
+            "follow_ups_due": follow_ups_due,
+            "high_interest": high_interest,
+            "new_interactions": new_interactions
+        }
+    )
     return notif_id
 
 
