@@ -243,7 +243,7 @@ function PipelineFunnel({ programs, onFocusSection }) {
 function ProgramRow({ p, navigate, handleInlineUpdate }) {
   return (
     <div
-      className="group grid grid-cols-[1.8fr_0.5fr_1fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.5fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
+      className="group grid grid-cols-[1.8fr_0.5fr_0.8fr_1.2fr_1fr_1.2fr_1fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
       style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
@@ -270,13 +270,6 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
         <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
           {p.division}
         </span>
-      </div>
-
-      {/* Conference + Region */}
-      <div className="text-xs truncate" style={{ color: "var(--t-text-secondary)" }}>
-        {p.conference}
-        {p.region && <span className="mx-1" style={{ color: "var(--t-text-faint)" }}>/</span>}
-        <span style={{ color: "var(--t-text-muted)" }}>{p.region}</span>
       </div>
 
       {/* Coach */}
@@ -321,6 +314,13 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
             <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         )}
+        <button
+          onClick={() => navigate(`/journey/${p.program_id}`)}
+          className="p-1 text-gray-400 hover:text-purple-600 rounded transition-colors"
+          title="View Journey"
+        >
+          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
+        </button>
         <button
           onClick={() => navigate(`/programs/${p.program_id}`)}
           className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors"
