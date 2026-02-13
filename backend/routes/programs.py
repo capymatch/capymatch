@@ -267,3 +267,149 @@ async def mark_follow_up_sent(program_id: str, data: MarkFollowUpSent, request: 
     await db.interactions.insert_one(interaction_doc)
     updated = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
     return updated
+
+
+# ─── Journey Timeline ───
+
+@router.get("/programs/{program_id}/journey")
+async def get_program_journey(program_id: str, request: Request):
+    """Get timeline of all interactions with a program"""
+    from routes.gmail import get_gmail_credentials, get_gmail_service
+    
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    
+    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+    
+    timeline = []
+    
+    # 1. Get logged interactions
+    interactions = await db.interactions.find(
+        {"tenant_id": tenant_id, "program_id": program_id}, 
+        {"_id": 0}
+    ).to_list(100)
+    
+    for i in interactions:
+        event_type = "interaction"
+        if i.get("type") == "Email":
+            event_type = "email_sent"
+        elif i.get("type") == "Phone Call":
+            event_type = "phone_call"
+        elif i.get("type") == "Video Call":
+            event_type = "video_call"
+        
+        timeline.append({
+            "id": i.get("interaction_id"),
+            "event_type": event_type,
+            "title": f"{i.get('type', 'Interaction')} logged",
+            "date": i.get("date_time") or i.get("created_at"),
+            "content": i.get("notes") or i.get("message_copy"),
+            "coach_name": "",
+        })
+    
+    # 2. Get events linked to this program
+    events = await db.events.find(
+        {"tenant_id": tenant_id, "program_id": program_id},
+        {"_id": 0}
+    ).to_list(100)
+    
+    for e in events:
+        event_type = "camp"
+        if e.get("event_type") == "Visit":
+            event_type = "visit"
+        elif e.get("event_type") == "Showcase":
+            event_type = "showcase"
+        elif e.get("event_type") == "Meeting":
+            event_type = "meeting"
+        
+        timeline.append({
+            "id": e.get("event_id"),
+            "event_type": event_type,
+            "title": e.get("title"),
+            "date": e.get("start_date"),
+            "content": e.get("description"),
+            "location": e.get("location"),
+        })
+    
+    # 3. Get Gmail emails with coach (if Gmail connected)
+    coaches = await db.coaches.find(
+        {"tenant_id": tenant_id, "program_id": program_id, "email": {"$ne": ""}},
+        {"_id": 0}
+    ).to_list(50)
+    
+    coach_emails = {c.get("email", "").lower(): c.get("coach_name", "") for c in coaches if c.get("email")}
+    
+    if coach_emails:
+        try:
+            creds = await get_gmail_credentials(user["user_id"])
+            if creds:
+                service = get_gmail_service(creds)
+                profile = service.users().getProfile(userId="me").execute()
+                user_email = profile.get("emailAddress", "").lower()
+                
+                # Search for emails to/from coaches
+                for coach_email, coach_name in coach_emails.items():
+                    query = f"(from:{coach_email} OR to:{coach_email})"
+                    results = service.users().messages().list(
+                        userId="me",
+                        q=query,
+                        maxResults=30
+                    ).execute()
+                    
+                    messages = results.get("messages", [])
+                    
+                    for msg_ref in messages:
+                        msg = service.users().messages().get(
+                            userId="me",
+                            id=msg_ref["id"],
+                            format="metadata",
+                            metadataHeaders=["From", "To", "Subject", "Date"]
+                        ).execute()
+                        
+                        headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
+                        from_addr = headers.get("From", "").lower()
+                        subject = headers.get("Subject", "")
+                        date_str = headers.get("Date", "")
+                        
+                        # Parse date
+                        try:
+                            from email.utils import parsedate_to_datetime
+                            date_obj = parsedate_to_datetime(date_str)
+                            date_iso = date_obj.isoformat()
+                        except:
+                            date_iso = datetime.now(timezone.utc).isoformat()
+                        
+                        # Determine if sent or received
+                        is_from_coach = coach_email in from_addr
+                        
+                        # Get snippet for content
+                        snippet = msg.get("snippet", "")
+                        
+                        timeline.append({
+                            "id": f"gmail_{msg_ref['id']}",
+                            "event_type": "email_received" if is_from_coach else "email_sent",
+                            "title": f"{'Coach replied' if is_from_coach else 'You sent'}: {subject}",
+                            "date": date_iso,
+                            "content": snippet,
+                            "coach_name": coach_name if is_from_coach else "",
+                        })
+        except Exception as e:
+            # Gmail not connected or error - just continue without emails
+            pass
+    
+    # Sort by date descending
+    def parse_date(item):
+        d = item.get("date", "")
+        try:
+            if "T" in d:
+                return datetime.fromisoformat(d.replace("Z", "+00:00"))
+            else:
+                return datetime.strptime(d, "%Y-%m-%d")
+        except:
+            return datetime.min
+    
+    timeline.sort(key=parse_date, reverse=True)
+    
+    return {"timeline": timeline}
