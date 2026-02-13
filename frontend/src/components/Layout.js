@@ -238,7 +238,18 @@ export default function Layout({ user }) {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{notif.title}</p>
-                              <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{notif.message}</p>
+                              {notif.type === "weekly_summary" ? (
+                                <div className="mt-1 space-y-0.5">
+                                  {notif.message.split(" • ").map((line, i) => (
+                                    <p key={i} className="text-xs flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
+                                      <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0" />
+                                      {line}
+                                    </p>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{notif.message}</p>
+                              )}
                               <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatTimeAgo(notif.created_at)}</p>
                             </div>
                             {!notif.read && (
