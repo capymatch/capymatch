@@ -386,20 +386,19 @@ export default function RecruitingBoard() {
   const [filterDivision, setFilterDivision] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
   const [collapsed, setCollapsed] = useState({});
+  const [activeFilter, setActiveFilter] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Focus a section: expand it, collapse all others, scroll to it
+  // Filter to show only one status section (or all)
   const focusSection = (key) => {
-    const newCollapsed = {};
-    PIPELINE.forEach((stage) => {
-      newCollapsed[stage.key] = stage.key !== key;
-    });
-    setCollapsed(newCollapsed);
-    setTimeout(() => {
-      const el = document.getElementById(`pipeline-${key}`);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    if (activeFilter === key) {
+      setActiveFilter(null); // toggle off
+      setCollapsed({});
+    } else {
+      setActiveFilter(key);
+      setCollapsed({});
+    }
   };
 
   // Auto-focus section from URL hash (when coming from Dashboard)
