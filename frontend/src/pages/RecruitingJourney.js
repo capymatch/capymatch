@@ -540,11 +540,6 @@ export default function RecruitingJourney() {
             <FollowUpScheduler program={program} onSaved={fetchData} />
           </div>
 
-          {/* AI Summary */}
-          <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-summary-panel">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Sparkles className="w-4 h-4 text-purple-400" />AI Insights</h3>
-            <AISummary programId={programId} universityName={program.university_name} onDraftEmail={() => { setShowEmailComposer(true); setShowLogForm(false); }} />
-          </div>
         </div>
       </div>
     </div>
