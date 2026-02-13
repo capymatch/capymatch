@@ -25,10 +25,10 @@ const DIVISION_BADGE = {
 
 const PIPELINE = [
   { key: "not_contacted", label: "Not Contacted", icon: Target, color: "from-rose-500 to-pink-500", bg: "bg-rose-50 dark:bg-rose-500/15", text: "text-rose-700 dark:text-rose-400", border: "border-l-rose-500", dot: "bg-rose-400", statuses: ["Not Contacted"] },
-  { key: "contacted", label: "Contacted", icon: Send, color: "from-amber-500 to-orange-500", bg: "bg-amber-50 dark:bg-amber-500/15", text: "text-amber-700 dark:text-amber-400", border: "border-l-amber-500", dot: "bg-amber-400", statuses: ["Contacted", "No Response Yet", "Video Viewed"] },
-  { key: "active", label: "Active", icon: MessageCircle, color: "from-blue-500 to-cyan-500", bg: "bg-blue-50 dark:bg-blue-500/15", text: "text-blue-700 dark:text-blue-300", border: "border-l-blue-500", dot: "bg-blue-400", statuses: ["Some Interest", "Active Conversation"] },
-  { key: "offers", label: "Offers", icon: Trophy, color: "from-emerald-500 to-teal-500", bg: "bg-emerald-50 dark:bg-emerald-500/15", text: "text-emerald-700 dark:text-emerald-400", border: "border-l-emerald-500", dot: "bg-emerald-400", statuses: ["Offer / Commit Talk"] },
-  { key: "closed", label: "Closed", icon: Archive, color: "from-gray-400 to-slate-400", bg: "bg-gray-50 dark:bg-gray-500/15", text: "text-gray-600 dark:text-gray-300", border: "border-l-gray-400", dot: "bg-gray-400", statuses: ["Not a Fit / Closed"] },
+  { key: "contacted", label: "Contacted", icon: Send, color: "from-amber-500 to-orange-500", bg: "bg-amber-50 dark:bg-amber-500/15", text: "text-amber-700 dark:text-amber-400", border: "border-l-amber-500", dot: "bg-amber-400", statuses: ["Contacted", "No Response Yet", "Video Viewed", "Applied"] },
+  { key: "active", label: "Active", icon: MessageCircle, color: "from-blue-500 to-cyan-500", bg: "bg-blue-50 dark:bg-blue-500/15", text: "text-blue-700 dark:text-blue-300", border: "border-l-blue-500", dot: "bg-blue-400", statuses: ["Some Interest", "Active Conversation", "Camp Attended"] },
+  { key: "offers", label: "Offers", icon: Trophy, color: "from-emerald-500 to-teal-500", bg: "bg-emerald-50 dark:bg-emerald-500/15", text: "text-emerald-700 dark:text-emerald-400", border: "border-l-emerald-500", dot: "bg-emerald-400", statuses: ["Offer / Commit Talk", "Offer Received", "Committed"] },
+  { key: "closed", label: "Closed", icon: Archive, color: "from-gray-400 to-slate-400", bg: "bg-gray-50 dark:bg-gray-500/15", text: "text-gray-600 dark:text-gray-300", border: "border-l-gray-400", dot: "bg-gray-400", statuses: ["Not a Fit / Closed", "Not Interested"] },
 ];
 
 const PRIORITY_DOT = {
