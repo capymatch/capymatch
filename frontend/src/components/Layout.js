@@ -131,7 +131,7 @@ export default function Layout({ user }) {
         style={{ background: "linear-gradient(180deg, #c0375a 0%, #8e1b3d 50%, #6b1530 100%)", borderColor: "transparent" }}
       >
         {/* Logo */}
-        <div className="p-4 lg:p-6 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+        <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
           <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'lg:justify-center lg:w-full' : ''}`}>
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
@@ -141,6 +141,15 @@ export default function Layout({ user }) {
               <span className="text-[10px] uppercase tracking-widest text-white/60">Pro Edition</span>
             </div>
           </div>
+          {/* Collapse button - Desktop only */}
+          <button 
+            className={`hidden lg:flex p-2 rounded-lg hover:bg-white/10 transition-colors ${sidebarCollapsed ? '!hidden' : ''}`}
+            onClick={() => setSidebarCollapsed(true)}
+            title="Collapse sidebar"
+            data-testid="sidebar-collapse-btn"
+          >
+            <PanelLeftClose className="w-5 h-5 text-white/60" />
+          </button>
           {/* Close button for mobile */}
           <button 
             className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -150,6 +159,20 @@ export default function Layout({ user }) {
             <X className="w-5 h-5 text-white/60" />
           </button>
         </div>
+
+        {/* Expand button when collapsed - Desktop only */}
+        {sidebarCollapsed && (
+          <div className="hidden lg:block px-4 pt-4">
+            <button
+              onClick={() => setSidebarCollapsed(false)}
+              className="w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white"
+              data-testid="sidebar-expand-btn"
+              title="Expand sidebar"
+            >
+              <PanelLeft className="w-5 h-5" strokeWidth={1.5} />
+            </button>
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1" data-testid="sidebar-nav">
@@ -176,21 +199,8 @@ export default function Layout({ user }) {
           ))}
         </nav>
 
-        {/* Collapse Toggle Button - Desktop only */}
-        <div className="hidden lg:block p-4 border-t" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
-          <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className={`w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white`}
-            data-testid="sidebar-collapse-btn"
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {sidebarCollapsed ? (
-              <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
-            ) : (
-              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
-            )}
-          </button>
-        </div>
+        {/* Bottom spacing */}
+        <div className="p-4" />
       </aside>
 
       {/* Main Content */}
