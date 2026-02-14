@@ -324,18 +324,20 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center justify-end gap-2">
         {p.website && (
-          <a href={p.website} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors">
+          <a href={p.website} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors opacity-0 group-hover:opacity-100">
             <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         )}
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="p-1 text-gray-400 hover:text-purple-600 rounded transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-md transition-colors"
           title="View Journey"
+          data-testid={`view-journey-${p.program_id}`}
         >
-          <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <Sparkles className="w-3.5 h-3.5" />
+          Journey
         </button>
       </div>
     </div>
