@@ -8,6 +8,7 @@ from typing import Optional
 from datetime import datetime, timezone
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_feature
 from models import ComposeEmail, ReplyEmail
 import os
 import uuid
@@ -96,6 +97,10 @@ def get_gmail_service(creds):
 @router.get("/connect")
 async def gmail_connect(request: Request):
     user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    # Gate Gmail behind Pro+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "gmail_integration", "Gmail Integration", "pro")
     _, _, redirect_uri, client_config = _gmail_config()
     flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=redirect_uri)
     auth_url, state = flow.authorization_url(
