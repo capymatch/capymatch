@@ -178,7 +178,7 @@ export default function AdminUsers() {
               ) : (
                 users.map(u => (
                   <tr
-                    key={u.user_id}
+                    key={u.tenant_id || u.user_id}
                     onClick={() => navigate(`/admin/users/${u.user_id}`)}
                     className="border-b cursor-pointer transition-colors hover:bg-white/[0.02]"
                     style={{ borderColor: "rgba(255,255,255,0.04)" }}
