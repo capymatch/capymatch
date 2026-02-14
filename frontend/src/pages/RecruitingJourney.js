@@ -5,7 +5,7 @@ import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
   MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
   Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
-  Heart, Target, AlertCircle, CheckCircle2, FileText
+  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -292,50 +292,151 @@ function FollowUpScheduler({ program, onSaved }) {
   );
 }
 
-// ─── AI Summary (action bar + expandable block) ───
-function AISummaryButton({ onClick, loading, hasResult }) {
-  if (loading) return (
-    <Button size="sm" variant="outline" className="text-xs h-8 ml-auto" disabled style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }}>
-      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5 text-purple-500" />Analyzing...
-    </Button>
-  );
+// ─── Next Step Hero Card ───
+function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze }) {
+  const getNextStep = () => {
+    const now = new Date();
+    // Check follow-up due
+    if (program.next_action_due) {
+      const due = new Date(program.next_action_due);
+      const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+      const coachName = coaches?.[0]?.coach_name || "the coaching staff";
+      if (diff < 0) {
+        return { urgent: true, title: `Follow-up to ${coachName} is ${Math.abs(diff)} day${Math.abs(diff) !== 1 ? 's' : ''} overdue`, sub: program.next_action || "Send your follow-up email now", action: "Send Follow-up Now", type: "email" };
+      }
+      if (diff <= 7) {
+        return { urgent: diff <= 2, title: `Your follow-up to ${coachName} is due in ${diff} day${diff !== 1 ? 's' : ''}`, sub: program.next_action || "Send a follow-up email with your updated stats", action: "Send Follow-up Now", type: "email" };
+      }
+    }
+    // Status-based suggestions
+    if (program.recruiting_status === "Not Contacted") {
+      return { urgent: false, title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", action: "Compose Intro Email", type: "email" };
+    }
+    if (program.reply_status === "No Reply" && program.recruiting_status !== "Not Contacted") {
+      return { urgent: false, title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", action: "Send Follow-up", type: "email" };
+    }
+    if (program.reply_status === "In Conversation") {
+      return { urgent: false, title: "Keep the conversation going", sub: "Log your latest interaction to keep your recruiting journey up to date", action: "Log Interaction", type: "log" };
+    }
+    return { urgent: false, title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", action: "Log Interaction", type: "log" };
+  };
+
+  const step = getNextStep();
+
   return (
-    <Button size="sm" variant={hasResult ? "default" : "outline"} className={`text-xs h-8 ml-auto ${hasResult ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
-      onClick={onClick} style={hasResult ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="generate-summary-btn">
-      <Sparkles className="w-3.5 h-3.5 mr-1.5" />AI Insights
-      {hasResult && <ChevronDown className="w-3 h-3 ml-1" />}
-    </Button>
+    <div className={`rounded-2xl border-l-[3px] border p-5 flex items-center gap-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
+      <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-purple-500/10"}`}>
+        {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-purple-400" />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-purple-400"}`}>Next Step</p>
+        <p className="text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
+        <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
+      </div>
+      <div className="flex gap-2.5 flex-shrink-0">
+        <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-5 shadow-lg shadow-purple-500/20"
+          onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
+          {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
+          {step.action}
+        </Button>
+        {program.next_action_due && (
+          <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
+            style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
+            Snooze 3 days
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }
 
-function AISummaryBlock({ summary, onRegenerate, onDraftEmail, regenerating }) {
+// ─── AI Insights Sidebar Card ───
+function AISidebarCard({ programId, onDraftEmail }) {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const generate = async () => {
+    setLoading(true);
+    try {
+      const res = await api.post("/ai/journey-summary", { program_id: programId });
+      setSummary(res.data);
+      setExpanded(true);
+    } catch { toast.error("Failed to generate insights"); } finally { setLoading(false); }
+  };
+
   return (
-    <div className="rounded-xl border p-4 space-y-3 mt-2" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-insights-block">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}>
-          <Sparkles className="w-4 h-4 text-purple-400" />AI Insights
+    <div className="rounded-xl border p-4 relative overflow-hidden" data-testid="ai-insights-card"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(168,85,247,0.2)", background: "linear-gradient(135deg, rgba(168,85,247,0.05) 0%, var(--t-surface) 60%)" }}>
+      <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)" }} />
+      <div className="flex items-center justify-between mb-3 relative">
+        <h3 className="text-sm font-semibold flex items-center gap-1.5 text-purple-400">
+          <Sparkles className="w-4 h-4" />AI Insights
         </h3>
-        <button onClick={onRegenerate} disabled={regenerating} className="text-[11px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
-          {regenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Regenerate
-        </button>
+        {!summary ? (
+          <Button size="sm" onClick={generate} disabled={loading} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 shadow-md shadow-purple-500/20" data-testid="generate-summary-btn">
+            {loading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
+            Generate
+          </Button>
+        ) : (
+          <button onClick={generate} disabled={loading} className="text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
+            {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Regenerate
+          </button>
+        )}
       </div>
-      <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{summary.relationship_summary}</p>
-      {summary.key_highlights?.length > 0 && (
-        <ul className="space-y-1">
-          {summary.key_highlights.map((h, i) => (
-            <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
-              <CheckCircle2 className="w-3 h-3 text-purple-400 flex-shrink-0 mt-0.5" />{h}
-            </li>
-          ))}
-        </ul>
+
+      {!summary && !loading && (
+        <>
+          <p className="text-[11px] leading-relaxed mb-3" style={{ color: "var(--t-text-muted)" }}>
+            Get AI-powered analysis of your recruiting relationship, key highlights, and personalized recommendations.
+          </p>
+          <div className="flex gap-1.5 flex-wrap">
+            {["Relationship Summary", "Draft Email", "Tips"].map(tag => (
+              <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-purple-500/8 text-purple-400/70 border border-purple-500/15">{tag}</span>
+            ))}
+          </div>
+        </>
       )}
-      <div className="p-2.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
-        <p className="text-xs font-medium text-purple-300">{summary.suggested_action}</p>
-      </div>
-      {summary.action_type === "email" && (
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 mt-2" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
-          <Mail className="w-3 h-3 mr-1" />Draft Email
-        </Button>
+
+      {loading && !summary && (
+        <div className="flex items-center gap-2 py-4 justify-center">
+          <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
+          <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Analyzing your journey...</span>
+        </div>
+      )}
+
+      {summary && (
+        <div className="space-y-2.5">
+          <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{summary.relationship_summary}</p>
+
+          {expanded && summary.key_highlights?.length > 0 && (
+            <ul className="space-y-1">
+              {summary.key_highlights.map((h, i) => (
+                <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
+                  <CheckCircle2 className="w-3 h-3 text-purple-400 flex-shrink-0 mt-0.5" />{h}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {expanded && (
+            <>
+              <div className="p-2.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <p className="text-[11px] font-medium text-purple-300">{summary.suggested_action}</p>
+              </div>
+              {summary.action_type === "email" && (
+                <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full h-7 mt-1" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
+                  <Mail className="w-3 h-3 mr-1" />Draft Email
+                </Button>
+              )}
+            </>
+          )}
+
+          <button onClick={() => setExpanded(!expanded)} className="text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1">
+            {expanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
+          </button>
+        </div>
       )}
     </div>
   );
@@ -350,34 +451,10 @@ export default function RecruitingJourney() {
   const [coaches, setCoaches] = useState([]);
   const [keyDates, setKeyDates] = useState([]);
   const [loading, setLoading] = useState(true);
-  // UI state
   const [showLogForm, setShowLogForm] = useState(false);
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showCoachForm, setShowCoachForm] = useState(false);
   const [editCoach, setEditCoach] = useState(null);
-  const [aiSummary, setAiSummary] = useState(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [showAiBlock, setShowAiBlock] = useState(false);
-
-  const generateAiSummary = async () => {
-    if (aiSummary && !showAiBlock) { setShowAiBlock(true); setShowLogForm(false); setShowEmailComposer(false); return; }
-    if (aiSummary && showAiBlock) { setShowAiBlock(false); return; }
-    setAiLoading(true);
-    setShowLogForm(false); setShowEmailComposer(false);
-    try {
-      const res = await api.post("/ai/journey-summary", { program_id: programId });
-      setAiSummary(res.data);
-      setShowAiBlock(true);
-    } catch { toast.error("Failed to generate summary"); } finally { setAiLoading(false); }
-  };
-
-  const regenerateAiSummary = async () => {
-    setAiLoading(true);
-    try {
-      const res = await api.post("/ai/journey-summary", { program_id: programId });
-      setAiSummary(res.data);
-    } catch { toast.error("Failed to regenerate summary"); } finally { setAiLoading(false); }
-  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -389,8 +466,6 @@ export default function RecruitingJourney() {
       setProgram(progRes.data);
       setTimeline(journeyRes.data.timeline || []);
       setCoaches(coachRes.data || []);
-
-      // Fetch key dates (events linked to this program)
       try {
         const evtRes = await api.get("/events");
         const linked = (evtRes.data || []).filter(e => e.program_id === programId && e.start_date >= new Date().toISOString().slice(0, 10));
@@ -398,9 +473,7 @@ export default function RecruitingJourney() {
       } catch {}
     } catch {
       toast.error("Failed to load journey data");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   }, [programId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -415,11 +488,8 @@ export default function RecruitingJourney() {
 
   const saveCoach = async (data) => {
     try {
-      if (editCoach) {
-        await api.put(`/coaches/${editCoach.coach_id}`, data);
-      } else {
-        await api.post("/coaches", { ...data, university_name: program.university_name });
-      }
+      if (editCoach) await api.put(`/coaches/${editCoach.coach_id}`, data);
+      else await api.post("/coaches", { ...data, university_name: program.university_name });
       toast.success(editCoach ? "Coach updated" : "Coach added");
       setShowCoachForm(false);
       setEditCoach(null);
@@ -436,6 +506,16 @@ export default function RecruitingJourney() {
     } catch { toast.error("Failed to delete"); }
   };
 
+  const handleSnooze = async () => {
+    if (!program.next_action_due) return;
+    const snoozed = new Date(program.next_action_due);
+    snoozed.setDate(snoozed.getDate() + 3);
+    await updateProgram({ next_action_due: snoozed.toISOString().slice(0, 10) });
+  };
+
+  const openEmail = () => { setShowEmailComposer(true); setShowLogForm(false); };
+  const openLog = () => { setShowLogForm(true); setShowEmailComposer(false); };
+
   if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>;
   if (!program) return (
     <div className="text-center py-24">
@@ -447,7 +527,7 @@ export default function RecruitingJourney() {
   const formatDate = (d) => { try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); } catch { return d; } };
 
   return (
-    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-4">
+    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5">
       {/* ─── Header ─── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -474,40 +554,31 @@ export default function RecruitingJourney() {
         </div>
       </div>
 
-      {/* ─── Action Bar ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 flex gap-2 flex-wrap items-center">
-          <Button size="sm" variant={showLogForm ? "default" : "outline"} className={`text-xs h-8 ${showLogForm ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
-            onClick={() => { setShowLogForm(!showLogForm); setShowEmailComposer(false); setShowAiBlock(false); }} style={showLogForm ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-log-btn">
-            <MessageSquare className="w-3.5 h-3.5 mr-1.5" />Log Interaction
-          </Button>
-          <Button size="sm" variant={showEmailComposer ? "default" : "outline"} className={`text-xs h-8 ${showEmailComposer ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}`}
-            onClick={() => { setShowEmailComposer(!showEmailComposer); setShowLogForm(false); setShowAiBlock(false); }} style={showEmailComposer ? {} : { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="toggle-email-btn">
-            <Mail className="w-3.5 h-3.5 mr-1.5" />Send Email
-          </Button>
-          <AISummaryButton onClick={generateAiSummary} loading={aiLoading && !aiSummary} hasResult={!!aiSummary} />
-        </div>
-      </div>
+      {/* ─── Next Step Hero ─── */}
+      <NextStepHero program={program} coaches={coaches} onSendEmail={openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} />
 
-      {/* ─── Inline Forms ─── */}
-      {showLogForm && <div className="mt-2"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
-      {showEmailComposer && <div className="mt-2"><EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} /></div>}
-
-      {/* ─── AI Insights Block (same width as timeline) ─── */}
-      {showAiBlock && aiSummary && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <AISummaryBlock summary={aiSummary} onRegenerate={regenerateAiSummary} regenerating={aiLoading} onDraftEmail={() => { setShowEmailComposer(true); setShowLogForm(false); setShowAiBlock(false); }} />
-          </div>
-        </div>
-      )}
+      {/* ─── Inline Forms (expand below hero) ─── */}
+      {showLogForm && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} />}
+      {showEmailComposer && <EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} />}
 
       {/* ─── Main Grid ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Timeline (left 2 cols) */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2">
           <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <h2 className="text-sm font-semibold mb-4" style={{ color: "var(--t-text)" }}>Timeline</h2>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Timeline</h2>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openLog}
+                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-log-btn">
+                  <MessageSquare className="w-3 h-3 mr-1.5" />Log Interaction
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openEmail}
+                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-email-btn">
+                  <Mail className="w-3 h-3 mr-1.5" />Send Email
+                </Button>
+              </div>
+            </div>
             {timeline.length === 0 ? (
               <div className="text-center py-10">
                 <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: "var(--t-text-muted)" }} />
@@ -520,7 +591,10 @@ export default function RecruitingJourney() {
 
         {/* Sidebar (right col) */}
         <div className="lg:col-span-1 space-y-4">
-          {/* Coach Contacts */}
+          {/* AI Insights */}
+          <AISidebarCard programId={programId} onDraftEmail={openEmail} />
+
+          {/* Coaches */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-purple-400" />Coaches</h3>
@@ -533,7 +607,7 @@ export default function RecruitingJourney() {
             </div>
           </div>
 
-          {/* Interest Meter */}
+          {/* Interest Level */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="interest-meter">
             <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Target className="w-4 h-4 text-purple-400" />Interest Level</h3>
             <div className="space-y-3">
@@ -565,12 +639,11 @@ export default function RecruitingJourney() {
             )) : !program.next_action_due && <p className="text-xs text-center py-2" style={{ color: "var(--t-text-muted)" }}>No upcoming dates</p>}
           </div>
 
-          {/* Follow-up Scheduler */}
+          {/* Schedule Follow-up */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="followup-section">
             <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Clock className="w-4 h-4 text-purple-400" />Schedule Follow-up</h3>
             <FollowUpScheduler program={program} onSaved={fetchData} />
           </div>
-
         </div>
       </div>
     </div>
