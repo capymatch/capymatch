@@ -108,6 +108,7 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
   - Added smart contextual alerts for Action Required cards (e.g. "You haven't contacted the coach yet", "Overdue since Feb 10", "No reply yet — consider following up")
   - Cards now show: school name, division, match score, region, conference, coach, contextual alerts (right side only), Journey button
   - **REMOVED duplicate group context badge** from next to school name (Feb 14, 2026) - contextual info now only appears inline next to Journey button
+  - **REPLACED "+ Add Program" dialog with "+ Add School" button** that redirects to Schools page (`/knowledge-base`)
 
 ## Prioritized Backlog
 
