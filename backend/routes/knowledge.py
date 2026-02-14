@@ -84,11 +84,3 @@ async def get_filters():
     conferences = sorted([c for c in conferences if c])
     regions = sorted([r for r in regions if r])
     return {"conferences": conferences, "regions": regions}
-
-
-@router.post("/seed")
-async def seed_data():
-    count = await db.university_knowledge_base.count_documents({})
-    if count > 0:
-        return {"message": f"Knowledge base already has {count} universities", "seeded": False}
-    return {"message": "No seed data. Upload university Excel files to populate.", "seeded": False}

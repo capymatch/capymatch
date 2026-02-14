@@ -198,15 +198,6 @@ app.add_middleware(
 async def startup_event():
     global reply_check_task
     
-    count = await db.university_knowledge_base.count_documents({})
-    if count == 0:
-        logger.info("Seeding university knowledge base...")
-        async with httpx.AsyncClient() as hc:
-            try:
-                await hc.post("http://localhost:8001/api/seed")
-            except Exception:
-                pass
-    
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
     logger.info("Started background task: coach reply checker (runs every 10 minutes)")
