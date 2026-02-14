@@ -11,8 +11,12 @@ async def get_recruiting_profile(request: Request):
     tenant_id = await get_tenant_id(user)
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
-        return {"exists": False}
-    return {**profile, "exists": True}
+        return {"exists": False, "questionnaire_completed": False}
+    return {
+        **profile,
+        "exists": True,
+        "questionnaire_completed": profile.get("questionnaire_completed", False),
+    }
 
 @router.post("/recruiting-profile")
 async def save_recruiting_profile(request: Request):
@@ -29,6 +33,7 @@ async def save_recruiting_profile(request: Request):
         "school_size": body.get("school_size"),
         "academic_interests": body.get("academic_interests"),
         "scholarship_priority": body.get("scholarship_priority"),
+        "questionnaire_completed": True,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
 
