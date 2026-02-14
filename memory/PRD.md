@@ -114,12 +114,18 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
   - Sidebar subscription badge
   - Global 403 interceptor for automatic upgrade prompts
   - Testing: 100% pass (11/11 backend, 13/13 frontend)
+- [x] **Admin Subscription Management Phase 3 (Feb 14, 2026)**
+  - Dedicated admin subscriptions page (`/admin/subscriptions`)
+  - Revenue stats dashboard (MRR, paid users, conversion rate)
+  - Plan distribution visualization with progress bars
+  - User table with inline plan changers (dropdown + save)
+  - Search and plan filter for user management
+  - Subscription change audit log with timestamps and reasons
+  - Backend: GET /admin/subscriptions, PUT /admin/subscriptions/{id}, GET /admin/subscription-logs
+  - Admin dashboard "Manage Subscriptions" quick action linked
+  - Testing: 100% pass (14/14 backend, 13/13 frontend)
 
 ## Prioritized Backlog
-
-### P0 - Subscription Engine Phase 3: Admin Subscription Management
-- Admin UI to view/change user subscription tiers
-- Already partially exists in AdminUserDetail page
 
 ### P1 - Stripe Integration (Phase 4)
 - Integrate Stripe for real payment processing
