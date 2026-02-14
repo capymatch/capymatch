@@ -367,7 +367,7 @@ export default function RecruitingBoard() {
         <div className="ml-auto">
           <Button 
             data-testid="add-school-btn" 
-            onClick={() => navigate("/schools")}
+            onClick={() => navigate("/knowledge-base")}
             className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all"
           >
             <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add School
