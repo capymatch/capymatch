@@ -285,6 +285,7 @@ function ProgramCard({ p, navigate, matchScore }) {
     NAIA: "bg-orange-500/20 text-orange-400",
     JUCO: "bg-yellow-500/20 text-yellow-400",
   }[p.division] || "bg-gray-500/20 text-gray-400";
+  const divFull = p.division === "D1" ? "NCAA I" : p.division === "D2" ? "NCAA II" : p.division === "D3" ? "NCAA III" : p.division;
 
   const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
     : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
@@ -317,27 +318,54 @@ function ProgramCard({ p, navigate, matchScore }) {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3 mt-1 text-xs flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-              <span className={`font-semibold ${statusColor}`}>{p.recruiting_status}</span>
-              <span className="opacity-30">|</span>
-              <span className={`font-semibold ${priorityColor}`}>{p.priority}</span>
-              {dueDateFormatted && (
-                <>
-                  <span className="opacity-30">|</span>
-                  <span className={`font-semibold ${dueDateColor}`}>Due {dueDateFormatted}</span>
-                </>
+            {/* School info - same as Schools page */}
+            <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+              {p.region && (
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5" /> {p.region}
+                </span>
+              )}
+              {p.conference && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5" /> {divFull} | {p.conference}
+                </span>
               )}
             </div>
+            {/* Coach info */}
+            {p.primary_coach && (
+              <div className="flex items-center gap-1 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
+                <User className="w-3 h-3" /> {p.primary_coach}
+                {p.coach_email && (
+                  <a href={`mailto:${p.coach_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={p.coach_email}>
+                    <Mail className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
-        <button
-          onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded-md transition-colors flex-shrink-0"
-          data-testid={`view-journey-${p.program_id}`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Journey
-        </button>
+        {/* Right side: status info + Journey */}
+        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          <button
+            onClick={() => navigate(`/journey/${p.program_id}`)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded-md transition-colors"
+            data-testid={`view-journey-${p.program_id}`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Journey
+          </button>
+          <div className="flex items-center gap-2 text-[11px]">
+            <span className={`font-semibold ${statusColor}`}>{p.recruiting_status}</span>
+            <span className="opacity-30">|</span>
+            <span className={`font-semibold ${priorityColor}`}>{p.priority}</span>
+            {dueDateFormatted && (
+              <>
+                <span className="opacity-30">|</span>
+                <span className={`font-semibold ${dueDateColor}`}>{dueDateFormatted}</span>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
