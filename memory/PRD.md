@@ -93,6 +93,16 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
   - Backend: `categorize_program()` function, `GET /api/programs?grouped=true`
   - Frontend: `GroupFunnel` component, `ProgramCard` with board_group context
 
+- [x] **MOBILE RESPONSIVENESS OVERHAUL** (Feb 14, 2026)
+  - Collapsible sidebar with hamburger menu for mobile
+  - Dashboard, Pipeline, Questionnaire pages made responsive
+  - **Journey page** (`RecruitingJourney.js`) made fully responsive:
+    - Header: school name + badges wrap, status badges on own row
+    - NextStepHero: vertical stack on mobile, horizontal on desktop
+    - LogInteractionForm: single-column grid on mobile, 3-col on desktop
+    - Timeline header: compact "Log"/"Email" buttons
+    - Sidebar cards (AI Insights, Coaches, Key Dates, Follow-up): full-width single column on mobile
+
 ## Prioritized Backlog
 
 ### P1 - NCAA Recruiting Timeline
