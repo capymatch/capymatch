@@ -48,7 +48,7 @@ export default function Dashboard() {
   }
 
   const totalSchools = programs.length;
-  const offersCount = programs.filter(p => p.recruiting_status === "Offer / Commit Talk").length;
+  const offersCount = programs.filter(p => p.recruiting_status === "Offer Received").length;
   const formatDate = (d) => {
     if (!d) return "";
     const dt = new Date(d + "T00:00:00");
