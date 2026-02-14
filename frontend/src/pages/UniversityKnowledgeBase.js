@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../lib/api";
-import { DIVISIONS, DIVISION_COLORS, REGIONS } from "../lib/constants";
-import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown, Sparkles } from "lucide-react";
+import { DIVISIONS, REGIONS } from "../lib/constants";
+import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown, Sparkles, ChevronLeft, ChevronRight, User, Mail } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
@@ -9,12 +9,7 @@ import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import { toast } from "sonner";
 
-const CONFERENCES = [
-  "ACC", "Big 12", "Big East", "Big Ten", "Pac-12", "SEC",
-  "CCAA", "GLVC", "Landmark", "MIAA", "NCAC", "NESCAC", "NEWMAC",
-  "NSIC", "RMAC", "SAA", "SAC", "SCAC", "SCIAC", "Sunshine State", "UAA",
-  "Centennial",
-];
+const PER_PAGE = 50;
 
 export default function UniversityKnowledgeBase() {
   const [universities, setUniversities] = useState([]);
@@ -27,6 +22,17 @@ export default function UniversityKnowledgeBase() {
   const [adding, setAdding] = useState({});
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(true);
+  const [conferences, setConferences] = useState([]);
+  const [regions, setRegions] = useState(REGIONS);
+  const [page, setPage] = useState(1);
+
+  // Fetch dynamic filters
+  useEffect(() => {
+    api.get("/knowledge-base/filters").then(res => {
+      if (res.data?.conferences) setConferences(res.data.conferences);
+      if (res.data?.regions) setRegions(res.data.regions);
+    }).catch(() => {});
+  }, []);
 
   const fetchUniversities = useCallback(async () => {
     try {
@@ -37,6 +43,7 @@ export default function UniversityKnowledgeBase() {
       if (filterConference && filterConference !== "all") params.conference = filterConference;
       const res = await api.get("/knowledge-base", { params });
       setUniversities(res.data);
+      setPage(1);
     } catch {
       toast.error("Failed to load knowledge base");
     } finally {
@@ -81,9 +88,12 @@ export default function UniversityKnowledgeBase() {
 
   const sorted = [...universities].sort((a, b) => {
     if (sortBy === "name") return a.university_name.localeCompare(b.university_name);
-    if (sortBy === "division") return a.division.localeCompare(b.division);
+    if (sortBy === "division") return (a.division || "").localeCompare(b.division || "");
     return 0;
   });
+
+  const totalPages = Math.ceil(sorted.length / PER_PAGE);
+  const paginated = sorted.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   if (loading) {
     return <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }} data-testid="kb-loading">Loading knowledge base...</div>;
