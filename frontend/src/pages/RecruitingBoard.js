@@ -270,7 +270,7 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Groups */}
-      <div className="space-y-8">
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         {BOARD_GROUPS.map((group) => {
           if (activeFilter && activeFilter !== group.key) return null;
           const groupPrograms = groups[group.key] || [];
