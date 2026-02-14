@@ -302,16 +302,16 @@ export default function Layout({ user }) {
 
             {/* Notification Icons */}
             <div className="flex items-center gap-1">
-              <button onClick={() => navigate("/follow-ups")} className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-tasks-btn">
+              <button onClick={() => navigate("/follow-ups")} className="relative p-2 lg:p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-tasks-btn">
                 <CheckSquare className="w-5 h-5" strokeWidth={1.5} />
               </button>
-              <button onClick={() => navigate("/inbox")} className="relative p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-mail-btn">
+              <button onClick={() => navigate("/inbox")} className="relative p-2 lg:p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-mail-btn">
                 <Mail className="w-5 h-5" strokeWidth={1.5} />
               </button>
             </div>
 
             {/* Divider */}
-            <div className="w-px h-8" style={{ backgroundColor: "var(--t-border)" }} />
+            <div className="w-px h-8 hidden lg:block" style={{ backgroundColor: "var(--t-border)" }} />
 
             {/* User Profile Dropdown */}
             <div className="relative" ref={profileRef}>
