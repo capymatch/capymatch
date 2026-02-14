@@ -423,13 +423,24 @@ export default function CalendarPage() {
                   Today
                 </button>
               </div>
-              <div className="flex items-center gap-2">
-                <button onClick={prevMonth} className="p-2 rounded-lg" style={{ color: "var(--t-text-muted)" }}>
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button onClick={nextMonth} className="p-2 rounded-lg" style={{ color: "var(--t-text-muted)" }}>
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+              <div className="flex items-center gap-6">
+                {/* Event Legend */}
+                <div className="hidden md:flex items-center gap-4 text-[10px]">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-pink-600"></span><span style={{ color: "var(--t-text-muted)" }}>Camp</span></span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span><span style={{ color: "var(--t-text-muted)" }}>Tournament</span></span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span><span style={{ color: "var(--t-text-muted)" }}>Showcase</span></span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500"></span><span style={{ color: "var(--t-text-muted)" }}>Meeting</span></span>
+                </div>
+                {/* Navigation */}
+                <div className="flex items-center gap-2">
+                  <button onClick={prevMonth} className="p-2 rounded-lg" style={{ color: "var(--t-text-muted)" }}>
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button onClick={nextMonth} className="p-2 rounded-lg" style={{ color: "var(--t-text-muted)" }}>
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
 
