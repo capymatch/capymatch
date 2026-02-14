@@ -4,6 +4,7 @@ from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_ai_limit, track_ai_usage
 from models import DraftEmailRequest
+from subscriptions import get_user_subscription, enforce_ai_limit, enforce_feature, track_ai_usage
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import os
 import uuid
