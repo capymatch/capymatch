@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronRight, Calendar, MapPin, Eye, AlertTriangle, Send, Sparkles, CheckCircle, Circle, ArrowRight, X, User, GraduationCap, Mail as MailIcon } from "lucide-react";
+import { useSubscription, getUsage } from "../lib/subscription";
+import { ChevronRight, Calendar, MapPin, Eye, AlertTriangle, Send, Sparkles, CheckCircle, Circle, ArrowRight, X, User, GraduationCap, Mail as MailIcon, Zap, Crown } from "lucide-react";
 import { toast } from "sonner";
+import UpgradeModal from "../components/UpgradeModal";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
