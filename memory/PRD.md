@@ -129,6 +129,11 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 - D3/NAIA correctly show year-round contact with informational cards
 - Fully mobile responsive
 
+### Collapsible Sidebar - COMPLETED (Feb 14, 2026)
+- Sidebar toggle icon updated to `Sidebar` (lucide-react) per user preference
+- Collapse/expand state persisted via localStorage
+- Works on desktop; mobile uses hamburger menu
+
 ### P2 - App Naming
 - User wants unique name (Vollura was taken)
 - Blocked on user decision
