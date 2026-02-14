@@ -93,9 +93,12 @@ export default function AdminDashboard() {
               Manage Users
             </button>
             <button
-              className="w-full text-left px-3 py-2.5 rounded-lg text-[13px] font-medium text-white/25 cursor-not-allowed"
+              onClick={() => navigate("/admin/subscriptions")}
+              className="w-full text-left px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all hover:bg-white/5"
+              style={{ color: "var(--t-text-secondary)" }}
+              data-testid="admin-quick-manage-subscriptions"
             >
-              Manage Subscriptions (Coming Soon)
+              Manage Subscriptions
             </button>
             <button
               className="w-full text-left px-3 py-2.5 rounded-lg text-[13px] font-medium text-white/25 cursor-not-allowed"
