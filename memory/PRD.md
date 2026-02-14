@@ -124,6 +124,15 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
   - Backend: GET /admin/subscriptions, PUT /admin/subscriptions/{id}, GET /admin/subscription-logs
   - Admin dashboard "Manage Subscriptions" quick action linked
   - Testing: 100% pass (14/14 backend, 13/13 frontend)
+- [x] **AI-Powered Features (Feb 14, 2026)**
+  - AI Recruiting Assistant: Chat drawer with session history, suggestion prompts, context-aware advice using athlete profile + pipeline data
+  - Outreach Analysis (Premium): AI-generated outreach effectiveness score, strengths/improvements, division insights, next steps, interaction breakdowns
+  - Highlight Reel Advisor (Premium): Personalized video structure, must-include skills, avoid list, position-specific advice, distribution tips
+  - All 3 features gated by subscription tier (Pro+ for Assistant, Premium for Outreach/Highlight)
+  - Sidebar nav updated with PRO/AI badges
+  - Backend: 5 new endpoints (assistant chat, sessions, history, outreach-analysis, highlight-advice)
+  - Uses Claude Sonnet 4.5 via Emergent LLM Key (REAL AI, not mocked)
+  - Testing: 100% pass (11/11 backend, 14/14 frontend)
 
 ## Prioritized Backlog
 
