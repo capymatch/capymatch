@@ -27,7 +27,7 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 │   ├── server.py
 │   ├── database.py
 │   ├── routes/
-│   │   ├── knowledge.py          # Knowledge base CRUD + filters + add-to-board
+│   │   ├── knowledge.py          # Knowledge base (READ-ONLY) + filters + add-to-board
 │   │   ├── athlete_profile.py    # Questionnaire, match scores, suggested schools
 │   │   ├── programs.py           # Pipeline/board management
 │   │   ├── gmail.py              # Gmail integration
@@ -38,37 +38,37 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 │   │   ├── notifications.py      # Notifications
 │   │   └── auth_routes.py        # Auth routes
 │   └── scripts/
-│       └── import_universities.py # Excel → MongoDB import script
+│       └── import_universities.py # Excel → MongoDB import (admin-only offline tool)
 ├── frontend/
 │   └── src/
 │       ├── App.js
 │       ├── pages/
-│       │   ├── UniversityKnowledgeBase.js  # 1053 schools, dynamic filters, pagination
-│       │   ├── RecruitingBoard.js           # Pipeline with match scores
-│       │   ├── RecruitingJourney.js         # Program detail with match scores
+│       │   ├── UniversityKnowledgeBase.js  # 1053 schools, dynamic filters, pagination, card layout
+│       │   ├── RecruitingBoard.js           # Pipeline with card layout, key dates, match scores
+│       │   ├── RecruitingJourney.js         # Program detail (Interest Level removed, Match Score only)
 │       │   ├── Onboarding.js                # Multi-step questionnaire
 │       │   └── ...
 │       ├── components/
 │       │   ├── OnboardingGate.js            # Redirect new users to questionnaire
-│       │   └── ProgramRow.js                # Match score badges
+│       │   └── ProgramRow.js
 │       └── lib/
 │           └── constants.js                 # App constants (divisions, regions, statuses)
 ```
 
 ## Key Database Collections
-- **university_knowledge_base**: 1,053 universities with division, conference, region, coach data
-- **programs**: User's recruiting board (schools they're tracking)
+- **university_knowledge_base**: 1,053 universities (READ-ONLY via API, admin import script only)
+- **programs**: User's recruiting board (copied from knowledge base on "Add to Board")
 - **athlete_profiles**: User preferences from questionnaire + `questionnaire_completed` flag
 - **gmail_tokens**: Gmail OAuth tokens
 
-## What's Been Implemented (as of Feb 14, 2026)
+## What's Been Implemented
 - [x] Full recruiting pipeline (CRUD for programs)
 - [x] Onboarding questionnaire with redirect gate
-- [x] Match Score calculation and display
+- [x] Match Score calculation and display (sole scoring metric)
 - [x] Suggested Schools (auto-recommend based on profile)
-- [x] University Knowledge Base populated with 1,053 schools (D1:347, D2:284, D3:422)
+- [x] University Knowledge Base: 1,053 schools (D1:347, D2:284, D3:422)
 - [x] Dynamic filters (107 conferences, 10 regions, 3 divisions)
-- [x] Pagination (50 per page)
+- [x] Pagination (50 per page) on Schools page
 - [x] Coach data display (names + email links)
 - [x] Gmail integration
 - [x] AI email drafter (Claude Sonnet 4.5)
@@ -76,6 +76,11 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 - [x] Analytics
 - [x] Notifications
 - [x] Background coach reply detection
+- [x] Data protection: /api/seed removed, university_knowledge_base is read-only
+- [x] Pipeline redesign: card layout matching Schools style with school info (region, conference, coach)
+- [x] Pipeline: read-only statuses (editable only in Journey), key dates from Journey
+- [x] Pipeline: school name links to school detail view
+- [x] Removed Interest Level widget (Match Score is sole indicator)
 
 ## Prioritized Backlog
 
