@@ -110,7 +110,14 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 
 ## Prioritized Backlog
 
-### P1 - NCAA Recruiting Timeline ✅ COMPLETED (Feb 14, 2026)
+### Color Theme Overhaul ✅ COMPLETED (Feb 14, 2026)
+- Applied Creative Tim-inspired dark navy + pink/coral color scheme across entire app
+- Sidebar: dark pink/maroon gradient (from #c0375a to #6b1530)
+- Background: #1a1f37, Cards: #202940
+- All purple accents replaced with pink-600/700/800 (Tailwind)
+- Dashboard stat cards: circular gradient icons (pink, amber, coral, teal)
+- CSS variables updated in index.css for dark theme
+- Affected files: index.css, Layout.js, Dashboard.js, and all page files
 - Implemented as "NCAA Timeline" tab on Calendar page
 - Current period banner with pulsing indicator and days remaining
 - Division selector (D1/D2/D3/NAIA) with division-specific data
