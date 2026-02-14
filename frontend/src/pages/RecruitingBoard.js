@@ -276,15 +276,22 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
       {/* University Name */}
       <div className="flex items-center gap-2 min-w-0">
         <div className={`w-1.5 h-8 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
-        <div className="min-w-0">
-          <button
-            onClick={() => navigate(`/journey/${p.program_id}`)}
-            data-testid={`program-link-${p.program_id}`}
-            className="font-semibold text-sm truncate block transition-colors hover:text-purple-400"
-            style={{ color: "var(--t-text)" }}
-          >
-            {p.university_name}
-          </button>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate(`/journey/${p.program_id}`)}
+              data-testid={`program-link-${p.program_id}`}
+              className="font-semibold text-sm truncate block transition-colors hover:text-purple-400"
+              style={{ color: "var(--t-text)" }}
+            >
+              {p.university_name}
+            </button>
+            {matchScore && (
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+                {matchScore.match_score}%
+              </span>
+            )}
+          </div>
           <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{p.mascot}</span>
         </div>
       </div>
