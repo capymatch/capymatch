@@ -111,6 +111,16 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
   - **REPLACED "+ Add Program" dialog with "+ Add School" button** that redirects to Schools page (`/knowledge-base`)
   - **ACCORDION-STYLE INDENTATION**: Cards are now indented (`ml-6 lg:ml-8`) to visually show they belong inside their section accordion
 
+- [x] **PIPELINE ACCORDION REDESIGN** (Feb 14, 2026)
+  - Connected panels: accordion header + cards form one seamless unit
+  - Compact row-based cards replacing floating card layout
+  - Thin colored accent bars (rose/amber/emerald/gray) replace heavy indentation
+  - Simplified accordion headers: colored dot + label + inline description + count pill
+  - Tight 1.5 spacing between groups (was 10/40px)
+  - Removed extra dividers between funnel and filters
+  - Closed group collapsed by default
+  - Filters row simplified (no wrapping border)
+
 ## Prioritized Backlog
 
 ### Color Theme Overhaul ✅ COMPLETED (Feb 14, 2026)
