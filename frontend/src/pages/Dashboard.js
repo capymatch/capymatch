@@ -422,6 +422,77 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Subscription Plan Card */}
+      {subscription && (
+        <div
+          className="rounded-xl border overflow-hidden"
+          style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+          data-testid="subscription-card"
+        >
+          <div className="flex items-center justify-between px-4 lg:px-5 py-3 lg:py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <div className="flex items-center gap-2">
+              {subscription.tier === "premium" ? (
+                <Crown className="w-4 h-4 text-amber-400" />
+              ) : subscription.tier === "pro" ? (
+                <Sparkles className="w-4 h-4 text-pink-400" />
+              ) : (
+                <Zap className="w-4 h-4 text-zinc-400" />
+              )}
+              <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{subscription.label} Plan</h4>
+            </div>
+            {subscription.tier !== "premium" && (
+              <button
+                onClick={() => setShowUpgrade(true)}
+                className="text-xs text-pink-600 hover:text-pink-500 transition-colors flex items-center gap-1 font-medium"
+                data-testid="dashboard-upgrade-btn"
+              >
+                Upgrade <ChevronRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+          <div className="px-4 lg:px-5 py-4 grid grid-cols-2 gap-4">
+            {/* Schools Usage */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Schools on board</span>
+                <span className="text-xs font-medium" style={{ color: "var(--t-text)" }}>
+                  {subscription.usage.schools}/{subscription.usage.schools_limit === -1 ? "\u221e" : subscription.usage.schools_limit}
+                </span>
+              </div>
+              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: subscription.usage.schools_limit === -1 ? "15%" : `${Math.min(100, (subscription.usage.schools / subscription.usage.schools_limit) * 100)}%`,
+                    backgroundColor: subscription.usage.schools_remaining <= 1 && subscription.usage.schools_limit !== -1 ? "#ef4444" : "#ec4899",
+                  }}
+                />
+              </div>
+            </div>
+            {/* AI Drafts Usage */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI drafts this month</span>
+                <span className="text-xs font-medium" style={{ color: "var(--t-text)" }}>
+                  {subscription.usage.ai_drafts_used}/{subscription.usage.ai_drafts_limit === -1 ? "\u221e" : subscription.usage.ai_drafts_limit === 0 ? "0" : subscription.usage.ai_drafts_limit}
+                </span>
+              </div>
+              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: subscription.usage.ai_drafts_limit <= 0 ? "0%" : subscription.usage.ai_drafts_limit === -1 ? "15%" : `${Math.min(100, (subscription.usage.ai_drafts_used / subscription.usage.ai_drafts_limit) * 100)}%`,
+                    backgroundColor: "#8b5cf6",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} feature="max_schools" currentTier={subscription?.tier || "basic"} />
     </div>
   );
 }
