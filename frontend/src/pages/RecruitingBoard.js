@@ -450,6 +450,8 @@ export default function RecruitingBoard() {
             {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
           </SelectContent>
         </Select>
+        <div className="w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
+        <AddProgramDialog onAdd={fetchPrograms} />
       </div>
 
       {/* Divider */}
