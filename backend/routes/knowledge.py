@@ -50,6 +50,10 @@ async def add_to_board(request: Request):
         "region": uni.get("region", ""),
         "website": uni.get("website", ""),
         "mascot": uni.get("mascot", ""),
+        "primary_coach": uni.get("primary_coach", ""),
+        "coach_email": uni.get("coach_email", ""),
+        "recruiting_coordinator": uni.get("recruiting_coordinator", ""),
+        "coordinator_email": uni.get("coordinator_email", ""),
         "program_interest": "",
         "recruiting_status": "Not Contacted",
         "reply_status": "No Reply",
@@ -59,12 +63,12 @@ async def add_to_board(request: Request):
         "follow_up_days": 14,
         "next_action": "",
         "next_action_due": "",
-        "scholarship_type": "",
-        "roster_needs": "",
+        "scholarship_type": uni.get("scholarship_type", ""),
+        "roster_needs": uni.get("roster_needs", ""),
         "events_seen": "",
         "video_link": "",
         "coach_contract_expiration": "",
-        "notes": uni.get("notes", ""),
+        "notes": "",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.programs.insert_one(doc)
