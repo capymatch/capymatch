@@ -1,76 +1,101 @@
 # Volleyball Recruiting CRM - PRD
 
 ## Original Problem Statement
-Build a Volleyball Recruiting CRM application to help athletes and parents manage their college recruiting process. The app tracks schools, coaches, communications, and recruiting pipeline status.
+Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public athlete profile, AI-powered email drafter, onboarding questionnaire, match scores, and university knowledge base.
+
+## Core Requirements
+- **Recruiting Pipeline**: Track universities through recruiting stages (Not Contacted → Committed)
+- **University Knowledge Base**: Searchable database of 1,053+ volleyball programs (D1/D2/D3)
+- **Match Score System**: Calculate compatibility scores between athlete profile and universities
+- **Onboarding Questionnaire**: First-time user flow to capture preferences (position, division, region, priorities)
+- **Gmail Integration**: Send/receive emails to coaches directly from the app
+- **AI Email Drafter**: Claude Sonnet 4.5 powered email composition
+- **Calendar**: Event tracking and scheduling
+- **Coach Data**: Store coach names, emails, recruiting coordinator info per university
+
+## Tech Stack
+- **Frontend**: React, Tailwind CSS, Shadcn/UI, react-router-dom
+- **Backend**: Python, FastAPI, Motor (async MongoDB driver)
+- **Database**: MongoDB
+- **AI**: Anthropic Claude Sonnet 4.5 (via Emergent LLM Key)
+- **Auth**: Mocked (public app, single-tenant)
 
 ## Architecture
-- **Frontend**: React + Tailwind CSS + Shadcn/UI, port 3000
-- **Backend**: FastAPI + Motor (async MongoDB), port 8001
-- **Database**: MongoDB
-- **Integrations**: Gmail API, Anthropic Claude Sonnet 4.5 (via Emergent LLM Key), React Joyride
-- **Auth**: Fully public (no login), single tenant (`tenant_public_default`)
+```
+/app
+├── backend/
+│   ├── server.py
+│   ├── database.py
+│   ├── routes/
+│   │   ├── knowledge.py          # Knowledge base CRUD + filters + add-to-board
+│   │   ├── athlete_profile.py    # Questionnaire, match scores, suggested schools
+│   │   ├── programs.py           # Pipeline/board management
+│   │   ├── gmail.py              # Gmail integration
+│   │   ├── ai.py                 # AI email drafter
+│   │   ├── events.py             # Calendar events
+│   │   ├── dashboard.py          # Dashboard stats
+│   │   ├── profile.py            # User profile
+│   │   ├── notifications.py      # Notifications
+│   │   └── auth_routes.py        # Auth routes
+│   └── scripts/
+│       └── import_universities.py # Excel → MongoDB import script
+├── frontend/
+│   └── src/
+│       ├── App.js
+│       ├── pages/
+│       │   ├── UniversityKnowledgeBase.js  # 1053 schools, dynamic filters, pagination
+│       │   ├── RecruitingBoard.js           # Pipeline with match scores
+│       │   ├── RecruitingJourney.js         # Program detail with match scores
+│       │   ├── Onboarding.js                # Multi-step questionnaire
+│       │   └── ...
+│       ├── components/
+│       │   ├── OnboardingGate.js            # Redirect new users to questionnaire
+│       │   └── ProgramRow.js                # Match score badges
+│       └── lib/
+│           └── constants.js                 # App constants (divisions, regions, statuses)
+```
 
-## Core Features (Implemented)
+## Key Database Collections
+- **university_knowledge_base**: 1,053 universities with division, conference, region, coach data
+- **programs**: User's recruiting board (schools they're tracking)
+- **athlete_profiles**: User preferences from questionnaire + `questionnaire_completed` flag
+- **gmail_tokens**: Gmail OAuth tokens
 
-### Onboarding Questionnaire (Feb 14, 2026)
-- **7-step multi-choice quiz** capturing: Position, Division, Priorities (multi-select top 3), Regions (multi-select), School Size, Academic Interests, Scholarship Priority
-- **Automatic redirect**: First-time users redirected to `/onboarding` via `OnboardingGate` component
-- **Match Score calculation**: On completion, top 3 matching schools from pipeline displayed with percentage scores
-- **Profile persistence**: Stored in `athlete_profiles` collection with `questionnaire_completed: true` flag
-- **Backend endpoints**: `GET /api/recruiting-profile`, `POST /api/recruiting-profile`, `GET /api/match-scores`
-- **Keyboard navigation**: Enter to continue, number keys for single-select, Back button
-- **Dark/light theme compatible**: Uses CSS custom properties (`var(--t-bg)`, `var(--t-surface)`, etc.)
+## What's Been Implemented (as of Feb 14, 2026)
+- [x] Full recruiting pipeline (CRUD for programs)
+- [x] Onboarding questionnaire with redirect gate
+- [x] Match Score calculation and display
+- [x] Suggested Schools (auto-recommend based on profile)
+- [x] University Knowledge Base populated with 1,053 schools (D1:347, D2:284, D3:422)
+- [x] Dynamic filters (107 conferences, 10 regions, 3 divisions)
+- [x] Pagination (50 per page)
+- [x] Coach data display (names + email links)
+- [x] Gmail integration
+- [x] AI email drafter (Claude Sonnet 4.5)
+- [x] Calendar
+- [x] Analytics
+- [x] Notifications
+- [x] Background coach reply detection
 
-### Recruiting Journey Page (Redesigned Feb 13, 2026)
-- **Next Step Hero Card** -- Smart contextual action at top with:
-  - Overdue follow-ups (urgent orange styling)
-  - Upcoming follow-ups with days countdown
-  - Status-based suggestions (intro email, follow-up, log interaction)
-  - One-click CTA + Snooze option
-  - **Data-driven insight tip** -- rotating insights computed from MongoDB
-- **Timeline** -- Full left column with Log Interaction / Send Email in header
-- **AI Insights** -- Top of sidebar with purple gradient, Generate button, expandable summary
-- **Sidebar order**: AI Insights -> Coaches -> Interest Level -> Key Dates -> Schedule Follow-up
+## Prioritized Backlog
 
-### Data-Driven Recruiting Insights (Feb 14, 2026)
-- Backend endpoint `/api/recruiting-insights` aggregates interaction data
-- Computes: best day to contact, avg response time, most effective outreach type, follow-up success rate
-- Displayed as rotating tip in Next Step Hero card -- zero AI cost
+### P1 - NCAA Recruiting Timeline
+- Implement as new tab on Recruiting Journey page
+- Mockup exists at `/app/mockups/ncaa_timeline.html`
+- Show contact/dead/evaluation/quiet periods by division
+- Key NCAA dates and deadlines
 
-### Other Features
-- Recruiting Board -- Pipeline overview with 6 columns, color-coded due dates, status filtering
-- Notification System -- Clickable alerts with routing, weekly summary
-- Gmail Integration -- Send/receive emails, AI draft generation
-- Public Athlete Profile, Onboarding Tour, Landing Page
-- Calendar with events management
+### P2 - App Naming
+- User wants unique name (Vollura was taken)
+- Blocked on user decision
 
-## Backlog
-### P1
-- **App Naming**: "Vollura" taken, pending user decision
+### P2 - Outreach Power-Ups
+- Email templates for common recruiting scenarios
+- Bulk outreach capabilities
 
-### P2
-- **Recruiting Intelligence**: NCAA Timeline, Camp/Tournament ROI tracker
-- **Outreach Power-Ups**: Email Templates, Bulk Outreach
+### P3 - Recruiting Intelligence
+- Camp/Tournament ROI tracker
+- Visual recruiting analytics
 
-### P3
-- **Family Collaboration**: Parent/Guardian read-only dashboard
-
-## Recent Additions (Feb 14, 2026)
-
-### Match Score Integration
-- **Pipeline page**: Color-coded match score badges (green 80%+, amber 60-79%, gray <60%) next to each university name
-- **Journey page**: Match badge with percentage and Target icon in the header
-- **Backend**: `GET /api/match-scores` calculates based on division, region, priorities, school size
-
-### Auto-Suggest Schools
-- **Schools page**: "Recommended for You" section at top with up to 12 suggestion cards
-- **Scoring**: Division (40pts), preferred region (30pts), priorities (up to 24pts), school size (5pts)
-- **Features**: Match score badges, division badge, match reasons, one-click "Add to Board"
-- **Backend**: `GET /api/suggested-schools` filters knowledge base, excludes pipeline schools
-
-## Key Files
-- `/app/backend/routes/athlete_profile.py` - Questionnaire backend (GET/POST profile, match scores)
-- `/app/frontend/src/pages/AthleteProfileQuiz.js` - 7-step quiz component
-- `/app/frontend/src/App.js` - OnboardingGate redirect logic
-- `/app/frontend/src/pages/RecruitingJourney.js` - Journey page with Next Step Hero
-- `/app/frontend/src/components/NextStepHero.js` - Hero card component (inlined in RecruitingJourney)
+### P3 - Family Collaboration
+- Read-only dashboard for parents/guardians
