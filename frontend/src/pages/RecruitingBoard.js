@@ -301,7 +301,7 @@ function ProgramCard({ p, navigate, matchScore }) {
 
   return (
     <div
-      className="rounded-lg p-4 transition-all duration-200 border"
+      className="rounded-lg p-4 mb-4 transition-all duration-200 border"
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`program-row-${p.program_id}`}
     >
