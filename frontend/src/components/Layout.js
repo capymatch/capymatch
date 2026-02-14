@@ -199,6 +199,22 @@ export default function Layout({ user }) {
           ))}
         </nav>
 
+        {/* Admin Link */}
+        <div className="px-4 pb-2 mt-auto">
+          <div className="border-t mb-2" style={{ borderColor: "rgba(255,255,255,0.15)" }} />
+          <NavLink
+            to="/admin"
+            data-testid="nav-admin"
+            title={sidebarCollapsed ? "Admin" : undefined}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
+              sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
+            } text-white/50 hover:bg-white/10 hover:text-white`}
+          >
+            <Shield className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
+            <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>Admin</span>
+          </NavLink>
+        </div>
+
         {/* Bottom spacing */}
         <div className="p-4" />
       </aside>
