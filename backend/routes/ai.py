@@ -314,3 +314,347 @@ Return ONLY valid JSON."""
     except Exception as e:
         logger.error(f"Journey summary error: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate summary: {str(e)}")
+
+
+
+# ── AI Assistant (Pro+) ───────────────────────────────────────
+
+@router.post("/assistant")
+async def ai_assistant(request: Request):
+    """AI Recruiting Assistant - conversational chat with context."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_ai_limit(tenant_id, subscription)
+
+    body = await request.json()
+    message = body.get("message", "").strip()
+    session_id = body.get("session_id", f"asst_{uuid.uuid4().hex[:8]}")
+
+    if not message:
+        raise HTTPException(status_code=400, detail="Message is required")
+
+    # Gather context
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0}) or {}
+    programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(30)
+    interactions = await db.interactions.find({"tenant_id": tenant_id}, {"_id": 0}).sort("date_time", -1).to_list(20)
+
+    # Load conversation history
+    history = await db.ai_conversations.find(
+        {"session_id": session_id, "tenant_id": tenant_id}, {"_id": 0}
+    ).sort("created_at", 1).to_list(20)
+
+    athlete_ctx = f"""Athlete: {profile.get('athlete_name', 'Unknown')}
+Position: {profile.get('position', '')} | Grad Year: {profile.get('grad_year', '')}
+GPA: {profile.get('gpa', '')} | State: {profile.get('state', '')}
+Height: {profile.get('height', '')} | Club: {profile.get('club_team', '')}"""
+
+    school_list = ", ".join([f"{p.get('university_name', '')} ({p.get('recruiting_status', '')})" for p in programs[:15]])
+    recent_activity = "\n".join([
+        f"- {i.get('type', '')} with {i.get('university_name', '')} on {i.get('date_time', '')}: {i.get('outcome', '')}"
+        for i in interactions[:10]
+    ])
+
+    system_message = f"""You are an expert volleyball recruiting advisor. You help high school athletes navigate the college recruiting process.
+
+ATHLETE CONTEXT:
+{athlete_ctx}
+
+CURRENT PIPELINE ({len(programs)} schools):
+{school_list or "No schools added yet"}
+
+RECENT ACTIVITY:
+{recent_activity or "No recent interactions"}
+
+GUIDELINES:
+- Give specific, actionable advice based on the athlete's profile and pipeline
+- Reference actual schools in their pipeline when relevant
+- Keep answers concise (2-4 paragraphs max) but helpful
+- Consider NCAA recruiting rules and timelines
+- Be encouraging but realistic
+- If asked about a school not in their pipeline, suggest adding it
+- Use their name when appropriate"""
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=session_id,
+            system_message=system_message,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        # Add conversation history as context
+        for h in history[-6:]:
+            if h.get("role") == "user":
+                await chat.send_message(UserMessage(text=h["content"]))
+
+        response = await chat.send_message(UserMessage(text=message))
+        response_text = response.text if hasattr(response, "text") else str(response)
+
+        await track_ai_usage(tenant_id)
+
+        # Save conversation
+        now = datetime.now(timezone.utc).isoformat()
+        await db.ai_conversations.insert_one({
+            "session_id": session_id,
+            "tenant_id": tenant_id,
+            "role": "user",
+            "content": message,
+            "created_at": now,
+        })
+        await db.ai_conversations.insert_one({
+            "session_id": session_id,
+            "tenant_id": tenant_id,
+            "role": "assistant",
+            "content": response_text,
+            "created_at": now,
+        })
+
+        return {"response": response_text, "session_id": session_id}
+
+    except Exception as e:
+        logger.error(f"AI Assistant error: {e}")
+        raise HTTPException(status_code=500, detail=f"Assistant error: {str(e)}")
+
+
+@router.get("/assistant/history")
+async def get_assistant_history(session_id: str, request: Request):
+    """Get conversation history for a session."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    messages = await db.ai_conversations.find(
+        {"session_id": session_id, "tenant_id": tenant_id}, {"_id": 0}
+    ).sort("created_at", 1).to_list(50)
+
+    return {"messages": messages, "session_id": session_id}
+
+
+@router.get("/assistant/sessions")
+async def get_assistant_sessions(request: Request):
+    """List recent assistant sessions."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    pipeline = [
+        {"$match": {"tenant_id": tenant_id}},
+        {"$sort": {"created_at": -1}},
+        {"$group": {
+            "_id": "$session_id",
+            "last_message": {"$first": "$content"},
+            "last_at": {"$first": "$created_at"},
+            "count": {"$sum": 1},
+        }},
+        {"$sort": {"last_at": -1}},
+        {"$limit": 10},
+    ]
+    sessions = await db.ai_conversations.aggregate(pipeline).to_list(10)
+    return {"sessions": [{"session_id": s["_id"], "preview": s["last_message"][:80], "last_at": s["last_at"], "messages": s["count"]} for s in sessions]}
+
+
+# ── Outreach Analysis (Premium) ──────────────────────────────
+
+@router.get("/outreach-analysis")
+async def outreach_analysis(request: Request):
+    """AI-powered analysis of recruiting outreach effectiveness."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "auto_reply_detection", "Outreach Analysis", "premium")
+
+    # Gather all data
+    programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(100)
+    interactions = await db.interactions.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(500)
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0}) or {}
+
+    if not programs:
+        return {"analysis": None, "message": "Add schools to your pipeline first to get outreach analysis."}
+
+    # Compute stats
+    total_interactions = len(interactions)
+    by_type = {}
+    by_outcome = {}
+    by_school = {}
+    replied_schools = set()
+
+    for i in interactions:
+        t = i.get("type", "Other")
+        o = i.get("outcome", "No Response")
+        school = i.get("university_name", "Unknown")
+        by_type[t] = by_type.get(t, 0) + 1
+        by_outcome[o] = by_outcome.get(o, 0) + 1
+        by_school[school] = by_school.get(school, 0) + 1
+        if o in ("Positive Response", "Reply Received"):
+            replied_schools.add(school)
+
+    response_rate = len(replied_schools) / len(programs) * 100 if programs else 0
+
+    # Division breakdown
+    by_division = {}
+    for p in programs:
+        d = p.get("division", "Unknown")
+        status = p.get("reply_status", "No Reply")
+        if d not in by_division:
+            by_division[d] = {"total": 0, "replied": 0}
+        by_division[d]["total"] += 1
+        if status != "No Reply":
+            by_division[d]["replied"] += 1
+
+    # Build context for AI analysis
+    stats_ctx = f"""
+OUTREACH STATS:
+- Total schools: {len(programs)}
+- Total interactions: {total_interactions}
+- Schools that replied: {len(replied_schools)}
+- Response rate: {response_rate:.0f}%
+
+BY TYPE: {json.dumps(by_type)}
+BY OUTCOME: {json.dumps(by_outcome)}
+BY DIVISION: {json.dumps(by_division)}
+
+TOP SCHOOLS BY ACTIVITY: {json.dumps(dict(sorted(by_school.items(), key=lambda x: -x[1])[:10]))}
+
+ATHLETE: {profile.get('athlete_name', '')} - {profile.get('position', '')} - Class of {profile.get('grad_year', '')}
+"""
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"outreach_{uuid.uuid4().hex[:8]}",
+            system_message="You are an expert volleyball recruiting data analyst. Analyze the athlete's outreach data and provide actionable insights. Return ONLY valid JSON.",
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        prompt = f"""{stats_ctx}
+
+Analyze this recruiting outreach data and return JSON:
+{{
+  "overall_score": <1-100 score>,
+  "score_label": "<Excellent/Good/Needs Work/Getting Started>",
+  "summary": "<2-3 sentence overview>",
+  "strengths": ["<strength 1>", "<strength 2>"],
+  "improvements": ["<improvement 1>", "<improvement 2>", "<improvement 3>"],
+  "division_insights": "<insights about D1/D2/D3 response patterns>",
+  "next_steps": ["<specific action 1>", "<specific action 2>", "<specific action 3>"],
+  "best_performing_type": "<which interaction type works best>"
+}}"""
+
+        response = await chat.send_message(UserMessage(text=prompt))
+        response_text = response.text if hasattr(response, "text") else str(response)
+        response_text = response_text.strip()
+        if response_text.startswith("```"):
+            response_text = response_text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        await track_ai_usage(tenant_id)
+        ai_insights = json.loads(response_text)
+
+        return {
+            "analysis": {
+                "ai_insights": ai_insights,
+                "stats": {
+                    "total_schools": len(programs),
+                    "total_interactions": total_interactions,
+                    "replied_schools": len(replied_schools),
+                    "response_rate": round(response_rate, 1),
+                    "by_type": by_type,
+                    "by_outcome": by_outcome,
+                    "by_division": by_division,
+                    "top_schools": dict(sorted(by_school.items(), key=lambda x: -x[1])[:5]),
+                },
+            },
+        }
+
+    except json.JSONDecodeError:
+        return {
+            "analysis": {
+                "ai_insights": None,
+                "stats": {
+                    "total_schools": len(programs),
+                    "total_interactions": total_interactions,
+                    "replied_schools": len(replied_schools),
+                    "response_rate": round(response_rate, 1),
+                    "by_type": by_type,
+                    "by_outcome": by_outcome,
+                    "by_division": by_division,
+                },
+            },
+        }
+    except Exception as e:
+        logger.error(f"Outreach analysis error: {e}")
+        raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
+
+
+# ── Highlight Reel Advisor (Premium) ─────────────────────────
+
+@router.post("/highlight-advice")
+async def highlight_reel_advice(request: Request):
+    """AI-powered highlight reel recommendations based on athlete profile."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "auto_reply_detection", "Highlight Reel Advisor", "premium")
+
+    body = await request.json()
+    question = body.get("question", "")
+
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0}) or {}
+    programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(30)
+
+    divisions = list(set(p.get("division", "") for p in programs if p.get("division")))
+
+    athlete_ctx = f"""Athlete: {profile.get('athlete_name', 'Unknown')}
+Position: {profile.get('position', 'Unknown')}
+Height: {profile.get('height', '')}
+Grad Year: {profile.get('grad_year', '')}
+Club Team: {profile.get('club_team', '')}
+Targeting Divisions: {', '.join(divisions) if divisions else 'Not specified'}
+Number of target schools: {len(programs)}"""
+
+    system_message = """You are an expert volleyball recruiting video consultant. You help athletes create highlight reels that get coaches' attention. You know what college coaches look for at every level (D1, D2, D3, NAIA, JUCO). Return ONLY valid JSON."""
+
+    prompt = f"""{athlete_ctx}
+
+{f"Athlete's question: {question}" if question else "Provide comprehensive highlight reel recommendations."}
+
+Return JSON:
+{{
+  "video_length": "<recommended length>",
+  "structure": [
+    {{"section": "<section name>", "duration": "<time>", "description": "<what to include>"}},
+    ...
+  ],
+  "must_include_skills": ["<skill 1>", "<skill 2>", ...],
+  "avoid": ["<what to avoid 1>", "<what to avoid 2>"],
+  "technical_tips": ["<tip 1>", "<tip 2>", ...],
+  "position_specific": "<position-specific advice>",
+  "coach_perspective": "<what coaches look for first>",
+  "distribution_tips": ["<how to share 1>", "<how to share 2>"]
+}}"""
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"highlight_{uuid.uuid4().hex[:8]}",
+            system_message=system_message,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        response = await chat.send_message(UserMessage(text=prompt))
+        response_text = response.text if hasattr(response, "text") else str(response)
+        response_text = response_text.strip()
+        if response_text.startswith("```"):
+            response_text = response_text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        await track_ai_usage(tenant_id)
+        advice = json.loads(response_text)
+
+        return {"advice": advice}
+
+    except json.JSONDecodeError:
+        return {"advice": {"error": "Unable to generate advice. Please try again."}}
+    except Exception as e:
+        logger.error(f"Highlight advice error: {e}")
+        raise HTTPException(status_code=500, detail=f"Highlight advice error: {str(e)}")
