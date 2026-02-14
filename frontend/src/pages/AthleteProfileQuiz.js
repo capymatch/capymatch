@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Check, Sparkles, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Sparkles, Loader2, Target, Clock, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import api from "../lib/api";
