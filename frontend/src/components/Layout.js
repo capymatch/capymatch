@@ -108,6 +108,8 @@ export default function Layout({ user }) {
     { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
     { to: "/analytics", icon: BarChart3, label: "Analytics" },
+    { to: "/outreach-analysis", icon: TrendingUp, label: "Outreach AI", premium: true },
+    { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true },
     { to: "/settings", icon: Settings, label: "Settings" },
   ];
 
