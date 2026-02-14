@@ -10,7 +10,7 @@ const adminNav = [
   { to: "/admin/users", icon: Users, label: "Users" },
   { to: "/admin/subscriptions", icon: CreditCard, label: "Subscriptions", disabled: true },
   { to: "/admin/automations", icon: Zap, label: "Automations", disabled: true },
-  { to: "/admin/universities", icon: GraduationCap, label: "Universities", disabled: true },
+  { to: "/admin/universities", icon: GraduationCap, label: "Universities" },
   { to: "/admin/analytics", icon: BarChart3, label: "Analytics", disabled: true },
 ];
 
