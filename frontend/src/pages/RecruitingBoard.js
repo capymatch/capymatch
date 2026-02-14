@@ -276,77 +276,69 @@ function PipelineFunnel({ programs, onFocusSection, activeFilter }) {
   );
 }
 
-/* ── Program Row ── */
-function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
+/* ── Program Card ── */
+function ProgramCard({ p, navigate, matchScore }) {
+  const divColor = {
+    D1: "bg-emerald-500/20 text-emerald-400",
+    D2: "bg-blue-500/20 text-blue-400",
+    D3: "bg-violet-500/20 text-violet-400",
+    NAIA: "bg-orange-500/20 text-orange-400",
+    JUCO: "bg-yellow-500/20 text-yellow-400",
+  }[p.division] || "bg-gray-500/20 text-gray-400";
+
   const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
     : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
     : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
+  const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
+  const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+  const dueDateColor = daysUntil !== null && daysUntil < 0 ? "text-red-400" : daysUntil !== null && daysUntil <= 14 ? "text-orange-400" : "text-slate-400";
+
+  const statusColor = STATUS_COLORS[p.recruiting_status]?.color || "text-gray-500";
+  const priorityColor = PRIORITY_INLINE_COLORS[p.priority]?.color || "text-gray-500";
+
   return (
     <div
-      className="group grid grid-cols-[2.5fr_1fr_1fr_0.8fr_0.7fr_auto] gap-4 items-center px-4 h-10 border-b transition-colors cursor-default"
-      style={{ borderColor: "var(--t-border)" }}
-      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
-      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+      className="rounded-lg p-4 transition-all duration-200 border"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`program-row-${p.program_id}`}
     >
-      {/* University Name + Division Badge */}
-      <div className="flex items-center gap-2 min-w-0">
-        <div className={`w-1 h-5 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
+            {p.division || "—"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="font-heading font-bold text-base leading-tight truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</h3>
+              {matchScore && (
+                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+                  {matchScore.match_score}%
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-3 mt-1 text-xs flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+              <span className={`font-semibold ${statusColor}`}>{p.recruiting_status}</span>
+              <span className="opacity-30">|</span>
+              <span className={`font-semibold ${priorityColor}`}>{p.priority}</span>
+              {dueDateFormatted && (
+                <>
+                  <span className="opacity-30">|</span>
+                  <span className={`font-semibold ${dueDateColor}`}>Due {dueDateFormatted}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
-          data-testid={`program-link-${p.program_id}`}
-          className="font-medium text-[13px] truncate transition-colors hover:text-purple-400"
-          style={{ color: "var(--t-text)" }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded-md transition-colors flex-shrink-0"
+          data-testid={`view-journey-${p.program_id}`}
         >
-          {p.university_name}
+          <Sparkles className="w-3.5 h-3.5" />
+          Journey
         </button>
-        {p.division && (
-          <span className={`inline-block px-1.5 py-px rounded text-[9px] font-bold flex-shrink-0 ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
-            {p.division}
-          </span>
-        )}
-        {matchScore && (
-          <span className={`inline-flex items-center px-1.5 py-px rounded text-[9px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
-            {matchScore.match_score}%
-          </span>
-        )}
       </div>
-
-      {/* Status */}
-      <StatusBadge value={p.recruiting_status} colorMap={STATUS_COLORS} />
-
-      {/* Reply */}
-      <StatusBadge value={p.reply_status} colorMap={REPLY_COLORS} />
-
-      {/* Due Date */}
-      <DueDateBadge value={p.next_action_due} />
-
-      {/* Priority */}
-      <StatusBadge value={p.priority} colorMap={PRIORITY_INLINE_COLORS} />
-
-      {/* Actions */}
-      <button
-        onClick={() => navigate(`/journey/${p.program_id}`)}
-        className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded transition-colors"
-        title="View Journey"
-        data-testid={`view-journey-${p.program_id}`}
-      >
-        <Sparkles className="w-3 h-3" />
-        Journey
-      </button>
-    </div>
-  );
-}
-
-/* ── Column Headers ── */
-function ColumnHeaders() {
-  const cols = ["University", "Status", "Reply", "Due Date", "Priority", ""];
-  return (
-    <div className="grid grid-cols-[2.5fr_1fr_1fr_0.8fr_0.7fr_auto] gap-4 items-center px-4 h-9 border-b" style={{ borderColor: "var(--t-border)" }}>
-      {cols.map((col, i) => (
-        <span key={i} className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>{col}</span>
-      ))}
     </div>
   );
 }
