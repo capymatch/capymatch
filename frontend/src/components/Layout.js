@@ -202,8 +202,26 @@ export default function Layout({ user }) {
             >
               <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
               <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
+              {item.premium && !sidebarCollapsed && (
+                <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Pro</span>
+              )}
             </NavLink>
           ))}
+
+          {/* AI Assistant Button */}
+          <button
+            onClick={() => setShowAssistant(true)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white mt-1 ${
+              sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
+            }`}
+            data-testid="nav-ai-assistant"
+          >
+            <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
+            <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Advisor</span>
+            {!sidebarCollapsed && (
+              <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-400">AI</span>
+            )}
+          </button>
         </nav>
 
         {/* Subscription Badge + Admin Link */}
