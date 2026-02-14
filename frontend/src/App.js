@@ -24,7 +24,6 @@ const PUBLIC_USER = { user_id: "user_public_default", name: "Athlete", email: "a
 
 function OnboardingGate({ children }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -33,11 +32,12 @@ function OnboardingGate({ children }) {
       if (cancelled) return;
       if (!res.data?.questionnaire_completed) {
         navigate("/onboarding", { replace: true });
+      } else {
+        setChecked(true);
       }
-      setChecked(true);
     }).catch(() => { if (!cancelled) setChecked(true); });
     return () => { cancelled = true; };
-  }, []);
+  }, [navigate]);
 
   if (!checked) return null;
   return children;
