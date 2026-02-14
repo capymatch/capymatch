@@ -292,10 +292,10 @@ export default function Dashboard() {
       </div>
 
       {/* Bottom Row: Reminders + Profile Views */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Follow-Up Reminders */}
         <div id="reminders-section" className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="reminders-widget">
-          <div className="flex items-center gap-2 px-5 py-4">
+          <div className="flex items-center gap-2 px-4 lg:px-5 py-3 lg:py-4">
             <AlertTriangle className="w-4 h-4 text-orange-500" />
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Follow-Up Reminders</h4>
             {reminders.length > 0 && (
