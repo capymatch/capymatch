@@ -564,6 +564,15 @@ export default function RecruitingJourney() {
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
               {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-400">{program.division}</span>}
+              {matchScore && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border ${
+                  matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+                  : matchScore.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
+                  : "text-gray-400 bg-gray-500/15 border-gray-500/30"
+                }`} data-testid="journey-match-score">
+                  <Target className="w-3 h-3" /> {matchScore.match_score}% Match
+                </span>
+              )}
               {program.website && (
                 <a href={program.website} target="_blank" rel="noreferrer" className="p-1 rounded hover:bg-[var(--t-surface-alt)]" data-testid="school-website-link">
                   <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
