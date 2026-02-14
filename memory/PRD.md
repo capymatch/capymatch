@@ -12,36 +12,54 @@ Build a Volleyball Recruiting CRM application to help athletes and parents manag
 
 ## Core Features (Implemented)
 
+### Onboarding Questionnaire (Feb 14, 2026)
+- **7-step multi-choice quiz** capturing: Position, Division, Priorities (multi-select top 3), Regions (multi-select), School Size, Academic Interests, Scholarship Priority
+- **Automatic redirect**: First-time users redirected to `/onboarding` via `OnboardingGate` component
+- **Match Score calculation**: On completion, top 3 matching schools from pipeline displayed with percentage scores
+- **Profile persistence**: Stored in `athlete_profiles` collection with `questionnaire_completed: true` flag
+- **Backend endpoints**: `GET /api/recruiting-profile`, `POST /api/recruiting-profile`, `GET /api/match-scores`
+- **Keyboard navigation**: Enter to continue, number keys for single-select, Back button
+- **Dark/light theme compatible**: Uses CSS custom properties (`var(--t-bg)`, `var(--t-surface)`, etc.)
+
 ### Recruiting Journey Page (Redesigned Feb 13, 2026)
-- **Next Step Hero Card** — Smart contextual action at top with:
+- **Next Step Hero Card** -- Smart contextual action at top with:
   - Overdue follow-ups (urgent orange styling)
   - Upcoming follow-ups with days countdown
   - Status-based suggestions (intro email, follow-up, log interaction)
   - One-click CTA + Snooze option
-  - **Data-driven insight tip** — rotating insights computed from MongoDB (best day, response time, best outreach type, follow-up rate)
-- **Timeline** — Full left column with Log Interaction / Send Email in header
-- **AI Insights** — Top of sidebar with purple gradient, Generate button, expandable summary
-- **Sidebar order**: AI Insights → Coaches → Interest Level → Key Dates → Schedule Follow-up
-- Status controls, coach panel, interest meters, follow-up scheduler
+  - **Data-driven insight tip** -- rotating insights computed from MongoDB
+- **Timeline** -- Full left column with Log Interaction / Send Email in header
+- **AI Insights** -- Top of sidebar with purple gradient, Generate button, expandable summary
+- **Sidebar order**: AI Insights -> Coaches -> Interest Level -> Key Dates -> Schedule Follow-up
 
 ### Data-Driven Recruiting Insights (Feb 14, 2026)
 - Backend endpoint `/api/recruiting-insights` aggregates interaction data
-- Computes: best day to contact, avg response time, most effective outreach type, follow-up success rate, activity streak
-- Displayed as rotating tip in Next Step Hero card — zero AI cost
+- Computes: best day to contact, avg response time, most effective outreach type, follow-up success rate
+- Displayed as rotating tip in Next Step Hero card -- zero AI cost
 
 ### Other Features
-- Recruiting Board — Pipeline overview with 6 columns, color-coded due dates, status filtering
-- Notification System — Clickable alerts with routing, weekly summary
-- Gmail Integration — Send/receive emails, AI draft generation
+- Recruiting Board -- Pipeline overview with 6 columns, color-coded due dates, status filtering
+- Notification System -- Clickable alerts with routing, weekly summary
+- Gmail Integration -- Send/receive emails, AI draft generation
 - Public Athlete Profile, Onboarding Tour, Landing Page
+- Calendar with events management
 
 ## Backlog
 ### P1
-- App Naming: "Vollura" taken, pending user decision
+- **App Naming**: "Vollura" taken, pending user decision
+- **Match Score on Pipeline/Journey**: Display match scores on RecruitingBoard and RecruitingJourney pages
 
 ### P2
-- Recruiting Intelligence: School Match Score, NCAA Timeline, Camp/Tournament ROI
-- Outreach Power-Ups: Email Templates, Bulk Outreach
+- **Auto-Suggest Schools**: Based on questionnaire profile, suggest new schools to contact
+- **Recruiting Intelligence**: NCAA Timeline, Camp/Tournament ROI tracker
+- **Outreach Power-Ups**: Email Templates, Bulk Outreach
 
 ### P3
-- Family Collaboration: Parent/Guardian read-only dashboard
+- **Family Collaboration**: Parent/Guardian read-only dashboard
+
+## Key Files
+- `/app/backend/routes/athlete_profile.py` - Questionnaire backend (GET/POST profile, match scores)
+- `/app/frontend/src/pages/AthleteProfileQuiz.js` - 7-step quiz component
+- `/app/frontend/src/App.js` - OnboardingGate redirect logic
+- `/app/frontend/src/pages/RecruitingJourney.js` - Journey page with Next Step Hero
+- `/app/frontend/src/components/NextStepHero.js` - Hero card component (inlined in RecruitingJourney)
