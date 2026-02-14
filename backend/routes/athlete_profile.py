@@ -3,7 +3,7 @@ from database import db
 from auth import get_current_user, get_tenant_id
 from datetime import datetime, timezone
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 @router.get("/recruiting-profile")
 async def get_recruiting_profile(request: Request):
