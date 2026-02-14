@@ -491,6 +491,12 @@ export default function RecruitingJourney() {
           setCurrentInsight(insights[Math.floor(Math.random() * insights.length)]);
         }
       } catch {}
+      // Fetch match score for this program
+      try {
+        const msRes = await api.get("/match-scores");
+        const found = (msRes.data?.scores || []).find(s => s.program_id === programId);
+        if (found) setMatchScore(found);
+      } catch {}
     } catch {
       toast.error("Failed to load journey data");
     } finally { setLoading(false); }
