@@ -1,119 +1,139 @@
 {
-  "identity": {
-    "role": "The Anti-AI Designer (E1)",
-    "mission": "Create a visceral, athletic, and premium dark-mode experience that feels like a Nike ad meeting a futuristic CRM.",
-    "tone": "High-Energy, Precision, Elite, Dark, Neon."
+  "project_name": "Volleyball Recruiting CRM - Creative Tim Style",
+  "version": "1.0",
+  "design_philosophy": {
+    "identity": "E1 - The Anti-AI Designer",
+    "theme": "Dark Navy & Pink Material",
+    "core_principles": [
+      "Depth over Flatness: Use shadows and floating elements (Material Design)",
+      "Vibrant Accents: Pink/Salmon gradients against deep navy",
+      "Athletic Typography: Condensed headings for impact",
+      "Visual Hierarchy: Color is function. Pink = Active/Primary"
+    ]
   },
   "typography": {
     "font_family": {
-      "heading": "\"Barlow Condensed\", sans-serif",
-      "body": "\"DM Sans\", sans-serif",
-      "accent": "\"Teko\", sans-serif"
+      "heading": "Barlow Condensed, sans-serif",
+      "body": "DM Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
     },
-    "imports": [
-      "https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Teko:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
-    ],
     "scale": {
-      "hero": "text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-[0.85]",
-      "h2": "text-4xl md:text-6xl font-bold uppercase tracking-tight",
-      "h3": "text-2xl md:text-3xl font-semibold uppercase tracking-wide",
-      "body_lg": "text-lg md:text-xl font-normal leading-relaxed",
-      "body_sm": "text-sm md:text-base font-medium text-slate-400"
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h2": "text-3xl md:text-4xl font-bold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-semibold",
+      "h4": "text-xl md:text-2xl font-semibold",
+      "p": "text-base leading-relaxed text-gray-300",
+      "small": "text-sm text-gray-400"
     }
   },
   "colors": {
-    "background": {
-      "base": "#1a1a2e",
-      "surface": "#24243e",
-      "surface_highlight": "#2f2f4f"
+    "palette": {
+      "background": {
+        "main": "#1a1f2e",
+        "surface": "#202940",
+        "card": "#202940",
+        "sidebar": "#1a1f2e"
+      },
+      "text": {
+        "primary": "#ffffff",
+        "secondary": "#a0aec0",
+        "muted": "#718096"
+      },
+      "gradients": {
+        "primary": "linear-gradient(195deg, #ec407a 0%, #d81b60 100%)",
+        "info": "linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%)",
+        "success": "linear-gradient(195deg, #66BB6A 0%, #43A047 100%)",
+        "warning": "linear-gradient(195deg, #FFA726 0%, #FB8C00 100%)",
+        "danger": "linear-gradient(195deg, #EF5350 0%, #E53935 100%)",
+        "dark": "linear-gradient(195deg, #42424a 0%, #191919 100%)"
+      },
+      "shadows": {
+        "primary": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(233, 30, 99, 0.4)",
+        "info": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 188, 212, 0.4)",
+        "success": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(76, 175, 80, 0.4)"
+      }
     },
-    "brand": {
-      "primary": "#6366f1",
-      "secondary": "#a855f7",
-      "accent_glow": "rgba(99, 102, 241, 0.5)"
-    },
-    "action": {
-      "cta": "#ccff00",
-      "cta_hover": "#b3e600",
-      "cta_text": "#0a0a0a"
-    },
-    "text": {
-      "primary": "#ffffff",
-      "secondary": "#94a3b8",
-      "muted": "#64748b"
-    },
-    "gradients": {
-      "hero_text": "bg-gradient-to-br from-white via-white to-slate-400 bg-clip-text text-transparent",
-      "card_surface": "bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10",
-      "glow_mesh": "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-[#1a1a2e]/0 to-[#1a1a2e]/0"
+    "mapping": {
+      "--background": "220 28% 14%",
+      "--foreground": "0 0% 100%",
+      "--card": "223 33% 19%",
+      "--card-foreground": "0 0% 100%",
+      "--popover": "223 33% 19%",
+      "--popover-foreground": "0 0% 100%",
+      "--primary": "333 71% 51%",
+      "--primary-foreground": "0 0% 100%",
+      "--secondary": "220 28% 14%",
+      "--secondary-foreground": "0 0% 100%",
+      "--muted": "220 28% 14%",
+      "--muted-foreground": "215 20% 65%",
+      "--accent": "333 71% 51%",
+      "--accent-foreground": "0 0% 100%",
+      "--destructive": "0 62% 30%",
+      "--destructive-foreground": "0 0% 100%",
+      "--border": "215 28% 30%",
+      "--input": "215 28% 30%",
+      "--ring": "333 71% 51%"
     }
   },
   "layout_strategies": {
-    "spacing": {
-      "section_gap": "py-24 md:py-32",
-      "element_gap": "gap-6 md:gap-8",
-      "internal_padding": "p-8 md:p-12"
+    "dashboard_wrapper": "flex h-screen overflow-hidden bg-[#1a1f2e]",
+    "sidebar": {
+      "styles": "hidden md:flex w-64 flex-col fixed inset-y-4 left-4 z-50 rounded-xl bg-[#202940] shadow-xl border border-white/5",
+      "active_item": "bg-gradient-to-tr from-pink-600 to-pink-400 shadow-md shadow-pink-500/20 text-white rounded-lg transition-all duration-200"
     },
-    "grid_system": {
-      "bento": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-4 md:gap-6",
-      "hero_split": "flex flex-col md:grid md:grid-cols-12 gap-12 items-center"
-    },
-    "containers": {
-      "max_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-    }
+    "main_content": "flex-1 md:ml-72 p-4 md:p-8 overflow-y-auto",
+    "grid_system": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
   },
   "components": {
-    "Header": {
-      "style": "fixed top-0 left-0 right-0 z-50 bg-[#1a1a2e]/80 backdrop-blur-md border-b border-white/10",
-      "logo": "text-2xl font-black uppercase tracking-tighter text-white",
-      "nav_links": "text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-[#ccff00] transition-colors"
+    "StatCard": {
+      "description": "Signature Creative Tim card with floating icon",
+      "structure": "relative flex flex-col bg-[#202940] rounded-xl shadow-lg border border-white/5 pt-4 pb-4 px-4 mt-6",
+      "icon_wrapper": "absolute -top-6 left-4 p-4 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 shadow-lg shadow-pink-500/40 text-white flex items-center justify-center w-16 h-16",
+      "content": "text-right pt-2",
+      "value": "text-2xl font-bold text-white font-heading",
+      "label": "text-sm text-gray-400 font-medium",
+      "footer": "border-t border-white/10 mt-4 pt-4 text-sm text-gray-400 flex items-center gap-2"
     },
-    "Hero": {
-      "headline": "Massive, centered, uppercase. 'UNLEASH YOUR POTENTIAL'. Uses Barlow Condensed Black.",
-      "subheadline": "Clean, readable DM Sans. Max width 60ch.",
-      "cta_primary": "bg-[#ccff00] text-black font-bold uppercase tracking-widest px-8 py-4 rounded-none hover:translate-y-[-2px] transition-transform shadow-[0_0_20px_rgba(204,255,0,0.3)]",
-      "visuals": "Abstract 3D volleyball court lines (SVG) perspective grid in background. Glowing orbs of Indigo/Purple."
+    "ChartCard": {
+      "structure": "relative flex flex-col bg-[#202940] rounded-xl shadow-lg border border-white/5 mt-12 p-4",
+      "chart_wrapper": "absolute -top-8 left-4 right-4 h-48 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 shadow-lg shadow-blue-500/40 p-1"
     },
-    "BentoGrid": {
-      "wrapper": "grid grid-cols-1 md:grid-cols-3 gap-6",
-      "card_style": "group relative overflow-hidden bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-all duration-500",
-      "card_content": "z-10 relative flex flex-col justify-end h-full min-h-[240px]",
-      "icon_style": "w-10 h-10 mb-4 text-[#ccff00]",
-      "hover_effect": "A 'spotlight' gradient that follows the mouse (if possible) or a simple glow scale effect."
+    "PipelineColumn": {
+      "structure": "bg-[#202940]/50 rounded-xl p-4 border border-white/5 flex flex-col gap-4 min-h-[500px]"
     },
-    "StatsSection": {
-      "style": "flex flex-wrap justify-center gap-12 md:gap-24 border-y border-white/10 py-16 bg-white/5",
-      "number": "text-5xl md:text-7xl font-black text-white tracking-tighter",
-      "label": "text-sm font-bold uppercase tracking-[0.2em] text-[#ccff00]"
-    },
-    "GoogleSignIn": {
-      "style": "flex items-center justify-center gap-3 bg-white text-black font-bold px-6 py-3 rounded-md hover:bg-gray-100 transition-colors w-full md:w-auto",
-      "icon": "Use standard Google 'G' logo SVG"
+    "Buttons": {
+      "primary": "bg-gradient-to-tr from-pink-600 to-pink-400 text-white shadow-md shadow-pink-500/20 hover:shadow-lg hover:shadow-pink-500/40 transition-all rounded-lg px-6 py-2 font-medium text-sm uppercase tracking-wider",
+      "secondary": "border border-white/20 text-white hover:bg-white/5 transition-all rounded-lg px-6 py-2 font-medium text-sm uppercase tracking-wider"
     }
   },
-  "visual_enhancements": {
-    "texture": "Overlay a subtle noise texture (opacity 0.05) over the entire body to remove the 'digital plastic' feel.",
-    "shapes": "Use CSS-only geometric shapes (circles, triangles) with blur-3xl to create atmospheric depth.",
-    "lines": "Use 1px dashed lines (opacity 0.2) to simulate tactical volleyball plays or court markings."
+  "images": {
+    "hero_volleyball": "https://images.unsplash.com/photo-1765109260914-de67ccbbcab3?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "player_celebration": "https://images.unsplash.com/photo-1765109384407-a7d1180796b1?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "match_action": "https://images.unsplash.com/photo-1765109380575-ba33954b43b9?crop=entropy&cs=srgb&fm=jpg&q=85"
   },
-  "motion": {
-    "page_load": "Staggered fade-up for hero elements.",
-    "scroll": "Parallax effect on background shapes.",
-    "hover": "Instant response (duration-200), clear state change (color/scale)."
+  "icons": {
+    "library": "lucide-react",
+    "preferred_set": ["Users", "Trophy", "Calendar", "Activity", "FileText", "Settings", "LogOut", "Menu", "Bell"]
+  },
+  "visual_enhancers": {
+    "glass_effect": "backdrop-blur-xl bg-opacity-80",
+    "neon_glow": "shadow-[0_0_10px_rgba(236,64,122,0.5)]",
+    "border_subtle": "border border-white/10"
   },
   "instructions_to_main_agent": [
-    "1. UPDATE index.css: Add the new Google Fonts import for Barlow Condensed and Teko immediately.",
-    "2. FORCE DARK MODE: Ensure the 'dark' class is applied to the root or body by default.",
-    "3. NO PHOTOS: Do not use any stock photos. Use abstract geometry, gradients, and Lucide icons.",
-    "4. GOOGLE AUTH: Ensure the 'Sign in with Google' button is prominent in the CTA section and Hero.",
-    "5. CUSTOM COMPONENTS: Build the Bento Grid and Hero manually using Tailwind utility classes for maximum control.",
-    "6. USE SHADCN: Use Shadcn UI for standard interactive elements (if any complex ones arise), but style them to match the '#1a1a2e' theme.",
-    "7. FILE STRUCTURE: Create the landing page at '/app/frontend/src/pages/LandingPage.js' (or similar) and route it."
+    "1. Update tailwind.config.js to include the new custom colors (navy-900: #1a1f2e, navy-800: #202940, etc).",
+    "2. OVERWRITE the .dark variables in index.css with the values provided in 'colors.mapping'.",
+    "3. Refactor the Sidebar component to use the 'Floating' style with the pink gradient active state.",
+    "4. Create a reusable 'StatCard' component that implements the 'floating icon' pattern.",
+    "5. Ensure all text has sufficient contrast against the #1a1f2e background.",
+    "6. Use 'Barlow Condensed' for all numeric values and headers to give that sport/jersey feel.",
+    "7. DO NOT use purple accents anymore. Replace all purple with Pink (#ec407a) or Blue (#49a3f1)."
   ],
   "universal_guidelines": [
-    "Avoid gradients on text unless it's a very large heading.",
-    "Do not use generic centered layouts for everything; mix alignment.",
-    "Ensure all text has sufficient contrast against the dark background.",
-    "Use 'lucide-react' for all icons."
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "Every interaction needs micro-animations",
+    "Use sonner for toasts"
   ]
 }
