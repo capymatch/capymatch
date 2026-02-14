@@ -1,8 +1,10 @@
 import { BarChart3, TrendingUp, PieChart, Sparkles } from "lucide-react";
+import FeatureGate from "../components/FeatureGate";
 
 export default function Analytics() {
   return (
-    <div data-testid="analytics-page" className="flex flex-col items-center justify-center min-h-[60vh]">
+    <FeatureGate feature="analytics">
+      <div data-testid="analytics-page" className="flex flex-col items-center justify-center min-h-[60vh]">
       <div 
         className="w-24 h-24 rounded-3xl bg-pink-600/20 border border-pink-600/30 flex items-center justify-center mb-6 shadow-lg"
       >
