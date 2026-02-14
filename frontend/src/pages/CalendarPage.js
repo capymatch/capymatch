@@ -371,20 +371,41 @@ export default function CalendarPage() {
 
   return (
     <div data-testid="calendar-page" className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Track camps, showcases, and recruiting events</p>
-        <button
-          data-testid="add-event-btn"
-          onClick={() => handleAddEvent(null)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add Event
-        </button>
+      {/* Tab Bar */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex gap-1 p-1 rounded-lg border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="calendar-tabs">
+          <button onClick={() => setActiveTab("calendar")}
+            className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors flex items-center gap-2 ${activeTab === "calendar" ? "bg-purple-600 text-white" : ""}`}
+            style={activeTab !== "calendar" ? { color: "var(--t-text-muted)" } : {}}
+            data-testid="tab-my-calendar">
+            <Calendar className="w-4 h-4" />My Calendar
+          </button>
+          <button onClick={() => setActiveTab("ncaa")}
+            className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors flex items-center gap-2 ${activeTab === "ncaa" ? "bg-purple-600 text-white" : ""}`}
+            style={activeTab !== "ncaa" ? { color: "var(--t-text-muted)" } : {}}
+            data-testid="tab-ncaa-timeline">
+            <GraduationCap className="w-4 h-4" />NCAA Timeline
+          </button>
+        </div>
+        {activeTab === "calendar" && (
+          <button
+            data-testid="add-event-btn"
+            onClick={() => handleAddEvent(null)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Event
+          </button>
+        )}
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      {/* NCAA Timeline Tab */}
+      {activeTab === "ncaa" && <NcaaTimeline />}
+
+      {/* My Calendar Tab */}
+      {activeTab === "calendar" && (
+        <>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Calendar Grid */}
         <div className="col-span-8">
           <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
