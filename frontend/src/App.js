@@ -72,6 +72,7 @@ function AppRouter() {
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
+        <Route path="universities" element={<AdminUniversities />} />
       </Route>
       <Route path="/login" element={<Navigate to="/board" replace />} />
     </Routes>
