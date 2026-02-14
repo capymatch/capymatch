@@ -169,7 +169,7 @@ export default function AthleteProfileQuiz() {
   const saveProfile = async () => {
     setSaving(true);
     try {
-      await api.post("/athlete-profile", {
+      await api.post("/recruiting-profile", {
         position: answers.position,
         division: answers.division,
         priorities: answers.priorities || [],
