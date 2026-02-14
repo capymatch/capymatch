@@ -362,19 +362,13 @@ function ProgramCard({ p, navigate, matchScore }) {
             <Sparkles className="w-3.5 h-3.5" />
             Journey
           </button>
-          {(p.next_action_due || p.next_action) && (
-            <div className="text-right">
-              {p.next_action_due && (
-                <div className={`flex items-center gap-1 text-[11px] font-semibold ${dueDateColor}`}>
-                  <AlertCircle className="w-3 h-3" />
-                  {p.next_action ? p.next_action : "Follow-up"} due {dueDateFormatted}
-                </div>
-              )}
-              {p.next_action && !p.next_action_due && (
-                <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                  {p.next_action}
-                </div>
-              )}
+          {p.next_action_due && (
+            <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
+              <div className="flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 text-orange-400" />
+                <span className="text-xs font-medium text-orange-300">Follow-up due {dueDateFormatted}</span>
+              </div>
+              {p.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{p.next_action}</p>}
             </div>
           )}
         </div>
