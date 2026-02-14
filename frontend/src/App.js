@@ -8,6 +8,8 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminUniversities from "./pages/AdminUniversities";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
+import OutreachAnalysis from "./pages/OutreachAnalysis";
+import HighlightAdvisor from "./pages/HighlightAdvisor";
 import RecruitingBoard from "./pages/RecruitingBoard";
 import RecruitingJourney from "./pages/RecruitingJourney";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
