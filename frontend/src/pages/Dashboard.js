@@ -307,18 +307,18 @@ export default function Dashboard() {
               {reminders.slice(0, 4).map((r) => (
                 <div
                   key={r.program_id}
-                  className="flex items-center gap-4 px-5 py-3 cursor-pointer transition-colors"
+                  className="flex items-center gap-3 lg:gap-4 px-4 lg:px-5 py-3 cursor-pointer transition-colors"
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                   data-testid={`reminder-${r.program_id}`}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{r.university_name}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                    <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{r.university_name}</p>
+                    <p className="text-xs mt-0.5 truncate" style={{ color: "var(--t-text-muted)" }}>
                       {r.coach_name ? `${r.coach_name} · ` : ""}{r.next_action || "Follow up needed"}
                     </p>
                   </div>
-                  <span className="text-xs font-medium text-orange-500 flex-shrink-0">{r.days_overdue}d overdue</span>
+                  <span className="text-xs font-medium text-orange-500 flex-shrink-0">{r.days_overdue}d</span>
                   <button
                     onClick={(e) => { e.stopPropagation(); navigate("/inbox"); }}
                     className="p-2 rounded-lg transition-colors hover:bg-purple-500/15"
@@ -331,7 +331,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-10 px-5">
+            <div className="text-center py-8 lg:py-10 px-5">
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No overdue follow-ups</p>
               <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Set follow-up dates on your programs and reminders will appear here.</p>
             </div>
@@ -340,13 +340,13 @@ export default function Dashboard() {
 
         {/* Profile Views */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
-          <div className="flex items-center gap-2 px-5 py-4">
+          <div className="flex items-center gap-2 px-4 lg:px-5 py-3 lg:py-4 flex-wrap">
             <Eye className="w-4 h-4 text-emerald-500" />
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
             {profileViews && (
-              <div className="flex gap-3 ml-auto">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">This week: {profileViews.this_week}</span>
+              <div className="flex gap-2 lg:gap-3 ml-auto">
+                <span className="text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
+                <span className="text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">Week: {profileViews.this_week}</span>
               </div>
             )}
           </div>
