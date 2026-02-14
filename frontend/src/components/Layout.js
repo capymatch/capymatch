@@ -124,19 +124,19 @@ export default function Layout({ user }) {
       <aside 
         className={`
           fixed lg:static inset-y-0 left-0 z-50
-          w-64 lg:w-60 flex-shrink-0 flex flex-col border-r
-          transform transition-transform duration-300 ease-in-out
+          ${sidebarCollapsed ? 'w-64 lg:w-20' : 'w-64 lg:w-60'} flex-shrink-0 flex flex-col border-r
+          transform transition-all duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
         style={{ background: "linear-gradient(180deg, #c0375a 0%, #8e1b3d 50%, #6b1530 100%)", borderColor: "transparent" }}
       >
         {/* Logo */}
-        <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg">
+        <div className="p-4 lg:p-6 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+          <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'lg:justify-center lg:w-full' : ''}`}>
+            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
             </div>
-            <div>
+            <div className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>
               <span className="font-heading text-lg font-bold block leading-tight text-white">Recruiting HQ</span>
               <span className="text-[10px] uppercase tracking-widest text-white/60">Pro Edition</span>
             </div>
@@ -158,8 +158,11 @@ export default function Layout({ user }) {
               key={item.to}
               to={item.to}
               data-testid={`nav-${item.label.toLowerCase()}`}
+              title={sidebarCollapsed ? item.label : undefined}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
+                  sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
+                } ${
                   isActive
                     ? "bg-white/18 text-white shadow-lg font-semibold"
                     : "text-white/70 hover:bg-white/10 hover:text-white"
@@ -167,14 +170,30 @@ export default function Layout({ user }) {
               }
               style={() => ({})}
             >
-              <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.5} />
-              {item.label}
+              <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
+              <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* Bottom spacing */}
-        <div className="p-4" />
+        {/* Collapse Toggle Button - Desktop only */}
+        <div className="hidden lg:block p-4 border-t" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white ${sidebarCollapsed ? 'justify-center px-3' : ''}`}
+            data-testid="sidebar-collapse-btn"
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
+            ) : (
+              <>
+                <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
