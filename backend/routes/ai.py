@@ -188,6 +188,10 @@ async def generate_journey_summary(data: JourneySummaryRequest, request: Request
     """Generate AI summary of recruiting journey with a program"""
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+
+    # Enforce AI draft limit (journey summaries count toward AI usage)
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_ai_limit(tenant_id, subscription)
     
     program = await db.programs.find_one({"program_id": data.program_id, "tenant_id": tenant_id}, {"_id": 0})
     if not program:
