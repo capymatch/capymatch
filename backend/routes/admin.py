@@ -2,51 +2,10 @@ from fastapi import APIRouter, HTTPException, Request
 from typing import Optional
 from datetime import datetime, timezone, timedelta
 from database import db
+from subscriptions import SUBSCRIPTION_TIERS
 import uuid
 
 router = APIRouter(prefix="/api/admin")
-
-SUBSCRIPTION_TIERS = {
-    "basic": {
-        "label": "Basic",
-        "max_schools": 5,
-        "ai_drafts_per_month": 0,
-        "gmail_integration": False,
-        "follow_up_reminders": False,
-        "recruiting_insights": False,
-        "auto_reply_detection": False,
-        "weekly_digest": False,
-        "public_profile": False,
-        "analytics": False,
-        "match_scores_limit": 3,
-    },
-    "pro": {
-        "label": "Pro",
-        "max_schools": 25,
-        "ai_drafts_per_month": 10,
-        "gmail_integration": True,
-        "follow_up_reminders": True,
-        "recruiting_insights": True,
-        "auto_reply_detection": False,
-        "weekly_digest": False,
-        "public_profile": True,
-        "analytics": True,
-        "match_scores_limit": -1,
-    },
-    "premium": {
-        "label": "Premium",
-        "max_schools": -1,
-        "ai_drafts_per_month": -1,
-        "gmail_integration": True,
-        "follow_up_reminders": True,
-        "recruiting_insights": True,
-        "auto_reply_detection": True,
-        "weekly_digest": True,
-        "public_profile": True,
-        "analytics": True,
-        "match_scores_limit": -1,
-    },
-}
 
 
 @router.get("/stats")
