@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
-import { RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS } from "../lib/constants";
+import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   ChevronDown, ChevronRight, Search, Plus, AlertTriangle,
   Clock, Activity, Archive, Sparkles,
@@ -11,8 +11,6 @@ import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
-import { Label } from "../components/ui/label";
 import { toast } from "sonner";
 
 /* ── New Dynamic Board Groups ── */
