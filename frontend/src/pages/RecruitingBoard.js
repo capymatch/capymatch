@@ -76,7 +76,7 @@ const STATUS_COLORS = {
   "Video Viewed": { color: "text-cyan-400" },
   "Some Interest": { color: "text-blue-400" },
   "Active Conversation": { color: "text-blue-300" },
-  "Offer / Commit Talk": { color: "text-amber-300" },
+  "Offer Received": { color: "text-amber-300" },
   "Not a Fit / Closed": { color: "text-gray-400" },
 };
 

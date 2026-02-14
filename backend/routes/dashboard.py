@@ -58,7 +58,7 @@ async def get_dashboard(request: Request):
         "Active - Not Contacted": ["Not Contacted"],
         "Contacted - Awaiting Reply": ["Contacted", "No Response Yet", "Video Viewed"],
         "Active Conversations": ["Some Interest", "Active Conversation"],
-        "Offers / Serious Interest": ["Offer / Commit Talk"],
+        "Offers / Serious Interest": ["Offer Received"],
         "Closed / Archived": ["Not a Fit / Closed"]
     }
     status_counts = {}
