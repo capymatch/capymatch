@@ -91,8 +91,8 @@ export default function SettingsPage() {
       {/* Theme Section */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <Palette className="w-5 h-5 text-purple-500" />
+          <div className="w-10 h-10 rounded-lg bg-pink-600/20 flex items-center justify-center">
+            <Palette className="w-5 h-5 text-pink-600" />
           </div>
           <div>
             <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Appearance</h2>
@@ -105,11 +105,11 @@ export default function SettingsPage() {
               key={option.value}
               onClick={() => handleThemeChange(option.value)}
               data-testid={`theme-${option.value}`}
-              className={`p-4 rounded-xl border-2 transition-all text-left ${theme === option.value ? "border-purple-500 bg-purple-500/10" : ""}`}
+              className={`p-4 rounded-xl border-2 transition-all text-left ${theme === option.value ? "border-pink-600 bg-pink-600/10" : ""}`}
               style={{ borderColor: theme === option.value ? undefined : "var(--t-border)", backgroundColor: theme === option.value ? undefined : "var(--t-surface-alt)" }}
             >
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${theme === option.value ? "bg-purple-500/30" : ""}`} style={{ backgroundColor: theme === option.value ? undefined : "var(--t-surface)" }}>
-                <option.icon className={`w-5 h-5 ${theme === option.value ? "text-purple-500" : ""}`} style={{ color: theme === option.value ? undefined : "var(--t-text-muted)" }} />
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${theme === option.value ? "bg-pink-600/30" : ""}`} style={{ backgroundColor: theme === option.value ? undefined : "var(--t-surface)" }}>
+                <option.icon className={`w-5 h-5 ${theme === option.value ? "text-pink-600" : ""}`} style={{ color: theme === option.value ? undefined : "var(--t-text-muted)" }} />
               </div>
               <p className="font-medium" style={{ color: theme === option.value ? "var(--t-text)" : "var(--t-text-secondary)" }}>{option.label}</p>
               <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>{option.description}</p>
@@ -131,7 +131,7 @@ export default function SettingsPage() {
         </div>
         {gmailLoading ? (
           <div className="flex items-center gap-3 py-4">
-            <Loader2 className="w-5 h-5 animate-spin text-purple-500" />
+            <Loader2 className="w-5 h-5 animate-spin text-pink-600" />
             <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Checking connection...</span>
           </div>
         ) : gmailStatus?.connected ? (
@@ -151,7 +151,7 @@ export default function SettingsPage() {
             <div className="flex-1">
               <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>No Gmail account connected</p>
             </div>
-            <button data-testid="connect-gmail-settings-btn" onClick={handleConnectGmail} className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors">
+            <button data-testid="connect-gmail-settings-btn" onClick={handleConnectGmail} className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors">
               <Mail className="w-4 h-4" /> Connect
             </button>
           </div>
@@ -175,7 +175,7 @@ export default function SettingsPage() {
               <p className="text-sm" style={{ color: "var(--t-text)" }}>Follow-up Reminders</p>
               <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Get notified when follow-ups are due</p>
             </div>
-            <div className="w-10 h-6 bg-purple-600 rounded-full relative cursor-pointer">
+            <div className="w-10 h-6 bg-pink-700 rounded-full relative cursor-pointer">
               <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full"></div>
             </div>
           </div>

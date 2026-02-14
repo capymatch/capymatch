@@ -63,7 +63,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-pink-600" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function ProfilePage() {
       {shareLink && (
         <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", marginBottom: "1rem" }}>
           <div className="flex items-center gap-2 mb-3">
-            <ExternalLink className="w-4 h-4 text-purple-500" />
+            <ExternalLink className="w-4 h-4 text-pink-600" />
             <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Public Schedule Link</span>
           </div>
           <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export default function ProfilePage() {
             <button
               data-testid="copy-share-link-btn"
               onClick={copyShareLink}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               {copied ? "Copied" : "Copy"}
@@ -111,10 +111,10 @@ export default function ProfilePage() {
             <div className="flex items-start gap-5">
               <div className="relative group">
                 {profile.photo_url ? (
-                  <img src={profile.photo_url} alt="Profile" className="w-24 h-24 rounded-xl object-cover border-2 border-purple-500/30" />
+                  <img src={profile.photo_url} alt="Profile" className="w-24 h-24 rounded-xl object-cover border-2 border-pink-600/30" />
                 ) : (
-                  <div className="w-24 h-24 rounded-xl bg-purple-500/20 flex items-center justify-center border-2 border-dashed border-purple-500/30">
-                    <User className="w-10 h-10 text-purple-500/50" />
+                  <div className="w-24 h-24 rounded-xl bg-pink-600/20 flex items-center justify-center border-2 border-dashed border-pink-600/30">
+                    <User className="w-10 h-10 text-pink-600/50" />
                   </div>
                 )}
                 <button
@@ -181,7 +181,7 @@ export default function ProfilePage() {
                 value={profile.bio || ""}
                 onChange={(e) => updateProfile("bio", e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50 resize-none"
+                className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50 resize-none"
                 style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
                 placeholder="Tell coaches about yourself..."
               />
@@ -213,7 +213,7 @@ export default function ProfilePage() {
               data-testid="save-profile-btn"
               onClick={saveProfile}
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 disabled:opacity-50 transition-colors"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               {saving ? "Saving..." : "Save Profile"}
@@ -234,7 +234,7 @@ function FieldRow({ label, value, onChange, placeholder, testId }) {
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-purple-500/50"
+        className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
         style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
       />
     </div>

@@ -106,9 +106,9 @@ export default function UniversityKnowledgeBase() {
         <div className="rounded-xl border p-5 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="suggested-schools-section">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4.5 h-4.5 text-purple-400" />
+              <Sparkles className="w-4.5 h-4.5 text-pink-500" />
               <h3 className="font-heading font-bold text-base" style={{ color: "var(--t-text)" }}>Recommended for You</h3>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 font-medium">{suggestions.length} matches</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-pink-600/15 text-pink-500 font-medium">{suggestions.length} matches</span>
             </div>
             <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Based on your recruiting profile</span>
           </div>
@@ -146,7 +146,7 @@ export default function UniversityKnowledgeBase() {
                     onClick={() => addToBoard(s)}
                     disabled={adding[s.university_name]}
                     data-testid={`suggest-add-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                    className="w-full text-xs h-8 gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+                    className="w-full text-xs h-8 gap-1.5 bg-pink-700 hover:bg-pink-800 text-white"
                   >
                     <BookmarkPlus className="w-3.5 h-3.5" />
                     {adding[s.university_name] ? "Adding..." : "Add to Board"}
@@ -369,7 +369,7 @@ function UniversityCard({ uni, adding, addToBoard }) {
                   <span className="flex items-center gap-1" data-testid="coach-info">
                     <User className="w-3 h-3" /> {uni.primary_coach}
                     {uni.coach_email && (
-                      <a href={`mailto:${uni.coach_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coach_email}>
+                      <a href={`mailto:${uni.coach_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={uni.coach_email}>
                         <Mail className="w-3 h-3" />
                       </a>
                     )}
@@ -379,7 +379,7 @@ function UniversityCard({ uni, adding, addToBoard }) {
                   <span className="flex items-center gap-1" data-testid="coordinator-info">
                     <User className="w-3 h-3 opacity-60" /> {uni.recruiting_coordinator} <span className="opacity-50">(RC)</span>
                     {uni.coordinator_email && (
-                      <a href={`mailto:${uni.coordinator_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coordinator_email}>
+                      <a href={`mailto:${uni.coordinator_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={uni.coordinator_email}>
                         <Mail className="w-3 h-3" />
                       </a>
                     )}

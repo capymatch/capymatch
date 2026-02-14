@@ -42,7 +42,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-pink-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function Dashboard() {
     return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const schoolColors = ["bg-blue-500", "bg-purple-500", "bg-pink-500", "bg-emerald-500", "bg-amber-500", "bg-cyan-500", "bg-rose-500", "bg-indigo-500"];
+  const schoolColors = ["bg-blue-500", "bg-pink-600", "bg-pink-500", "bg-emerald-500", "bg-amber-500", "bg-cyan-500", "bg-rose-500", "bg-indigo-500"];
 
   // Schools needing action
   const actionNeeded = programs
@@ -66,7 +66,7 @@ export default function Dashboard() {
   // Upcoming events
   const today = new Date().toISOString().split("T")[0];
   const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 5);
-  const typeBg = { Camp: "bg-purple-500/15 text-purple-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
+  const typeBg = { Camp: "bg-pink-600/15 text-pink-500", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-pink-500/15 text-pink-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
 
   // Onboarding steps
   const profileDone = !!(profile?.athlete_name && profile?.position);
@@ -99,7 +99,7 @@ export default function Dashboard() {
         >
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-pink-600 to-indigo-600 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-4.5 h-4.5 text-white" />
               </div>
               <div>
@@ -111,7 +111,7 @@ export default function Dashboard() {
               {/* Progress bar */}
               <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500"
+                  className="h-full rounded-full bg-gradient-to-r from-pink-600 to-indigo-500 transition-all duration-500"
                   style={{ width: `${(completedCount / onboardingSteps.length) * 100}%` }}
                 />
               </div>
@@ -197,7 +197,7 @@ export default function Dashboard() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="schools-action-widget">
           <div className="flex items-center justify-between px-4 lg:px-5 py-3 lg:py-4">
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schools Requiring Action</h4>
-            <button onClick={() => navigate("/pipeline")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
+            <button onClick={() => navigate("/pipeline")} className="text-xs text-pink-600 hover:text-pink-500 transition-colors flex items-center gap-1">
               View all <ChevronRight className="w-3 h-3" />
             </button>
           </div>
@@ -233,7 +233,7 @@ export default function Dashboard() {
           ) : (
             <div className="text-center py-8 lg:py-10 px-5">
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No schools need action right now</p>
-              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">+ Add a school</button>
+              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm text-pink-600 hover:text-pink-500 transition-colors">+ Add a school</button>
             </div>
           )}
         </div>
@@ -242,7 +242,7 @@ export default function Dashboard() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="events-widget">
           <div className="flex items-center justify-between px-4 lg:px-5 py-3 lg:py-4">
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h4>
-            <button onClick={() => navigate("/calendar")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
+            <button onClick={() => navigate("/calendar")} className="text-xs text-pink-600 hover:text-pink-500 transition-colors flex items-center gap-1">
               View all <ChevronRight className="w-3 h-3" />
             </button>
           </div>
@@ -308,7 +308,7 @@ export default function Dashboard() {
             <div className="text-center py-8 lg:py-10 px-5">
               <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
-              <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-purple-500 hover:text-purple-400">+ Add event</button>
+              <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-pink-600 hover:text-pink-500">+ Add event</button>
             </div>
           )}
         </div>
@@ -344,11 +344,11 @@ export default function Dashboard() {
                   <span className="text-xs font-medium text-orange-500 flex-shrink-0">{r.days_overdue}d</span>
                   <button
                     onClick={(e) => { e.stopPropagation(); navigate("/inbox"); }}
-                    className="p-2 rounded-lg transition-colors hover:bg-purple-500/15"
+                    className="p-2 rounded-lg transition-colors hover:bg-pink-600/15"
                     title="Send follow-up"
                     data-testid={`send-followup-${r.program_id}`}
                   >
-                    <Send className="w-4 h-4 text-purple-500" />
+                    <Send className="w-4 h-4 text-pink-600" />
                   </button>
                 </div>
               ))}
@@ -389,7 +389,7 @@ export default function Dashboard() {
             <div className="text-center py-10 px-5">
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No profile views yet</p>
               <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, views will appear here.</p>
-              <button onClick={() => navigate("/settings")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">Share your profile</button>
+              <button onClick={() => navigate("/settings")} className="mt-2 text-sm text-pink-600 hover:text-pink-500 transition-colors">Share your profile</button>
             </div>
           )}
         </div>

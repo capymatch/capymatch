@@ -13,7 +13,7 @@ import { toast } from "sonner";
 const EVENT_ICONS = {
   email_sent: { icon: Send, color: "text-blue-400", bg: "bg-blue-500/10" },
   email_received: { icon: Mail, color: "text-green-400", bg: "bg-green-500/10" },
-  phone_call: { icon: Phone, color: "text-purple-400", bg: "bg-purple-500/10" },
+  phone_call: { icon: Phone, color: "text-pink-500", bg: "bg-pink-600/10" },
   video_call: { icon: Video, color: "text-cyan-400", bg: "bg-cyan-500/10" },
   camp: { icon: Calendar, color: "text-orange-400", bg: "bg-orange-500/10" },
   visit: { icon: MapPin, color: "text-pink-400", bg: "bg-pink-500/10" },
@@ -45,16 +45,16 @@ function TimelineEvent({ event }) {
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{event.title}</p>
           {event.coach_name && (
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-purple-500/10 text-purple-400">{event.coach_name}</span>
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500">{event.coach_name}</span>
           )}
         </div>
         <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)}</p>
         {event.content && (
           <div className="mt-1.5 p-2.5 rounded-lg border text-xs leading-relaxed" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
             {hasLong && !expanded ? (
-              <><p className="line-clamp-2">{event.content}</p><button onClick={() => setExpanded(true)} className="text-purple-400 hover:text-purple-300 text-[10px] mt-1 font-medium">Show more</button></>
+              <><p className="line-clamp-2">{event.content}</p><button onClick={() => setExpanded(true)} className="text-pink-500 hover:text-pink-400 text-[10px] mt-1 font-medium">Show more</button></>
             ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{event.content}</p><button onClick={() => setExpanded(false)} className="text-purple-400 hover:text-purple-300 text-[10px] mt-1 font-medium">Show less</button></>
+              <><p className="whitespace-pre-wrap">{event.content}</p><button onClick={() => setExpanded(false)} className="text-pink-500 hover:text-pink-400 text-[10px] mt-1 font-medium">Show less</button></>
             ) : <p>{event.content}</p>}
           </div>
         )}
@@ -72,7 +72,7 @@ function StatusBadge({ label, value, options, onChange }) {
     "Offer Received": "bg-green-500/10 text-green-400", "Committed": "bg-emerald-500/10 text-emerald-300",
     "Not Interested": "bg-red-500/10 text-red-400", "No Reply": "bg-gray-500/10 text-gray-400",
     "Awaiting Reply": "bg-yellow-500/10 text-yellow-400", "Reply Received": "bg-green-500/10 text-green-400",
-    "In Conversation": "bg-purple-500/10 text-purple-400", "Low": "bg-gray-500/10 text-gray-400",
+    "In Conversation": "bg-pink-600/10 text-pink-500", "Low": "bg-gray-500/10 text-gray-400",
     "Medium": "bg-blue-500/10 text-blue-400", "High": "bg-orange-500/10 text-orange-400",
     "Very High": "bg-red-500/10 text-red-400",
   };
@@ -110,7 +110,7 @@ function InterestMeter({ label, value, onChange, icon: Icon, color }) {
       <div className="flex gap-0.5">
         {[...Array(10)].map((_, i) => (
           <button key={i} onClick={() => onChange(i + 1)}
-            className={`flex-1 h-2 rounded-sm transition-all ${i < value ? (color === "text-red-400" ? "bg-red-500" : "bg-purple-500") : "bg-[var(--t-border)]"}`}
+            className={`flex-1 h-2 rounded-sm transition-all ${i < value ? (color === "text-red-400" ? "bg-red-500" : "bg-pink-600") : "bg-[var(--t-border)]"}`}
             data-testid={`interest-${label.toLowerCase().replace(/\s/g, '-')}-${i + 1}`} />
         ))}
       </div>
@@ -133,7 +133,7 @@ function CoachCard({ coach, onEdit, onDelete }) {
         </div>
       </div>
       {coach.email && (
-        <a href={`mailto:${coach.email}`} className="text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1 mt-1 truncate">
+        <a href={`mailto:${coach.email}`} className="text-[11px] text-pink-500 hover:text-pink-400 flex items-center gap-1 mt-1 truncate">
           <Mail className="w-3 h-3 flex-shrink-0" />{coach.email}
         </a>
       )}
@@ -146,7 +146,7 @@ function CoachCard({ coach, onEdit, onDelete }) {
 function CoachForm({ initial, programId, onSave, onCancel }) {
   const [form, setForm] = useState(initial || { coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" });
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-purple-500";
+  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
   return (
     <div className="p-3 rounded-lg border space-y-2" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }}>
       <input placeholder="Coach name" value={form.coach_name} onChange={e => set("coach_name", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-name-input" />
@@ -156,7 +156,7 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
       <input placeholder="Email" value={form.email} onChange={e => set("email", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-email-input" />
       <input placeholder="Phone" value={form.phone} onChange={e => set("phone", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-phone-input" />
       <div className="flex gap-2 pt-1">
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7" onClick={() => onSave({ ...form, program_id: programId })} data-testid="save-coach-btn"><Save className="w-3 h-3 mr-1" />Save</Button>
+        <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7" onClick={() => onSave({ ...form, program_id: programId })} data-testid="save-coach-btn"><Save className="w-3 h-3 mr-1" />Save</Button>
         <Button size="sm" variant="ghost" className="text-xs h-7" onClick={onCancel} style={{ color: "var(--t-text-muted)" }}><X className="w-3 h-3 mr-1" />Cancel</Button>
       </div>
     </div>
@@ -168,7 +168,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   const [form, setForm] = useState({ type: "Phone Call", notes: "", outcome: "Positive", date_time: new Date().toISOString().slice(0, 16) });
   const [saving, setSaving] = useState(false);
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-purple-500";
+  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
 
   const save = async () => {
     if (!form.notes.trim()) { toast.error("Add a note"); return; }
@@ -196,7 +196,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
         <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-date-input" />
       </div>
       <textarea placeholder="What happened? Key takeaways..." value={form.notes} onChange={e => set("notes", e.target.value)} rows={3} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-notes-input" />
-      <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full" onClick={save} disabled={saving} data-testid="save-interaction-btn">
+      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={save} disabled={saving} data-testid="save-interaction-btn">
         {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}Log Interaction
       </Button>
     </div>
@@ -210,7 +210,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-purple-500";
+  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
 
   const draftAI = async (type) => {
     setDrafting(true);
@@ -244,12 +244,12 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       <div className="flex gap-1.5 flex-wrap">
         {["intro", "follow_up", "thank_you", "interest_update"].map(t => (
           <button key={t} onClick={() => draftAI(t)} disabled={drafting}
-            className="px-2 py-1 rounded-md text-[10px] font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
+            className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
             <Sparkles className="w-3 h-3 inline mr-0.5" />{t.replace(/_/g, " ")}
           </button>
         ))}
       </div>
-      {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-purple-500" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
+      {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-600" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
       <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-to-select">
         <option value="">Select recipient...</option>
         {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email}>{c.coach_name} ({c.email})</option>)}
@@ -258,7 +258,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />}
       <input placeholder="Subject" value={subject} onChange={e => setSubject(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-subject-input" />
       <textarea placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} rows={6} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-body-input" />
-      <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full" onClick={send} disabled={sending} data-testid="send-email-btn">
+      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={send} disabled={sending} data-testid="send-email-btn">
         {sending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Send className="w-3 h-3 mr-1" />}Send Email
       </Button>
     </div>
@@ -270,7 +270,7 @@ function FollowUpScheduler({ program, onSaved }) {
   const [date, setDate] = useState(program.next_action_due || "");
   const [action, setAction] = useState(program.next_action || "");
   const [saving, setSaving] = useState(false);
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-purple-500";
+  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
 
   const save = async () => {
     setSaving(true);
@@ -285,7 +285,7 @@ function FollowUpScheduler({ program, onSaved }) {
     <div className="space-y-2" data-testid="followup-scheduler">
       <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="followup-date-input" />
       <input placeholder="Next action (e.g. Send follow-up email)" value={action} onChange={e => setAction(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="followup-action-input" />
-      <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full h-7" onClick={save} disabled={saving} data-testid="save-followup-btn">
+      <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full h-7" onClick={save} disabled={saving} data-testid="save-followup-btn">
         {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Clock className="w-3 h-3 mr-1" />Set Reminder</>}
       </Button>
     </div>
@@ -323,19 +323,19 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
   const step = getNextStep();
 
   return (
-    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
+    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${step.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-        <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-purple-500/10"}`}>
-          {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-purple-400" />}
+        <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
+          {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-pink-500" />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-purple-400"}`}>Next Step</p>
+          <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
           <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
           <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
         </div>
         <div className="flex gap-2.5 flex-shrink-0">
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-purple-500/20 flex-1 sm:flex-initial"
+          <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
             onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
             {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
             {step.action}
@@ -381,16 +381,16 @@ function AISidebarCard({ programId, onDraftEmail }) {
       style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(168,85,247,0.2)", background: "linear-gradient(135deg, rgba(168,85,247,0.05) 0%, var(--t-surface) 60%)" }}>
       <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)" }} />
       <div className="flex items-center justify-between mb-3 relative">
-        <h3 className="text-sm font-semibold flex items-center gap-1.5 text-purple-400">
+        <h3 className="text-sm font-semibold flex items-center gap-1.5 text-pink-500">
           <Sparkles className="w-4 h-4" />AI Insights
         </h3>
         {!summary ? (
-          <Button size="sm" onClick={generate} disabled={loading} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 shadow-md shadow-purple-500/20" data-testid="generate-summary-btn">
+          <Button size="sm" onClick={generate} disabled={loading} className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7 shadow-md shadow-pink-600/20" data-testid="generate-summary-btn">
             {loading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
             Generate
           </Button>
         ) : (
-          <button onClick={generate} disabled={loading} className="text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
+          <button onClick={generate} disabled={loading} className="text-[10px] text-pink-500 hover:text-pink-400 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
             {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Regenerate
           </button>
         )}
@@ -403,7 +403,7 @@ function AISidebarCard({ programId, onDraftEmail }) {
           </p>
           <div className="flex gap-1.5 flex-wrap">
             {["Relationship Summary", "Draft Email", "Tips"].map(tag => (
-              <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-purple-500/8 text-purple-400/70 border border-purple-500/15">{tag}</span>
+              <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-pink-600/8 text-pink-500/70 border border-pink-600/15">{tag}</span>
             ))}
           </div>
         </>
@@ -411,7 +411,7 @@ function AISidebarCard({ programId, onDraftEmail }) {
 
       {loading && !summary && (
         <div className="flex items-center gap-2 py-4 justify-center">
-          <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
+          <Loader2 className="w-4 h-4 animate-spin text-pink-600" />
           <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Analyzing your journey...</span>
         </div>
       )}
@@ -424,7 +424,7 @@ function AISidebarCard({ programId, onDraftEmail }) {
             <ul className="space-y-1">
               {summary.key_highlights.map((h, i) => (
                 <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
-                  <CheckCircle2 className="w-3 h-3 text-purple-400 flex-shrink-0 mt-0.5" />{h}
+                  <CheckCircle2 className="w-3 h-3 text-pink-500 flex-shrink-0 mt-0.5" />{h}
                 </li>
               ))}
             </ul>
@@ -432,18 +432,18 @@ function AISidebarCard({ programId, onDraftEmail }) {
 
           {expanded && (
             <>
-              <div className="p-2.5 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                <p className="text-[11px] font-medium text-purple-300">{summary.suggested_action}</p>
+              <div className="p-2.5 rounded-lg bg-pink-600/10 border border-pink-600/20">
+                <p className="text-[11px] font-medium text-pink-400">{summary.suggested_action}</p>
               </div>
               {summary.action_type === "email" && (
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs w-full h-7 mt-1" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
+                <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full h-7 mt-1" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
                   <Mail className="w-3 h-3 mr-1" />Draft Email
                 </Button>
               )}
             </>
           )}
 
-          <button onClick={() => setExpanded(!expanded)} className="text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1">
+          <button onClick={() => setExpanded(!expanded)} className="text-[10px] text-pink-500 hover:text-pink-400 font-medium flex items-center gap-1">
             {expanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
           </button>
         </div>
@@ -542,7 +542,7 @@ export default function RecruitingJourney() {
   const openEmail = () => { setShowEmailComposer(true); setShowLogForm(false); };
   const openLog = () => { setShowLogForm(true); setShowEmailComposer(false); };
 
-  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>;
+  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-pink-600" /></div>;
   if (!program) return (
     <div className="text-center py-24">
       <p style={{ color: "var(--t-text-muted)" }}>Program not found</p>
@@ -563,7 +563,7 @@ export default function RecruitingJourney() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-lg sm:text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
-              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-400">{program.division}</span>}
+              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-pink-600/10 text-pink-500">{program.division}</span>}
               {matchScore && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border ${
                   matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
@@ -575,7 +575,7 @@ export default function RecruitingJourney() {
               )}
               {program.website && (
                 <a href={program.website} target="_blank" rel="noreferrer" className="p-1 rounded hover:bg-[var(--t-surface-alt)]" data-testid="school-website-link">
-                  <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
+                  <ExternalLink className="w-3.5 h-3.5 text-pink-500" />
                 </a>
               )}
             </div>
@@ -632,8 +632,8 @@ export default function RecruitingJourney() {
           {/* Coaches */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-purple-400" />Coaches</h3>
-              <button onClick={() => { setShowCoachForm(true); setEditCoach(null); }} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-purple-400" /></button>
+              <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
+              <button onClick={() => { setShowCoachForm(true); setEditCoach(null); }} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
             </div>
             <div className="space-y-2">
               {coaches.length === 0 && !showCoachForm && <p className="text-xs text-center py-2" style={{ color: "var(--t-text-muted)" }}>No coaches added yet</p>}
@@ -644,7 +644,7 @@ export default function RecruitingJourney() {
 
           {/* Key Dates */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-dates-panel">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Calendar className="w-4 h-4 text-purple-400" />Key Dates</h3>
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Calendar className="w-4 h-4 text-pink-500" />Key Dates</h3>
             {program.next_action_due && (
               <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 mb-2">
                 <div className="flex items-center gap-1.5">
@@ -656,7 +656,7 @@ export default function RecruitingJourney() {
             )}
             {keyDates.length > 0 ? keyDates.map(e => (
               <div key={e.event_id} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: "var(--t-border)" }}>
-                <Calendar className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                <Calendar className="w-3 h-3 text-pink-500 flex-shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate" style={{ color: "var(--t-text)" }}>{e.title}</p>
                   <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{formatDate(e.start_date)}{e.location ? ` • ${e.location}` : ""}</p>
@@ -667,7 +667,7 @@ export default function RecruitingJourney() {
 
           {/* Schedule Follow-up */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="followup-section">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Clock className="w-4 h-4 text-purple-400" />Schedule Follow-up</h3>
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Clock className="w-4 h-4 text-pink-500" />Schedule Follow-up</h3>
             <FollowUpScheduler program={program} onSaved={fetchData} />
           </div>
         </div>

@@ -22,7 +22,7 @@ function getYouTubeEmbedUrl(url) {
 }
 
 const EVENT_COLORS = {
-  Camp: "bg-purple-500",
+  Camp: "bg-pink-600",
   Showcase: "bg-blue-500",
   Tournament: "bg-amber-500",
   Visit: "bg-emerald-500",
@@ -54,7 +54,7 @@ function EventCard({ event }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h4 className="font-semibold text-white">{event.title}</h4>
-            <span className="text-xs text-purple-300 font-medium">{event.event_type}</span>
+            <span className="text-xs text-pink-400 font-medium">{event.event_type}</span>
           </div>
         </div>
         <div className="mt-2 space-y-1">
@@ -105,7 +105,7 @@ export default function PublicSchedule() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-pink-600" />
       </div>
     );
   }
@@ -137,11 +137,11 @@ export default function PublicSchedule() {
                 <img
                   src={profile.photo_url}
                   alt={profile.athlete_name}
-                  className="w-64 h-64 rounded-2xl object-cover border-2 border-purple-500/40 shadow-2xl"
+                  className="w-64 h-64 rounded-2xl object-cover border-2 border-pink-600/40 shadow-2xl"
                   data-testid="athlete-photo"
                 />
               ) : (
-                <div className="w-64 h-64 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center border-2 border-purple-500/40 shadow-2xl">
+                <div className="w-64 h-64 rounded-2xl bg-gradient-to-br from-pink-700 to-indigo-600 flex items-center justify-center border-2 border-pink-600/40 shadow-2xl">
                   <User className="w-24 h-24 text-white/70" />
                 </div>
               )}
@@ -155,7 +155,7 @@ export default function PublicSchedule() {
 
               <div className="flex flex-wrap gap-3 mt-3 justify-center sm:justify-start">
                 {profile.position && (
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-pink-600/20 text-pink-400 border border-pink-600/30">
                     {profile.position}
                   </span>
                 )}
@@ -240,7 +240,7 @@ export default function PublicSchedule() {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-testid="video-link"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors"
                   >
                     <Play className="w-4 h-4" />
                     Watch Highlights
@@ -281,12 +281,12 @@ export default function PublicSchedule() {
             <div className="flex flex-wrap gap-6 text-sm text-gray-300">
               {profile.parent_name && <span>{profile.parent_name}</span>}
               {profile.parent_email && (
-                <a href={`mailto:${profile.parent_email}`} className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300">
+                <a href={`mailto:${profile.parent_email}`} className="flex items-center gap-1.5 text-pink-500 hover:text-pink-400">
                   <Mail className="w-3.5 h-3.5" /> {profile.parent_email}
                 </a>
               )}
               {profile.parent_phone && (
-                <a href={`tel:${profile.parent_phone}`} className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300">
+                <a href={`tel:${profile.parent_phone}`} className="flex items-center gap-1.5 text-pink-500 hover:text-pink-400">
                   <Phone className="w-3.5 h-3.5" /> {profile.parent_phone}
                 </a>
               )}
@@ -299,7 +299,7 @@ export default function PublicSchedule() {
       {profile.video_link && getYouTubeEmbedUrl(profile.video_link) && (
         <div className="max-w-4xl mx-auto px-6 mt-10 mb-8" data-testid="video-embed-section">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Play className="w-5 h-5 text-purple-400" />
+            <Play className="w-5 h-5 text-pink-500" />
             Highlights
           </h2>
           <div className="rounded-xl overflow-hidden border border-white/10 aspect-video">

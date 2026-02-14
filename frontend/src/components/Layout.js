@@ -230,7 +230,7 @@ export default function Layout({ user }) {
                     {unreadCount > 0 && (
                       <button 
                         onClick={markAllRead}
-                        className="text-xs text-purple-500 hover:text-purple-400 font-medium"
+                        className="text-xs text-pink-600 hover:text-pink-500 font-medium"
                       >
                         Mark all read
                       </button>
@@ -262,7 +262,7 @@ export default function Layout({ user }) {
                             }
                             setNotifOpen(false);
                           }}
-                          className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-purple-500/5" : ""}`}
+                          className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-pink-600/5" : ""}`}
                           style={{ borderColor: "var(--t-border)" }}
                         >
                           <div className="flex gap-3">
@@ -275,7 +275,7 @@ export default function Layout({ user }) {
                                 <div className="mt-1 space-y-0.5">
                                   {notif.message.split(" • ").map((line, i) => (
                                     <p key={i} className="text-xs flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
-                                      <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0" />
+                                      <span className="w-1 h-1 rounded-full bg-pink-500 flex-shrink-0" />
                                       {line}
                                     </p>
                                   ))}
@@ -286,7 +286,7 @@ export default function Layout({ user }) {
                               <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatTimeAgo(notif.created_at)}</p>
                             </div>
                             {!notif.read && (
-                              <div className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0 mt-1.5" />
+                              <div className="w-2 h-2 rounded-full bg-pink-600 flex-shrink-0 mt-1.5" />
                             )}
                           </div>
                         </div>

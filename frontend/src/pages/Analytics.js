@@ -4,9 +4,9 @@ export default function Analytics() {
   return (
     <div data-testid="analytics-page" className="flex flex-col items-center justify-center min-h-[60vh]">
       <div 
-        className="w-24 h-24 rounded-3xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mb-6 shadow-lg"
+        className="w-24 h-24 rounded-3xl bg-pink-600/20 border border-pink-600/30 flex items-center justify-center mb-6 shadow-lg"
       >
-        <BarChart3 className="w-12 h-12 text-purple-500" strokeWidth={1.5} />
+        <BarChart3 className="w-12 h-12 text-pink-600" strokeWidth={1.5} />
       </div>
       <h2 className="font-heading text-3xl font-bold mb-3" style={{ color: "var(--t-text)" }}>Analytics</h2>
       <p className="text-center max-w-md leading-relaxed" style={{ color: "var(--t-text-muted)" }}>

@@ -121,7 +121,7 @@ const DATE_ICONS = {
 };
 
 const DATE_ICON_BG = {
-  file: "bg-purple-500/12",
+  file: "bg-pink-600/12",
   grad: "bg-blue-500/12",
   eye: "bg-emerald-500/12",
   camp: "bg-amber-500/12",
@@ -183,7 +183,7 @@ function TimelineBar({ periods, division }) {
     <div className="rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ncaa-timeline-bar">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <Calendar className="w-4 h-4 text-purple-400" />
+          <Calendar className="w-4 h-4 text-pink-500" />
           NCAA {division} Recruiting Calendar
         </h3>
         <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{TIMELINE_DATA[division].season} Season</span>
@@ -192,7 +192,7 @@ function TimelineBar({ periods, division }) {
       {/* Month labels */}
       <div className="flex mb-1.5 overflow-x-auto">
         {MONTHS.map((m, i) => (
-          <div key={m} className={`flex-1 text-center text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider min-w-[2rem] ${i === currentIdx ? "text-purple-400" : ""}`}
+          <div key={m} className={`flex-1 text-center text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider min-w-[2rem] ${i === currentIdx ? "text-pink-500" : ""}`}
             style={i !== currentIdx ? { color: "var(--t-text-muted)" } : {}}>
             {m}
           </div>
@@ -212,8 +212,8 @@ function TimelineBar({ periods, division }) {
           ))}
         </div>
         {/* NOW marker */}
-        <div className="absolute top-[-6px] bottom-[-6px] w-[2px] bg-purple-500 z-10" style={{ left: `${nowPercent}%` }}>
-          <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-extrabold tracking-wider text-purple-400 bg-[var(--t-surface)] px-1.5 py-0.5 rounded border border-purple-500/30">NOW</span>
+        <div className="absolute top-[-6px] bottom-[-6px] w-[2px] bg-pink-600 z-10" style={{ left: `${nowPercent}%` }}>
+          <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-extrabold tracking-wider text-pink-500 bg-[var(--t-surface)] px-1.5 py-0.5 rounded border border-pink-600/30">NOW</span>
         </div>
       </div>
 
@@ -284,7 +284,7 @@ export default function NcaaTimeline() {
         {DIVISIONS.map(d => (
           <button key={d} onClick={() => setDivision(d)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-              d === division ? "bg-purple-500/15 border-purple-500/40 text-purple-400" : "border-[var(--t-border)] hover:border-purple-500/30"
+              d === division ? "bg-pink-600/15 border-pink-600/40 text-pink-500" : "border-[var(--t-border)] hover:border-pink-600/30"
             }`}
             style={d !== division ? { color: "var(--t-text-muted)" } : {}}
             data-testid={`division-chip-${d}`}>
@@ -299,7 +299,7 @@ export default function NcaaTimeline() {
       {/* Key NCAA Dates */}
       <div className="rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-ncaa-dates">
         <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <AlertCircle className="w-4 h-4 text-purple-400" />
+          <AlertCircle className="w-4 h-4 text-pink-500" />
           Key NCAA Dates & Deadlines
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -308,7 +308,7 @@ export default function NcaaTimeline() {
             return (
               <div key={i} className="flex items-start gap-3 p-3 rounded-lg border" style={{ borderColor: "var(--t-border)", backgroundColor: "rgba(255,255,255,0.02)" }} data-testid={`key-date-${i}`}>
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${DATE_ICON_BG[date.icon] || "bg-gray-500/12"}`}>
-                  <Icon className="w-4 h-4 text-purple-400" />
+                  <Icon className="w-4 h-4 text-pink-500" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{date.name}</p>

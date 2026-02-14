@@ -162,10 +162,10 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
     <div className="flex items-center gap-1 lg:gap-1.5 p-1.5 rounded-lg border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
       <div
         onClick={() => onFocusGroup(null)}
-        className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+        className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
         data-testid="funnel-all"
       >
-        <span className={`text-xs font-medium ${!activeFilter ? "text-purple-400" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
+        <span className={`text-xs font-medium ${!activeFilter ? "text-pink-500" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
         <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
       </div>
       {BOARD_GROUPS.map((group) => {
@@ -176,7 +176,7 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
           <div
             key={group.key}
             onClick={() => onFocusGroup(group.key)}
-            className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+            className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${group.key}`}
           >
             <Icon className={`w-3.5 h-3.5 ${group.text}`} />
@@ -236,7 +236,7 @@ function ProgramCard({ p, navigate, matchScore }) {
               <button
                 onClick={() => navigate(`/programs/${p.program_id}`)}
                 data-testid={`program-link-${p.program_id}`}
-                className="font-heading font-bold text-sm lg:text-base leading-tight truncate transition-colors hover:text-purple-400"
+                className="font-heading font-bold text-sm lg:text-base leading-tight truncate transition-colors hover:text-pink-500"
                 style={{ color: "var(--t-text)" }}
               >
                 {p.university_name}
@@ -272,7 +272,7 @@ function ProgramCard({ p, navigate, matchScore }) {
               <div className="flex items-center gap-1 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
                 <User className="w-3 h-3" /> {p.primary_coach}
                 {p.coach_email && (
-                  <a href={`mailto:${p.coach_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={p.coach_email}>
+                  <a href={`mailto:${p.coach_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={p.coach_email}>
                     <Mail className="w-3 h-3" />
                   </a>
                 )}
@@ -308,7 +308,7 @@ function ProgramCard({ p, navigate, matchScore }) {
         <div className="flex flex-row lg:flex-col items-center lg:items-end gap-2 flex-shrink-0">
           <button
             onClick={() => navigate(`/journey/${p.program_id}`)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded-md transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
             data-testid={`view-journey-${p.program_id}`}
           >
             <Sparkles className="w-3.5 h-3.5" />
