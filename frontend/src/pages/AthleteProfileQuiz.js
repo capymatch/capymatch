@@ -199,7 +199,7 @@ export default function AthleteProfileQuiz() {
           {/* Progress bar complete */}
           <div className="mb-10">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-purple-500">Your Recruiting Profile</span>
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-purple-500">Your Volleyball Journey</span>
               <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>Complete!</span>
             </div>
             <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
