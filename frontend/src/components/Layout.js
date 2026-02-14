@@ -122,17 +122,17 @@ export default function Layout({ user }) {
           transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
-        style={{ backgroundColor: "var(--t-sidebar-bg)", borderColor: "var(--t-border)" }}
+        style={{ background: "linear-gradient(180deg, #c0375a 0%, #8e1b3d 50%, #6b1530 100%)", borderColor: "transparent" }}
       >
         {/* Logo */}
-        <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: "var(--t-border)" }}>
+        <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg">
               <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
             </div>
             <div>
-              <span className="font-heading text-lg font-bold block leading-tight" style={{ color: "var(--t-text)" }}>Recruiting HQ</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>Pro Edition</span>
+              <span className="font-heading text-lg font-bold block leading-tight text-white">Recruiting HQ</span>
+              <span className="text-[10px] uppercase tracking-widest text-white/60">Pro Edition</span>
             </div>
           </div>
           {/* Close button for mobile */}
@@ -155,14 +155,11 @@ export default function Layout({ user }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
                   isActive
-                    ? "bg-purple-600 text-white shadow-lg"
-                    : ""
+                    ? "bg-white/18 text-white shadow-lg font-semibold"
+                    : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`
               }
-              style={({ isActive }) => ({
-                color: isActive ? "#ffffff" : "var(--t-text-secondary)",
-                backgroundColor: isActive ? undefined : "transparent",
-              })}
+              style={() => ({})}
             >
               <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.5} />
               {item.label}
