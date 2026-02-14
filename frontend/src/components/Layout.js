@@ -106,13 +106,26 @@ export default function Layout({ user }) {
       style={{ backgroundColor: "var(--t-bg)" }} 
       data-testid="app-layout"
     >
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar */}
       <aside 
-        className="w-60 flex-shrink-0 flex flex-col border-r relative z-10"
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50
+          w-64 lg:w-60 flex-shrink-0 flex flex-col border-r
+          transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
         style={{ backgroundColor: "var(--t-sidebar-bg)", borderColor: "var(--t-border)" }}
       >
         {/* Logo */}
-        <div className="p-6 border-b" style={{ borderColor: "var(--t-border)" }}>
+        <div className="p-6 border-b flex items-center justify-between" style={{ borderColor: "var(--t-border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
               <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
@@ -122,6 +135,14 @@ export default function Layout({ user }) {
               <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>Pro Edition</span>
             </div>
           </div>
+          {/* Close button for mobile */}
+          <button 
+            className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" style={{ color: "var(--t-text-muted)" }} />
+          </button>
         </div>
 
         {/* Navigation */}
@@ -157,10 +178,19 @@ export default function Layout({ user }) {
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Top Header */}
         <header 
-          className="h-16 flex items-center justify-between px-6 border-b"
+          className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 border-b"
           style={{ backgroundColor: "var(--t-header-bg)", borderColor: "var(--t-border)" }}
         >
           <div className="flex items-center gap-3" data-testid="header-page-title">
+            {/* Mobile Menu Button */}
+            <button 
+              className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-white/10 transition-colors"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
+              data-testid="mobile-menu-btn"
+            >
+              <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
+            </button>
             {(() => {
               const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/settings": "Settings", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
@@ -168,8 +198,8 @@ export default function Layout({ user }) {
               const Icon = icon || Home;
               return (
                 <>
-                  <Icon className="w-5 h-5" style={{ color: "var(--t-text-muted)" }} strokeWidth={1.5} />
-                  <h2 className="text-base font-semibold" style={{ color: "var(--t-text)" }}>{match?.[1] || "Dashboard"}</h2>
+                  <Icon className="w-5 h-5 hidden lg:block" style={{ color: "var(--t-text-muted)" }} strokeWidth={1.5} />
+                  <h2 className="text-sm lg:text-base font-semibold" style={{ color: "var(--t-text)" }}>{match?.[1] || "Dashboard"}</h2>
                 </>
               );
             })()}
