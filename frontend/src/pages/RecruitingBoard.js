@@ -281,7 +281,7 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
 
   return (
     <div
-      className="group grid grid-cols-[2.5fr_1.2fr_1.2fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
+      className="group grid grid-cols-[2.5fr_1fr_1fr_1fr_0.7fr_auto] gap-3 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
       style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
@@ -306,7 +306,7 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
               </span>
             )}
             {matchScore && (
-              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
                 {matchScore.match_score}%
               </span>
             )}
@@ -316,32 +316,19 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
       </div>
 
       {/* Status (read-only) */}
-      <div>
-        <StatusBadge value={p.recruiting_status} colorMap={STATUS_COLORS} />
-      </div>
+      <StatusBadge value={p.recruiting_status} colorMap={STATUS_COLORS} />
 
       {/* Reply (read-only) */}
-      <div>
-        <StatusBadge value={p.reply_status} colorMap={REPLY_COLORS} />
-      </div>
+      <StatusBadge value={p.reply_status} colorMap={REPLY_COLORS} />
 
-      {/* Due Date */}
-      <div>
-        <InlineDateInput value={p.next_action_due} onChange={(v) => handleInlineUpdate(p.program_id, "next_action_due", v)} style={getDueDateStyle()} />
-      </div>
+      {/* Due Date (read-only) */}
+      <DueDateBadge value={p.next_action_due} />
 
       {/* Priority (read-only) */}
-      <div>
-        <StatusBadge value={p.priority} colorMap={PRIORITY_INLINE_COLORS} />
-      </div>
+      <StatusBadge value={p.priority} colorMap={PRIORITY_INLINE_COLORS} />
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-2">
-        {p.website && (
-          <a href={p.website} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-400 hover:text-slate-600 rounded transition-colors opacity-0 group-hover:opacity-100">
-            <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.5} />
-          </a>
-        )}
+      <div className="flex items-center justify-end">
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-md transition-colors"
