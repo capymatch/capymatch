@@ -4,7 +4,6 @@ from starlette.middleware.cors import CORSMiddleware
 from pathlib import Path
 import os
 import logging
-import httpx
 import asyncio
 
 ROOT_DIR = Path(__file__).parent
