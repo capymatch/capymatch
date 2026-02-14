@@ -246,13 +246,6 @@ function ProgramCard({ p, navigate, matchScore }) {
                   {matchScore.match_score}%
                 </span>
               )}
-              {/* Group context badge */}
-              {GroupIcon && (
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium border ${groupBadge.color}`}>
-                  <GroupIcon className="w-3 h-3" />
-                  <span className="hidden sm:inline">{groupBadge.label}</span>
-                </span>
-              )}
             </div>
             {/* School info */}
             <div className="flex items-center gap-2 lg:gap-3 mt-1 text-xs lg:text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
