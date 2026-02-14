@@ -1,0 +1,248 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, Plus, ChevronLeft, ChevronRight, UserPlus, X } from "lucide-react";
+import { Input } from "../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { Button } from "../components/ui/button";
+import api from "../lib/api";
+import { toast } from "sonner";
+
+const PLAN_BADGE = {
+  basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
+  pro: "bg-pink-500/15 text-pink-400 border-pink-500/20",
+  premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+};
+
+const STATUS_BADGE = {
+  active: "bg-emerald-500/15 text-emerald-400",
+  suspended: "bg-amber-500/15 text-amber-400",
+  deactivated: "bg-red-500/15 text-red-400",
+};
+
+function CreateUserModal({ open, onClose, onCreated }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [plan, setPlan] = useState("basic");
+  const [saving, setSaving] = useState(false);
+
+  if (!open) return null;
+
+  const handleCreate = async () => {
+    if (!name.trim() || !email.trim()) {
+      toast.error("Name and email are required");
+      return;
+    }
+    setSaving(true);
+    try {
+      await api.post("/admin/users", { name: name.trim(), email: email.trim(), plan });
+      toast.success("User created");
+      setName("");
+      setEmail("");
+      setPlan("basic");
+      onCreated();
+      onClose();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to create user");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={onClose}>
+      <div
+        className="w-full max-w-md rounded-xl border p-6 shadow-2xl"
+        style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+        onClick={e => e.stopPropagation()}
+        data-testid="create-user-modal"
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-base font-semibold" style={{ color: "var(--t-text)" }}>Create New User</h3>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-secondary)" }}>Name</label>
+            <Input value={name} onChange={e => setName(e.target.value)} placeholder="Athlete name" className="text-sm" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="create-user-name" />
+          </div>
+          <div>
+            <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-secondary)" }}>Email</label>
+            <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="athlete@email.com" className="text-sm" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="create-user-email" />
+          </div>
+          <div>
+            <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--t-text-secondary)" }}>Plan</label>
+            <Select value={plan} onValueChange={setPlan}>
+              <SelectTrigger className="text-sm" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="create-user-plan">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+                <SelectItem value="basic">Basic</SelectItem>
+                <SelectItem value="pro">Pro</SelectItem>
+                <SelectItem value="premium">Premium</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="flex justify-end gap-2 mt-6">
+          <Button variant="outline" onClick={onClose} className="text-xs" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>Cancel</Button>
+          <Button onClick={handleCreate} disabled={saving} className="text-xs bg-pink-600 hover:bg-pink-700 text-white" data-testid="create-user-submit">
+            {saving ? "Creating..." : "Create User"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AdminUsers() {
+  const [users, setUsers] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [planFilter, setPlanFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [showCreate, setShowCreate] = useState(false);
+  const navigate = useNavigate();
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const params = { page, limit: 50 };
+      if (search) params.search = search;
+      if (planFilter !== "all") params.plan = planFilter;
+      const res = await api.get("/admin/users", { params });
+      setUsers(res.data.users);
+      setTotal(res.data.total);
+    } catch {
+      toast.error("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchUsers(); }, [search, planFilter, page]);
+
+  const totalPages = Math.ceil(total / 50);
+
+  return (
+    <div className="space-y-4" data-testid="admin-users-page">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+          <Input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Search by name or email..."
+            className="pl-9 text-sm"
+            style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+            data-testid="admin-users-search"
+          />
+        </div>
+        <Select value={planFilter} onValueChange={v => { setPlanFilter(v); setPage(1); }}>
+          <SelectTrigger className="w-32 text-xs" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }} data-testid="admin-users-plan-filter">
+            <SelectValue placeholder="All Plans" />
+          </SelectTrigger>
+          <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+            <SelectItem value="all">All Plans</SelectItem>
+            <SelectItem value="basic">Basic</SelectItem>
+            <SelectItem value="pro">Pro</SelectItem>
+            <SelectItem value="premium">Premium</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button onClick={() => setShowCreate(true)} className="bg-pink-600 hover:bg-pink-700 text-white text-xs ml-auto" data-testid="admin-create-user-btn">
+          <UserPlus className="w-4 h-4 mr-1.5" strokeWidth={1.5} /> New User
+        </Button>
+      </div>
+
+      {/* Table */}
+      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm" data-testid="admin-users-table">
+            <thead>
+              <tr className="border-b" style={{ borderColor: "var(--t-border)" }}>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>User</th>
+                <th className="text-left px-4 py-3 text-xs font-medium hidden md:table-cell" style={{ color: "var(--t-text-muted)" }}>Email</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>Plan</th>
+                <th className="text-left px-4 py-3 text-xs font-medium hidden lg:table-cell" style={{ color: "var(--t-text-muted)" }}>Schools</th>
+                <th className="text-left px-4 py-3 text-xs font-medium hidden lg:table-cell" style={{ color: "var(--t-text-muted)" }}>Interactions</th>
+                <th className="text-left px-4 py-3 text-xs font-medium hidden md:table-cell" style={{ color: "var(--t-text-muted)" }}>Status</th>
+                <th className="text-left px-4 py-3 text-xs font-medium hidden xl:table-cell" style={{ color: "var(--t-text-muted)" }}>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={7} className="text-center py-12"><div className="w-6 h-6 border-2 border-slate-200 border-t-slate-600 rounded-full animate-spin mx-auto" /></td></tr>
+              ) : users.length === 0 ? (
+                <tr><td colSpan={7} className="text-center py-12 text-xs" style={{ color: "var(--t-text-muted)" }}>No users found</td></tr>
+              ) : (
+                users.map(u => (
+                  <tr
+                    key={u.user_id}
+                    onClick={() => navigate(`/admin/users/${u.user_id}`)}
+                    className="border-b cursor-pointer transition-colors hover:bg-white/[0.02]"
+                    style={{ borderColor: "rgba(255,255,255,0.04)" }}
+                    data-testid={`admin-user-row-${u.user_id}`}
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-pink-600/15 flex items-center justify-center text-pink-400 text-xs font-bold flex-shrink-0">
+                          {(u.name || u.athlete_name || "?").charAt(0).toUpperCase()}
+                        </div>
+                        <span className="font-medium text-[13px] truncate" style={{ color: "var(--t-text)" }}>
+                          {u.athlete_name || u.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{u.email}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${PLAN_BADGE[u.plan] || PLAN_BADGE.basic}`}>
+                        {(u.plan || "basic").charAt(0).toUpperCase() + (u.plan || "basic").slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className="text-xs font-medium" style={{ color: "var(--t-text)" }}>{u.school_count}</span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className="text-xs font-medium" style={{ color: "var(--t-text)" }}>{u.interaction_count}</span>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_BADGE[u.status] || STATUS_BADGE.active}`}>
+                        {(u.status || "active").charAt(0).toUpperCase() + (u.status || "active").slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 hidden xl:table-cell">
+                      <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>
+                        {u.created_at ? new Date(u.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{total} users</span>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-1.5 rounded-lg hover:bg-white/5 disabled:opacity-30">
+                <ChevronLeft className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+              </button>
+              <span className="text-xs px-2" style={{ color: "var(--t-text)" }}>{page} / {totalPages}</span>
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-1.5 rounded-lg hover:bg-white/5 disabled:opacity-30">
+                <ChevronRight className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <CreateUserModal open={showCreate} onClose={() => setShowCreate(false)} onCreated={fetchUsers} />
+    </div>
+  );
+}
