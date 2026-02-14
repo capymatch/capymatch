@@ -92,66 +92,6 @@ const PRIORITY_INLINE_COLORS = {
   "Very High": { color: "text-red-400" },
 };
 
-/* ── Add Program Dialog ── */
-function AddProgramDialog({ onAdd }) {
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ university_name: "", division: "D1", conference: "", region: "" });
-
-  const handleSubmit = async () => {
-    if (!form.university_name.trim()) { toast.error("University name required"); return; }
-    try {
-      await api.post("/programs", form);
-      toast.success("Program added to your board");
-      setOpen(false);
-      setForm({ university_name: "", division: "D1", conference: "", region: "" });
-      onAdd();
-    } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to add");
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button data-testid="add-program-btn" className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all">
-          <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add Program
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
-        <DialogHeader>
-          <DialogTitle className="font-heading text-xl">Add New Program</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 pt-2">
-          <div>
-            <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">University Name *</Label>
-            <Input data-testid="add-university-name" value={form.university_name} onChange={(e) => setForm({ ...form, university_name: e.target.value })} placeholder="e.g. Stanford University" className="mt-1.5" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Division</Label>
-              <select data-testid="add-division" value={form.division} onChange={(e) => setForm({ ...form, division: e.target.value })} className="w-full border rounded-md px-3 py-2 mt-1.5 text-sm focus:outline-none" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
-                {DIVISIONS.map((d) => <option key={d} value={d}>{d}</option>)}
-              </select>
-            </div>
-            <div>
-              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Conference</Label>
-              <Input data-testid="add-conference" value={form.conference} onChange={(e) => setForm({ ...form, conference: e.target.value })} className="mt-1.5" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
-            </div>
-            <div>
-              <Label style={{ color: "var(--t-text-secondary)" }} className="text-sm">Region</Label>
-              <select data-testid="add-region" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} className="w-full border rounded-md px-3 py-2 mt-1.5 text-sm focus:outline-none" style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}>
-                <option value="">Select</option>
-                {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
-            </div>
-          </div>
-          <Button data-testid="submit-add-program" onClick={handleSubmit} className="w-full bg-slate-700 hover:bg-slate-800 text-white mt-2">Add to Board</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 /* ── Group Funnel Summary ── */
 function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
   const { counts = {}, total = 0 } = groupedData;
