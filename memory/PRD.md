@@ -47,15 +47,26 @@ Build a Volleyball Recruiting CRM application to help athletes and parents manag
 ## Backlog
 ### P1
 - **App Naming**: "Vollura" taken, pending user decision
-- **Match Score on Pipeline/Journey**: Display match scores on RecruitingBoard and RecruitingJourney pages
 
 ### P2
-- **Auto-Suggest Schools**: Based on questionnaire profile, suggest new schools to contact
 - **Recruiting Intelligence**: NCAA Timeline, Camp/Tournament ROI tracker
 - **Outreach Power-Ups**: Email Templates, Bulk Outreach
 
 ### P3
 - **Family Collaboration**: Parent/Guardian read-only dashboard
+
+## Recent Additions (Feb 14, 2026)
+
+### Match Score Integration
+- **Pipeline page**: Color-coded match score badges (green 80%+, amber 60-79%, gray <60%) next to each university name
+- **Journey page**: Match badge with percentage and Target icon in the header
+- **Backend**: `GET /api/match-scores` calculates based on division, region, priorities, school size
+
+### Auto-Suggest Schools
+- **Schools page**: "Recommended for You" section at top with up to 12 suggestion cards
+- **Scoring**: Division (40pts), preferred region (30pts), priorities (up to 24pts), school size (5pts)
+- **Features**: Match score badges, division badge, match reasons, one-click "Add to Board"
+- **Backend**: `GET /api/suggested-schools` filters knowledge base, excludes pipeline schools
 
 ## Key Files
 - `/app/backend/routes/athlete_profile.py` - Questionnaire backend (GET/POST profile, match scores)
