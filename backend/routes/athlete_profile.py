@@ -183,6 +183,109 @@ async def get_match_scores(request: Request):
             "region": p.get("region"),
             "match_score": pct,
             "match_reasons": list(set(match_reasons)),
+
+    scores.sort(key=lambda x: x["match_score"], reverse=True)
+    return {"scores": scores, "profile_exists": True}
+
+
+@router.get("/suggested-schools")
+async def get_suggested_schools(request: Request):
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    if not profile or not profile.get("questionnaire_completed"):
+        return {"suggestions": [], "profile_exists": False}
+
+    existing = await db.programs.find(
+        {"tenant_id": tenant_id}, {"_id": 0, "university_name": 1}
+    ).to_list(500)
+    existing_names = {p["university_name"] for p in existing}
+
+    all_schools = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
+
+    pref_division = (profile.get("division") or "").upper()
+    pref_regions = profile.get("regions") or []
+    pref_priorities = profile.get("priorities") or []
+    pref_size = profile.get("school_size") or ""
+
+    region_aliases = {
+        "West Coast": ["West", "Pacific"],
+        "Mountain West": ["West", "Mountain West"],
+        "Southwest": ["South Central", "Southwest"],
+        "Northeast": ["Northeast", "East"],
+        "Southeast": ["Southeast"],
+        "Midwest": ["Midwest", "Great Lakes"],
+    }
+
+    suggestions = []
+    for school in all_schools:
+        if school["university_name"] in existing_names:
+            continue
+
+        score = 0
+        reasons = []
+        school_div = (school.get("division") or "").upper()
+        school_region = school.get("region") or ""
+
+        if pref_division and school_div:
+            if pref_division == school_div:
+                score += 40
+                reasons.append("Division Match")
+            elif (pref_division == "D1" and school_div == "D2") or (pref_division == "D2" and school_div in ("D1", "D3")):
+                score += 15
+
+        if pref_regions:
+            matched = False
+            for pref_r in pref_regions:
+                aliases = region_aliases.get(pref_r, [pref_r])
+                if school_region in aliases or school_region == pref_r:
+                    matched = True
+                    break
+            if matched:
+                score += 30
+                reasons.append("Preferred Region")
+            else:
+                score += 5
+
+        for pr in pref_priorities:
+            pr_lower = pr.lower()
+            if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
+                score += 8
+                if "Academics" not in reasons:
+                    reasons.append("Academics")
+            elif "athlet" in pr_lower and school_div == "D1":
+                score += 8
+                if "Athletics" not in reasons:
+                    reasons.append("Athletics")
+            elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
+                score += 8
+                if "Scholarship" not in reasons:
+                    reasons.append("Scholarship")
+
+        if pref_size:
+            if pref_size == "Large (15K+)" and school_div == "D1":
+                score += 5
+            elif pref_size == "Medium (5K-15K)" and school_div in ("D2", "D3"):
+                score += 5
+            elif pref_size == "Small (<5K)" and school_div in ("D3", "NAIA"):
+                score += 5
+
+        if score > 20:
+            pct = min(round(score), 99)
+            suggestions.append({
+                "university_name": school.get("university_name"),
+                "division": school.get("division"),
+                "conference": school.get("conference"),
+                "region": school.get("region"),
+                "website": school.get("website"),
+                "mascot": school.get("mascot"),
+                "match_score": pct,
+                "match_reasons": reasons,
+            })
+
+    suggestions.sort(key=lambda x: x["match_score"], reverse=True)
+    return {"suggestions": suggestions[:12], "profile_exists": True}
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
