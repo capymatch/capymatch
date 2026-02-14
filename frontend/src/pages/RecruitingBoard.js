@@ -483,13 +483,7 @@ export default function RecruitingBoard() {
   return (
     <div data-testid="recruiting-board" className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="font-heading text-3xl font-black tracking-tight" style={{ color: "var(--t-text)" }} data-testid="board-title">
-            Recruiting Board
-          </h2>
-          <p className="text-sm mt-0.5" style={{ color: "var(--t-text-muted)" }}>{programs.length} programs across your pipeline</p>
-        </div>
+      <div className="flex items-center justify-end">
         <AddProgramDialog onAdd={fetchPrograms} />
       </div>
 
