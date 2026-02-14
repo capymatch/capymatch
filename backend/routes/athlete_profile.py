@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 
 router = APIRouter()
 
-@router.get("/athlete-profile")
-async def get_athlete_profile(request: Request):
+@router.get("/recruiting-profile")
+async def get_recruiting_profile(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
