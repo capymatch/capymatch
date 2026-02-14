@@ -386,7 +386,7 @@ TEST_Import_Update_Uni,D2,Updated via CSV,csv@test.edu"""
         assert data["updated"] >= 1, f"Expected at least 1 updated"
         
         # Verify update
-        verify = api_client.get(f"{BASE_URL}/api/admin/universities/TEST_Import_Update_Uni}")
+        verify = api_client.get(f"{BASE_URL}/api/admin/universities/TEST_Import_Update_Uni")
         verify_data = verify.json()
         assert verify_data["primary_coach"] == "Updated via CSV"
         assert verify_data["coach_email"] == "csv@test.edu"
