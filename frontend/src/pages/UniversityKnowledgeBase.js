@@ -91,6 +91,63 @@ export default function UniversityKnowledgeBase() {
 
   return (
     <div data-testid="knowledge-base" className="space-y-4">
+      {/* Recommended for You */}
+      {!suggestionsLoading && suggestions.length > 0 && (
+        <div className="rounded-xl border p-5 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="suggested-schools-section">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4.5 h-4.5 text-purple-400" />
+              <h3 className="font-heading font-bold text-base" style={{ color: "var(--t-text)" }}>Recommended for You</h3>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 font-medium">{suggestions.length} matches</span>
+            </div>
+            <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Based on your recruiting profile</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {suggestions.slice(0, 6).map((s) => {
+              const scoreColor = s.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+                : s.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
+                : "text-gray-400 bg-gray-500/15 border-gray-500/30";
+              const divColor = {
+                D1: "bg-emerald-500/20 text-emerald-400", D2: "bg-blue-500/20 text-blue-400",
+                D3: "bg-violet-500/20 text-violet-400", NAIA: "bg-orange-500/20 text-orange-400",
+              }[s.division] || "bg-gray-500/20 text-gray-400";
+              return (
+                <div key={s.university_name} className="rounded-lg p-4 border transition-all" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }} data-testid={`suggestion-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-sm truncate" style={{ color: "var(--t-text)" }}>{s.university_name}</h4>
+                      <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
+                        <MapPin className="w-3 h-3" /> {s.region}
+                        {s.conference && <span>| {s.conference}</span>}
+                      </div>
+                    </div>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-bold border ${scoreColor}`}>
+                      {s.match_score}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap mb-3">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${divColor}`}>{s.division}</span>
+                    {s.match_reasons?.map(r => (
+                      <span key={r} className="px-1.5 py-0.5 rounded text-[10px] border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>{r}</span>
+                    ))}
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => addToBoard(s)}
+                    disabled={adding[s.university_name]}
+                    data-testid={`suggest-add-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+                    className="w-full text-xs h-8 gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    <BookmarkPlus className="w-3.5 h-3.5" />
+                    {adding[s.university_name] ? "Adding..." : "Add to Board"}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Search Bar */}
       <div className="flex items-center gap-4 rounded-lg p-4 shadow-sm border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="relative flex-1">
