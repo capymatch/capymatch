@@ -21,8 +21,8 @@ export const PRIORITIES = ["Low", "Medium", "High", "Very High"];
 export const DIVISIONS = ["D1", "D2", "D3", "NAIA", "JUCO"];
 
 export const REGIONS = [
-  "Atlantic", "East", "Great Lakes", "Midwest", "Mountain West",
-  "Northeast", "Pacific", "South Central", "Southeast", "West",
+  "Atlantic", "Central", "East", "Great Lakes", "Midwest",
+  "Northeast", "South", "South Central", "Southeast", "West",
 ];
 
 export const SCHOLARSHIP_TYPES = [
