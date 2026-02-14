@@ -67,17 +67,17 @@ def parse_file(filepath, expected_division):
 
         universities.append({
             "university_name": name,
-            "division": clean(row[COL["division"]]) or expected_division,
-            "conference": clean(row[COL["conference"]]),
-            "region": clean(row[COL["region"]]),
-            "website": clean(row[COL["website"]]),
-            "mascot": clean(row[COL["mascot"]]),
-            "primary_coach": clean(row[COL["primary_coach"]]),
-            "coach_email": clean(row[COL["coach_email"]]),
-            "recruiting_coordinator": clean(row[COL["recruiting_coordinator"]]),
-            "coordinator_email": clean(row[COL["coordinator_email"]]),
-            "scholarship_type": clean(row[COL["scholarship_type"]]),
-            "roster_needs": clean(row[COL["roster_needs"]]),
+            "division": clean(cell(row, COL["division"])) or expected_division,
+            "conference": clean(cell(row, COL["conference"])),
+            "region": clean(cell(row, COL["region"])),
+            "website": clean(cell(row, COL["website"])),
+            "mascot": clean(cell(row, COL["mascot"])),
+            "primary_coach": clean(cell(row, COL["primary_coach"])),
+            "coach_email": clean(cell(row, COL["coach_email"])),
+            "recruiting_coordinator": clean(cell(row, COL["recruiting_coordinator"])),
+            "coordinator_email": clean(cell(row, COL["coordinator_email"])),
+            "scholarship_type": clean(cell(row, COL["scholarship_type"])),
+            "roster_needs": clean(cell(row, COL["roster_needs"])),
         })
 
     wb.close()
