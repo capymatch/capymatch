@@ -312,7 +312,14 @@ function ProgramCard({ p, navigate, matchScore }) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-heading font-bold text-base leading-tight truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</h3>
+              <button
+                onClick={() => navigate(`/journey/${p.program_id}`)}
+                data-testid={`program-link-${p.program_id}`}
+                className="font-heading font-bold text-base leading-tight truncate transition-colors hover:text-purple-400"
+                style={{ color: "var(--t-text)" }}
+              >
+                {p.university_name}
+              </button>
               {matchScore && (
                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
                   {matchScore.match_score}%
