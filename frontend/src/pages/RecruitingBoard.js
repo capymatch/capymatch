@@ -4,7 +4,8 @@ import api from "../lib/api";
 import { STATUS_GROUPS, RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS } from "../lib/constants";
 import {
   ChevronDown, ChevronRight, Search, Plus, Target,
-  Send, MessageCircle, Trophy, Archive, ExternalLink, Sparkles
+  Send, MessageCircle, Trophy, Archive, ExternalLink, Sparkles,
+  MapPin, Building2, User, Mail
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
