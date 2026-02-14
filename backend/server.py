@@ -28,6 +28,7 @@ from routes.gmail import router as gmail_router
 from routes.notifications import router as notifications_router
 from routes.athlete_profile import router as athlete_profile_router
 from routes.admin import router as admin_router
+from routes.admin_universities import router as admin_universities_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
@@ -40,6 +41,7 @@ app.include_router(gmail_router)
 app.include_router(notifications_router)
 app.include_router(athlete_profile_router)
 app.include_router(admin_router)
+app.include_router(admin_universities_router)
 
 # ─── Background Task: Auto-detect coach replies ───
 
