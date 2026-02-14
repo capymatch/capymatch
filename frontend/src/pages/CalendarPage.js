@@ -407,7 +407,7 @@ export default function CalendarPage() {
         <>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Calendar Grid */}
-        <div className="col-span-8">
+        <div className="lg:col-span-8">
           <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             {/* Calendar Header */}
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "var(--t-border)" }}>
@@ -498,7 +498,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="col-span-4 space-y-5">
+        <div className="lg:col-span-4 space-y-5">
           {/* Selected Date Detail */}
           {selectedDate && (
             <div className="rounded-xl p-5 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
