@@ -14,8 +14,8 @@ async def get_recruiting_profile(request: Request):
         return {"exists": False}
     return {**profile, "exists": True}
 
-@router.post("/athlete-profile")
-async def save_athlete_profile(request: Request):
+@router.post("/recruiting-profile")
+async def save_recruiting_profile(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     body = await request.json()
