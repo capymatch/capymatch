@@ -293,10 +293,9 @@ function FollowUpScheduler({ program, onSaved }) {
 }
 
 // ─── Next Step Hero Card ───
-function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze }) {
+function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight }) {
   const getNextStep = () => {
     const now = new Date();
-    // Check follow-up due
     if (program.next_action_due) {
       const due = new Date(program.next_action_due);
       const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
@@ -308,7 +307,6 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
         return { urgent: diff <= 2, title: `Your follow-up to ${coachName} is due in ${diff} day${diff !== 1 ? 's' : ''}`, sub: program.next_action || "Send a follow-up email with your updated stats", action: "Send Follow-up Now", type: "email" };
       }
     }
-    // Status-based suggestions
     if (program.recruiting_status === "Not Contacted") {
       return { urgent: false, title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", action: "Compose Intro Email", type: "email" };
     }
@@ -321,32 +319,44 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
     return { urgent: false, title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", action: "Log Interaction", type: "log" };
   };
 
+  const INSIGHT_ICONS = { calendar: Calendar, clock: Clock, zap: Zap, target: Target, activity: Zap };
   const step = getNextStep();
 
   return (
-    <div className={`rounded-2xl border-l-[3px] border p-5 flex items-center gap-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
+    <div className={`rounded-2xl border-l-[3px] border p-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
-      <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-purple-500/10"}`}>
-        {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-purple-400" />}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-purple-400"}`}>Next Step</p>
-        <p className="text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
-        <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
-      </div>
-      <div className="flex gap-2.5 flex-shrink-0">
-        <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-5 shadow-lg shadow-purple-500/20"
-          onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
-          {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
-          {step.action}
-        </Button>
-        {program.next_action_due && (
-          <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
-            style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
-            Snooze 3 days
+      <div className="flex items-center gap-5">
+        <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-purple-500/10"}`}>
+          {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-purple-400" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-purple-400"}`}>Next Step</p>
+          <p className="text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
+          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
+        </div>
+        <div className="flex gap-2.5 flex-shrink-0">
+          <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-5 shadow-lg shadow-purple-500/20"
+            onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
+            {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
+            {step.action}
           </Button>
-        )}
+          {program.next_action_due && (
+            <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
+              style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
+              Snooze 3 days
+            </Button>
+          )}
+        </div>
       </div>
+      {insight && (() => {
+        const IcComp = INSIGHT_ICONS[insight.icon] || Zap;
+        return (
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }} data-testid="recruiting-insight-tip">
+            <IcComp className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+            <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{insight.text}</p>
+          </div>
+        );
+      })()}
     </div>
   );
 }
