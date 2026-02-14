@@ -225,13 +225,13 @@ function ProgramCard({ p, navigate, matchScore }) {
 
   return (
     <div
-      className="rounded-lg p-4 mb-4 transition-all duration-200 border"
+      className="rounded-lg p-3 lg:p-4 mb-3 lg:mb-4 transition-all duration-200 border"
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`program-row-${p.program_id}`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 lg:gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
+          <div className={`w-9 h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
             {p.division || "—"}
           </div>
           <div className="flex-1 min-w-0">
@@ -239,7 +239,7 @@ function ProgramCard({ p, navigate, matchScore }) {
               <button
                 onClick={() => navigate(`/programs/${p.program_id}`)}
                 data-testid={`program-link-${p.program_id}`}
-                className="font-heading font-bold text-base leading-tight truncate transition-colors hover:text-purple-400"
+                className="font-heading font-bold text-sm lg:text-base leading-tight truncate transition-colors hover:text-purple-400"
                 style={{ color: "var(--t-text)" }}
               >
                 {p.university_name}
@@ -253,20 +253,20 @@ function ProgramCard({ p, navigate, matchScore }) {
               {GroupIcon && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium border ${groupBadge.color}`}>
                   <GroupIcon className="w-3 h-3" />
-                  {groupBadge.label}
+                  <span className="hidden sm:inline">{groupBadge.label}</span>
                 </span>
               )}
             </div>
             {/* School info */}
-            <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+            <div className="flex items-center gap-2 lg:gap-3 mt-1 text-xs lg:text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
               {p.region && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5" /> {p.region}
+                  <MapPin className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> {p.region}
                 </span>
               )}
               {p.conference && (
                 <span className="flex items-center gap-1">
-                  <Building2 className="w-3.5 h-3.5" /> {divFull} | {p.conference}
+                  <Building2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> <span className="hidden sm:inline">{divFull} |</span> {p.conference}
                 </span>
               )}
             </div>
@@ -282,14 +282,14 @@ function ProgramCard({ p, navigate, matchScore }) {
               </div>
             )}
             {/* Status + Reply info row */}
-            <div className="flex items-center gap-4 mt-2 text-xs">
+            <div className="flex items-center gap-3 lg:gap-4 mt-2 text-[11px] lg:text-xs">
               <span className={statusColor}>Status: {p.recruiting_status || "Not Contacted"}</span>
               <span className={replyColor}>Reply: {p.reply_status || "No Reply"}</span>
             </div>
           </div>
         </div>
-        {/* Right side: key dates + Journey */}
-        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+        {/* Right side: Journey button + context */}
+        <div className="flex flex-row lg:flex-col items-center lg:items-end gap-2 flex-shrink-0">
           <button
             onClick={() => navigate(`/journey/${p.program_id}`)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded-md transition-colors"
@@ -298,9 +298,9 @@ function ProgramCard({ p, navigate, matchScore }) {
             <Sparkles className="w-3.5 h-3.5" />
             Journey
           </button>
-          {/* Show action context based on group */}
+          {/* Show action context based on group - hide on mobile to save space */}
           {p.board_group === "action_required" && p.next_action_due && (
-            <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
+            <div className="hidden lg:block p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
               <div className="flex items-center gap-1.5">
                 <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
                 <span className="text-xs font-medium text-rose-300">
@@ -311,7 +311,7 @@ function ProgramCard({ p, navigate, matchScore }) {
             </div>
           )}
           {p.board_group === "upcoming" && p.next_action_due && (
-            <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <div className="hidden lg:block p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-amber-400" />
                 <span className="text-xs font-medium text-amber-300">Follow-up due {dueDateFormatted}</span>
@@ -320,7 +320,7 @@ function ProgramCard({ p, navigate, matchScore }) {
             </div>
           )}
           {p.board_group === "in_progress" && (
-            <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+            <div className="hidden lg:block p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span className="text-xs font-medium text-emerald-300">
