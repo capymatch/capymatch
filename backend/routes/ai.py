@@ -289,6 +289,9 @@ Return ONLY valid JSON."""
             if response_text.startswith("json"):
                 response_text = response_text[4:]
         result = json.loads(response_text)
+
+        # Track AI usage
+        await track_ai_usage(tenant_id)
         
         return {
             "relationship_summary": result.get("relationship_summary", ""),
