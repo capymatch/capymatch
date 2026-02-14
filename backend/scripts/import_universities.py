@@ -45,14 +45,20 @@ def clean(val):
     return s
 
 
+def cell(row, idx):
+    if idx < len(row):
+        return row[idx]
+    return None
+
+
 def parse_file(filepath, expected_division):
-    wb = openpyxl.load_workbook(filepath, read_only=True, data_only=True)
+    wb = openpyxl.load_workbook(filepath, data_only=True)
     ws = wb.active
     universities = []
     seen = set()
 
     for row in ws.iter_rows(min_row=6, values_only=True):
-        name = clean(row[COL["program_name"]])
+        name = clean(cell(row, COL["program_name"]))
         if not name:
             continue
         if name in seen:
