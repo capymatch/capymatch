@@ -461,6 +461,7 @@ export default function Layout({ user }) {
 
       {/* Guided Tour */}
       {showTour && <Tour onComplete={() => setShowTour(false)} />}
+      <AIAssistantDrawer isOpen={showAssistant} onClose={() => setShowAssistant(false)} />
     </div>
   );
 }
