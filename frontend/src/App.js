@@ -21,7 +21,9 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import { Toaster } from "./components/ui/sonner";
-import { SubscriptionProvider } from "./lib/subscription";
+import { SubscriptionProvider, useSubscription } from "./lib/subscription";
+import { onSubscriptionError } from "./lib/api";
+import UpgradeModal from "./components/UpgradeModal";
 import api from "./lib/api";
 import "./App.css";
 
@@ -80,13 +82,38 @@ function AppRouter() {
   );
 }
 
+function SubscriptionGuard({ children }) {
+  const { subscription } = useSubscription();
+  const [upgradeInfo, setUpgradeInfo] = useState(null);
+
+  useEffect(() => {
+    onSubscriptionError((detail) => {
+      setUpgradeInfo(detail);
+    });
+  }, []);
+
+  return (
+    <>
+      {children}
+      <UpgradeModal
+        isOpen={!!upgradeInfo}
+        onClose={() => setUpgradeInfo(null)}
+        feature={upgradeInfo?.feature}
+        currentTier={subscription?.tier || "basic"}
+      />
+    </>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider>
       <SubscriptionProvider>
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
+        <SubscriptionGuard>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+        </SubscriptionGuard>
       </SubscriptionProvider>
       <Toaster richColors position="top-right" />
     </ThemeProvider>
