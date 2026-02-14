@@ -29,7 +29,7 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 │   ├── routes/
 │   │   ├── knowledge.py          # Knowledge base (READ-ONLY) + filters + add-to-board
 │   │   ├── athlete_profile.py    # Questionnaire, match scores, suggested schools
-│   │   ├── programs.py           # Pipeline/board management
+│   │   ├── programs.py           # Pipeline/board management with DYNAMIC GROUPING
 │   │   ├── gmail.py              # Gmail integration
 │   │   ├── ai.py                 # AI email drafter
 │   │   ├── events.py             # Calendar events
@@ -44,7 +44,7 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 │       ├── App.js
 │       ├── pages/
 │       │   ├── UniversityKnowledgeBase.js  # 1053 schools, dynamic filters, pagination, card layout
-│       │   ├── RecruitingBoard.js           # Pipeline with card layout, key dates, match scores
+│       │   ├── RecruitingBoard.js           # DYNAMIC GROUPING: Action Required, Upcoming, In Progress, Closed
 │       │   ├── RecruitingJourney.js         # Program detail (Interest Level removed, Match Score only)
 │       │   ├── Onboarding.js                # Multi-step questionnaire
 │       │   └── ...
@@ -81,12 +81,23 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 - [x] Pipeline: read-only statuses (editable only in Journey), key dates from Journey
 - [x] Pipeline: school name links to school detail view
 - [x] Removed Interest Level widget (Match Score is sole indicator)
+- [x] **DYNAMIC BOARD GROUPING** (Feb 14, 2026)
+  - Programs automatically categorized into 4 action-oriented groups
+  - **Action Required**: Overdue, needs response, or stale (default catch-all)
+  - **Upcoming**: Follow-up due within 14 days
+  - **In Progress**: Recently contacted (7 days) OR active conversation
+  - **Closed**: Not a Fit, Not Interested, Committed
+  - Group funnel summary with counts
+  - Group-specific context badges on program cards
+  - Filters (search, division, region) work with grouped data
+  - Backend: `categorize_program()` function, `GET /api/programs?grouped=true`
+  - Frontend: `GroupFunnel` component, `ProgramCard` with board_group context
 
 ## Prioritized Backlog
 
 ### P1 - NCAA Recruiting Timeline
 - Implement as new tab on Recruiting Journey page
-- Mockup exists at `/app/mockups/ncaa_timeline.html`
+- Mockup exists at `/app/mockups/mockup_recruiting_timeline.png`
 - Show contact/dead/evaluation/quiet periods by division
 - Key NCAA dates and deadlines
 
@@ -104,3 +115,18 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 
 ### P3 - Family Collaboration
 - Read-only dashboard for parents/guardians
+
+## Key API Endpoints
+
+### Programs (Pipeline)
+- `GET /api/programs` - List all programs (flat list with board_group field)
+- `GET /api/programs?grouped=true` - List programs in 4 dynamic groups
+- `POST /api/programs` - Add program to board
+- `PUT /api/programs/{id}` - Update program
+- `DELETE /api/programs/{id}` - Remove program
+
+### Dynamic Grouping Logic (Priority Order)
+1. **Closed**: status in ["Not a Fit / Closed", "Not Interested", "Committed"]
+2. **In Progress**: contacted within 7 days OR reply_status in ["Reply Received", "In Conversation"], AND not overdue
+3. **Upcoming**: next_action_due within 14 days, not recently contacted
+4. **Action Required**: Default catch-all (overdue, stale, needs attention)
