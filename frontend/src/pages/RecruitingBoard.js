@@ -88,7 +88,7 @@ function StatusBadge({ value, colorMap }) {
   const color = colorMap && value ? colorMap[value] : null;
   return (
     <span
-      className={`inline-block px-2.5 py-1 rounded-md text-[11px] font-semibold ${color ? `${color.bg} ${color.text}` : "bg-gray-200 text-gray-600"}`}
+      className={`text-[11px] font-semibold ${color ? color.color : "text-gray-500"}`}
       data-testid={`status-badge-${(value || "").replace(/\s+/g, "-").toLowerCase()}`}
     >
       {value || "—"}
