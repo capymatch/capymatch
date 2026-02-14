@@ -278,81 +278,63 @@ function PipelineFunnel({ programs, onFocusSection, activeFilter }) {
 
 /* ── Program Row ── */
 function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
-  // Due date color logic
-  const getDueDateStyle = () => {
-    if (!p.next_action_due) return {};
-    const now = new Date();
-    const due = new Date(p.next_action_due);
-    const daysUntil = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-    if (daysUntil < 0) return { color: "#ef4444", fontWeight: 600 }; // red - past due
-    if (daysUntil <= 14) return { color: "#f97316", fontWeight: 600 }; // orange - 10-14 days
-    return { color: "var(--t-text-secondary)" }; // white/normal
-  };
-
   const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
     : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
     : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
   return (
     <div
-      className="group grid grid-cols-[2.5fr_1fr_1fr_1fr_0.7fr_auto] gap-3 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
-      style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
+      className="group grid grid-cols-[2.5fr_1fr_1fr_0.8fr_0.7fr_auto] gap-4 items-center px-4 h-10 border-b transition-colors cursor-default"
+      style={{ borderColor: "var(--t-border)" }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
-      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
+      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
       data-testid={`program-row-${p.program_id}`}
     >
       {/* University Name + Division Badge */}
       <div className="flex items-center gap-2 min-w-0">
-        <div className={`w-1.5 h-8 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(`/journey/${p.program_id}`)}
-              data-testid={`program-link-${p.program_id}`}
-              className="font-semibold text-sm truncate block transition-colors hover:text-purple-400"
-              style={{ color: "var(--t-text)" }}
-            >
-              {p.university_name}
-            </button>
-            {p.division && (
-              <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold flex-shrink-0 ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
-                {p.division}
-              </span>
-            )}
-            {matchScore && (
-              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
-                {matchScore.match_score}%
-              </span>
-            )}
-          </div>
-          <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{p.mascot}</span>
-        </div>
+        <div className={`w-1 h-5 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
+        <button
+          onClick={() => navigate(`/journey/${p.program_id}`)}
+          data-testid={`program-link-${p.program_id}`}
+          className="font-medium text-[13px] truncate transition-colors hover:text-purple-400"
+          style={{ color: "var(--t-text)" }}
+        >
+          {p.university_name}
+        </button>
+        {p.division && (
+          <span className={`inline-block px-1.5 py-px rounded text-[9px] font-bold flex-shrink-0 ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
+            {p.division}
+          </span>
+        )}
+        {matchScore && (
+          <span className={`inline-flex items-center px-1.5 py-px rounded text-[9px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+            {matchScore.match_score}%
+          </span>
+        )}
       </div>
 
-      {/* Status (read-only) */}
+      {/* Status */}
       <StatusBadge value={p.recruiting_status} colorMap={STATUS_COLORS} />
 
-      {/* Reply (read-only) */}
+      {/* Reply */}
       <StatusBadge value={p.reply_status} colorMap={REPLY_COLORS} />
 
-      {/* Due Date (read-only) */}
+      {/* Due Date */}
       <DueDateBadge value={p.next_action_due} />
 
-      {/* Priority (read-only) */}
+      {/* Priority */}
       <StatusBadge value={p.priority} colorMap={PRIORITY_INLINE_COLORS} />
 
       {/* Actions */}
-      <div className="flex items-center justify-end">
-        <button
-          onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-300 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-md transition-colors"
-          title="View Journey"
-          data-testid={`view-journey-${p.program_id}`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Journey
-        </button>
-      </div>
+      <button
+        onClick={() => navigate(`/journey/${p.program_id}`)}
+        className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 rounded transition-colors"
+        title="View Journey"
+        data-testid={`view-journey-${p.program_id}`}
+      >
+        <Sparkles className="w-3 h-3" />
+        Journey
+      </button>
     </div>
   );
 }
@@ -361,7 +343,7 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
 function ColumnHeaders() {
   const cols = ["University", "Status", "Reply", "Due Date", "Priority", ""];
   return (
-    <div className="grid grid-cols-[2.5fr_1fr_1fr_1fr_0.7fr_auto] gap-3 items-center px-4 py-3 mb-2 border rounded-lg" style={{ backgroundColor: "var(--t-colheader-bg)", borderColor: "var(--t-border)" }}>
+    <div className="grid grid-cols-[2.5fr_1fr_1fr_0.8fr_0.7fr_auto] gap-4 items-center px-4 h-9 border-b" style={{ borderColor: "var(--t-border)" }}>
       {cols.map((col, i) => (
         <span key={i} className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>{col}</span>
       ))}
