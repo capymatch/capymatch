@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
-  User, ChevronDown, X, MessageSquare, Eye, Clock, Menu
+  User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -16,11 +16,17 @@ export default function Layout({ user }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("sidebar_collapsed") === "true");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const profileRef = useRef(null);
   const notifRef = useRef(null);
+
+  // Persist sidebar collapsed state
+  useEffect(() => {
+    localStorage.setItem("sidebar_collapsed", sidebarCollapsed);
+  }, [sidebarCollapsed]);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
