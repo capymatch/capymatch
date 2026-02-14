@@ -25,6 +25,8 @@ export default function UniversityKnowledgeBase() {
   const [filterConference, setFilterConference] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [adding, setAdding] = useState({});
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(true);
 
   const fetchUniversities = useCallback(async () => {
     try {
