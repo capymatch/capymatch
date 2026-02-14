@@ -233,3 +233,138 @@ async def create_user(request: Request):
 @router.get("/subscription-tiers")
 async def get_subscription_tiers():
     return {"tiers": SUBSCRIPTION_TIERS}
+
+
+@router.get("/subscriptions")
+async def list_subscriptions(search: Optional[str] = None, plan: Optional[str] = None, page: int = 1, limit: int = 50):
+    """List all users with subscription info for admin management."""
+    query = {}
+    if plan and plan != "all":
+        if plan == "basic":
+            query["$or"] = [{"plan": "basic"}, {"plan": "free"}, {"plan": {"$exists": False}}]
+        else:
+            query["plan"] = plan
+
+    tenants = await db.tenants.find(query, {"_id": 0}).sort("created_at", -1).to_list(2000)
+
+    rows = []
+    for t in tenants:
+        user = await db.users.find_one({"user_id": t.get("owner_user_id")}, {"_id": 0})
+        if not user:
+            continue
+        if search:
+            name = (user.get("name") or "").lower()
+            email = (user.get("email") or "").lower()
+            athlete = (t.get("athlete_name") or "").lower()
+            if search.lower() not in name and search.lower() not in email and search.lower() not in athlete:
+                continue
+
+        current_plan = t.get("plan", "basic")
+        if current_plan == "free":
+            current_plan = "basic"
+
+        school_count = await db.programs.count_documents({"tenant_id": t["tenant_id"]})
+        ai_used = await db.ai_usage.count_documents({
+            "tenant_id": t["tenant_id"],
+            "created_at": {"$gte": datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()},
+        })
+
+        tier_info = SUBSCRIPTION_TIERS.get(current_plan, SUBSCRIPTION_TIERS["basic"])
+
+        rows.append({
+            "user_id": user["user_id"],
+            "tenant_id": t["tenant_id"],
+            "name": user.get("name", ""),
+            "email": user.get("email", ""),
+            "athlete_name": t.get("athlete_name", ""),
+            "plan": current_plan,
+            "status": t.get("status", "active"),
+            "school_count": school_count,
+            "school_limit": tier_info.get("max_schools", 5),
+            "ai_used": ai_used,
+            "ai_limit": tier_info.get("ai_drafts_per_month", 0),
+            "created_at": t.get("created_at", ""),
+        })
+
+    total = len(rows)
+    start = (page - 1) * limit
+    paginated = rows[start:start + limit]
+
+    # Calculate stats
+    plan_counts = {"basic": 0, "pro": 0, "premium": 0}
+    for r in rows:
+        plan_counts[r["plan"]] = plan_counts.get(r["plan"], 0) + 1
+
+    mrr = plan_counts.get("pro", 0) * 19 + plan_counts.get("premium", 0) * 39
+
+    return {
+        "users": paginated,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "stats": {
+            "plan_counts": plan_counts,
+            "mrr": mrr,
+            "total_users": total,
+        },
+    }
+
+
+@router.put("/subscriptions/{user_id}")
+async def change_subscription(user_id: str, request: Request):
+    """Change a user's subscription plan with audit logging."""
+    body = await request.json()
+    new_plan = body.get("plan")
+    reason = body.get("reason", "Admin change")
+
+    if new_plan not in SUBSCRIPTION_TIERS:
+        raise HTTPException(status_code=400, detail="Invalid plan")
+
+    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    tenant = await db.tenants.find_one({"owner_user_id": user_id}, {"_id": 0})
+    if not tenant:
+        raise HTTPException(status_code=404, detail="Tenant not found")
+
+    old_plan = tenant.get("plan", "basic")
+    if old_plan == "free":
+        old_plan = "basic"
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    # Update tenant plan
+    await db.tenants.update_one(
+        {"tenant_id": tenant["tenant_id"]},
+        {"$set": {"plan": new_plan, "updated_at": now}},
+    )
+
+    # Log the change
+    log_entry = {
+        "log_id": f"sublog_{uuid.uuid4().hex[:12]}",
+        "user_id": user_id,
+        "tenant_id": tenant["tenant_id"],
+        "user_name": user.get("name", ""),
+        "user_email": user.get("email", ""),
+        "old_plan": old_plan,
+        "new_plan": new_plan,
+        "reason": reason,
+        "changed_by": "admin",
+        "created_at": now,
+    }
+    await db.subscription_logs.insert_one(log_entry)
+    log_entry.pop("_id", None)
+
+    return {"ok": True, "log": log_entry}
+
+
+@router.get("/subscription-logs")
+async def list_subscription_logs(page: int = 1, limit: int = 30):
+    """Get recent subscription change audit logs."""
+    total = await db.subscription_logs.count_documents({})
+    skip = (page - 1) * limit
+    logs = await db.subscription_logs.find(
+        {}, {"_id": 0}
+    ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    return {"logs": logs, "total": total, "page": page, "limit": limit}
