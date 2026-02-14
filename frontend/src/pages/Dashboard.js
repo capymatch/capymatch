@@ -154,22 +154,22 @@ export default function Dashboard() {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         {[
           { value: totalSchools, label: "Active Schools", color: "rgba(99, 102, 241, 0.1)" },
           { value: offersCount, label: "Offers Received", color: "rgba(139, 92, 246, 0.1)" },
           { value: reminders.length, label: "Follow-ups Overdue", color: reminders.length > 0 ? "rgba(251, 146, 60, 0.15)" : "rgba(251, 146, 60, 0.1)", accent: reminders.length > 0 ? "#f97316" : null },
           { value: profileViews?.this_week || 0, label: "Profile Views (7d)", color: "rgba(16, 185, 129, 0.1)" },
         ].map((s, i) => (
-          <div key={i} className="rounded-xl p-5 border" style={{ backgroundColor: s.color, borderColor: "var(--t-border)" }}>
-            <p className="text-3xl font-bold" style={{ color: s.accent || "var(--t-text)" }}>{s.value}</p>
-            <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>{s.label}</p>
+          <div key={i} className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: s.color, borderColor: "var(--t-border)" }}>
+            <p className="text-2xl lg:text-3xl font-bold" style={{ color: s.accent || "var(--t-text)" }}>{s.value}</p>
+            <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Main Grid: Schools + Events */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Schools Requiring Action */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="schools-action-widget">
           <div className="flex items-center justify-between px-5 py-4">
