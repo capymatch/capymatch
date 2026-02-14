@@ -115,15 +115,16 @@ const QUESTIONS = [
 
 export default function AthleteProfileQuiz() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(-1); // Start at -1 for intro
   const [answers, setAnswers] = useState({});
   const [saving, setSaving] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
   const [matchScores, setMatchScores] = useState([]);
 
-  const q = QUESTIONS[step];
-  const progress = ((step + 1) / QUESTIONS.length) * 100;
-  const current = answers[q?.id];
+  const isIntro = step === -1;
+  const q = isIntro ? null : QUESTIONS[step];
+  const progress = isIntro ? 0 : ((step + 1) / QUESTIONS.length) * 100;
+  const current = q ? answers[q.id] : null;
 
   const select = (value) => {
     if (q.type === "single") {
