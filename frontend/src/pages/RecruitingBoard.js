@@ -475,22 +475,22 @@ export default function RecruitingBoard() {
               <button
                 onClick={() => toggleSection(group.key)}
                 data-testid={`toggle-${group.key}`}
-                className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all duration-200 mb-3 ${groupIdx === 0 ? "" : "mt-8"} border-l-4 ${group.border}`}
+                className={`w-full flex items-center gap-2.5 px-4 py-3 rounded-lg border transition-all duration-200 mb-3 ${groupIdx === 0 ? "" : "mt-10"} border-l-4 ${group.border}`}
                 style={{ backgroundColor: isEmpty ? "var(--t-surface-alt)" : "var(--t-section-bg)", borderColor: "var(--t-border)" }}
               >
                 {isCollapsed ? (
-                  <ChevronRight className="w-3.5 h-3.5 text-gray-400" strokeWidth={1.5} />
+                  <ChevronRight className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-gray-400" strokeWidth={1.5} />
+                  <ChevronDown className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 )}
-                <Icon className={`w-4 h-4 ${isEmpty ? "text-gray-400" : group.text}`} />
+                <Icon className={`w-4.5 h-4.5 ${isEmpty ? "text-gray-400" : group.text}`} />
                 <div className="flex flex-col items-start">
-                  <span className={`font-heading font-semibold text-sm tracking-wide ${isEmpty ? "" : group.text}`} style={{ color: isEmpty ? "var(--t-text-muted)" : undefined }}>
+                  <span className={`font-heading font-semibold text-base tracking-wide ${isEmpty ? "" : group.text}`} style={{ color: isEmpty ? "var(--t-text-muted)" : undefined }}>
                     {group.label}
                   </span>
-                  <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{group.description}</span>
+                  <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{group.description}</span>
                 </div>
-                <Badge className={`ml-auto ${isEmpty ? "bg-gray-100 text-gray-400" : `${group.bg} ${group.text}`} text-xs px-1.5 py-0 font-bold`}>
+                <Badge className={`ml-auto ${isEmpty ? "bg-gray-100 text-gray-400" : `${group.bg} ${group.text}`} text-xs px-2 py-0.5 font-bold`}>
                   {groupPrograms.length}
                 </Badge>
               </button>
