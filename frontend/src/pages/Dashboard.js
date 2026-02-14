@@ -155,17 +155,40 @@ export default function Dashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        {[
-          { value: totalSchools, label: "Active Schools", color: "rgba(99, 102, 241, 0.1)" },
-          { value: offersCount, label: "Offers Received", color: "rgba(139, 92, 246, 0.1)" },
-          { value: reminders.length, label: "Follow-ups Overdue", color: reminders.length > 0 ? "rgba(251, 146, 60, 0.15)" : "rgba(251, 146, 60, 0.1)", accent: reminders.length > 0 ? "#f97316" : null },
-          { value: profileViews?.this_week || 0, label: "Profile Views (7d)", color: "rgba(16, 185, 129, 0.1)" },
-        ].map((s, i) => (
-          <div key={i} className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: s.color, borderColor: "var(--t-border)" }}>
-            <p className="text-2xl lg:text-3xl font-bold" style={{ color: s.accent || "var(--t-text)" }}>{s.value}</p>
-            <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>{s.label}</p>
+        {/* Active Schools */}
+        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(99, 102, 241, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
+          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
+        </div>
+
+        {/* Offers Received — celebration style when > 0 */}
+        {offersCount > 0 ? (
+          <div className="rounded-xl p-4 lg:p-5 border relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(251,191,36,0.18) 0%, rgba(245,158,11,0.10) 100%)", borderColor: "rgba(251,191,36,0.35)" }} data-testid="offers-card-celebration">
+            <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full" style={{ background: "radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%)" }} />
+            <div className="flex items-center gap-2">
+              <p className="text-2xl lg:text-3xl font-bold text-amber-400">{offersCount}</p>
+              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+            </div>
+            <p className="text-xs lg:text-sm mt-1 text-amber-300/80 font-medium">Offers Received</p>
           </div>
-        ))}
+        ) : (
+          <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)", borderColor: "var(--t-border)" }}>
+            <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>0</p>
+            <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
+          </div>
+        )}
+
+        {/* Follow-ups Overdue */}
+        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: reminders.length > 0 ? "rgba(251, 146, 60, 0.15)" : "rgba(251, 146, 60, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-2xl lg:text-3xl font-bold" style={{ color: reminders.length > 0 ? "#f97316" : "var(--t-text)" }}>{reminders.length}</p>
+          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Overdue</p>
+        </div>
+
+        {/* Profile Views */}
+        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", borderColor: "var(--t-border)" }}>
+          <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews?.this_week || 0}</p>
+          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Profile Views (7d)</p>
+        </div>
       </div>
 
       {/* Main Grid: Schools + Events */}
