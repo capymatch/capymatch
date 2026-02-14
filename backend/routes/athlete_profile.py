@@ -84,7 +84,6 @@ async def get_match_scores(request: Request):
     pref_regions = profile.get("regions") or []
     pref_priorities = profile.get("priorities") or []
     pref_size = profile.get("school_size") or ""
-    pref_scholarship = profile.get("scholarship_priority") or ""
 
     scores = []
     for p in programs:
