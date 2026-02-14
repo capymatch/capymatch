@@ -210,9 +210,6 @@ function ProgramCard({ p, navigate, matchScore }) {
   const isOverdue = daysUntil !== null && daysUntil < 0;
   const isDueSoon = daysUntil !== null && daysUntil >= 0 && daysUntil <= 14;
 
-  const statusColor = STATUS_COLORS[p.recruiting_status]?.color || "text-gray-500";
-  const replyColor = REPLY_COLORS[p.reply_status]?.color || "text-gray-500";
-
   // Group-specific context badge
   const groupBadge = {
     action_required: { icon: AlertTriangle, color: "text-rose-400 bg-rose-500/10 border-rose-500/20", label: isOverdue ? "Overdue" : "Needs Attention" },
