@@ -25,6 +25,7 @@ function AppRouter() {
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
+      <Route path="/onboarding" element={<AthleteProfileQuiz />} />
       <Route path="/" element={<Layout user={PUBLIC_USER} />}>
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
@@ -39,7 +40,6 @@ function AppRouter() {
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
-      {/* Redirect /login to home since auth is bypassed */}
       <Route path="/login" element={<Navigate to="/board" replace />} />
     </Routes>
   );
