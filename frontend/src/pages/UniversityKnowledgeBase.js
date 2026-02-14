@@ -366,6 +366,31 @@ function UniversityCard({ uni, adding, addToBoard }) {
                 </span>
               )}
             </div>
+            {/* Coach Info */}
+            {(uni.primary_coach || uni.recruiting_coordinator) && (
+              <div className="flex items-center gap-4 mt-2 text-xs flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+                {uni.primary_coach && (
+                  <span className="flex items-center gap-1" data-testid="coach-info">
+                    <User className="w-3 h-3" /> {uni.primary_coach}
+                    {uni.coach_email && (
+                      <a href={`mailto:${uni.coach_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coach_email}>
+                        <Mail className="w-3 h-3" />
+                      </a>
+                    )}
+                  </span>
+                )}
+                {uni.recruiting_coordinator && (
+                  <span className="flex items-center gap-1" data-testid="coordinator-info">
+                    <User className="w-3 h-3 opacity-60" /> {uni.recruiting_coordinator} <span className="opacity-50">(RC)</span>
+                    {uni.coordinator_email && (
+                      <a href={`mailto:${uni.coordinator_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coordinator_email}>
+                        <Mail className="w-3 h-3" />
+                      </a>
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -409,11 +434,6 @@ function UniversityCard({ uni, adding, addToBoard }) {
         {uni.mascot && (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>
             {uni.mascot}
-          </span>
-        )}
-        {uni.notes && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-500/20 text-amber-400 border border-amber-500/30">
-            {uni.notes}
           </span>
         )}
       </div>
