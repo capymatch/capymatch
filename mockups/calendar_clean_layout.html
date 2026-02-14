@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Clean Layout Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --t-bg: #1a1f37;
+      --t-surface: #202940;
+      --t-surface-alt: #283350;
+      --t-border: #2d3a5c;
+      --t-text: #f1f5f9;
+      --t-text-secondary: #94a3b8;
+      --t-text-muted: #64748b;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--t-bg);
+      color: var(--t-text);
+    }
+  </style>
+</head>
+<body class="p-8">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-2xl font-bold text-pink-400 mb-8">Calendar - Clean Layout Options</h1>
+    
+    <!-- OPTION A: Dots only on calendar, events in sidebar -->
+    <div class="mb-16">
+      <h2 class="text-lg font-semibold text-emerald-400 mb-4">Option A: Minimal Dots + Clean Sidebar</h2>
+      <p class="text-sm text-gray-400 mb-6">Calendar shows only colored dots for events. Click a day to see details. Sidebar shows upcoming events in a cleaner list.</p>
+      
+      <div class="grid grid-cols-12 gap-6 items-start">
+        <!-- Calendar -->
+        <div class="col-span-8">
+          <div class="rounded-xl border overflow-hidden" style="background-color: var(--t-surface); border-color: var(--t-border);">
+            <!-- Header -->
+            <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--t-border);">
+              <div class="flex items-center gap-4">
+                <h2 class="text-xl font-semibold" style="color: var(--t-text);">February 2026</h2>
+                <button class="px-3 py-1.5 text-sm rounded-lg" style="background-color: var(--t-surface-alt); color: var(--t-text-muted);">Today</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="p-2 rounded-lg" style="color: var(--t-text-muted);">←</button>
+                <button class="p-2 rounded-lg" style="color: var(--t-text-muted);">→</button>
+              </div>
+            </div>
+            
+            <!-- Day names -->
+            <div class="grid grid-cols-7 border-b" style="border-color: var(--t-border);">
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Sun</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Mon</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Tue</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Wed</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Thu</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Fri</div>
+              <div class="p-3 text-center text-sm font-medium" style="color: var(--t-text-muted);">Sat</div>
+            </div>
+            
+            <!-- Calendar grid - MINIMAL DOTS ONLY -->
+            <div class="grid grid-cols-7">
+              <!-- Empty cells for padding -->
+              <div class="h-20 p-2 border-b border-r" style="border-color: var(--t-border); background-color: var(--t-surface-alt);"></div>
+              
+              <!-- Days 2-7 -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">2</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">3</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">4</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">5</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">6</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">7</span>
+              </div>
+              
+              <!-- Week 2 -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">8</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">9</span>
+              </div>
+              <!-- Day 10 with event dots -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">10</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">11</span>
+              </div>
+              <!-- Day 12 with multiple events -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">12</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                  </div>
+                </div>
+              </div>
+              <!-- Day 13 -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">13</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  </div>
+                </div>
+              </div>
+              <!-- Day 14 - Today -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer bg-pink-600/10" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-pink-500">14</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Week 3 -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">15</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">16</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">17</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">18</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">19</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">20</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">21</span>
+              </div>
+              
+              <!-- Week 4 -->
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">22</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">23</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">24</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">25</span>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">26</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm" style="color: var(--t-text-secondary);">27</span>
+                  <div class="flex gap-0.5">
+                    <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="h-20 p-3 border-b border-r cursor-pointer hover:bg-pink-600/5 transition-colors" style="border-color: var(--t-border);">
+                <span class="text-sm" style="color: var(--t-text-secondary);">28</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar - Cleaner -->
+        <div class="col-span-4 space-y-4">
+          <!-- Upcoming Events - Compact -->
+          <div class="rounded-xl p-5 border" style="background-color: var(--t-surface); border-color: var(--t-border);">
+            <h3 class="font-semibold mb-4" style="color: var(--t-text);">Upcoming Events</h3>
+            <div class="space-y-3">
+              <!-- Event item - compact -->
+              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+                <div class="w-1 h-10 rounded-full bg-cyan-500 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate" style="color: var(--t-text);">Baylor Decision Call</p>
+                  <p class="text-xs" style="color: var(--t-text-muted);">Mar 8 · Zoom</p>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded bg-cyan-500/20 text-cyan-400">Meeting</span>
+              </div>
+              
+              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+                <div class="w-1 h-10 rounded-full bg-amber-500 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate" style="color: var(--t-text);">Triple Crown NIT</p>
+                  <p class="text-xs" style="color: var(--t-text-muted);">Mar 14-16 · Kansas City</p>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded bg-amber-500/20 text-amber-400">Tournament</span>
+              </div>
+              
+              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+                <div class="w-1 h-10 rounded-full bg-pink-500 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate" style="color: var(--t-text);">Baylor Spring Clinic</p>
+                  <p class="text-xs" style="color: var(--t-text-muted);">Mar 15-16 · Waco, TX</p>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded bg-pink-500/20 text-pink-400">Camp</span>
+              </div>
+              
+              <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+                <div class="w-1 h-10 rounded-full bg-amber-500 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate" style="color: var(--t-text);">USAV Girls Junior Nationals</p>
+                  <p class="text-xs" style="color: var(--t-text-muted);">Apr 10-13 · Indianapolis</p>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded bg-amber-500/20 text-amber-400">Tournament</span>
+              </div>
+            </div>
+            
+            <button class="w-full mt-4 text-sm text-pink-500 hover:text-pink-400 transition-colors">
+              View all events →
+            </button>
+          </div>
+          
+          <!-- Mini legend - very compact -->
+          <div class="flex flex-wrap gap-3 px-3 py-2 rounded-lg text-[10px]" style="background-color: var(--t-surface-alt);">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-500"></span> Camp</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Tournament</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Visit</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-cyan-500"></span> Meeting</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Showcase</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-4 rounded-lg bg-pink-500/10 border border-pink-500/30 mt-8">
+      <h3 class="font-semibold text-pink-400 mb-2">Key Improvements:</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        <li>• <strong>Calendar shows only colored dots</strong> instead of full event pills - much cleaner</li>
+        <li>• <strong>Smaller day cells</strong> (h-20 instead of h-28) - more compact</li>
+        <li>• <strong>Compact sidebar events</strong> - single line per event with left color bar</li>
+        <li>• <strong>Mini legend</strong> - condensed into one line at bottom</li>
+        <li>• <strong>Removed "Selected Date" panel</strong> - reduces clutter, use modal instead</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
