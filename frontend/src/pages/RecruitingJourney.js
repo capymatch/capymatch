@@ -465,6 +465,7 @@ export default function RecruitingJourney() {
   const [showEmailComposer, setShowEmailComposer] = useState(false);
   const [showCoachForm, setShowCoachForm] = useState(false);
   const [editCoach, setEditCoach] = useState(null);
+  const [currentInsight, setCurrentInsight] = useState(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -480,6 +481,14 @@ export default function RecruitingJourney() {
         const evtRes = await api.get("/events");
         const linked = (evtRes.data || []).filter(e => e.program_id === programId && e.start_date >= new Date().toISOString().slice(0, 10));
         setKeyDates(linked.slice(0, 5));
+      } catch {}
+      // Fetch recruiting insights (non-blocking)
+      try {
+        const insightRes = await api.get("/recruiting-insights");
+        const insights = insightRes.data?.insights || [];
+        if (insights.length > 0) {
+          setCurrentInsight(insights[Math.floor(Math.random() * insights.length)]);
+        }
       } catch {}
     } catch {
       toast.error("Failed to load journey data");
