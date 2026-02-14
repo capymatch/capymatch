@@ -151,6 +151,9 @@ Return ONLY valid JSON: {{"subject": "email subject line", "body": "email body t
                 response_text = response_text[4:]
         result = json.loads(response_text)
 
+        # Track successful AI usage
+        await track_ai_usage(tenant_id)
+
         return {
             "subject": result.get("subject", ""),
             "body": result.get("body", ""),
