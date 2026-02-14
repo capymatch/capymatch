@@ -186,7 +186,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
         <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Log Interaction</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-type-select">
           {["Phone Call", "Video Call", "Text Message", "Camp Meeting", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
         </select>
@@ -555,14 +555,14 @@ export default function RecruitingJourney() {
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5">
       {/* ─── Header ─── */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors" style={{ color: "var(--t-text-muted)" }} data-testid="back-btn">
+      <div className="space-y-3">
+        <div className="flex items-start gap-3">
+          <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors mt-0.5" style={{ color: "var(--t-text-muted)" }} data-testid="back-btn">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-lg sm:text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
               {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-400">{program.division}</span>}
               {matchScore && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border ${
@@ -582,7 +582,7 @@ export default function RecruitingJourney() {
             <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{program.conference}{program.region ? ` • ${program.region}` : ""} • {timeline.length} events</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-3 sm:gap-4 flex-wrap pl-9 sm:pl-0">
           <StatusBadge label="Status" value={program.recruiting_status} options={STATUS_OPTIONS} onChange={v => updateProgram({ recruiting_status: v })} />
           <StatusBadge label="Reply" value={program.reply_status} options={REPLY_OPTIONS} onChange={v => updateProgram({ reply_status: v })} />
           <StatusBadge label="Priority" value={program.priority} options={PRIORITY_OPTIONS} onChange={v => updateProgram({ priority: v })} />
@@ -601,16 +601,16 @@ export default function RecruitingJourney() {
         {/* Timeline (left 2 cols) */}
         <div className="lg:col-span-2">
           <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
               <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Timeline</h2>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openLog}
+                <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openLog}
                   style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-log-btn">
-                  <MessageSquare className="w-3 h-3 mr-1.5" />Log Interaction
+                  <MessageSquare className="w-3 h-3 mr-1.5" />Log
                 </Button>
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openEmail}
+                <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openEmail}
                   style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-email-btn">
-                  <Mail className="w-3 h-3 mr-1.5" />Send Email
+                  <Mail className="w-3 h-3 mr-1.5" />Email
                 </Button>
               </div>
             </div>
