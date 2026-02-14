@@ -352,7 +352,7 @@ function ProgramCard({ p, navigate, matchScore }) {
             )}
           </div>
         </div>
-        {/* Right side: status info + Journey */}
+        {/* Right side: key dates + Journey */}
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <button
             onClick={() => navigate(`/journey/${p.program_id}`)}
@@ -362,17 +362,21 @@ function ProgramCard({ p, navigate, matchScore }) {
             <Sparkles className="w-3.5 h-3.5" />
             Journey
           </button>
-          <div className="flex items-center gap-2 text-[11px]">
-            <span className={`font-semibold ${statusColor}`}>{p.recruiting_status}</span>
-            <span className="opacity-30">|</span>
-            <span className={`font-semibold ${priorityColor}`}>{p.priority}</span>
-            {dueDateFormatted && (
-              <>
-                <span className="opacity-30">|</span>
-                <span className={`font-semibold ${dueDateColor}`}>{dueDateFormatted}</span>
-              </>
-            )}
-          </div>
+          {(p.next_action_due || p.next_action) && (
+            <div className="text-right">
+              {p.next_action_due && (
+                <div className={`flex items-center gap-1 text-[11px] font-semibold ${dueDateColor}`}>
+                  <AlertCircle className="w-3 h-3" />
+                  {p.next_action ? p.next_action : "Follow-up"} due {dueDateFormatted}
+                </div>
+              )}
+              {p.next_action && !p.next_action_due && (
+                <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                  {p.next_action}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
