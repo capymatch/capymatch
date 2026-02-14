@@ -148,7 +148,7 @@ export default function Layout({ user }) {
             title="Collapse sidebar"
             data-testid="sidebar-collapse-btn"
           >
-            <PanelLeftClose className="w-5 h-5 text-white/60" />
+            <SidebarIcon className="w-5 h-5 text-white/60" />
           </button>
           {/* Close button for mobile */}
           <button 
@@ -169,7 +169,7 @@ export default function Layout({ user }) {
               data-testid="sidebar-expand-btn"
               title="Expand sidebar"
             >
-              <PanelLeft className="w-5 h-5" strokeWidth={1.5} />
+              <SidebarIcon className="w-5 h-5" strokeWidth={1.5} />
             </button>
           </div>
         )}
