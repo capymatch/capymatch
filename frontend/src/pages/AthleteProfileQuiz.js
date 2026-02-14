@@ -144,15 +144,19 @@ export default function AthleteProfileQuiz() {
     setAnswers(p => ({ ...p, [q.id]: allValues }));
   };
 
-  const canProceed = q?.type === "single" ? !!current : (current?.length || 0) > 0;
+  const canProceed = isIntro ? true : (q?.type === "single" ? !!current : (current?.length || 0) > 0);
 
   const next = () => {
+    if (isIntro) {
+      setStep(0);
+      return;
+    }
     if (!canProceed) return;
     if (step < QUESTIONS.length - 1) setStep(step + 1);
     else saveProfile();
   };
 
-  const back = () => { if (step > 0) setStep(step - 1); };
+  const back = () => { if (step > -1) setStep(step - 1); };
 
   useEffect(() => {
     const handler = (e) => {
