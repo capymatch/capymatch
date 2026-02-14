@@ -287,7 +287,3 @@ async def get_suggested_schools(request: Request):
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
     return {"suggestions": suggestions[:12], "profile_exists": True}
-        })
-
-    scores.sort(key=lambda x: x["match_score"], reverse=True)
-    return {"scores": scores, "profile_exists": True}
