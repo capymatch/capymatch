@@ -13,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 import CalendarPage from "./pages/CalendarPage";
 import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
+import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
