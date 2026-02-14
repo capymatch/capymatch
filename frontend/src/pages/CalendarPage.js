@@ -400,7 +400,7 @@ export default function CalendarPage() {
       </div>
 
       {/* NCAA Timeline Tab */}
-      {activeTab === "ncaa" && <NcaaTimeline />}
+      {activeTab === "ncaa" && <div className="mt-2"><NcaaTimeline /></div>}
 
       {/* My Calendar Tab */}
       {activeTab === "calendar" && (
