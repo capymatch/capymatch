@@ -396,8 +396,20 @@ export default function RecruitingBoard() {
   const [filterRegion, setFilterRegion] = useState("all");
   const [collapsed, setCollapsed] = useState({});
   const [activeFilter, setActiveFilter] = useState(null);
+  const [matchScores, setMatchScores] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Fetch match scores
+  useEffect(() => {
+    api.get("/match-scores").then(res => {
+      if (res.data?.scores) {
+        const map = {};
+        res.data.scores.forEach(s => { map[s.program_id] = s; });
+        setMatchScores(map);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Filter to show only one status section (or all)
   const focusSection = (key) => {
@@ -564,6 +576,7 @@ export default function RecruitingBoard() {
                             p={p}
                             navigate={navigate}
                             handleInlineUpdate={handleInlineUpdate}
+                            matchScore={matchScores[p.program_id]}
                           />
                         ))}
                       </div>
