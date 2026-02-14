@@ -15,11 +15,17 @@ export default function Layout({ user }) {
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const profileRef = useRef(null);
   const notifRef = useRef(null);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   // Fetch notifications on mount and periodically
   useEffect(() => {
