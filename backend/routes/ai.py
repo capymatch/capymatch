@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_ai_limit, track_ai_usage
 from models import DraftEmailRequest
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import os
@@ -18,6 +19,10 @@ router = APIRouter(prefix="/api/ai")
 async def draft_email(data: DraftEmailRequest, request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+
+    # Enforce AI draft limit
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_ai_limit(tenant_id, subscription)
 
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
@@ -155,6 +160,8 @@ Return ONLY valid JSON: {{"subject": "email subject line", "body": "email body t
         }
 
     except json.JSONDecodeError:
+        # Track usage even on JSON parse fail (AI was still called)
+        await track_ai_usage(tenant_id)
         return {
             "subject": f"Introduction - {profile.get('athlete_name', '')} | Class of {profile.get('grad_year', '')} {profile.get('position', '')}",
             "body": response_text,
