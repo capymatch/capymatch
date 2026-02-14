@@ -24,6 +24,7 @@ export default function Layout({ user }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
+  const [showAssistant, setShowAssistant] = useState(false);
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
