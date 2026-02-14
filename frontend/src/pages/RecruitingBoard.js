@@ -95,6 +95,19 @@ function StatusBadge({ value, colorMap }) {
   );
 }
 
+/* ── Read-only due date badge ── */
+function DueDateBadge({ value }) {
+  if (!value) return <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>—</span>;
+  const now = new Date();
+  const due = new Date(value);
+  const daysUntil = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+  const formatted = due.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  let colorClass = "text-slate-300";
+  if (daysUntil < 0) colorClass = "text-red-400 font-semibold";
+  else if (daysUntil <= 14) colorClass = "text-orange-400 font-semibold";
+  return <span className={`text-[11px] ${colorClass}`} data-testid="due-date-display">{formatted}</span>;
+}
+
 /* ── Inline editable components ── */
 function InlineSelect({ value, options, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
