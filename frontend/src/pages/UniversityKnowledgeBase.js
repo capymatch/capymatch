@@ -337,112 +337,74 @@ export default function UniversityKnowledgeBase() {
   );
 }
 
-function UniversityCard({ uni, adding, addToBoard }) {
-  const divColor = {
+function UniversityRow({ uni, adding, addToBoard }) {
+  const divBadge = {
     D1: "bg-emerald-500/20 text-emerald-400",
     D2: "bg-blue-500/20 text-blue-400",
     D3: "bg-violet-500/20 text-violet-400",
     NAIA: "bg-orange-500/20 text-orange-400",
     JUCO: "bg-yellow-500/20 text-yellow-400",
   }[uni.division] || "bg-gray-500/20 text-gray-400";
-  const divFull = uni.division === "D1" ? "NCAA I" : uni.division === "D2" ? "NCAA II" : uni.division === "D3" ? "NCAA III" : uni.division;
 
   return (
     <div
-      className="rounded-lg p-5 transition-all duration-200 group shadow-sm border"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      className="grid grid-cols-[2.5fr_1fr_1.2fr_1fr_auto] gap-4 items-center px-4 h-10 border-b transition-colors"
+      style={{ borderColor: "var(--t-border)" }}
+      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
+      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
       data-testid={`kb-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
-            {uni.division}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-heading font-bold text-lg leading-tight" style={{ color: "var(--t-text)" }}>{uni.university_name}</h3>
-            <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-              {uni.region && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5" /> {uni.region}
-                </span>
-              )}
-              {uni.conference && (
-                <span className="flex items-center gap-1">
-                  <Building2 className="w-3.5 h-3.5" /> {divFull} | {uni.conference}
-                </span>
-              )}
-            </div>
-            {/* Coach Info */}
-            {(uni.primary_coach || uni.recruiting_coordinator) && (
-              <div className="flex items-center gap-4 mt-2 text-xs flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-                {uni.primary_coach && (
-                  <span className="flex items-center gap-1" data-testid="coach-info">
-                    <User className="w-3 h-3" /> {uni.primary_coach}
-                    {uni.coach_email && (
-                      <a href={`mailto:${uni.coach_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coach_email}>
-                        <Mail className="w-3 h-3" />
-                      </a>
-                    )}
-                  </span>
-                )}
-                {uni.recruiting_coordinator && (
-                  <span className="flex items-center gap-1" data-testid="coordinator-info">
-                    <User className="w-3 h-3 opacity-60" /> {uni.recruiting_coordinator} <span className="opacity-50">(RC)</span>
-                    {uni.coordinator_email && (
-                      <a href={`mailto:${uni.coordinator_email}`} className="text-purple-400 hover:text-purple-300 ml-1" title={uni.coordinator_email}>
-                        <Mail className="w-3 h-3" />
-                      </a>
-                    )}
-                  </span>
-                )}
-              </div>
+      {/* Name + Division */}
+      <div className="flex items-center gap-2 min-w-0">
+        <button
+          onClick={() => addToBoard(uni)}
+          disabled={adding[uni.university_name]}
+          className="font-medium text-[13px] truncate transition-colors hover:text-purple-400"
+          style={{ color: "var(--t-text)" }}
+          data-testid={`program-link-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+        >
+          {uni.university_name}
+        </button>
+        <span className={`inline-block px-1.5 py-px rounded text-[9px] font-bold flex-shrink-0 ${divBadge}`}>
+          {uni.division}
+        </span>
+      </div>
+
+      {/* Region */}
+      <span className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{uni.region || "—"}</span>
+
+      {/* Conference */}
+      <span className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{uni.conference || "—"}</span>
+
+      {/* Coach */}
+      <div className="flex items-center gap-1 min-w-0">
+        {uni.primary_coach ? (
+          <>
+            <span className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{uni.primary_coach}</span>
+            {uni.coach_email && (
+              <a href={`mailto:${uni.coach_email}`} className="text-purple-400 hover:text-purple-300 flex-shrink-0" title={uni.coach_email}>
+                <Mail className="w-3 h-3" />
+              </a>
             )}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => addToBoard(uni)}
-            disabled={adding[uni.university_name]}
-            data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-            className="text-xs h-8 gap-1.5 transition-colors"
-            style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
-          >
-            <BookmarkPlus className="w-3.5 h-3.5" />
-            {adding[uni.university_name] ? "Adding..." : "Add to Board"}
-          </Button>
-          {uni.website && (
-            <a
-              href={uni.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-testid={`visit-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-              className="inline-flex items-center gap-1.5 px-3 h-8 text-xs border rounded-md transition-colors"
-              style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
-            >
-              <ExternalLink className="w-3.5 h-3.5" /> Visit
-            </a>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-2 mt-3 flex-wrap">
-        {uni.division && (
-          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${divColor}`}>
-            <Trophy className="w-3 h-3" /> {uni.division}
-          </span>
-        )}
-        {uni.region && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>
-            <MapPin className="w-3 h-3" /> {uni.region}
-          </span>
-        )}
-        {uni.mascot && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>
-            {uni.mascot}
-          </span>
+          </>
+        ) : (
+          <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>—</span>
         )}
       </div>
+
+      {/* Add to Board */}
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => addToBoard(uni)}
+        disabled={adding[uni.university_name]}
+        data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+        className="text-[11px] h-7 px-2.5 gap-1 transition-colors"
+        style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+      >
+        <BookmarkPlus className="w-3 h-3" />
+        {adding[uni.university_name] ? "Adding..." : "Add"}
+      </Button>
     </div>
   );
 }
