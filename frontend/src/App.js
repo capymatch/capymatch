@@ -21,6 +21,7 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import { Toaster } from "./components/ui/sonner";
+import { SubscriptionProvider } from "./lib/subscription";
 import api from "./lib/api";
 import "./App.css";
 
@@ -82,9 +83,11 @@ function AppRouter() {
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+      <SubscriptionProvider>
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </SubscriptionProvider>
       <Toaster richColors position="top-right" />
     </ThemeProvider>
   );
