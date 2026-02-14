@@ -317,7 +317,7 @@ export default function Layout({ user }) {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl transition-colors hover:bg-[var(--t-surface-alt)]"
+                className="flex items-center gap-2 lg:gap-2.5 px-1.5 lg:px-2 py-1.5 rounded-xl transition-colors hover:bg-[var(--t-surface-alt)]"
                 data-testid="profile-dropdown-trigger"
               >
                 <Avatar className="w-8 h-8 ring-2 ring-purple-500/20">
