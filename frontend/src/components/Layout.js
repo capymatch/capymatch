@@ -156,7 +156,7 @@ export default function Layout({ user }) {
         >
           <div className="flex items-center gap-3" data-testid="header-page-title">
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/settings": "Settings", "/profile": "Profile" };
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/settings": "Settings", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
