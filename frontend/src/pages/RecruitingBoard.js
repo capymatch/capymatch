@@ -281,11 +281,16 @@ function ProgramCard({ p, navigate, matchScore }) {
                 )}
               </div>
             )}
-            {/* Status + Reply info row */}
-            <div className="flex items-center gap-3 lg:gap-4 mt-2 text-[11px] lg:text-xs">
-              <span className={statusColor}>Status: {p.recruiting_status || "Not Contacted"}</span>
-              <span className={replyColor}>Reply: {p.reply_status || "No Reply"}</span>
-            </div>
+            {/* Key date alert inline on mobile */}
+            {p.next_action_due && (
+              <div className="flex items-center gap-1.5 mt-1.5 lg:hidden">
+                {isOverdue ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-400"><AlertCircle className="w-3 h-3" />Overdue since {dueDateFormatted}</span>
+                ) : isDueSoon ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400"><Clock className="w-3 h-3" />Due {dueDateFormatted}</span>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
         {/* Right side: Journey button + context */}
