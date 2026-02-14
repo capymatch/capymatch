@@ -156,38 +156,62 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         {/* Active Schools */}
-        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(99, 102, 241, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
-          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
+        <div className="rounded-xl p-4 lg:p-5 border flex items-center gap-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #f48fb1, #e8628a)", boxShadow: "0 4px 14px rgba(232,98,138,0.3)" }}>
+            <GraduationCap className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{totalSchools}</p>
+            <p className="text-xs lg:text-sm" style={{ color: "var(--t-text-muted)" }}>Active Schools</p>
+          </div>
         </div>
 
         {/* Offers Received — celebration style when > 0 */}
         {offersCount > 0 ? (
-          <div className="rounded-xl p-4 lg:p-5 border relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(251,191,36,0.18) 0%, rgba(245,158,11,0.10) 100%)", borderColor: "rgba(251,191,36,0.35)" }} data-testid="offers-card-celebration">
-            <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full" style={{ background: "radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%)" }} />
-            <div className="flex items-center gap-2">
-              <p className="text-2xl lg:text-3xl font-bold text-amber-400">{offersCount}</p>
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+          <div className="rounded-xl p-4 lg:p-5 border flex items-center gap-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(255,193,7,0.12) 0%, rgba(255,152,0,0.06) 100%)", borderColor: "rgba(255,193,7,0.25)" }} data-testid="offers-card-celebration">
+            <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #ffe082, #ffc107)", boxShadow: "0 4px 14px rgba(255,193,7,0.3)" }}>
+              <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
             </div>
-            <p className="text-xs lg:text-sm mt-1 text-amber-300/80 font-medium">Offers Received</p>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl lg:text-3xl font-bold text-amber-400">{offersCount}</p>
+                <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
+              </div>
+              <p className="text-xs lg:text-sm text-amber-300/80 font-medium">Offers Received</p>
+            </div>
           </div>
         ) : (
-          <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(139, 92, 246, 0.1)", borderColor: "var(--t-border)" }}>
-            <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>0</p>
-            <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
+          <div className="rounded-xl p-4 lg:p-5 border flex items-center gap-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+            <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #ffe082, #ffc107)", boxShadow: "0 4px 14px rgba(255,193,7,0.15)" }}>
+              <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>0</p>
+              <p className="text-xs lg:text-sm" style={{ color: "var(--t-text-muted)" }}>Offers Received</p>
+            </div>
           </div>
         )}
 
         {/* Follow-ups Overdue */}
-        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: reminders.length > 0 ? "rgba(251, 146, 60, 0.15)" : "rgba(251, 146, 60, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-2xl lg:text-3xl font-bold" style={{ color: reminders.length > 0 ? "#f97316" : "var(--t-text)" }}>{reminders.length}</p>
-          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Follow-ups Overdue</p>
+        <div className="rounded-xl p-4 lg:p-5 border flex items-center gap-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: reminders.length > 0 ? "linear-gradient(135deg, #ef9a9a, #ef5350)" : "linear-gradient(135deg, #ef9a9a, #ef5350)", boxShadow: "0 4px 14px rgba(239,83,80,0.3)" }}>
+            <AlertTriangle className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-2xl lg:text-3xl font-bold" style={{ color: reminders.length > 0 ? "#ef5350" : "var(--t-text)" }}>{reminders.length}</p>
+            <p className="text-xs lg:text-sm" style={{ color: "var(--t-text-muted)" }}>Follow-ups Overdue</p>
+          </div>
         </div>
 
         {/* Profile Views */}
-        <div className="rounded-xl p-4 lg:p-5 border" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", borderColor: "var(--t-border)" }}>
-          <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews?.this_week || 0}</p>
-          <p className="text-xs lg:text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>Profile Views (7d)</p>
+        <div className="rounded-xl p-4 lg:p-5 border flex items-center gap-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #80cbc4, #26a69a)", boxShadow: "0 4px 14px rgba(38,166,154,0.3)" }}>
+            <Eye className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-2xl lg:text-3xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews?.this_week || 0}</p>
+            <p className="text-xs lg:text-sm" style={{ color: "var(--t-text-muted)" }}>Profile Views (7d)</p>
+          </div>
         </div>
       </div>
 
