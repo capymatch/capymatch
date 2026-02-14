@@ -278,6 +278,86 @@ export default function AthleteProfileQuiz() {
     );
   }
 
+  // ─── Intro Screen ───
+  if (isIntro) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="quiz-intro">
+        <div className="w-full max-w-xl">
+          {/* Progress header */}
+          <div className="mb-10">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-purple-500">Your Volleyball Journey</span>
+            </div>
+            <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
+              <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-500" style={{ width: "0%" }} />
+            </div>
+            <div className="flex gap-1.5 justify-center mt-2.5">
+              {QUESTIONS.map((_, i) => (
+                <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--t-border)" }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Intro Card */}
+          <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+            
+            {/* Icon */}
+            <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center text-5xl" 
+              style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.15), rgba(139,92,246,0.1))", boxShadow: "0 0 40px rgba(168,85,247,0.1)" }}>
+              🏐
+            </div>
+
+            {/* Title */}
+            <h1 className="text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
+              Let's Build Your <span className="bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent">Volleyball Journey</span>
+            </h1>
+            <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+              Answer 7 quick questions so we can match you with the right volleyball programs and coaches.
+            </p>
+
+            {/* Benefits */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-purple-500/10">
+                  <Target className="w-5 h-5 text-purple-400" />
+                </div>
+                <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Personalized Matches</p>
+                <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>See schools that fit your playing style & goals</p>
+              </div>
+              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-emerald-500/10">
+                  <Clock className="w-5 h-5 text-emerald-400" />
+                </div>
+                <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Save Time</p>
+                <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>Skip programs that aren't a good fit</p>
+              </div>
+              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-blue-500/10">
+                  <Shield className="w-5 h-5 text-blue-400" />
+                </div>
+                <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Private & Secure</p>
+                <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>Your info is never shared without permission</p>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="text-center">
+              <Button onClick={next}
+                className="bg-purple-600 hover:bg-purple-700 text-white h-12 px-10 text-sm font-semibold shadow-lg shadow-purple-500/20"
+                data-testid="quiz-start-btn">
+                Get Started <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+              <p className="text-[11px] mt-4 flex items-center justify-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
+                <Clock className="w-3 h-3" /> Takes about 2 minutes
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ─── Quiz Steps ───
   return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="athlete-quiz">
