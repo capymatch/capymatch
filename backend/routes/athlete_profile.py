@@ -183,6 +183,7 @@ async def get_match_scores(request: Request):
             "region": p.get("region"),
             "match_score": pct,
             "match_reasons": list(set(match_reasons)),
+        })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
     return {"scores": scores, "profile_exists": True}
