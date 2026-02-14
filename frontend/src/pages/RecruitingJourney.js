@@ -642,15 +642,6 @@ export default function RecruitingJourney() {
             </div>
           </div>
 
-          {/* Interest Level */}
-          <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="interest-meter">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Target className="w-4 h-4 text-purple-400" />Interest Level</h3>
-            <div className="space-y-3">
-              <InterestMeter label="Your Interest" value={program.athlete_interest || 5} onChange={v => updateProgram({ athlete_interest: v })} icon={Heart} color="text-red-400" />
-              <InterestMeter label="School's Interest" value={program.school_interest || 0} onChange={v => updateProgram({ school_interest: v })} icon={GraduationCap} color="text-purple-400" />
-            </div>
-          </div>
-
           {/* Key Dates */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-dates-panel">
             <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Calendar className="w-4 h-4 text-purple-400" />Key Dates</h3>
