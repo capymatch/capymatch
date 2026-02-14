@@ -405,7 +405,7 @@ export default function CalendarPage() {
       {/* My Calendar Tab */}
       {activeTab === "calendar" && (
         <div className="mt-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Calendar Grid */}
         <div className="lg:col-span-8">
           <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
