@@ -57,6 +57,7 @@ export default function UniversityKnowledgeBase() {
     try {
       await api.post("/knowledge-base/add-to-board", { university_name: uni.university_name });
       toast.success(`${uni.university_name} added to your board`);
+      setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
     } catch (err) {
       toast.error(err.response?.data?.detail || "Failed to add");
     } finally {
