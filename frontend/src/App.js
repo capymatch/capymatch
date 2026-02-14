@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./lib/theme";
+import { useState, useEffect } from "react";
 import Layout from "./components/Layout";
 import RecruitingBoard from "./pages/RecruitingBoard";
 import RecruitingJourney from "./pages/RecruitingJourney";
@@ -15,10 +16,32 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import { Toaster } from "./components/ui/sonner";
+import api from "./lib/api";
 import "./App.css";
 
 // Auth bypassed: static user for public access
 const PUBLIC_USER = { user_id: "user_public_default", name: "Athlete", email: "athlete@recruitinghq.app", picture: "" };
+
+function OnboardingGate({ children }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    api.get("/recruiting-profile").then(res => {
+      if (cancelled) return;
+      if (!res.data?.questionnaire_completed) {
+        navigate("/onboarding", { replace: true });
+      }
+      setChecked(true);
+    }).catch(() => { if (!cancelled) setChecked(true); });
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!checked) return null;
+  return children;
+}
 
 function AppRouter() {
   return (
@@ -26,7 +49,7 @@ function AppRouter() {
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/onboarding" element={<AthleteProfileQuiz />} />
-      <Route path="/" element={<Layout user={PUBLIC_USER} />}>
+      <Route path="/" element={<OnboardingGate><Layout user={PUBLIC_USER} /></OnboardingGate>}>
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
         <Route path="pipeline" element={<RecruitingBoard />} />
