@@ -574,7 +574,7 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Next Step Hero ─── */}
-      <NextStepHero program={program} coaches={coaches} onSendEmail={openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} />
+      <NextStepHero program={program} coaches={coaches} onSendEmail={openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
       {showLogForm && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} />}
