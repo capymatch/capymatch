@@ -104,7 +104,22 @@ def apply_automation_rules(existing, updates):
 # ─── Programs CRUD ───
 
 @router.get("/programs")
-async def list_programs(request: Request, recruiting_status: Optional[str] = None, division: Optional[str] = None, region: Optional[str] = None, priority: Optional[str] = None, search: Optional[str] = None):
+async def list_programs(
+    request: Request, 
+    recruiting_status: Optional[str] = None, 
+    division: Optional[str] = None, 
+    region: Optional[str] = None, 
+    priority: Optional[str] = None, 
+    search: Optional[str] = None,
+    grouped: Optional[bool] = False
+):
+    """
+    List programs. If grouped=true, returns programs categorized into dynamic groups:
+    - action_required: Default catch-all (overdue, needs response, stale)
+    - upcoming: Follow-up within next 14 days
+    - in_progress: Recently contacted (7 days) or active conversation
+    - closed: Explicitly closed/committed statuses
+    """
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     query = {"tenant_id": tenant_id}
@@ -118,7 +133,10 @@ async def list_programs(request: Request, recruiting_status: Optional[str] = Non
         query["priority"] = priority
     if search:
         query["university_name"] = {"$regex": search, "$options": "i"}
+    
     programs = await db.programs.find(query, {"_id": 0}).to_list(1000)
+    
+    # Enrich with coach data
     for p in programs:
         coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(50)
         primary_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
@@ -127,6 +145,27 @@ async def list_programs(request: Request, recruiting_status: Optional[str] = Non
         p["coach_email"] = primary_coach.get("email", "") if primary_coach else ""
         p["recruiting_coordinator"] = coordinator.get("coach_name", "") if coordinator else ""
         p["coordinator_email"] = coordinator.get("email", "") if coordinator else ""
+        # Add dynamic group category
+        p["board_group"] = categorize_program(p)
+    
+    if grouped:
+        # Return programs organized by group
+        groups = {
+            "action_required": [],
+            "upcoming": [],
+            "in_progress": [],
+            "closed": []
+        }
+        for p in programs:
+            group = p.get("board_group", "action_required")
+            if group in groups:
+                groups[group].append(p)
+        return {
+            "groups": groups,
+            "counts": {k: len(v) for k, v in groups.items()},
+            "total": len(programs)
+        }
+    
     return programs
 
 
