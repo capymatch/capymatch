@@ -419,11 +419,11 @@ export default function RecruitingBoard() {
               {!isCollapsed && (
                 <>
                   {isEmpty ? (
-                    <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>
+                    <div className="py-4 text-center text-xs ml-6 lg:ml-8" style={{ color: "var(--t-text-muted)" }}>
                       No programs in this group
                     </div>
                   ) : (
-                    <div className="space-y-5">
+                    <div className="ml-6 lg:ml-8 space-y-4">
                       {groupPrograms.map((p) => (
                         <ProgramCard
                           key={p.program_id}
