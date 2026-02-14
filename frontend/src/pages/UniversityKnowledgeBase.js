@@ -222,7 +222,7 @@ export default function UniversityKnowledgeBase() {
                   </SelectTrigger>
                   <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="all">Any</SelectItem>
-                    {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                    {regions.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -234,9 +234,9 @@ export default function UniversityKnowledgeBase() {
                   <SelectTrigger data-testid="kb-filter-conference" className="h-9 text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
-                  <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+                  <SelectContent className="max-h-60" style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
                     <SelectItem value="all">Any</SelectItem>
-                    {CONFERENCES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    {conferences.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
