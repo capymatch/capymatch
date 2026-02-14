@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiting HQ - Design Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: #1a1f2e; color: #e2e8f0; display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 260px; flex-shrink: 0;
+    background: #202940;
+    margin: 16px; border-radius: 16px;
+    padding: 24px 16px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.05);
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 50;
+  }
+  .sidebar-brand {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 8px 24px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .brand-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(195deg, #ec407a, #d81b60);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: white; font-weight: 800;
+    box-shadow: 0 4px 12px rgba(236,64,122,0.4);
+  }
+  .brand-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
+  .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #718096; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; color: #a0aec0;
+    cursor: pointer; transition: all 0.2s; margin-bottom: 4px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
+  .nav-item.active {
+    background: linear-gradient(195deg, #ec407a, #d81b60);
+    color: white; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(236,64,122,0.4);
+  }
+  .nav-icon { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  /* ── Main ── */
+  .main { flex: 1; margin-left: 292px; padding: 24px 32px; overflow-y: auto; }
+
+  /* ── Header ── */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .header-left span { font-size: 14px; color: #718096; }
+  .header-left strong { font-size: 14px; color: #e2e8f0; font-weight: 600; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(195deg, #ec407a, #d81b60);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white; font-weight: 700;
+  }
+  .header-notif {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #202940; border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: #a0aec0; font-size: 16px; cursor: pointer;
+    position: relative;
+  }
+  .notif-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #ec407a;
+    position: absolute; top: 6px; right: 6px;
+  }
+
+  /* ── Stat Cards ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+  .stat-card {
+    background: #202940; border-radius: 14px; padding: 20px 20px 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    position: relative; margin-top: 24px;
+  }
+  .stat-icon {
+    position: absolute; top: -20px; left: 20px;
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: white;
+  }
+  .stat-icon.pink { background: linear-gradient(195deg, #ec407a, #d81b60); box-shadow: 0 4px 16px rgba(236,64,122,0.45); }
+  .stat-icon.blue { background: linear-gradient(195deg, #49a3f1, #1A73E8); box-shadow: 0 4px 16px rgba(26,115,232,0.45); }
+  .stat-icon.green { background: linear-gradient(195deg, #66BB6A, #43A047); box-shadow: 0 4px 16px rgba(67,160,71,0.45); }
+  .stat-icon.orange { background: linear-gradient(195deg, #FFA726, #FB8C00); box-shadow: 0 4px 16px rgba(251,140,0,0.45); }
+  .stat-icon.amber { background: linear-gradient(195deg, #FFA726, #FB8C00); box-shadow: 0 4px 16px rgba(251,140,0,0.45); }
+
+  .stat-content { text-align: right; padding-top: 4px; }
+  .stat-label { font-size: 12px; color: #718096; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: #fff; margin-top: 2px; }
+  .stat-footer {
+    border-top: 1px solid rgba(255,255,255,0.06); margin-top: 14px; padding-top: 12px;
+    font-size: 12px; color: #718096; display: flex; align-items: center; gap: 6px;
+  }
+  .stat-footer .up { color: #66BB6A; font-weight: 600; }
+  .stat-footer .down { color: #EF5350; font-weight: 600; }
+
+  /* ── Chart Card ── */
+  .chart-card {
+    background: #202940; border-radius: 14px; padding: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    margin-bottom: 32px; margin-top: 40px; position: relative;
+  }
+  .chart-header-bar {
+    position: absolute; top: -28px; left: 20px; right: 20px;
+    background: linear-gradient(195deg, #42424a, #191919);
+    border-radius: 12px; padding: 20px 24px 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    min-height: 180px; display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .chart-placeholder {
+    height: 120px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative; display: flex; align-items: flex-end; gap: 2px; padding: 0 8px;
+  }
+  .chart-bar {
+    flex: 1; border-radius: 4px 4px 0 0; transition: height 0.3s;
+    background: linear-gradient(to top, rgba(236,64,122,0.6), rgba(236,64,122,0.2));
+  }
+  .chart-months {
+    display: flex; justify-content: space-between; padding: 8px 8px 0;
+    font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;
+  }
+  .chart-body { padding-top: 170px; }
+  .chart-title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; }
+  .chart-sub { font-size: 13px; color: #718096; margin-top: 4px; }
+  .chart-tabs { display: flex; gap: 8px; margin-top: 12px; }
+  .chart-tab {
+    padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .chart-tab.active { background: linear-gradient(195deg, #ec407a, #d81b60); color: white; box-shadow: 0 2px 8px rgba(236,64,122,0.4); }
+  .chart-tab:not(.active) { background: rgba(255,255,255,0.05); color: #a0aec0; }
+
+  /* ── Bottom Grid ── */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .list-card {
+    background: #202940; border-radius: 14px; padding: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .list-card-title {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .list-card-title a { font-size: 12px; color: #ec407a; font-family: 'DM Sans', sans-serif; font-weight: 500; text-decoration: none; }
+
+  .list-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .list-info { flex: 1; min-width: 0; }
+  .list-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .list-sub { font-size: 11px; color: #718096; margin-top: 1px; }
+  .list-badge {
+    font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+    white-space: nowrap;
+  }
+  .badge-overdue { background: rgba(239,83,80,0.15); color: #EF5350; }
+  .badge-due { background: rgba(255,167,38,0.15); color: #FFA726; }
+  .badge-offer { background: rgba(236,64,122,0.15); color: #ec407a; }
+
+  /* Event list */
+  .event-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-bar { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+  .event-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .event-date { font-size: 11px; color: #718096; }
+  .event-type {
+    font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+    margin-left: auto; white-space: nowrap;
+  }
+  .type-meeting { background: rgba(73,163,241,0.15); color: #49a3f1; }
+  .type-tournament { background: rgba(255,167,38,0.15); color: #FFA726; }
+  .type-camp { background: rgba(236,64,122,0.15); color: #ec407a; }
+
+  /* ── Mockup Label ── */
+  .mockup-label {
+    position: fixed; bottom: 20px; right: 20px; z-index: 999;
+    background: linear-gradient(195deg, #ec407a, #d81b60);
+    color: white; padding: 10px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: 0 4px 16px rgba(236,64,122,0.5);
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">R</div>
+    <div>
+      <div class="brand-name">RECRUITING HQ</div>
+      <div class="brand-sub">Pro Edition</div>
+    </div>
+  </div>
+
+  <div class="nav-item active"><span class="nav-icon">&#9632;</span> Dashboard</div>
+  <div class="nav-item"><span class="nav-icon">&#9776;</span> Pipeline</div>
+  <div class="nav-item"><span class="nav-icon">&#128197;</span> Calendar</div>
+  <div class="nav-item"><span class="nav-icon">&#9993;</span> Inbox</div>
+  <div class="nav-item"><span class="nav-icon">&#9745;</span> Tasks</div>
+  <div class="nav-item"><span class="nav-icon">&#127891;</span> Schools</div>
+  <div class="nav-item"><span class="nav-icon">&#128200;</span> Analytics</div>
+  <div class="nav-item" style="margin-top: auto;"><span class="nav-icon">&#9881;</span> Settings</div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <span>Pages /</span>
+      <strong>Dashboard</strong>
+    </div>
+    <div class="header-right">
+      <div class="header-notif">&#128276;<div class="notif-dot"></div></div>
+      <div class="header-notif">&#9993;</div>
+      <div class="header-avatar">A</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon pink">&#127952;</div>
+      <div class="stat-content">
+        <div class="stat-label">Active Schools</div>
+        <div class="stat-value">14</div>
+      </div>
+      <div class="stat-footer"><span class="up">+3</span> added this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">&#127942;</div>
+      <div class="stat-content">
+        <div class="stat-label">Offers Received</div>
+        <div class="stat-value">1</div>
+      </div>
+      <div class="stat-footer"><span class="up">&#10024;</span> Tampa University</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orange">&#9888;</div>
+      <div class="stat-content">
+        <div class="stat-label">Follow-ups Overdue</div>
+        <div class="stat-value">1</div>
+      </div>
+      <div class="stat-footer"><span class="down">&#9203;</span> Needs your attention</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">&#128065;</div>
+      <div class="stat-content">
+        <div class="stat-label">Profile Views (7d)</div>
+        <div class="stat-value">6</div>
+      </div>
+      <div class="stat-footer"><span class="up">+2</span> vs last week</div>
+    </div>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="chart-card">
+    <div class="chart-header-bar">
+      <div class="chart-placeholder">
+        <div class="chart-bar" style="height: 70%"></div>
+        <div class="chart-bar" style="height: 40%"></div>
+        <div class="chart-bar" style="height: 60%"></div>
+        <div class="chart-bar" style="height: 80%"></div>
+        <div class="chart-bar" style="height: 50%"></div>
+        <div class="chart-bar" style="height: 90%"></div>
+        <div class="chart-bar" style="height: 45%"></div>
+        <div class="chart-bar" style="height: 70%"></div>
+        <div class="chart-bar" style="height: 55%"></div>
+        <div class="chart-bar" style="height: 65%"></div>
+        <div class="chart-bar" style="height: 85%"></div>
+        <div class="chart-bar" style="height: 75%"></div>
+      </div>
+      <div class="chart-months">
+        <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+        <span>May</span><span>Jun</span><span>Jul</span><span>Aug</span>
+      </div>
+    </div>
+    <div class="chart-body">
+      <div class="chart-title">Recruiting Activity</div>
+      <div class="chart-sub">Emails, calls, and interactions per month</div>
+      <div class="chart-tabs">
+        <div class="chart-tab active">All Activity</div>
+        <div class="chart-tab">Emails</div>
+        <div class="chart-tab">Calls</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Grid -->
+  <div class="bottom-grid">
+    <!-- Schools Requiring Action -->
+    <div class="list-card">
+      <div class="list-card-title">
+        Schools Requiring Action
+        <a href="#">View all &#8250;</a>
+      </div>
+      <div class="list-item">
+        <div class="list-avatar" style="background: linear-gradient(195deg, #49a3f1, #1A73E8);">C</div>
+        <div class="list-info">
+          <div class="list-name">Creighton University</div>
+          <div class="list-sub">Contacted &middot; D1 &middot; Big East</div>
+        </div>
+        <div class="list-badge badge-overdue">Overdue Feb 10</div>
+      </div>
+      <div class="list-item">
+        <div class="list-avatar" style="background: linear-gradient(195deg, #ec407a, #d81b60);">T</div>
+        <div class="list-info">
+          <div class="list-name">Tampa University</div>
+          <div class="list-sub">Offer Received &middot; D2</div>
+        </div>
+        <div class="list-badge badge-offer">Offer!</div>
+      </div>
+      <div class="list-item">
+        <div class="list-avatar" style="background: linear-gradient(195deg, #66BB6A, #43A047);">B</div>
+        <div class="list-info">
+          <div class="list-name">Baylor University</div>
+          <div class="list-sub">Contacted &middot; D1 &middot; Big 12</div>
+        </div>
+        <div class="list-badge badge-due">Due Feb 26</div>
+      </div>
+      <div class="list-item">
+        <div class="list-avatar" style="background: linear-gradient(195deg, #FFA726, #FB8C00);">B</div>
+        <div class="list-info">
+          <div class="list-name">Berry College</div>
+          <div class="list-sub">Contacted &middot; D3 &middot; SAA</div>
+        </div>
+        <div class="list-badge badge-due">Due Feb 26</div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="list-card">
+      <div class="list-card-title">
+        Upcoming Events
+        <a href="#">View all &#8250;</a>
+      </div>
+      <div class="event-item">
+        <div class="event-bar" style="background: #49a3f1;"></div>
+        <div class="list-info">
+          <div class="event-name">Baylor Decision Call</div>
+          <div class="event-date">Mar 8 &middot; Zoom</div>
+        </div>
+        <div class="event-type type-meeting">Meeting</div>
+      </div>
+      <div class="event-item">
+        <div class="event-bar" style="background: #FFA726;"></div>
+        <div class="list-info">
+          <div class="event-name">Triple Crown NIT</div>
+          <div class="event-date">Mar 14 - 16 &middot; Kansas City, MO</div>
+        </div>
+        <div class="event-type type-tournament">Tournament</div>
+      </div>
+      <div class="event-item">
+        <div class="event-bar" style="background: #ec407a;"></div>
+        <div class="list-info">
+          <div class="event-name">Baylor Spring Clinic</div>
+          <div class="event-date">Mar 15 - 16 &middot; Waco, TX</div>
+        </div>
+        <div class="event-type type-camp">Camp</div>
+      </div>
+      <div class="event-item">
+        <div class="event-bar" style="background: #FFA726;"></div>
+        <div class="list-info">
+          <div class="event-name">USAV Girls Junior National</div>
+          <div class="event-date">Apr 10 - 13 &middot; Indianapolis, IN</div>
+        </div>
+        <div class="event-type type-tournament">Tournament</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mockup-label">DESIGN MOCKUP - Recruiting HQ</div>
+
+</body>
+</html>
