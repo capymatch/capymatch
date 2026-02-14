@@ -9,6 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
 import { toast } from "sonner";
 import Tour from "../components/Tour";
+import SubscriptionBadge from "../components/SubscriptionBadge";
+import { useSubscription } from "../lib/subscription";
 
 export default function Layout({ user }) {
   const navigate = useNavigate();
@@ -199,9 +201,12 @@ export default function Layout({ user }) {
           ))}
         </nav>
 
-        {/* Admin Link */}
+        {/* Subscription Badge + Admin Link */}
         <div className="px-4 pb-2 mt-auto">
-          <div className="border-t mb-2" style={{ borderColor: "rgba(255,255,255,0.15)" }} />
+          <div className="border-t mb-3" style={{ borderColor: "rgba(255,255,255,0.15)" }} />
+          <div className={`mb-2 ${sidebarCollapsed ? 'lg:flex lg:justify-center' : ''}`}>
+            <SubscriptionBadge collapsed={sidebarCollapsed} />
+          </div>
           <NavLink
             to="/admin"
             data-testid="nav-admin"
