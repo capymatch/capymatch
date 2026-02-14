@@ -9,5 +9,25 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// Track subscription error listeners
+let subscriptionErrorHandler = null;
+
+export function onSubscriptionError(handler) {
+  subscriptionErrorHandler = handler;
+}
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const detail = error?.response?.data?.detail;
+    if (error?.response?.status === 403 && detail?.error === "subscription_limit") {
+      if (subscriptionErrorHandler) {
+        subscriptionErrorHandler(detail);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
 export { API_BASE, BACKEND_URL };
