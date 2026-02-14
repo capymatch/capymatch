@@ -103,6 +103,11 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
     - Timeline header: compact "Log"/"Email" buttons
     - Sidebar cards (AI Insights, Coaches, Key Dates, Follow-up): full-width single column on mobile
 
+- [x] **RECRUITING BOARD CARD CLEANUP** (Feb 14, 2026)
+  - Removed redundant "Status" and "Reply" text from program cards
+  - Added inline mobile key date alerts (overdue/due soon) for visibility
+  - Cards now show: school name, division, match score, region, conference, coach, group badge, key dates, Journey button
+
 ## Prioritized Backlog
 
 ### P1 - NCAA Recruiting Timeline
