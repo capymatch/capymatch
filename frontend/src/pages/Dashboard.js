@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [gmailConnected, setGmailConnected] = useState(false);
   const [onboardingDismissed, setOnboardingDismissed] = useState(() => localStorage.getItem("onboarding_dismissed") === "true");
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { subscription } = useSubscription();
   const navigate = useNavigate();
 
   useEffect(() => {
