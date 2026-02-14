@@ -71,6 +71,8 @@ function AppRouter() {
         <Route path="programs/:programId" element={<ProgramDetail />} />
         <Route path="inbox" element={<Inbox />} />
         <Route path="analytics" element={<Analytics />} />
+        <Route path="outreach-analysis" element={<OutreachAnalysis />} />
+        <Route path="highlight-advisor" element={<HighlightAdvisor />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
