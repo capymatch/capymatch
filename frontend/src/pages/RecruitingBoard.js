@@ -570,8 +570,8 @@ export default function RecruitingBoard() {
                     <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>No programs in this stage</div>
                   ) : (
                     <>
-                      <ColumnHeaders />
-                      <div className="space-y-1.5">
+                      <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface)" }}>
+                        <ColumnHeaders />
                         {stagePrograms.map((p) => (
                           <ProgramRow
                             key={p.program_id}
