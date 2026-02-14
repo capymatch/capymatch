@@ -561,20 +561,16 @@ export default function RecruitingBoard() {
                   {isEmpty ? (
                     <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>No programs in this stage</div>
                   ) : (
-                    <>
-                      <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface)" }}>
-                        <ColumnHeaders />
-                        {stagePrograms.map((p) => (
-                          <ProgramRow
-                            key={p.program_id}
-                            p={p}
-                            navigate={navigate}
-                            handleInlineUpdate={handleInlineUpdate}
-                            matchScore={matchScores[p.program_id]}
-                          />
-                        ))}
-                      </div>
-                    </>
+                    <div className="space-y-2">
+                      {stagePrograms.map((p) => (
+                        <ProgramCard
+                          key={p.program_id}
+                          p={p}
+                          navigate={navigate}
+                          matchScore={matchScores[p.program_id]}
+                        />
+                      ))}
+                    </div>
                   )}
                 </>
               )}
