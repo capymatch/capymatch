@@ -210,12 +210,19 @@ async def get_suggested_schools(request: Request):
     pref_size = profile.get("school_size") or ""
 
     region_aliases = {
-        "West Coast": ["West", "Pacific"],
-        "Mountain West": ["West", "Mountain West"],
-        "Southwest": ["South Central", "Southwest"],
-        "Northeast": ["Northeast", "East"],
-        "Southeast": ["Southeast"],
-        "Midwest": ["Midwest", "Great Lakes"],
+        "West Coast": ["West"],
+        "West": ["West"],
+        "Mountain West": ["West", "Central"],
+        "Southwest": ["South", "South Central"],
+        "South": ["South", "South Central", "Southeast"],
+        "South Central": ["South", "South Central"],
+        "Northeast": ["Northeast", "East", "Atlantic"],
+        "East": ["East", "Atlantic", "Northeast"],
+        "Atlantic": ["Atlantic", "East"],
+        "Southeast": ["Southeast", "South"],
+        "Midwest": ["Midwest", "Great Lakes", "Central"],
+        "Central": ["Central", "Midwest"],
+        "Great Lakes": ["Great Lakes", "Midwest"],
     }
 
     suggestions = []
