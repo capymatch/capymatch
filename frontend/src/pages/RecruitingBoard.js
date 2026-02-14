@@ -159,10 +159,10 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
   const { counts = {}, total = 0 } = groupedData;
   
   return (
-    <div className="flex items-center gap-1.5 p-1.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
+    <div className="flex items-center gap-1 lg:gap-1.5 p-1.5 rounded-lg border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
       <div
         onClick={() => onFocusGroup(null)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-md justify-center cursor-pointer transition-all ${!activeFilter ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+        className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
         data-testid="funnel-all"
       >
         <span className={`text-xs font-medium ${!activeFilter ? "text-purple-400" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
@@ -176,11 +176,11 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
           <div
             key={group.key}
             onClick={() => onFocusGroup(group.key)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-md flex-1 justify-center cursor-pointer transition-all ${isActive ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+            className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${group.key}`}
           >
             <Icon className={`w-3.5 h-3.5 ${group.text}`} />
-            <span className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>{group.label}</span>
+            <span className="text-xs font-medium hidden sm:inline" style={{ color: "var(--t-text-secondary)" }}>{group.label}</span>
             <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
