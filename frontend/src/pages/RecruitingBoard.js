@@ -249,7 +249,7 @@ function PipelineFunnel({ programs, onFocusSection, activeFilter }) {
 }
 
 /* ── Program Row ── */
-function ProgramRow({ p, navigate, handleInlineUpdate }) {
+function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
   // Due date color logic
   const getDueDateStyle = () => {
     if (!p.next_action_due) return {};
@@ -260,6 +260,10 @@ function ProgramRow({ p, navigate, handleInlineUpdate }) {
     if (daysUntil <= 14) return { color: "#f97316", fontWeight: 600 }; // orange - 10-14 days
     return { color: "var(--t-text-secondary)" }; // white/normal
   };
+
+  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+    : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
+    : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
   return (
     <div
