@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
-import { STATUS_GROUPS, RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS } from "../lib/constants";
+import { RECRUITING_STATUSES, REPLY_STATUSES, PRIORITIES, DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  ChevronDown, ChevronRight, Search, Plus, Target,
-  Send, MessageCircle, Trophy, Archive, ExternalLink, Sparkles,
-  MapPin, Building2, User, Mail, AlertCircle
+  ChevronDown, ChevronRight, Search, Plus, AlertTriangle,
+  Clock, Activity, Archive, Sparkles,
+  MapPin, Building2, User, Mail, AlertCircle, CheckCircle2
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
@@ -15,6 +15,50 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "../components/ui/label";
 import { toast } from "sonner";
 
+/* ── New Dynamic Board Groups ── */
+const BOARD_GROUPS = [
+  { 
+    key: "action_required", 
+    label: "Action Required", 
+    icon: AlertTriangle, 
+    color: "from-rose-500 to-red-500", 
+    bg: "bg-rose-50 dark:bg-rose-500/15", 
+    text: "text-rose-700 dark:text-rose-400", 
+    border: "border-l-rose-500",
+    description: "Overdue, needs response, or stale"
+  },
+  { 
+    key: "upcoming", 
+    label: "Upcoming", 
+    icon: Clock, 
+    color: "from-amber-500 to-orange-500", 
+    bg: "bg-amber-50 dark:bg-amber-500/15", 
+    text: "text-amber-700 dark:text-amber-400", 
+    border: "border-l-amber-500",
+    description: "Follow-up due within 14 days"
+  },
+  { 
+    key: "in_progress", 
+    label: "In Progress", 
+    icon: Activity, 
+    color: "from-emerald-500 to-teal-500", 
+    bg: "bg-emerald-50 dark:bg-emerald-500/15", 
+    text: "text-emerald-700 dark:text-emerald-400", 
+    border: "border-l-emerald-500",
+    description: "Recently contacted or active conversation"
+  },
+  { 
+    key: "closed", 
+    label: "Closed", 
+    icon: Archive, 
+    color: "from-gray-400 to-slate-400", 
+    bg: "bg-gray-50 dark:bg-gray-500/15", 
+    text: "text-gray-600 dark:text-gray-300", 
+    border: "border-l-gray-400",
+    description: "Not a fit, committed, or archived"
+  },
+];
+
 /* ── Visual config ── */
 const DIVISION_BADGE = {
   D1: "bg-emerald-50 text-emerald-700 border border-emerald-200 ring-1 ring-emerald-100",
@@ -22,21 +66,6 @@ const DIVISION_BADGE = {
   D3: "bg-violet-50 text-violet-700 border border-violet-200 ring-1 ring-violet-100",
   NAIA: "bg-orange-50 text-orange-700 border border-orange-200",
   JUCO: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-};
-
-const PIPELINE = [
-  { key: "not_contacted", label: "Not Contacted", icon: Target, color: "from-rose-500 to-pink-500", bg: "bg-rose-50 dark:bg-rose-500/15", text: "text-rose-700 dark:text-rose-400", border: "border-l-rose-500", dot: "bg-rose-400", statuses: ["Not Contacted"] },
-  { key: "contacted", label: "Contacted", icon: Send, color: "from-amber-500 to-orange-500", bg: "bg-amber-50 dark:bg-amber-500/15", text: "text-amber-700 dark:text-amber-400", border: "border-l-amber-500", dot: "bg-amber-400", statuses: ["Contacted", "No Response Yet", "Video Viewed", "Applied"] },
-  { key: "active", label: "Active", icon: MessageCircle, color: "from-blue-500 to-cyan-500", bg: "bg-blue-50 dark:bg-blue-500/15", text: "text-blue-700 dark:text-blue-300", border: "border-l-blue-500", dot: "bg-blue-400", statuses: ["Some Interest", "Active Conversation", "Camp Attended"] },
-  { key: "offers", label: "Offers", icon: Trophy, color: "from-emerald-500 to-teal-500", bg: "bg-emerald-50 dark:bg-emerald-500/15", text: "text-emerald-700 dark:text-emerald-400", border: "border-l-emerald-500", dot: "bg-emerald-400", statuses: ["Offer / Commit Talk", "Offer Received", "Committed"] },
-  { key: "closed", label: "Closed", icon: Archive, color: "from-gray-400 to-slate-400", bg: "bg-gray-50 dark:bg-gray-500/15", text: "text-gray-600 dark:text-gray-300", border: "border-l-gray-400", dot: "bg-gray-400", statuses: ["Not a Fit / Closed", "Not Interested"] },
-];
-
-const PRIORITY_DOT = {
-  Low: "bg-gray-300",
-  Medium: "bg-blue-400",
-  High: "bg-orange-400",
-  "Very High": "bg-red-500 animate-pulse",
 };
 
 /* ── Color maps ── */
@@ -64,126 +93,6 @@ const PRIORITY_INLINE_COLORS = {
   "High": { color: "text-orange-400" },
   "Very High": { color: "text-red-400" },
 };
-
-const ACTION_COLORS = {
-  "Send Email": { bg: "bg-sky-200", text: "text-sky-800", hover: "hover:bg-sky-300" },
-  "Follow Up": { bg: "bg-violet-200", text: "text-violet-800", hover: "hover:bg-violet-300" },
-  "Send Video": { bg: "bg-pink-200", text: "text-pink-800", hover: "hover:bg-pink-300" },
-  "Schedule Visit": { bg: "bg-teal-200", text: "text-teal-800", hover: "hover:bg-teal-300" },
-  "Application": { bg: "bg-amber-200", text: "text-amber-800", hover: "hover:bg-amber-300" },
-  "Phone Call": { bg: "bg-emerald-200", text: "text-emerald-800", hover: "hover:bg-emerald-300" },
-  "Other": { bg: "bg-gray-200", text: "text-gray-700", hover: "hover:bg-gray-300" },
-};
-
-function getColorMap(options) {
-  if (options === RECRUITING_STATUSES) return STATUS_COLORS;
-  if (options === REPLY_STATUSES) return REPLY_COLORS;
-  if (options === PRIORITIES) return PRIORITY_INLINE_COLORS;
-  if (options === NEXT_ACTIONS) return ACTION_COLORS;
-  return null;
-}
-
-
-/* ── Read-only status badge ── */
-function StatusBadge({ value, colorMap }) {
-  const color = colorMap && value ? colorMap[value] : null;
-  return (
-    <span
-      className={`text-[11px] font-semibold ${color ? color.color : "text-gray-500"}`}
-      data-testid={`status-badge-${(value || "").replace(/\s+/g, "-").toLowerCase()}`}
-    >
-      {value || "—"}
-    </span>
-  );
-}
-
-/* ── Read-only due date badge ── */
-function DueDateBadge({ value }) {
-  if (!value) return <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>—</span>;
-  const now = new Date();
-  const due = new Date(value);
-  const daysUntil = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-  const formatted = due.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  let colorClass = "text-slate-300";
-  if (daysUntil < 0) colorClass = "text-red-400 font-semibold";
-  else if (daysUntil <= 14) colorClass = "text-orange-400 font-semibold";
-  return <span className={`text-[11px] ${colorClass}`} data-testid="due-date-display">{formatted}</span>;
-}
-
-/* ── Inline editable components ── */
-function InlineSelect({ value, options, onChange }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = React.useRef(null);
-  const colorMap = getColorMap(options);
-
-  React.useEffect(() => {
-    function handleClick(e) {
-      if (ref.current && !ref.current.contains(e.target)) setIsOpen(false);
-    }
-    if (isOpen) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [isOpen]);
-
-  const currentColor = colorMap && value ? colorMap[value] : null;
-
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`rounded-md px-2.5 py-1 text-xs font-medium cursor-pointer transition-all whitespace-nowrap flex items-center gap-1 ${
-          currentColor
-            ? `${currentColor.bg} ${currentColor.text} ${currentColor.hover} shadow-sm`
-            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-        }`}
-      >
-        {value || "Select"}
-        <svg className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""} ${currentColor ? "opacity-70" : "opacity-40"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      {isOpen && (
-        <div className="absolute z-50 mt-1 left-0 min-w-[190px] rounded-xl border p-3 flex flex-col gap-2 animate-in fade-in-0 zoom-in-95 duration-100" style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)", boxShadow: "var(--t-dropdown-shadow)" }}>
-          <button
-            type="button"
-            onClick={() => { onChange(""); setIsOpen(false); }}
-            className="w-full text-left px-3 py-2 text-xs rounded-lg transition-colors border-b pb-3 mb-1"
-            style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }}
-          >
-            - Clear -
-          </button>
-          {options.map((o) => {
-            const c = colorMap ? colorMap[o] : null;
-            return (
-              <button
-                key={o}
-                type="button"
-                onClick={() => { onChange(o); setIsOpen(false); }}
-                className={`w-full text-left px-3 py-2.5 text-xs font-medium rounded-lg transition-all ${
-                  c
-                    ? `${c.bg} ${c.text} ${c.hover}`
-                    : `text-gray-700 hover:bg-gray-50 ${value === o ? "bg-gray-100 font-semibold" : ""}`
-                }`}
-              >
-                {o}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function InlineDateInput({ value, onChange, style: extraStyle }) {
-  return (
-    <input
-      type="date"
-      value={value || ""}
-      onChange={(e) => onChange(e.target.value)}
-      className="t-input border rounded-md px-2 py-1 text-xs focus:outline-none cursor-pointer transition-all"
-      style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)", ...extraStyle }}
-    />
-  );
-}
 
 /* ── Add Program Dialog ── */
 function AddProgramDialog({ onAdd }) {
@@ -245,30 +154,33 @@ function AddProgramDialog({ onAdd }) {
   );
 }
 
-/* ── Pipeline Funnel ── */
-function PipelineFunnel({ programs, onFocusSection, activeFilter }) {
+/* ── Group Funnel Summary ── */
+function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
+  const { counts = {}, total = 0 } = groupedData;
+  
   return (
-    <div className="flex items-center gap-2 p-2 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
+    <div className="flex items-center gap-2 p-2 rounded-xl border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
       <div
-        onClick={() => onFocusSection(null)}
+        onClick={() => onFocusGroup(null)}
         className={`flex items-center gap-3 px-5 py-4 rounded-lg justify-center cursor-pointer transition-all ${!activeFilter ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
         data-testid="funnel-all"
       >
         <span className={`text-sm font-medium ${!activeFilter ? "text-purple-400" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
-        <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{programs.length}</span>
+        <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
       </div>
-      {PIPELINE.map((stage) => {
-        const count = programs.filter((p) => stage.statuses.includes(p.recruiting_status)).length;
-        const isActive = activeFilter === stage.key;
+      {BOARD_GROUPS.map((group) => {
+        const count = counts[group.key] || 0;
+        const isActive = activeFilter === group.key;
+        const Icon = group.icon;
         return (
           <div
-            key={stage.key}
-            onClick={() => onFocusSection(stage.key)}
+            key={group.key}
+            onClick={() => onFocusGroup(group.key)}
             className={`flex items-center gap-3 px-5 py-4 rounded-lg flex-1 justify-center cursor-pointer transition-all ${isActive ? "ring-1 ring-purple-500 bg-purple-500/10" : "hover:bg-[var(--t-surface-alt)]"}`}
-            data-testid={`funnel-${stage.key}`}
+            data-testid={`funnel-${group.key}`}
           >
-            <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${stage.color} flex-shrink-0`} />
-            <span className="text-sm font-medium" style={{ color: "var(--t-text-secondary)" }}>{stage.label}</span>
+            <Icon className={`w-4 h-4 ${group.text}`} />
+            <span className="text-sm font-medium" style={{ color: "var(--t-text-secondary)" }}>{group.label}</span>
             <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
@@ -292,12 +204,24 @@ function ProgramCard({ p, navigate, matchScore }) {
     : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
     : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
+  // Due date logic
   const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-  const dueDateColor = daysUntil !== null && daysUntil < 0 ? "text-red-400" : daysUntil !== null && daysUntil <= 14 ? "text-orange-400" : "text-slate-400";
+  const isOverdue = daysUntil !== null && daysUntil < 0;
+  const isDueSoon = daysUntil !== null && daysUntil >= 0 && daysUntil <= 14;
 
   const statusColor = STATUS_COLORS[p.recruiting_status]?.color || "text-gray-500";
-  const priorityColor = PRIORITY_INLINE_COLORS[p.priority]?.color || "text-gray-500";
+  const replyColor = REPLY_COLORS[p.reply_status]?.color || "text-gray-500";
+
+  // Group-specific context badge
+  const groupBadge = {
+    action_required: { icon: AlertTriangle, color: "text-rose-400 bg-rose-500/10 border-rose-500/20", label: isOverdue ? "Overdue" : "Needs Attention" },
+    upcoming: { icon: Clock, color: "text-amber-400 bg-amber-500/10 border-amber-500/20", label: `Due ${dueDateFormatted}` },
+    in_progress: { icon: Activity, color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20", label: "Active" },
+    closed: { icon: Archive, color: "text-gray-400 bg-gray-500/10 border-gray-500/20", label: p.recruiting_status },
+  }[p.board_group] || {};
+
+  const GroupIcon = groupBadge.icon;
 
   return (
     <div
@@ -311,7 +235,7 @@ function ProgramCard({ p, navigate, matchScore }) {
             {p.division || "—"}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => navigate(`/programs/${p.program_id}`)}
                 data-testid={`program-link-${p.program_id}`}
@@ -325,8 +249,15 @@ function ProgramCard({ p, navigate, matchScore }) {
                   {matchScore.match_score}%
                 </span>
               )}
+              {/* Group context badge */}
+              {GroupIcon && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium border ${groupBadge.color}`}>
+                  <GroupIcon className="w-3 h-3" />
+                  {groupBadge.label}
+                </span>
+              )}
             </div>
-            {/* School info - same as Schools page */}
+            {/* School info */}
             <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
               {p.region && (
                 <span className="flex items-center gap-1">
@@ -350,6 +281,11 @@ function ProgramCard({ p, navigate, matchScore }) {
                 )}
               </div>
             )}
+            {/* Status + Reply info row */}
+            <div className="flex items-center gap-4 mt-2 text-xs">
+              <span className={statusColor}>Status: {p.recruiting_status || "Not Contacted"}</span>
+              <span className={replyColor}>Reply: {p.reply_status || "No Reply"}</span>
+            </div>
           </div>
         </div>
         {/* Right side: key dates + Journey */}
@@ -362,13 +298,35 @@ function ProgramCard({ p, navigate, matchScore }) {
             <Sparkles className="w-3.5 h-3.5" />
             Journey
           </button>
-          {p.next_action_due && (
-            <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
+          {/* Show action context based on group */}
+          {p.board_group === "action_required" && p.next_action_due && (
+            <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
               <div className="flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 text-orange-400" />
-                <span className="text-xs font-medium text-orange-300">Follow-up due {dueDateFormatted}</span>
+                <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                <span className="text-xs font-medium text-rose-300">
+                  {isOverdue ? `Overdue since ${dueDateFormatted}` : `Due ${dueDateFormatted}`}
+                </span>
               </div>
               {p.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{p.next_action}</p>}
+            </div>
+          )}
+          {p.board_group === "upcoming" && p.next_action_due && (
+            <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-xs font-medium text-amber-300">Follow-up due {dueDateFormatted}</span>
+              </div>
+              {p.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{p.next_action}</p>}
+            </div>
+          )}
+          {p.board_group === "in_progress" && (
+            <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-xs font-medium text-emerald-300">
+                  {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
+                </span>
+              </div>
             </div>
           )}
         </div>
@@ -377,53 +335,9 @@ function ProgramCard({ p, navigate, matchScore }) {
   );
 }
 
-/* ── Quick Add Row ── */
-function QuickAddRow({ onAdd }) {
-  const [name, setName] = useState("");
-  const [adding, setAdding] = useState(false);
-
-  const handleAdd = async () => {
-    if (!name.trim()) return;
-    setAdding(true);
-    try {
-      await api.post("/programs", { university_name: name.trim() });
-      toast.success(`${name.trim()} added`);
-      setName("");
-      onAdd();
-    } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to add");
-    } finally {
-      setAdding(false);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleAdd();
-    if (e.key === "Escape") setName("");
-  };
-
-  return (
-    <div className="flex items-center gap-2 px-4 py-2.5 mt-1">
-      <Plus className="w-4 h-4 text-gray-300 flex-shrink-0" strokeWidth={1.5} />
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onBlur={() => { if (name.trim()) handleAdd(); }}
-        placeholder="Add university name"
-        disabled={adding}
-        data-testid="quick-add-input"
-        className="bg-transparent text-sm placeholder:opacity-40 focus:opacity-100 outline-none border-none w-64 py-0.5"
-        style={{ color: "var(--t-text-secondary)" }}
-      />
-    </div>
-  );
-}
-
 /* ── Main Board ── */
 export default function RecruitingBoard() {
-  const [programs, setPrograms] = useState([]);
+  const [groupedData, setGroupedData] = useState({ groups: {}, counts: {}, total: 0 });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterDivision, setFilterDivision] = useState("all");
@@ -445,8 +359,8 @@ export default function RecruitingBoard() {
     }).catch(() => {});
   }, []);
 
-  // Filter to show only one status section (or all)
-  const focusSection = (key) => {
+  // Focus on a specific group
+  const focusGroup = (key) => {
     if (key === null || activeFilter === key) {
       setActiveFilter(null);
       setCollapsed({});
@@ -456,22 +370,22 @@ export default function RecruitingBoard() {
     }
   };
 
-  // Auto-focus section from URL hash (when coming from Dashboard)
+  // Auto-focus group from URL hash
   useEffect(() => {
     if (!loading && location.hash) {
-      const sectionId = location.hash.replace("#", "");
-      focusSection(sectionId);
+      const groupId = location.hash.replace("#", "");
+      focusGroup(groupId);
     }
   }, [loading, location.hash]);
 
   const fetchPrograms = async () => {
     try {
-      const params = {};
+      const params = { grouped: true };
       if (search) params.search = search;
       if (filterDivision && filterDivision !== "all") params.division = filterDivision;
       if (filterRegion && filterRegion !== "all") params.region = filterRegion;
       const res = await api.get("/programs", { params });
-      setPrograms(res.data);
+      setGroupedData(res.data);
     } catch {
       toast.error("Failed to load programs");
     } finally {
@@ -480,15 +394,6 @@ export default function RecruitingBoard() {
   };
 
   useEffect(() => { fetchPrograms(); }, [search, filterDivision, filterRegion]);
-
-  const handleInlineUpdate = async (programId, field, value) => {
-    try {
-      await api.put(`/programs/${programId}`, { [field]: value });
-      fetchPrograms();
-    } catch {
-      toast.error("Update failed");
-    }
-  };
 
   const toggleSection = (key) => setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -503,6 +408,8 @@ export default function RecruitingBoard() {
     );
   }
 
+  const { groups = {} } = groupedData;
+
   return (
     <div data-testid="recruiting-board" className="space-y-6">
       {/* Header */}
@@ -510,8 +417,8 @@ export default function RecruitingBoard() {
         <AddProgramDialog onAdd={fetchPrograms} />
       </div>
 
-      {/* Pipeline Funnel */}
-      <PipelineFunnel programs={programs} onFocusSection={focusSection} activeFilter={activeFilter} />
+      {/* Group Funnel */}
+      <GroupFunnel groupedData={groupedData} onFocusGroup={focusGroup} activeFilter={activeFilter} />
 
       {/* Divider */}
       <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
@@ -553,23 +460,24 @@ export default function RecruitingBoard() {
       {/* Divider */}
       <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
-      {/* Sections */}
+      {/* Groups */}
       <div>
-        {PIPELINE.map((stage, stageIdx) => {
-          // Hide sections not matching the active filter
-          if (activeFilter && activeFilter !== stage.key) return null;
+        {BOARD_GROUPS.map((group, groupIdx) => {
+          // Hide groups not matching the active filter
+          if (activeFilter && activeFilter !== group.key) return null;
 
-          const stagePrograms = programs.filter((p) => stage.statuses.includes(p.recruiting_status));
-          const isCollapsed = collapsed[stage.key];
-          const isEmpty = stagePrograms.length === 0;
+          const groupPrograms = groups[group.key] || [];
+          const isCollapsed = collapsed[group.key];
+          const isEmpty = groupPrograms.length === 0;
+          const Icon = group.icon;
 
           return (
-            <div key={stage.key} id={`pipeline-${stage.key}`} data-testid={`section-${stage.key}`}>
-              {/* Section Header — standalone divider */}
+            <div key={group.key} id={`group-${group.key}`} data-testid={`section-${group.key}`}>
+              {/* Section Header */}
               <button
-                onClick={() => toggleSection(stage.key)}
-                data-testid={`toggle-${stage.key}`}
-                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${stageIdx === 0 ? "" : "mt-14"} border-l-4 ${stage.border}`}
+                onClick={() => toggleSection(group.key)}
+                data-testid={`toggle-${group.key}`}
+                className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl border transition-all duration-200 mb-4 ${groupIdx === 0 ? "" : "mt-14"} border-l-4 ${group.border}`}
                 style={{ backgroundColor: isEmpty ? "var(--t-surface-alt)" : "var(--t-section-bg)", borderColor: "var(--t-border)" }}
               >
                 {isCollapsed ? (
@@ -577,26 +485,28 @@ export default function RecruitingBoard() {
                 ) : (
                   <ChevronDown className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
                 )}
-                <span className={`font-heading font-bold text-xl tracking-wide ${isEmpty ? "" : stage.text}`} style={{ color: isEmpty ? "var(--t-text-muted)" : undefined }}>
-                  {stage.label === "Not Contacted" ? "Active - Not Contacted" :
-                   stage.label === "Contacted" ? "Contacted - Awaiting Reply" :
-                   stage.label === "Active" ? "Active Conversations" :
-                   stage.label === "Offers" ? "Offers / Serious Interest" :
-                   "Closed / Archived"}
-                </span>
-                <Badge className={`ml-auto ${isEmpty ? "bg-gray-100 text-gray-400" : `${stage.bg} ${stage.text}`} text-xs px-2 py-0.5 font-bold`}>
-                  {stagePrograms.length}
+                <Icon className={`w-5 h-5 ${isEmpty ? "text-gray-400" : group.text}`} />
+                <div className="flex flex-col items-start">
+                  <span className={`font-heading font-bold text-xl tracking-wide ${isEmpty ? "" : group.text}`} style={{ color: isEmpty ? "var(--t-text-muted)" : undefined }}>
+                    {group.label}
+                  </span>
+                  <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{group.description}</span>
+                </div>
+                <Badge className={`ml-auto ${isEmpty ? "bg-gray-100 text-gray-400" : `${group.bg} ${group.text}`} text-xs px-2 py-0.5 font-bold`}>
+                  {groupPrograms.length}
                 </Badge>
               </button>
 
-              {/* Column headers + rows — separate from the section header */}
+              {/* Programs in this group */}
               {!isCollapsed && (
                 <>
                   {isEmpty ? (
-                    <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>No programs in this stage</div>
+                    <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>
+                      No programs in this group
+                    </div>
                   ) : (
                     <div className="space-y-5">
-                      {stagePrograms.map((p) => (
+                      {groupPrograms.map((p) => (
                         <ProgramCard
                           key={p.program_id}
                           p={p}
