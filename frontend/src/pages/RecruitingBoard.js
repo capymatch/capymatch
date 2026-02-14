@@ -278,7 +278,7 @@ export default function RecruitingBoard() {
           const isEmpty = groupPrograms.length === 0;
 
           return (
-            <div key={group.key} id={`group-${group.key}`} data-testid={`section-${group.key}`}>
+            <div key={group.key} id={`group-${group.key}`} data-testid={`section-${group.key}`} className="pb-2">
               {/* Accordion header */}
               <button
                 onClick={() => toggleSection(group.key)}
