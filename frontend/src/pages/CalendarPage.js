@@ -253,6 +253,7 @@ function EventModal({ onClose, onSaved, editEvent, programs }) {
 
 // ─── Main Calendar ───
 export default function CalendarPage() {
+  const [activeTab, setActiveTab] = useState("calendar");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [programs, setPrograms] = useState([]);
   const [events, setEvents] = useState([]);
