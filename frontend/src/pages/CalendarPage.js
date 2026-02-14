@@ -445,7 +445,7 @@ export default function CalendarPage() {
             {/* Calendar Days */}
             <div className="grid grid-cols-7">
               {Array.from({ length: startPadding }).map((_, i) => (
-                <div key={`pad-${i}`} className="h-28 p-2 border-b border-r" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }} />
+                <div key={`pad-${i}`} className="h-20 p-3 border-b border-r" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }} />
               ))}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
@@ -457,36 +457,25 @@ export default function CalendarPage() {
                   <div
                     key={day}
                     onClick={() => handleDayClick(day)}
-                    className={`h-28 p-2 border-b border-r transition-colors cursor-pointer ${
+                    className={`h-20 p-3 border-b border-r transition-colors cursor-pointer hover:bg-pink-600/5 ${
                       isToday(day) ? "bg-pink-600/10" : isSelected ? "bg-pink-600/5" : ""
                     }`}
                     style={{ borderColor: "var(--t-border)" }}
                     data-testid={`calendar-day-${day}`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`text-sm font-medium ${isToday(day) ? "text-pink-600" : ""}`}
+                    <div className="flex items-center justify-between">
+                      <span className={`text-sm font-medium ${isToday(day) ? "text-pink-500 font-semibold" : ""}`}
                         style={{ color: isToday(day) ? undefined : "var(--t-text-secondary)" }}>
                         {day}
                       </span>
                       {dayEvents.length > 0 && (
-                        <span className="w-5 h-5 rounded-full bg-pink-600/20 text-pink-600 text-[10px] font-bold flex items-center justify-center">
-                          {dayEvents.length}
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-0.5">
-                      {dayEvents.slice(0, 2).map((evt, idx) => (
-                        <div
-                          key={idx}
-                          onClick={(e) => { e.stopPropagation(); handleEditEvent(evt); }}
-                          className={`${evt._color} text-white text-[10px] px-1.5 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity`}
-                        >
-                          {evt._type === "event" ? evt.title : evt.university_name?.split(" ").slice(0, 2).join(" ")}
-                        </div>
-                      ))}
-                      {dayEvents.length > 2 && (
-                        <div className="text-[10px] px-1.5" style={{ color: "var(--t-text-muted)" }}>
-                          +{dayEvents.length - 2} more
+                        <div className="flex gap-0.5">
+                          {dayEvents.slice(0, 4).map((evt, idx) => (
+                            <span key={idx} className={`w-2 h-2 rounded-full ${evt._color}`} />
+                          ))}
+                          {dayEvents.length > 4 && (
+                            <span className="text-[9px] text-gray-400 ml-0.5">+{dayEvents.length - 4}</span>
+                          )}
                         </div>
                       )}
                     </div>
