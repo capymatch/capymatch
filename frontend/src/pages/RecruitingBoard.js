@@ -419,21 +419,21 @@ export default function RecruitingBoard() {
       <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
 
       {/* Filters */}
-      <div className="flex items-center gap-3 border rounded-xl p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-wrap items-center gap-2 lg:gap-3 border rounded-xl p-2 lg:p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
           <Input
             data-testid="board-search"
             placeholder="Search universities..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 border rounded-lg"
+            className="pl-9 border rounded-lg text-sm"
             style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
-        <div className="w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
+        <div className="hidden lg:block w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
         <Select value={filterDivision} onValueChange={setFilterDivision}>
-          <SelectTrigger data-testid="filter-division" className="w-36 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+          <SelectTrigger data-testid="filter-division" className="w-28 lg:w-36 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
             <SelectValue placeholder="Division" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
@@ -442,7 +442,7 @@ export default function RecruitingBoard() {
           </SelectContent>
         </Select>
         <Select value={filterRegion} onValueChange={setFilterRegion}>
-          <SelectTrigger data-testid="filter-region" className="w-40 rounded-lg" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+          <SelectTrigger data-testid="filter-region" className="w-28 lg:w-40 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
             <SelectValue placeholder="Region" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
