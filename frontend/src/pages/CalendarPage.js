@@ -378,13 +378,13 @@ export default function CalendarPage() {
             className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors flex items-center gap-2 ${activeTab === "calendar" ? "bg-purple-600 text-white" : ""}`}
             style={activeTab !== "calendar" ? { color: "var(--t-text-muted)" } : {}}
             data-testid="tab-my-calendar">
-            <Calendar className="w-4 h-4" />My Calendar
+            <Calendar className="w-4 h-4" /><span>My Calendar</span>
           </button>
           <button onClick={() => setActiveTab("ncaa")}
             className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors flex items-center gap-2 ${activeTab === "ncaa" ? "bg-purple-600 text-white" : ""}`}
             style={activeTab !== "ncaa" ? { color: "var(--t-text-muted)" } : {}}
             data-testid="tab-ncaa-timeline">
-            <GraduationCap className="w-4 h-4" />NCAA Timeline
+            <GraduationCap className="w-4 h-4" /><span>NCAA Timeline</span>
           </button>
         </div>
         {activeTab === "calendar" && (
