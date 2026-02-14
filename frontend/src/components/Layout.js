@@ -180,17 +180,14 @@ export default function Layout({ user }) {
         <div className="hidden lg:block p-4 border-t" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white ${sidebarCollapsed ? 'justify-center px-3' : ''}`}
+            className={`w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white`}
             data-testid="sidebar-collapse-btn"
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {sidebarCollapsed ? (
               <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
             ) : (
-              <>
-                <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
-                <span>Collapse</span>
-              </>
+              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             )}
           </button>
         </div>
