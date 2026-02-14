@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
-from shared.db import db
-from shared.auth import get_current_user, get_tenant_id
+from database import db
+from auth import get_current_user, get_tenant_id
 from datetime import datetime, timezone
 
 router = APIRouter()
