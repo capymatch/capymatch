@@ -400,11 +400,11 @@ export default function CalendarPage() {
       </div>
 
       {/* NCAA Timeline Tab */}
-      {activeTab === "ncaa" && <div className="mt-2"><NcaaTimeline /></div>}
+      {activeTab === "ncaa" && <div className="mt-6"><NcaaTimeline /></div>}
 
       {/* My Calendar Tab */}
       {activeTab === "calendar" && (
-        <>
+        <div className="mt-6">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Calendar Grid */}
         <div className="lg:col-span-8">
