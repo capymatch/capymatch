@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_school_limit, enforce_feature
 from models import ProgramCreate, ProgramUpdate, CoachCreate, CoachUpdate, InteractionCreate, MarkFollowUpSent
 import uuid
 
@@ -187,6 +188,9 @@ async def get_program(program_id: str, request: Request):
 async def create_program(data: ProgramCreate, request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    # Enforce school limit based on subscription
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_school_limit(tenant_id, subscription)
     existing = await db.programs.find_one({"tenant_id": tenant_id, "university_name": data.university_name}, {"_id": 0})
     if existing:
         raise HTTPException(status_code=400, detail="University already on your board")
@@ -527,6 +531,9 @@ async def get_recruiting_insights(request: Request):
     """Compute data-driven recruiting insights from interactions and programs."""
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    # Gate behind Pro+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "recruiting_insights", "Recruiting Insights", "pro")
 
     interactions = await db.interactions.find(
         {"tenant_id": tenant_id}, {"_id": 0}
