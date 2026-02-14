@@ -267,13 +267,13 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
 
   return (
     <div
-      className="group grid grid-cols-[2fr_0.5fr_1.2fr_1.2fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
+      className="group grid grid-cols-[2.5fr_1.2fr_1.2fr_1fr_0.8fr_0.6fr] gap-1 items-center px-4 py-3 border rounded-lg mb-1.5 transition-all duration-200 cursor-default"
       style={{ backgroundColor: "var(--t-row-bg)", borderColor: "var(--t-border)" }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-hover)"}
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--t-row-bg)"}
       data-testid={`program-row-${p.program_id}`}
     >
-      {/* University Name */}
+      {/* University Name + Division Badge */}
       <div className="flex items-center gap-2 min-w-0">
         <div className={`w-1.5 h-8 rounded-full flex-shrink-0 ${PRIORITY_DOT[p.priority] || "bg-gray-200"}`} />
         <div className="min-w-0 flex-1">
@@ -286,8 +286,13 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
             >
               {p.university_name}
             </button>
+            {p.division && (
+              <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold flex-shrink-0 ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
+                {p.division}
+              </span>
+            )}
             {matchScore && (
-              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+              <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
                 {matchScore.match_score}%
               </span>
             )}
@@ -296,31 +301,24 @@ function ProgramRow({ p, navigate, handleInlineUpdate, matchScore }) {
         </div>
       </div>
 
-      {/* Division */}
+      {/* Status (read-only) */}
       <div>
-        <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${DIVISION_BADGE[p.division] || "bg-gray-100 text-gray-600"}`}>
-          {p.division}
-        </span>
+        <StatusBadge value={p.recruiting_status} colorMap={STATUS_COLORS} />
       </div>
 
-      {/* Status */}
+      {/* Reply (read-only) */}
       <div>
-        <InlineSelect value={p.recruiting_status} options={RECRUITING_STATUSES} onChange={(v) => handleInlineUpdate(p.program_id, "recruiting_status", v)} />
+        <StatusBadge value={p.reply_status} colorMap={REPLY_COLORS} />
       </div>
 
-      {/* Reply */}
-      <div>
-        <InlineSelect value={p.reply_status} options={REPLY_STATUSES} onChange={(v) => handleInlineUpdate(p.program_id, "reply_status", v)} />
-      </div>
-
-      {/* Due Date (color-coded) */}
+      {/* Due Date */}
       <div>
         <InlineDateInput value={p.next_action_due} onChange={(v) => handleInlineUpdate(p.program_id, "next_action_due", v)} style={getDueDateStyle()} />
       </div>
 
-      {/* Priority */}
+      {/* Priority (read-only) */}
       <div>
-        <InlineSelect value={p.priority} options={PRIORITIES} onChange={(v) => handleInlineUpdate(p.program_id, "priority", v)} />
+        <StatusBadge value={p.priority} colorMap={PRIORITY_INLINE_COLORS} />
       </div>
 
       {/* Actions */}
