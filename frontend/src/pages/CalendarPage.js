@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { ChevronLeft, ChevronRight, Clock, Plus, X, MapPin, Calendar, Trash2, Edit3, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, Plus, X, MapPin, Calendar, Trash2, Edit3, Loader2, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
+import NcaaTimeline from "./NcaaTimeline";
 
 const EVENT_TYPES = ["Camp", "Showcase", "Tournament", "Visit", "Tryout", "Meeting", "Deadline", "Other"];
 const EVENT_COLORS = {
