@@ -323,19 +323,19 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
   const step = getNextStep();
 
   return (
-    <div className={`rounded-2xl border-l-[3px] border p-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
+    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${step.urgent ? "border-l-orange-500" : "border-l-purple-500"}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
-      <div className="flex items-center gap-5">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
         <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-purple-500/10"}`}>
           {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-purple-400" />}
         </div>
         <div className="flex-1 min-w-0">
           <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-purple-400"}`}>Next Step</p>
-          <p className="text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
+          <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
           <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
         </div>
         <div className="flex gap-2.5 flex-shrink-0">
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-5 shadow-lg shadow-purple-500/20"
+          <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-purple-500/20 flex-1 sm:flex-initial"
             onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
             {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
             {step.action}
