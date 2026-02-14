@@ -363,37 +363,32 @@ export default function Dashboard() {
 
         {/* Profile Views */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="profile-views-widget">
-          <div className="flex items-center gap-2 px-4 lg:px-5 py-3 lg:py-4 flex-wrap">
+          <div className="flex items-center gap-2 px-4 lg:px-5 py-3 lg:py-4">
             <Eye className="w-4 h-4 text-emerald-500" />
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Views</h4>
-            {profileViews && (
-              <div className="flex gap-2 lg:gap-3 ml-auto">
-                <span className="text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-medium">Today: {profileViews.today}</span>
-                <span className="text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">Week: {profileViews.this_week}</span>
-              </div>
-            )}
           </div>
-          {profileViews && profileViews.views.length > 0 ? (
-            <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
-              {profileViews.views.slice(0, 4).map((v, i) => (
-                <div key={i} className="flex items-center gap-4 px-5 py-3">
-                  <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-faint)" }} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
-                      {v.referer ? (() => { try { return new URL(v.referer).hostname; } catch { return "Unknown"; } })() : "Direct visit"}
-                      {v.is_edu && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500">.edu</span>}
-                    </p>
-                  </div>
-                  <span className="text-xs flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>
-                    {new Date(v.viewed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
-                  </span>
+          {profileViews && profileViews.total > 0 ? (
+            <div className="px-4 lg:px-5 pb-4 lg:pb-5">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-lg p-3 text-center" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                  <p className="text-xl font-bold text-emerald-400">{profileViews.today}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Today</p>
                 </div>
-              ))}
+                <div className="rounded-lg p-3 text-center" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                  <p className="text-xl font-bold text-blue-400">{profileViews.this_week}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>This Week</p>
+                </div>
+                <div className="rounded-lg p-3 text-center" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                  <p className="text-xl font-bold" style={{ color: "var(--t-text)" }}>{profileViews.total}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>All Time</p>
+                </div>
+              </div>
+              <p className="text-[11px] mt-3 text-center" style={{ color: "var(--t-text-muted)" }}>When coaches visit your public profile, views are tracked here.</p>
             </div>
           ) : (
             <div className="text-center py-10 px-5">
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No profile views yet</p>
-              <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, visits will appear here.</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>When coaches visit your public profile, views will appear here.</p>
               <button onClick={() => navigate("/settings")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">Share your profile</button>
             </div>
           )}
