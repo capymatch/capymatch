@@ -105,8 +105,8 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 
 - [x] **RECRUITING BOARD CARD CLEANUP** (Feb 14, 2026)
   - Removed redundant "Status" and "Reply" text from program cards
-  - Added inline mobile key date alerts (overdue/due soon) for visibility
-  - Cards now show: school name, division, match score, region, conference, coach, group badge, key dates, Journey button
+  - Added smart contextual alerts for Action Required cards (e.g. "You haven't contacted the coach yet", "Overdue since Feb 10", "No reply yet — consider following up")
+  - Cards now show: school name, division, match score, region, conference, coach, group badge, contextual alerts, Journey button
 
 ## Prioritized Backlog
 
