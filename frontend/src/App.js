@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminUniversities from "./pages/AdminUniversities";
+import AdminSubscriptions from "./pages/AdminSubscriptions";
 import RecruitingBoard from "./pages/RecruitingBoard";
 import RecruitingJourney from "./pages/RecruitingJourney";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
@@ -75,6 +76,7 @@ function AppRouter() {
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
+        <Route path="subscriptions" element={<AdminSubscriptions />} />
         <Route path="universities" element={<AdminUniversities />} />
       </Route>
       <Route path="/login" element={<Navigate to="/board" replace />} />
