@@ -172,7 +172,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Schools Requiring Action */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="schools-action-widget">
-          <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex items-center justify-between px-4 lg:px-5 py-3 lg:py-4">
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schools Requiring Action</h4>
             <button onClick={() => navigate("/pipeline")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
               View all <ChevronRight className="w-3 h-3" />
@@ -183,7 +183,7 @@ export default function Dashboard() {
               {actionNeeded.map((prog, i) => (
                 <div
                   key={prog.program_id}
-                  className="flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors"
+                  className="flex items-center gap-3 px-4 lg:px-5 py-3 cursor-pointer transition-colors"
                   onClick={() => navigate(`/pipeline#${prog.recruiting_status === "Not Contacted" ? "not_contacted" : prog.recruiting_status?.includes("Active") ? "active" : "contacted"}`)}
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
@@ -194,21 +194,21 @@ export default function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{prog.university_name}</p>
-                    <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
+                    <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>
                       {prog.recruiting_status} {prog.division ? `· ${prog.division}` : ""}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <span className="text-[11px] px-2.5 py-1 rounded-md" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>
+                    <span className="text-[10px] lg:text-[11px] px-2 lg:px-2.5 py-1 rounded-md" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>
                       Follow Up
                     </span>
-                    <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatDate(prog.next_action_due)}</p>
+                    <p className="text-[10px] lg:text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatDate(prog.next_action_due)}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-10 px-5">
+            <div className="text-center py-8 lg:py-10 px-5">
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No schools need action right now</p>
               <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm text-purple-500 hover:text-purple-400 transition-colors">+ Add a school</button>
             </div>
