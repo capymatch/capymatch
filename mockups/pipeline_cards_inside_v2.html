@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipeline - Cards Inside Section Container</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --t-bg: #1a1f37;
+      --t-surface: #202940;
+      --t-surface-alt: #283350;
+      --t-border: #2d3a5c;
+      --t-text: #f1f5f9;
+      --t-text-secondary: #94a3b8;
+      --t-text-muted: #64748b;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--t-bg);
+      color: var(--t-text);
+    }
+  </style>
+</head>
+<body class="p-8">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <h1 class="text-2xl font-bold text-pink-400 mb-8">Pipeline - Cards Inside Section Container (Like Reference)</h1>
+    
+    <!-- Action Required Section - Cards INSIDE the container -->
+    <div class="rounded-xl border overflow-hidden" style="background-color: var(--t-surface); border-color: var(--t-border);">
+      <!-- Section Header -->
+      <div class="flex items-center gap-2.5 px-5 py-4 border-b border-l-4 border-l-rose-500" style="border-bottom-color: var(--t-border);">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <div class="flex flex-col">
+          <span class="font-semibold text-base text-rose-400">Action Required</span>
+          <span class="text-[11px] text-gray-500">Overdue, needs response, or stale</span>
+        </div>
+        <span class="ml-auto bg-rose-500/20 text-rose-400 text-xs px-2.5 py-1 rounded-full font-bold">4</span>
+      </div>
+      
+      <!-- Cards Inside - with subtle dividers -->
+      <div class="divide-y" style="border-color: var(--t-border);">
+        <!-- Card 1 -->
+        <div class="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-500/20 text-emerald-400 text-xs font-bold flex-shrink-0">D1</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm hover:text-pink-400 cursor-pointer transition-colors">Creighton University</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">71%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  Midwest
+                </span>
+                <span>NCAA I | Big East</span>
+              </div>
+              <div class="flex items-center gap-1 mt-1 text-xs text-gray-500">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Coach Kirsten Bernthal Booth
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3 h-3 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-[11px] font-medium text-rose-400">Overdue since Feb 10</span>
+              </div>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 border border-pink-600/25 rounded-md hover:bg-pink-600/20 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                Journey
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-500/20 text-blue-400 text-xs font-bold flex-shrink-0">D2</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm hover:text-pink-400 cursor-pointer transition-colors">Concordia-St. Paul</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">93%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  Midwest
+                </span>
+                <span>NCAA II | NSIC</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3 h-3 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span class="text-[11px] font-medium text-rose-400">Not contacted yet</span>
+              </div>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 border border-pink-600/25 rounded-md hover:bg-pink-600/20 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                Journey
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Upcoming Section -->
+    <div class="rounded-xl border overflow-hidden" style="background-color: var(--t-surface); border-color: var(--t-border);">
+      <!-- Section Header -->
+      <div class="flex items-center gap-2.5 px-5 py-4 border-b border-l-4 border-l-amber-500" style="border-bottom-color: var(--t-border);">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="flex flex-col">
+          <span class="font-semibold text-base text-amber-400">Upcoming</span>
+          <span class="text-[11px] text-gray-500">Follow-up due within 14 days</span>
+        </div>
+        <span class="ml-auto bg-amber-500/20 text-amber-400 text-xs px-2.5 py-1 rounded-full font-bold">2</span>
+      </div>
+      
+      <!-- Cards Inside -->
+      <div class="divide-y" style="border-color: var(--t-border);">
+        <!-- Card 1 -->
+        <div class="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-500/20 text-blue-400 text-xs font-bold flex-shrink-0">D2</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm hover:text-pink-400 cursor-pointer transition-colors">Tampa University</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold">19%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  South Central
+                </span>
+                <span>NCAA II | SSC</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-[11px] font-medium text-amber-400">Due Feb 23</span>
+              </div>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 border border-pink-600/25 rounded-md hover:bg-pink-600/20 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                Journey
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold flex-shrink-0">D3</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm hover:text-pink-400 cursor-pointer transition-colors">Berry College</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold">53%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  Southeast
+                </span>
+                <span>NCAA III | SAA</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-[11px] font-medium text-amber-400">Due Feb 25</span>
+              </div>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 border border-pink-600/25 rounded-md hover:bg-pink-600/20 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                Journey
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- In Progress Section -->
+    <div class="rounded-xl border overflow-hidden" style="background-color: var(--t-surface); border-color: var(--t-border);">
+      <!-- Section Header -->
+      <div class="flex items-center gap-2.5 px-5 py-4 border-b border-l-4 border-l-emerald-500" style="border-bottom-color: var(--t-border);">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        <div class="flex flex-col">
+          <span class="font-semibold text-base text-emerald-400">In Progress</span>
+          <span class="text-[11px] text-gray-500">Recently contacted or active conversation</span>
+        </div>
+        <span class="ml-auto bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-bold">5</span>
+      </div>
+      
+      <!-- Cards Inside -->
+      <div class="divide-y" style="border-color: var(--t-border);">
+        <div class="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-500/20 text-emerald-400 text-xs font-bold flex-shrink-0">D1</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm hover:text-pink-400 cursor-pointer transition-colors">Baylor University</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">85%</span>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  South
+                </span>
+                <span>NCAA I | Big 12</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span class="text-[11px] font-medium text-emerald-400">Active conversation</span>
+              </div>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 border border-pink-600/25 rounded-md hover:bg-pink-600/20 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                Journey
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Closed Section (collapsed state) -->
+    <div class="rounded-xl border overflow-hidden" style="background-color: var(--t-surface-alt); border-color: var(--t-border);">
+      <!-- Section Header - collapsed -->
+      <div class="flex items-center gap-2.5 px-5 py-4 border-l-4 border-l-gray-500 cursor-pointer hover:bg-white/[0.02] transition-colors">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+        <div class="flex flex-col">
+          <span class="font-semibold text-base text-gray-400">Closed</span>
+          <span class="text-[11px] text-gray-500">Not a fit, committed, or archived</span>
+        </div>
+        <span class="ml-auto bg-gray-500/20 text-gray-400 text-xs px-2.5 py-1 rounded-full font-bold">3</span>
+      </div>
+    </div>
+    
+    <div class="mt-8 p-4 rounded-lg bg-pink-500/10 border border-pink-500/30">
+      <h3 class="font-semibold text-pink-400 mb-2">Key Design Changes:</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        <li>• <strong>Cards inside container:</strong> Each section is ONE rounded card with header + items inside</li>
+        <li>• <strong>Section header:</strong> Top bar with colored left border, icon, title, description, and count badge</li>
+        <li>• <strong>Item rows:</strong> Separated by subtle dividers (<code class="bg-gray-800 px-1 rounded">divide-y</code>), not separate cards</li>
+        <li>• <strong>Hover effect:</strong> Subtle background change on hover for each row</li>
+        <li>• <strong>Collapsed state:</strong> Just the header (like "Closed" section above)</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
