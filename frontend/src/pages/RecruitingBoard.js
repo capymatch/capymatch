@@ -412,11 +412,6 @@ export default function RecruitingBoard() {
 
   return (
     <div data-testid="recruiting-board" className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-end">
-        <AddProgramDialog onAdd={fetchPrograms} />
-      </div>
-
       {/* Group Funnel */}
       <GroupFunnel groupedData={groupedData} onFocusGroup={focusGroup} activeFilter={activeFilter} />
 
