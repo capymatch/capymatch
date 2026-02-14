@@ -40,27 +40,28 @@ const PRIORITY_DOT = {
 
 /* ── Color maps ── */
 const STATUS_COLORS = {
-  "Not Contacted": { bg: "bg-rose-400", text: "text-white", hover: "hover:bg-rose-500" },
-  "Contacted": { bg: "bg-emerald-400", text: "text-white", hover: "hover:bg-emerald-500" },
-  "No Response Yet": { bg: "bg-amber-400", text: "text-white", hover: "hover:bg-amber-500" },
-  "Video Viewed": { bg: "bg-cyan-400", text: "text-white", hover: "hover:bg-cyan-500" },
-  "Some Interest": { bg: "bg-blue-400", text: "text-white", hover: "hover:bg-blue-500" },
-  "Active Conversation": { bg: "bg-blue-500", text: "text-white", hover: "hover:bg-blue-600" },
-  "Offer / Commit Talk": { bg: "bg-amber-500", text: "text-white", hover: "hover:bg-amber-600" },
-  "Not a Fit / Closed": { bg: "bg-gray-400", text: "text-white", hover: "hover:bg-gray-500" },
+  "Not Contacted": { color: "text-rose-400" },
+  "Contacted": { color: "text-emerald-400" },
+  "No Response Yet": { color: "text-amber-400" },
+  "Video Viewed": { color: "text-cyan-400" },
+  "Some Interest": { color: "text-blue-400" },
+  "Active Conversation": { color: "text-blue-300" },
+  "Offer / Commit Talk": { color: "text-amber-300" },
+  "Not a Fit / Closed": { color: "text-gray-400" },
 };
 
 const REPLY_COLORS = {
-  "No Reply": { bg: "bg-rose-300", text: "text-white", hover: "hover:bg-rose-400" },
-  "Awaiting Reply": { bg: "bg-orange-400", text: "text-white", hover: "hover:bg-orange-500" },
-  "Reply Received": { bg: "bg-emerald-500", text: "text-white", hover: "hover:bg-emerald-600" },
+  "No Reply": { color: "text-rose-400" },
+  "Awaiting Reply": { color: "text-orange-400" },
+  "Reply Received": { color: "text-emerald-400" },
+  "In Conversation": { color: "text-blue-400" },
 };
 
 const PRIORITY_INLINE_COLORS = {
-  "Low": { bg: "bg-gray-200", text: "text-gray-700", hover: "hover:bg-gray-300" },
-  "Medium": { bg: "bg-blue-200", text: "text-blue-800", hover: "hover:bg-blue-300" },
-  "High": { bg: "bg-orange-300", text: "text-orange-900", hover: "hover:bg-orange-400" },
-  "Very High": { bg: "bg-red-400", text: "text-white", hover: "hover:bg-red-500" },
+  "Low": { color: "text-gray-400" },
+  "Medium": { color: "text-blue-400" },
+  "High": { color: "text-orange-400" },
+  "Very High": { color: "text-red-400" },
 };
 
 const ACTION_COLORS = {
