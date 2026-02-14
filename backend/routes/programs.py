@@ -417,3 +417,139 @@ async def get_program_journey(program_id: str, request: Request):
     timeline.sort(key=parse_date, reverse=True)
     
     return {"timeline": timeline}
+
+
+@router.get("/recruiting-insights")
+async def get_recruiting_insights(request: Request):
+    """Compute data-driven recruiting insights from interactions and programs."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    interactions = await db.interactions.find(
+        {"tenant_id": tenant_id}, {"_id": 0}
+    ).to_list(500)
+
+    programs = await db.programs.find(
+        {"tenant_id": tenant_id}, {"_id": 0}
+    ).to_list(200)
+
+    insights = []
+
+    # 1. Best day to contact — day of week with most positive outcomes
+    day_positive = {}
+    day_total = {}
+    for i in interactions:
+        dt_str = i.get("date_time") or i.get("created_at", "")
+        try:
+            dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
+            day_name = dt.strftime("%A")
+        except Exception:
+            continue
+        outcome = (i.get("outcome") or "").lower()
+        day_total[day_name] = day_total.get(day_name, 0) + 1
+        if "positive" in outcome or "response" in outcome:
+            day_positive[day_name] = day_positive.get(day_name, 0) + 1
+
+    if day_positive:
+        best_day = max(day_positive, key=day_positive.get)
+        count = day_positive[best_day]
+        insights.append({
+            "type": "best_day",
+            "text": f"Your outreach on {best_day}s led to {count} positive response{'s' if count != 1 else ''} — try reaching out on {best_day}s",
+            "icon": "calendar",
+        })
+
+    # 2. Average response time — time between sent and reply
+    program_first_contact = {}
+    program_first_reply = {}
+    for i in interactions:
+        pid = i.get("program_id", "")
+        dt_str = i.get("date_time") or i.get("created_at", "")
+        try:
+            dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+        except Exception:
+            continue
+        itype = (i.get("type") or "").lower()
+        outcome = (i.get("outcome") or "").lower()
+        if "email" in itype or "call" in itype or "message" in itype:
+            if pid not in program_first_contact or dt < program_first_contact[pid]:
+                program_first_contact[pid] = dt
+        if "positive" in outcome or "response" in outcome:
+            if pid not in program_first_reply or dt < program_first_reply[pid]:
+                program_first_reply[pid] = dt
+
+    response_times = []
+    for pid, contact_dt in program_first_contact.items():
+        if pid in program_first_reply and program_first_reply[pid] > contact_dt:
+            diff = (program_first_reply[pid] - contact_dt).days
+            if 0 < diff < 120:
+                response_times.append(diff)
+
+    if response_times:
+        avg_days = round(sum(response_times) / len(response_times))
+        insights.append({
+            "type": "response_time",
+            "text": f"Coaches typically respond within {avg_days} day{'s' if avg_days != 1 else ''} of your first outreach",
+            "icon": "clock",
+        })
+
+    # 3. Most effective outreach type
+    type_positive = {}
+    type_total = {}
+    for i in interactions:
+        itype = i.get("type", "Other")
+        outcome = (i.get("outcome") or "").lower()
+        type_total[itype] = type_total.get(itype, 0) + 1
+        if "positive" in outcome or "response" in outcome:
+            type_positive[itype] = type_positive.get(itype, 0) + 1
+
+    if type_positive and type_total:
+        type_rates = {t: type_positive.get(t, 0) / type_total[t] for t in type_total if type_total[t] >= 2}
+        if type_rates:
+            best_type = max(type_rates, key=type_rates.get)
+            rate = round(type_rates[best_type] * 100)
+            insights.append({
+                "type": "best_outreach",
+                "text": f"{best_type}s have a {rate}% positive outcome rate — your most effective outreach method",
+                "icon": "zap",
+            })
+
+    # 4. Follow-up success rate
+    total_programs_with_followup = 0
+    programs_with_reply = 0
+    for p in programs:
+        if p.get("recruiting_status") not in ("Not Contacted", None):
+            total_programs_with_followup += 1
+            if p.get("reply_status") in ("Reply Received", "In Conversation"):
+                programs_with_reply += 1
+
+    if total_programs_with_followup >= 2:
+        rate = round(programs_with_reply / total_programs_with_followup * 100)
+        insights.append({
+            "type": "followup_rate",
+            "text": f"{rate}% of schools you've contacted have responded — {'keep it up!' if rate >= 50 else 'persistence pays off, keep following up!'}",
+            "icon": "target",
+        })
+
+    # 5. Activity streak / volume
+    if len(interactions) >= 5:
+        recent = [i for i in interactions if i.get("created_at")]
+        if recent:
+            try:
+                dates = set()
+                for i in recent:
+                    dt = datetime.fromisoformat(str(i["created_at"]).replace("Z", "+00:00"))
+                    dates.add(dt.date())
+                active_days = len(dates)
+                if active_days >= 3:
+                    insights.append({
+                        "type": "activity",
+                        "text": f"You've been active on {active_days} different days — consistency is key in recruiting",
+                        "icon": "activity",
+                    })
+            except Exception:
+                pass
+
+    return {"insights": insights}
