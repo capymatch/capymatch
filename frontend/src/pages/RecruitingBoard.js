@@ -595,7 +595,7 @@ export default function RecruitingBoard() {
                   {isEmpty ? (
                     <div className="py-4 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>No programs in this stage</div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-5">
                       {stagePrograms.map((p) => (
                         <ProgramCard
                           key={p.program_id}
