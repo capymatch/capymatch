@@ -3,104 +3,31 @@ import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  ChevronDown, ChevronRight, Search, Plus, AlertTriangle,
+  ChevronRight, Search, Plus, AlertTriangle,
   Clock, Activity, Archive, Sparkles,
   MapPin, Building2, User, Mail, AlertCircle, CheckCircle2
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
-/* ── New Dynamic Board Groups ── */
+/* ── Board Groups Config ── */
 const BOARD_GROUPS = [
-  { 
-    key: "action_required", 
-    label: "Action Required", 
-    icon: AlertTriangle, 
-    color: "from-rose-500 to-red-500", 
-    bg: "bg-rose-50 dark:bg-rose-500/15", 
-    text: "text-rose-700 dark:text-rose-400", 
-    border: "border-l-rose-500",
-    description: "Overdue, needs response, or stale"
-  },
-  { 
-    key: "upcoming", 
-    label: "Upcoming", 
-    icon: Clock, 
-    color: "from-amber-500 to-orange-500", 
-    bg: "bg-amber-50 dark:bg-amber-500/15", 
-    text: "text-amber-700 dark:text-amber-400", 
-    border: "border-l-amber-500",
-    description: "Follow-up due within 14 days"
-  },
-  { 
-    key: "in_progress", 
-    label: "In Progress", 
-    icon: Activity, 
-    color: "from-emerald-500 to-teal-500", 
-    bg: "bg-emerald-50 dark:bg-emerald-500/15", 
-    text: "text-emerald-700 dark:text-emerald-400", 
-    border: "border-l-emerald-500",
-    description: "Recently contacted or active conversation"
-  },
-  { 
-    key: "closed", 
-    label: "Closed", 
-    icon: Archive, 
-    color: "from-gray-400 to-slate-400", 
-    bg: "bg-gray-50 dark:bg-gray-500/15", 
-    text: "text-gray-600 dark:text-gray-300", 
-    border: "border-l-gray-400",
-    description: "Not a fit, committed, or archived"
-  },
+  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Overdue, needs response, or stale" },
+  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
+  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
+  { key: "closed", label: "Closed", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Not a fit, committed, or archived" },
 ];
 
-/* ── Visual config ── */
-const DIVISION_BADGE = {
-  D1: "bg-emerald-50 text-emerald-700 border border-emerald-200 ring-1 ring-emerald-100",
-  D2: "bg-blue-50 text-blue-700 border border-blue-200 ring-1 ring-blue-100",
-  D3: "bg-violet-50 text-violet-700 border border-violet-200 ring-1 ring-violet-100",
-  NAIA: "bg-orange-50 text-orange-700 border border-orange-200",
-  JUCO: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-};
-
-/* ── Color maps ── */
-const STATUS_COLORS = {
-  "Not Contacted": { color: "text-rose-400" },
-  "Contacted": { color: "text-emerald-400" },
-  "No Response Yet": { color: "text-amber-400" },
-  "Video Viewed": { color: "text-cyan-400" },
-  "Some Interest": { color: "text-blue-400" },
-  "Active Conversation": { color: "text-blue-300" },
-  "Offer Received": { color: "text-amber-300" },
-  "Not a Fit / Closed": { color: "text-gray-400" },
-};
-
-const REPLY_COLORS = {
-  "No Reply": { color: "text-rose-400" },
-  "Awaiting Reply": { color: "text-orange-400" },
-  "Reply Received": { color: "text-emerald-400" },
-  "In Conversation": { color: "text-blue-400" },
-};
-
-const PRIORITY_INLINE_COLORS = {
-  "Low": { color: "text-gray-400" },
-  "Medium": { color: "text-blue-400" },
-  "High": { color: "text-orange-400" },
-  "Very High": { color: "text-red-400" },
-};
-
-/* ── Group Funnel Summary ── */
+/* ── Group Funnel ── */
 function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
   const { counts = {}, total = 0 } = groupedData;
-  
   return (
-    <div className="flex items-center gap-1 lg:gap-1.5 p-1.5 rounded-lg border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
+    <div className="flex items-center gap-1 p-1 rounded-[10px] border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
       <div
         onClick={() => onFocusGroup(null)}
-        className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
         data-testid="funnel-all"
       >
         <span className={`text-xs font-medium ${!activeFilter ? "text-pink-500" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
@@ -109,16 +36,14 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
       {BOARD_GROUPS.map((group) => {
         const count = counts[group.key] || 0;
         const isActive = activeFilter === group.key;
-        const Icon = group.icon;
         return (
           <div
             key={group.key}
             onClick={() => onFocusGroup(group.key)}
-            className={`flex items-center gap-1.5 lg:gap-2 px-2.5 lg:px-3 py-2 rounded-md flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${group.key}`}
           >
-            <Icon className={`w-3.5 h-3.5 ${group.text}`} />
-            <span className="text-xs font-medium hidden sm:inline" style={{ color: "var(--t-text-secondary)" }}>{group.label}</span>
+            <span className={`text-xs font-medium hidden sm:inline ${group.countText}`}>{group.label}</span>
             <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
@@ -127,8 +52,8 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
   );
 }
 
-/* ── Program Card ── */
-function ProgramCard({ p, navigate, matchScore }) {
+/* ── Program Row ── */
+function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const divColor = {
     D1: "bg-emerald-500/20 text-emerald-400",
     D2: "bg-blue-500/20 text-blue-400",
@@ -142,108 +67,86 @@ function ProgramCard({ p, navigate, matchScore }) {
     : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
     : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
-  // Due date logic
   const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
-  const isDueSoon = daysUntil !== null && daysUntil >= 0 && daysUntil <= 14;
 
   return (
     <div
-      className="rounded-lg p-3 lg:p-4 mb-3 lg:mb-4 transition-all duration-200 border"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
+      style={{ borderColor: "rgba(255,255,255,0.04)" }}
       data-testid={`program-row-${p.program_id}`}
     >
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 lg:gap-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className={`w-9 h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
-            {p.division || "—"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                onClick={() => navigate(`/programs/${p.program_id}`)}
-                data-testid={`program-link-${p.program_id}`}
-                className="font-heading font-bold text-sm lg:text-base leading-tight truncate transition-colors hover:text-pink-500"
-                style={{ color: "var(--t-text)" }}
-              >
-                {p.university_name}
-              </button>
-              {matchScore && (
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
-                  {matchScore.match_score}%
-                </span>
-              )}
-            </div>
-            {/* School info */}
-            <div className="flex items-center gap-2 lg:gap-3 mt-1 text-xs lg:text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-              {p.region && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> {p.region}
-                </span>
-              )}
-              {p.conference && (
-                <span className="flex items-center gap-1">
-                  <Building2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> <span className="hidden sm:inline">{divFull} |</span> {p.conference}
-                </span>
-              )}
-            </div>
-            {/* Coach info */}
-            {p.primary_coach && (
-              <div className="flex items-center gap-1 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
-                <User className="w-3 h-3" /> {p.primary_coach}
-                {p.coach_email && (
-                  <a href={`mailto:${p.coach_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={p.coach_email}>
-                    <Mail className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        {/* Right side: inline alert + Journey button */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          {/* Contextual alert inline */}
-          {p.board_group === "action_required" && (() => {
-            const alert = isOverdue
-              ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400", Icon: AlertCircle }
-              : p.recruiting_status === "Not Contacted"
-              ? { text: "Not contacted yet", color: "text-rose-400", Icon: AlertCircle }
-              : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
-              ? { text: "No reply yet", color: "text-amber-400", Icon: Clock }
-              : p.reply_status === "Awaiting Reply"
-              ? { text: "Awaiting reply", color: "text-amber-400", Icon: Clock }
-              : { text: "Needs attention", color: "text-rose-400", Icon: AlertCircle };
-            return (
-              <div className="hidden sm:flex items-center gap-1.5">
-                <alert.Icon className={`w-3 h-3 ${alert.color}`} />
-                <span className={`text-[11px] font-medium ${alert.color} whitespace-nowrap`}>{alert.text}</span>
-              </div>
-            );
-          })()}
-          {p.board_group === "upcoming" && p.next_action_due && (
-            <div className="hidden sm:flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-amber-400" />
-              <span className="text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
-            </div>
-          )}
-          {p.board_group === "in_progress" && (
-            <div className="hidden sm:flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              <span className="text-[11px] font-medium text-emerald-400 whitespace-nowrap">
-                {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
-              </span>
-            </div>
-          )}
+      {/* Accent bar */}
+      <div className={`w-[3px] h-9 rounded-sm flex-shrink-0 ${accentColor}`} />
+
+      {/* Division badge */}
+      <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
+        {p.division || "—"}
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <button
-            onClick={() => navigate(`/journey/${p.program_id}`)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
-            data-testid={`view-journey-${p.program_id}`}
+            onClick={() => navigate(`/programs/${p.program_id}`)}
+            data-testid={`program-link-${p.program_id}`}
+            className="font-semibold text-[13px] leading-tight truncate transition-colors hover:text-pink-400"
+            style={{ color: "var(--t-text)" }}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Journey
+            {p.university_name}
           </button>
+          {matchScore && (
+            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
+              {matchScore.match_score}%
+            </span>
+          )}
         </div>
+        <div className="flex items-center gap-2.5 mt-0.5 text-[11px] flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+          {p.region && <span>{p.region}</span>}
+          {p.conference && <span><span className="hidden sm:inline">{divFull} | </span>{p.conference}</span>}
+          {p.primary_coach && (
+            <span className="flex items-center gap-1">
+              {p.primary_coach}
+              {p.coach_email && (
+                <a href={`mailto:${p.coach_email}`} className="text-pink-500 hover:text-pink-400" title={p.coach_email}>
+                  <Mail className="w-3 h-3" />
+                </a>
+              )}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Right: status + journey */}
+      <div className="flex items-center gap-3 flex-shrink-0">
+        {p.board_group === "action_required" && (() => {
+          const alert = isOverdue
+            ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400" }
+            : p.recruiting_status === "Not Contacted"
+            ? { text: "Not contacted yet", color: "text-rose-400" }
+            : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
+            ? { text: "No reply yet", color: "text-amber-400" }
+            : p.reply_status === "Awaiting Reply"
+            ? { text: "Awaiting reply", color: "text-amber-400" }
+            : { text: "Needs attention", color: "text-rose-400" };
+          return <span className={`hidden sm:block text-[11px] font-medium whitespace-nowrap ${alert.color}`}>{alert.text}</span>;
+        })()}
+        {p.board_group === "upcoming" && p.next_action_due && (
+          <span className="hidden sm:block text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
+        )}
+        {p.board_group === "in_progress" && (
+          <span className="hidden sm:block text-[11px] font-medium text-emerald-400 whitespace-nowrap">
+            {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
+          </span>
+        )}
+        <button
+          onClick={() => navigate(`/journey/${p.program_id}`)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
+          data-testid={`view-journey-${p.program_id}`}
+        >
+          Journey
+        </button>
       </div>
     </div>
   );
@@ -256,13 +159,12 @@ export default function RecruitingBoard() {
   const [search, setSearch] = useState("");
   const [filterDivision, setFilterDivision] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
-  const [collapsed, setCollapsed] = useState({});
+  const [collapsed, setCollapsed] = useState({ closed: true });
   const [activeFilter, setActiveFilter] = useState(null);
   const [matchScores, setMatchScores] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch match scores
   useEffect(() => {
     api.get("/match-scores").then(res => {
       if (res.data?.scores) {
@@ -273,18 +175,16 @@ export default function RecruitingBoard() {
     }).catch(() => {});
   }, []);
 
-  // Focus on a specific group
   const focusGroup = (key) => {
     if (key === null || activeFilter === key) {
       setActiveFilter(null);
-      setCollapsed({});
+      setCollapsed({ closed: true });
     } else {
       setActiveFilter(key);
       setCollapsed({});
     }
   };
 
-  // Auto-focus group from URL hash
   useEffect(() => {
     if (!loading && location.hash) {
       const groupId = location.hash.replace("#", "");
@@ -325,15 +225,12 @@ export default function RecruitingBoard() {
   const { groups = {} } = groupedData;
 
   return (
-    <div data-testid="recruiting-board" className="space-y-6">
+    <div data-testid="recruiting-board" className="space-y-4">
       {/* Group Funnel */}
       <GroupFunnel groupedData={groupedData} onFocusGroup={focusGroup} activeFilter={activeFilter} />
 
-      {/* Divider */}
-      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
-
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 lg:gap-3 border rounded-xl p-2 lg:p-3 shadow-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="board-filters">
+      <div className="flex flex-wrap items-center gap-2 lg:gap-3" data-testid="board-filters">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
           <Input
@@ -342,12 +239,11 @@ export default function RecruitingBoard() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9 border rounded-lg text-sm"
-            style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+            style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
-        <div className="hidden lg:block w-px h-6" style={{ backgroundColor: "var(--t-border)" }} />
         <Select value={filterDivision} onValueChange={setFilterDivision}>
-          <SelectTrigger data-testid="filter-division" className="w-28 lg:w-36 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+          <SelectTrigger data-testid="filter-division" className="w-28 lg:w-36 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
             <SelectValue placeholder="Division" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
@@ -356,7 +252,7 @@ export default function RecruitingBoard() {
           </SelectContent>
         </Select>
         <Select value={filterRegion} onValueChange={setFilterRegion}>
-          <SelectTrigger data-testid="filter-region" className="w-28 lg:w-40 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-select-bg)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+          <SelectTrigger data-testid="filter-region" className="w-28 lg:w-40 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
             <SelectValue placeholder="Region" />
           </SelectTrigger>
           <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
@@ -364,77 +260,74 @@ export default function RecruitingBoard() {
             {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
           </SelectContent>
         </Select>
-        <div className="ml-auto">
-          <Button 
-            data-testid="add-school-btn" 
-            onClick={() => navigate("/knowledge-base")}
-            className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all"
-          >
-            <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add School
-          </Button>
-        </div>
+        <Button
+          data-testid="add-school-btn"
+          onClick={() => navigate("/knowledge-base")}
+          className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all ml-auto"
+        >
+          <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add School
+        </Button>
       </div>
 
-      {/* Divider */}
-      <div className="border-t" style={{ borderColor: "var(--t-border)" }} />
-
       {/* Groups */}
-      <div>
-        {BOARD_GROUPS.map((group, groupIdx) => {
-          // Hide groups not matching the active filter
+      <div className="space-y-1.5">
+        {BOARD_GROUPS.map((group) => {
           if (activeFilter && activeFilter !== group.key) return null;
-
           const groupPrograms = groups[group.key] || [];
           const isCollapsed = collapsed[group.key];
           const isEmpty = groupPrograms.length === 0;
-          const Icon = group.icon;
 
           return (
             <div key={group.key} id={`group-${group.key}`} data-testid={`section-${group.key}`}>
-              {/* Section Header */}
+              {/* Accordion header */}
               <button
                 onClick={() => toggleSection(group.key)}
                 data-testid={`toggle-${group.key}`}
-                className={`w-full flex items-center gap-2.5 px-4 py-3 rounded-lg border transition-all duration-200 mb-3 ${groupIdx === 0 ? "" : "mt-10"} border-l-4 ${group.border}`}
-                style={{ backgroundColor: isEmpty ? "var(--t-surface-alt)" : "var(--t-section-bg)", borderColor: "var(--t-border)" }}
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 border transition-all duration-200 ${
+                  !isCollapsed && !isEmpty
+                    ? "rounded-t-[10px] border-b-0"
+                    : "rounded-[10px]"
+                }`}
+                style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
               >
-                {isCollapsed ? (
-                  <ChevronRight className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
-                )}
-                <Icon className={`w-4.5 h-4.5 ${isEmpty ? "text-gray-400" : group.text}`} />
-                <div className="flex flex-col items-start">
-                  <span className={`font-heading font-semibold text-base tracking-wide ${isEmpty ? "" : group.text}`} style={{ color: isEmpty ? "var(--t-text-muted)" : undefined }}>
-                    {group.label}
-                  </span>
-                  <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{group.description}</span>
-                </div>
-                <Badge className={`ml-auto ${isEmpty ? "bg-gray-100 text-gray-400" : `${group.bg} ${group.text}`} text-xs px-2 py-0.5 font-bold`}>
+                <ChevronRight
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 flex-shrink-0 ${!isCollapsed ? "rotate-90" : ""}`}
+                  strokeWidth={1.5}
+                />
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${group.dot}`} />
+                <span className="font-semibold text-[13px]" style={{ color: isEmpty ? "var(--t-text-muted)" : "var(--t-text)" }}>
+                  {group.label}
+                </span>
+                <span className="text-[11px] hidden sm:inline" style={{ color: "var(--t-text-muted)" }}>
+                  {group.description}
+                </span>
+                <span className={`ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${isEmpty ? "bg-gray-500/15 text-gray-500" : `${group.countBg} ${group.countText}`}`}>
                   {groupPrograms.length}
-                </Badge>
+                </span>
               </button>
 
-              {/* Programs in this group */}
+              {/* Connected cards container */}
               {!isCollapsed && (
-                <>
+                <div
+                  className="border border-t-0 rounded-b-[10px] overflow-hidden"
+                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+                >
                   {isEmpty ? (
-                    <div className="py-4 text-center text-xs ml-6 lg:ml-8" style={{ color: "var(--t-text-muted)" }}>
+                    <div className="py-5 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>
                       No programs in this group
                     </div>
                   ) : (
-                    <div className="ml-6 lg:ml-8 space-y-4">
-                      {groupPrograms.map((p) => (
-                        <ProgramCard
-                          key={p.program_id}
-                          p={p}
-                          navigate={navigate}
-                          matchScore={matchScores[p.program_id]}
-                        />
-                      ))}
-                    </div>
+                    groupPrograms.map((p) => (
+                      <ProgramRow
+                        key={p.program_id}
+                        p={p}
+                        navigate={navigate}
+                        matchScore={matchScores[p.program_id]}
+                        accentColor={group.accentBar}
+                      />
+                    ))
                   )}
-                </>
+                </div>
               )}
             </div>
           );
