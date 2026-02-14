@@ -81,6 +81,20 @@ function getColorMap(options) {
   return null;
 }
 
+
+/* ── Read-only status badge ── */
+function StatusBadge({ value, colorMap }) {
+  const color = colorMap && value ? colorMap[value] : null;
+  return (
+    <span
+      className={`inline-block px-2.5 py-1 rounded-md text-[11px] font-semibold ${color ? `${color.bg} ${color.text}` : "bg-gray-200 text-gray-600"}`}
+      data-testid={`status-badge-${(value || "").replace(/\s+/g, "-").toLowerCase()}`}
+    >
+      {value || "—"}
+    </span>
+  );
+}
+
 /* ── Inline editable components ── */
 function InlineSelect({ value, options, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
