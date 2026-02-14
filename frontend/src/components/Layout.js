@@ -247,7 +247,7 @@ export default function Layout({ user }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/settings": "Settings", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/outreach-analysis": "Outreach Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
