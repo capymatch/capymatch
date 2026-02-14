@@ -161,7 +161,7 @@ export default function AthleteProfileQuiz() {
   useEffect(() => {
     const handler = (e) => {
       if (e.key === "Enter" && canProceed) next();
-      if (e.key === "Backspace" && step > 0 && !e.target.tagName.match(/INPUT|TEXTAREA/)) back();
+      if (e.key === "Backspace" && step > -1 && !e.target.tagName.match(/INPUT|TEXTAREA/)) back();
       if (q?.type === "single") {
         const idx = parseInt(e.key) - 1;
         if (idx >= 0 && idx < q.options.length) select(q.options[idx].value);
