@@ -217,48 +217,72 @@ export default function Dashboard() {
 
         {/* Upcoming Events */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="events-widget">
-          <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex items-center justify-between px-4 lg:px-5 py-3 lg:py-4">
             <h4 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h4>
             <button onClick={() => navigate("/calendar")} className="text-xs text-purple-500 hover:text-purple-400 transition-colors flex items-center gap-1">
               View all <ChevronRight className="w-3 h-3" />
             </button>
           </div>
           {upcoming.length > 0 ? (
-            <table className="w-full">
-              <thead>
-                <tr className="border-t border-b" style={{ borderColor: "var(--t-border)" }}>
-                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Event</th>
-                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Date</th>
-                  <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Location</th>
-                  <th className="text-right text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Type</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              {/* Mobile: Card layout */}
+              <div className="lg:hidden divide-y" style={{ borderColor: "var(--t-border)" }}>
                 {upcoming.map((evt) => (
-                  <tr
+                  <div
                     key={evt.event_id}
                     onClick={() => navigate("/calendar")}
-                    className="border-b cursor-pointer transition-colors"
-                    style={{ borderColor: "var(--t-border)" }}
+                    className="px-4 py-3 cursor-pointer transition-colors"
                     onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                   >
-                    <td className="px-5 py-3"><span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{evt.title}</span></td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs whitespace-nowrap" style={{ color: "var(--t-text-secondary)" }}>
-                        {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3"><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{evt.location || "—"}</span></td>
-                    <td className="px-5 py-3 text-right">
-                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>{evt.event_type}</span>
-                    </td>
-                  </tr>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{evt.title}</span>
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-md flex-shrink-0 ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>{evt.event_type}</span>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: "var(--t-text-muted)" }}>
+                      <span>{formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}</span>
+                      {evt.location && <span className="truncate">· {evt.location}</span>}
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+              {/* Desktop: Table layout */}
+              <table className="hidden lg:table w-full">
+                <thead>
+                  <tr className="border-t border-b" style={{ borderColor: "var(--t-border)" }}>
+                    <th className="text-left text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Event</th>
+                    <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Date</th>
+                    <th className="text-left text-[11px] font-medium uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--t-text-muted)" }}>Location</th>
+                    <th className="text-right text-[11px] font-medium uppercase tracking-wider px-5 py-2.5" style={{ color: "var(--t-text-muted)" }}>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {upcoming.map((evt) => (
+                    <tr
+                      key={evt.event_id}
+                      onClick={() => navigate("/calendar")}
+                      className="border-b cursor-pointer transition-colors"
+                      style={{ borderColor: "var(--t-border)" }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                    >
+                      <td className="px-5 py-3"><span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{evt.title}</span></td>
+                      <td className="px-4 py-3">
+                        <span className="text-xs whitespace-nowrap" style={{ color: "var(--t-text-secondary)" }}>
+                          {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3"><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{evt.location || "—"}</span></td>
+                      <td className="px-5 py-3 text-right">
+                        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>{evt.event_type}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           ) : (
-            <div className="text-center py-10 px-5">
+            <div className="text-center py-8 lg:py-10 px-5">
               <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
               <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-purple-500 hover:text-purple-400">+ Add event</button>
