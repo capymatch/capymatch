@@ -8,7 +8,7 @@ import {
 const adminNav = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
   { to: "/admin/users", icon: Users, label: "Users" },
-  { to: "/admin/subscriptions", icon: CreditCard, label: "Subscriptions", disabled: true },
+  { to: "/admin/subscriptions", icon: CreditCard, label: "Subscriptions" },
   { to: "/admin/automations", icon: Zap, label: "Automations", disabled: true },
   { to: "/admin/universities", icon: GraduationCap, label: "Universities" },
   { to: "/admin/analytics", icon: BarChart3, label: "Analytics", disabled: true },
@@ -108,7 +108,7 @@ export default function AdminLayout() {
             </button>
             <Shield className="w-4 h-4 text-pink-500 hidden lg:block" />
             <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-              {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : "Admin"}
+              {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/subscriptions") ? "Subscription Management" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : location.pathname.includes("/universities") ? "University Manager" : "Admin"}
             </h2>
           </div>
         </header>
