@@ -260,11 +260,11 @@ export default function UniversityKnowledgeBase() {
           </div>
         </aside>
 
-        {/* Main Content - Card List */}
-        <div className="flex-1 space-y-3" data-testid="kb-card-list">
+        {/* Main Content - Table */}
+        <div className="flex-1" data-testid="kb-card-list">
           {/* Active filter tags */}
           {activeFilterTags.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap" data-testid="kb-active-filters">
+            <div className="flex items-center gap-2 flex-wrap mb-3" data-testid="kb-active-filters">
               {activeFilterTags.map((tag) => (
                 <Badge
                   key={tag.key}
@@ -276,18 +276,24 @@ export default function UniversityKnowledgeBase() {
               ))}
             </div>
           )}
-          {activeFilterTags.length === 0 && (
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }} data-testid="kb-no-filters">No filters selected</p>
-          )}
 
-          {/* University Cards */}
+          {/* University Table */}
           {sorted.length === 0 ? (
             <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }}>No universities found matching your filters</div>
           ) : (
             <>
-              {paginated.map((uni) => (
-                <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
-              ))}
+              <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface)" }}>
+                {/* Table Header */}
+                <div className="grid grid-cols-[2.5fr_1fr_1.2fr_1fr_auto] gap-4 items-center px-4 h-9 border-b" style={{ borderColor: "var(--t-border)" }}>
+                  {["University", "Region", "Conference", "Coach", ""].map((col, i) => (
+                    <span key={i} className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--t-text-muted)" }}>{col}</span>
+                  ))}
+                </div>
+                {/* Table Rows */}
+                {paginated.map((uni) => (
+                  <UniversityRow key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
+                ))}
+              </div>
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between pt-4 pb-2" data-testid="kb-pagination">
