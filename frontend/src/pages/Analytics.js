@@ -33,5 +33,6 @@ export default function Analytics() {
         <Sparkles className="w-5 h-5 text-amber-500" />
       </div>
     </div>
+    </FeatureGate>
   );
 }
