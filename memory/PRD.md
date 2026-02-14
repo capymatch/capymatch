@@ -1,17 +1,18 @@
 # Volleyball Recruiting CRM - PRD
 
 ## Original Problem Statement
-Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public athlete profile, AI-powered email drafter, onboarding questionnaire, match scores, and university knowledge base.
+Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public athlete profile, AI-powered email drafter, onboarding questionnaire, match scores, and university knowledge base. The scope has expanded to include a full-app visual redesign, admin area, subscription engine, and monetization features.
 
 ## Core Requirements
-- **Recruiting Pipeline**: Track universities through recruiting stages (Not Contacted → Committed)
+- **Recruiting Pipeline**: Track universities through recruiting stages (Not Contacted -> Committed)
 - **University Knowledge Base**: Searchable database of 1,053+ volleyball programs (D1/D2/D3)
 - **Match Score System**: Calculate compatibility scores between athlete profile and universities
-- **Onboarding Questionnaire**: First-time user flow to capture preferences (position, division, region, priorities)
+- **Onboarding Questionnaire**: First-time user flow to capture preferences
 - **Gmail Integration**: Send/receive emails to coaches directly from the app
 - **AI Email Drafter**: Claude Sonnet 4.5 powered email composition
 - **Calendar**: Event tracking and scheduling
-- **Coach Data**: Store coach names, emails, recruiting coordinator info per university
+- **Admin Area**: User management, university data management, subscription management
+- **Subscription Engine**: Feature gating based on tiers (Basic, Pro, Premium)
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS, Shadcn/UI, react-router-dom
@@ -26,140 +27,109 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 ├── backend/
 │   ├── server.py
 │   ├── database.py
+│   ├── auth.py
+│   ├── subscriptions.py          # Subscription engine: tiers, limits, enforcement
 │   ├── routes/
-│   │   ├── knowledge.py          # Knowledge base (READ-ONLY) + filters + add-to-board
-│   │   ├── athlete_profile.py    # Questionnaire, match scores, suggested schools
-│   │   ├── programs.py           # Pipeline/board management with DYNAMIC GROUPING
-│   │   ├── gmail.py              # Gmail integration
-│   │   ├── ai.py                 # AI email drafter
+│   │   ├── subscription.py       # User-facing subscription API endpoints
+│   │   ├── admin.py              # Admin endpoints (users, stats)
+│   │   ├── admin_universities.py # Admin university CRUD
+│   │   ├── programs.py           # Pipeline/board with school limit gate
+│   │   ├── ai.py                 # AI drafts with usage tracking + limit gate
+│   │   ├── gmail.py              # Gmail with Pro+ feature gate
+│   │   ├── knowledge.py          # Knowledge base (READ-ONLY)
+│   │   ├── athlete_profile.py    # Questionnaire, match scores
 │   │   ├── events.py             # Calendar events
 │   │   ├── dashboard.py          # Dashboard stats
 │   │   ├── profile.py            # User profile
 │   │   ├── notifications.py      # Notifications
 │   │   └── auth_routes.py        # Auth routes
 │   └── scripts/
-│       └── import_universities.py # Excel → MongoDB import (admin-only offline tool)
+│       └── import_universities.py
 ├── frontend/
 │   └── src/
-│       ├── App.js
-│       ├── pages/
-│       │   ├── UniversityKnowledgeBase.js  # 1053 schools, dynamic filters, pagination, card layout
-│       │   ├── RecruitingBoard.js           # DYNAMIC GROUPING: Action Required, Upcoming, In Progress, Closed
-│       │   ├── RecruitingJourney.js         # Program detail (Interest Level removed, Match Score only)
-│       │   ├── Onboarding.js                # Multi-step questionnaire
-│       │   └── ...
+│       ├── App.js                # SubscriptionProvider + SubscriptionGuard
+│       ├── lib/
+│       │   ├── api.js            # Axios with 403 subscription error interceptor
+│       │   ├── subscription.js   # React context for subscription state
+│       │   └── constants.js
 │       ├── components/
-│       │   ├── OnboardingGate.js            # Redirect new users to questionnaire
-│       │   └── ProgramRow.js
-│       └── lib/
-│           └── constants.js                 # App constants (divisions, regions, statuses)
+│       │   ├── Layout.js         # Sidebar with subscription badge
+│       │   ├── UpgradeModal.js   # Tier comparison modal
+│       │   ├── FeatureGate.js    # Wrapper to gate features
+│       │   ├── SubscriptionBadge.js # Plan indicator in sidebar
+│       │   └── AdminLayout.js
+│       └── pages/
+│           ├── Dashboard.js      # Subscription usage card
+│           ├── Analytics.js      # Gated behind Pro+
+│           └── ...
 ```
 
+## Subscription Tiers
+| Feature | Basic ($0) | Pro ($19/mo) | Premium ($39/mo) |
+|---------|-----------|-------------|-----------------|
+| Schools | 5 | 25 | Unlimited |
+| AI Drafts/mo | 0 | 10 | Unlimited |
+| Gmail | No | Yes | Yes |
+| Analytics | No | Yes | Yes |
+| Recruiting Insights | No | Yes | Yes |
+| Public Profile | No | Yes | Yes |
+| Follow-up Reminders | No | Yes | Yes |
+| Auto Reply Detection | No | No | Yes |
+| Weekly Digest | No | No | Yes |
+
 ## Key Database Collections
-- **university_knowledge_base**: 1,053 universities (READ-ONLY via API, admin import script only)
-- **programs**: User's recruiting board (copied from knowledge base on "Add to Board")
-- **athlete_profiles**: User preferences from questionnaire + `questionnaire_completed` flag
+- **university_knowledge_base**: 1,053 universities
+- **programs**: User's recruiting board
+- **athlete_profiles**: User preferences + questionnaire_completed flag
 - **gmail_tokens**: Gmail OAuth tokens
+- **tenants**: User tenants with plan field (basic/pro/premium)
+- **ai_usage**: Tracks AI draft usage per tenant per month
 
 ## What's Been Implemented
 - [x] Full recruiting pipeline (CRUD for programs)
 - [x] Onboarding questionnaire with redirect gate
-- [x] Match Score calculation and display (sole scoring metric)
-- [x] Suggested Schools (auto-recommend based on profile)
-- [x] University Knowledge Base: 1,053 schools (D1:347, D2:284, D3:422)
+- [x] Match Score calculation and display
+- [x] Suggested Schools
+- [x] University Knowledge Base: 1,053 schools
 - [x] Dynamic filters (107 conferences, 10 regions, 3 divisions)
-- [x] Pagination (50 per page) on Schools page
-- [x] Coach data display (names + email links)
+- [x] Coach data display
 - [x] Gmail integration
 - [x] AI email drafter (Claude Sonnet 4.5)
-- [x] Calendar
-- [x] Analytics
-- [x] Notifications
-- [x] Background coach reply detection
-- [x] Data protection: /api/seed removed, university_knowledge_base is read-only
-- [x] Pipeline redesign: card layout matching Schools style with school info (region, conference, coach)
-- [x] Pipeline: read-only statuses (editable only in Journey), key dates from Journey
-- [x] Pipeline: school name links to school detail view
-- [x] Removed Interest Level widget (Match Score is sole indicator)
-- [x] **DYNAMIC BOARD GROUPING** (Feb 14, 2026)
-  - Programs automatically categorized into 4 action-oriented groups
-  - **Action Required**: Overdue, needs response, or stale (default catch-all)
-  - **Upcoming**: Follow-up due within 14 days
-  - **In Progress**: Recently contacted (7 days) OR active conversation
-  - **Closed**: Not a Fit, Not Interested, Committed
-  - Group funnel summary with counts
-  - Group-specific context badges on program cards
-  - Filters (search, division, region) work with grouped data
-  - Backend: `categorize_program()` function, `GET /api/programs?grouped=true`
-  - Frontend: `GroupFunnel` component, `ProgramCard` with board_group context
-
-- [x] **MOBILE RESPONSIVENESS OVERHAUL** (Feb 14, 2026)
-  - Collapsible sidebar with hamburger menu for mobile
-  - Dashboard, Pipeline, Questionnaire pages made responsive
-  - **Journey page** (`RecruitingJourney.js`) made fully responsive:
-    - Header: school name + badges wrap, status badges on own row
-    - NextStepHero: vertical stack on mobile, horizontal on desktop
-    - LogInteractionForm: single-column grid on mobile, 3-col on desktop
-    - Timeline header: compact "Log"/"Email" buttons
-    - Sidebar cards (AI Insights, Coaches, Key Dates, Follow-up): full-width single column on mobile
-
-- [x] **RECRUITING BOARD CARD CLEANUP** (Feb 14, 2026)
-  - Removed redundant "Status" and "Reply" text from program cards
-  - Added smart contextual alerts for Action Required cards (e.g. "You haven't contacted the coach yet", "Overdue since Feb 10", "No reply yet — consider following up")
-  - Cards now show: school name, division, match score, region, conference, coach, contextual alerts (right side only), Journey button
-  - **REMOVED duplicate group context badge** from next to school name (Feb 14, 2026) - contextual info now only appears inline next to Journey button
-  - **REPLACED "+ Add Program" dialog with "+ Add School" button** that redirects to Schools page (`/knowledge-base`)
-  - **ACCORDION-STYLE INDENTATION**: Cards are now indented (`ml-6 lg:ml-8`) to visually show they belong inside their section accordion
-
-- [x] **PIPELINE ACCORDION REDESIGN** (Feb 14, 2026)
-  - Connected panels: accordion header + cards form one seamless unit
-  - Compact row-based cards replacing floating card layout
-  - Thin colored accent bars (rose/amber/emerald/gray) replace heavy indentation
-  - Simplified accordion headers: colored dot + label + inline description + count pill
-  - Tight 1.5 spacing between groups (was 10/40px)
-  - Removed extra dividers between funnel and filters
-  - Closed group collapsed by default
-  - Filters row simplified (no wrapping border)
+- [x] Calendar + NCAA Timeline
+- [x] Notifications + Background coach reply detection
+- [x] Dynamic Board Grouping (Feb 14, 2026)
+- [x] Mobile Responsiveness Overhaul (Feb 14, 2026)
+- [x] Color Theme Overhaul (Feb 14, 2026)
+- [x] Pipeline Accordion Redesign (Feb 14, 2026)
+- [x] Admin Panel Phase 1 (Feb 14, 2026)
+- [x] University Data Manager (Feb 14, 2026)
+- [x] **Subscription Engine Phase 2 (Feb 14, 2026)**
+  - Backend subscription middleware with tier definitions
+  - Feature gates on programs, AI, Gmail, analytics, insights
+  - AI usage tracking (per-month counting)
+  - Frontend subscription context + provider
+  - Upgrade modal with 3-tier comparison
+  - FeatureGate wrapper component
+  - Dashboard usage card (schools + AI drafts bars)
+  - Sidebar subscription badge
+  - Global 403 interceptor for automatic upgrade prompts
+  - Testing: 100% pass (11/11 backend, 13/13 frontend)
 
 ## Prioritized Backlog
 
-### Color Theme Overhaul ✅ COMPLETED (Feb 14, 2026)
-- Applied Creative Tim-inspired dark navy + pink/coral color scheme across entire app
-- Sidebar: dark pink/maroon gradient (from #c0375a to #6b1530)
-- Background: #1a1f37, Cards: #202940
-- All purple accents replaced with pink-600/700/800 (Tailwind)
-- Dashboard stat cards: circular gradient icons (pink, amber, coral, teal)
-- CSS variables updated in index.css for dark theme
-- Affected files: index.css, Layout.js, Dashboard.js, and all page files
-- Implemented as "NCAA Timeline" tab on Calendar page
-- Current period banner with pulsing indicator and days remaining
-- Division selector (D1/D2/D3/NAIA) with division-specific data
-- Visual timeline bar chart with color-coded periods and NOW marker
-- Key NCAA Dates & Deadlines grid with status tags (Passed, X days away, Info)
-- D3/NAIA correctly show year-round contact with informational cards
-- Fully mobile responsive
+### P0 - Subscription Engine Phase 3: Admin Subscription Management
+- Admin UI to view/change user subscription tiers
+- Already partially exists in AdminUserDetail page
 
-### University Data Manager - COMPLETED (Feb 14, 2026)
-- Full CRUD: Add, edit, delete universities directly in admin panel
-- Coach Management: Head coach + email, recruiting coordinator + email per school
-- Data Health Dashboard: Shows total, complete, missing coach (1010), missing email (1016), completeness % (4%)
-- Search + filters: by name, division, region, health status (missing coach/email/complete)
-- Pagination: 50 per page across 22 pages
-- CSV Export: Download all 1053 schools as CSV
-- CSV Import: Upload CSV to bulk create/update records
-- Backend: `/api/admin/universities/*` (list, health, get, create, update, delete, export, import)
-- Testing: 100% pass (22/22 backend, 13/13 frontend)
+### P1 - Stripe Integration (Phase 4)
+- Integrate Stripe for real payment processing
+- Allow users to self-serve upgrades
+- Webhook handling for subscription changes
 
-### Admin Panel Phase 1 - COMPLETED (Feb 14, 2026)
-- Admin Dashboard with stats (users, schools, interactions, events, conversion rate, subscription distribution)
-- User Management: searchable/filterable roster table with plan badges, status, school/interaction counts
-- User Detail: view profile, stats, change subscription (Basic/Pro/Premium), change status (Active/Suspended/Deactivated), plan feature list, recent activity, schools on board
-- Create User: modal with name, email, plan selection
-- Separate admin layout with its own sidebar/nav, "Back to App" link
-- Admin link added to main app sidebar
-- Subscription Tiers: Basic (5 schools, no AI), Pro (25 schools, 10 AI/mo, Gmail), Premium (unlimited)
-- Backend: `/api/admin/stats`, `/api/admin/users`, `/api/admin/users/{id}`, `/api/admin/subscription-tiers`
-- Testing: 100% pass rate (13/13 backend, 12/12 frontend)
+### P2 - AI-Powered Features
+- AI Assistant for personalized recruiting advice
+- Automated Outreach Insights
+- Highlight Reel Creator
 
 ### P2 - App Naming
 - User wants unique name (Vollura was taken)
@@ -171,22 +141,22 @@ Public-facing Volleyball Recruiting CRM with Gmail integration, calendar, public
 
 ### P3 - Recruiting Intelligence
 - Camp/Tournament ROI tracker
-- Visual recruiting analytics
 
 ### P3 - Family Collaboration
 - Read-only dashboard for parents/guardians
 
 ## Key API Endpoints
+- `GET /api/subscription` - Current user's subscription + usage
+- `GET /api/subscription/tiers` - All available tiers
+- `GET /api/programs` - List programs (with dynamic grouping)
+- `POST /api/programs` - Add program (school limit gate)
+- `POST /api/ai/draft-email` - AI draft (usage limit gate)
+- `GET /api/recruiting-insights` - Insights (Pro+ gate)
+- `GET /api/gmail/connect` - Gmail (Pro+ gate)
+- `GET/POST/PUT/DELETE /api/admin/universities` - University CRUD
+- `GET /api/admin/stats` - Admin stats
+- `GET /api/admin/users` - User list
 
-### Programs (Pipeline)
-- `GET /api/programs` - List all programs (flat list with board_group field)
-- `GET /api/programs?grouped=true` - List programs in 4 dynamic groups
-- `POST /api/programs` - Add program to board
-- `PUT /api/programs/{id}` - Update program
-- `DELETE /api/programs/{id}` - Remove program
-
-### Dynamic Grouping Logic (Priority Order)
-1. **Closed**: status in ["Not a Fit / Closed", "Not Interested", "Committed"]
-2. **In Progress**: contacted within 7 days OR reply_status in ["Reply Received", "In Conversation"], AND not overdue
-3. **Upcoming**: next_action_due within 14 days, not recently contacted
-4. **Action Required**: Default catch-all (overdue, stale, needs attention)
+## Mocked Features
+- User authentication (get_current_user returns static user)
+- Stripe payment (upgrade buttons close modal without processing payment)
