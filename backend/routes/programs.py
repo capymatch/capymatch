@@ -9,6 +9,70 @@ import uuid
 router = APIRouter(prefix="/api")
 
 
+# ─── Dynamic Board Grouping Logic ───
+CLOSED_STATUSES = ["Not a Fit / Closed", "Not Interested", "Committed"]
+
+def categorize_program(program: dict) -> str:
+    """
+    Categorize a program into one of the 4 dynamic groups.
+    Priority order: Closed > In Progress > Upcoming > Action Required (default)
+    """
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    
+    status = program.get("recruiting_status", "")
+    reply_status = program.get("reply_status", "")
+    next_action_due = program.get("next_action_due", "")
+    initial_contact_sent = program.get("initial_contact_sent", "")
+    last_follow_up = program.get("last_follow_up", "")
+    
+    # 1. CLOSED: Status is explicitly closed/committed
+    if status in CLOSED_STATUSES:
+        return "closed"
+    
+    # Parse dates for further logic
+    due_date = None
+    last_contact_date = None
+    
+    if next_action_due:
+        try:
+            due_date = datetime.strptime(next_action_due, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+    
+    # Last contact is the more recent of initial_contact_sent or last_follow_up
+    for date_str in [last_follow_up, initial_contact_sent]:
+        if date_str:
+            try:
+                parsed = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if last_contact_date is None or parsed > last_contact_date:
+                    last_contact_date = parsed
+            except ValueError:
+                pass
+    
+    # Calculate days since last contact
+    days_since_contact = None
+    if last_contact_date:
+        days_since_contact = (today - last_contact_date).days
+    
+    # 2. IN PROGRESS: Recently contacted (within 7 days) OR has active conversation, AND nothing overdue
+    is_recently_contacted = days_since_contact is not None and days_since_contact <= 7
+    has_active_conversation = reply_status in ["Reply Received", "In Conversation"]
+    is_overdue = due_date is not None and due_date < today
+    
+    if (is_recently_contacted or has_active_conversation) and not is_overdue:
+        return "in_progress"
+    
+    # 3. UPCOMING: Has follow-up within next 14 days, but wasn't recently contacted
+    if due_date is not None:
+        days_until_due = (due_date - today).days
+        if 0 <= days_until_due <= 14 and not is_recently_contacted:
+            return "upcoming"
+    
+    # 4. ACTION REQUIRED: Default catch-all (overdue, needs response, stale, or no activity)
+    return "action_required"
+
+
 def apply_automation_rules(existing, updates):
     old_status = existing.get("recruiting_status", "")
     new_status = updates.get("recruiting_status", old_status)
