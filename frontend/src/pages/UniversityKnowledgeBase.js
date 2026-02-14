@@ -284,9 +284,46 @@ export default function UniversityKnowledgeBase() {
           {sorted.length === 0 ? (
             <div className="text-center py-12" style={{ color: "var(--t-text-muted)" }}>No universities found matching your filters</div>
           ) : (
-            sorted.map((uni) => (
-              <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
-            ))
+            <>
+              {paginated.map((uni) => (
+                <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
+              ))}
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-4 pb-2" data-testid="kb-pagination">
+                  <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>
+                    Showing {(page - 1) * PER_PAGE + 1}-{Math.min(page * PER_PAGE, sorted.length)} of {sorted.length}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page <= 1}
+                      onClick={() => setPage(p => p - 1)}
+                      data-testid="kb-prev-page"
+                      className="h-8 gap-1"
+                      style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Prev
+                    </Button>
+                    <span className="text-sm px-2" style={{ color: "var(--t-text)" }}>
+                      {page} / {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page >= totalPages}
+                      onClick={() => setPage(p => p + 1)}
+                      data-testid="kb-next-page"
+                      className="h-8 gap-1"
+                      style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+                    >
+                      Next <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
