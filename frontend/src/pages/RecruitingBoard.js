@@ -278,34 +278,42 @@ function ProgramCard({ p, navigate, matchScore }) {
                 )}
               </div>
             )}
-            {/* Action alert - contextual message based on why it needs attention */}
-            {p.board_group === "action_required" && (() => {
-              const alert = isOverdue
-                ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400", Icon: AlertCircle }
-                : p.recruiting_status === "Not Contacted"
-                ? { text: "You haven't contacted the coach yet", color: "text-rose-400", Icon: AlertCircle }
-                : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
-                ? { text: "No reply yet — consider following up", color: "text-amber-400", Icon: Clock }
-                : p.reply_status === "Awaiting Reply"
-                ? { text: "Still awaiting a reply", color: "text-amber-400", Icon: Clock }
-                : { text: "Needs your attention", color: "text-rose-400", Icon: AlertCircle };
-              return (
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <alert.Icon className={`w-3 h-3 ${alert.color}`} />
-                  <span className={`text-[11px] font-medium ${alert.color}`}>{alert.text}</span>
-                </div>
-              );
-            })()}
-            {/* Key date for upcoming/in_progress on mobile */}
-            {p.board_group !== "action_required" && p.next_action_due && isDueSoon && (
-              <div className="flex items-center gap-1.5 mt-1.5 lg:hidden">
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400"><Clock className="w-3 h-3" />Due {dueDateFormatted}</span>
-              </div>
-            )}
           </div>
         </div>
-        {/* Right side: Journey button + context */}
-        <div className="flex flex-row lg:flex-col items-center lg:items-end gap-2 flex-shrink-0">
+        {/* Right side: inline alert + Journey button */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Contextual alert inline */}
+          {p.board_group === "action_required" && (() => {
+            const alert = isOverdue
+              ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400", Icon: AlertCircle }
+              : p.recruiting_status === "Not Contacted"
+              ? { text: "Not contacted yet", color: "text-rose-400", Icon: AlertCircle }
+              : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
+              ? { text: "No reply yet", color: "text-amber-400", Icon: Clock }
+              : p.reply_status === "Awaiting Reply"
+              ? { text: "Awaiting reply", color: "text-amber-400", Icon: Clock }
+              : { text: "Needs attention", color: "text-rose-400", Icon: AlertCircle };
+            return (
+              <div className="hidden sm:flex items-center gap-1.5">
+                <alert.Icon className={`w-3 h-3 ${alert.color}`} />
+                <span className={`text-[11px] font-medium ${alert.color} whitespace-nowrap`}>{alert.text}</span>
+              </div>
+            );
+          })()}
+          {p.board_group === "upcoming" && p.next_action_due && (
+            <div className="hidden sm:flex items-center gap-1.5">
+              <Clock className="w-3 h-3 text-amber-400" />
+              <span className="text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
+            </div>
+          )}
+          {p.board_group === "in_progress" && (
+            <div className="hidden sm:flex items-center gap-1.5">
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span className="text-[11px] font-medium text-emerald-400 whitespace-nowrap">
+                {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
+              </span>
+            </div>
+          )}
           <button
             onClick={() => navigate(`/journey/${p.program_id}`)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
@@ -314,37 +322,6 @@ function ProgramCard({ p, navigate, matchScore }) {
             <Sparkles className="w-3.5 h-3.5" />
             Journey
           </button>
-          {/* Show action context based on group - hide on mobile to save space */}
-          {p.board_group === "action_required" && p.next_action_due && (
-            <div className="hidden lg:block p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
-              <div className="flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-                <span className="text-xs font-medium text-rose-300">
-                  {isOverdue ? `Overdue since ${dueDateFormatted}` : `Due ${dueDateFormatted}`}
-                </span>
-              </div>
-              {p.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{p.next_action}</p>}
-            </div>
-          )}
-          {p.board_group === "upcoming" && p.next_action_due && (
-            <div className="hidden lg:block p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-xs font-medium text-amber-300">Follow-up due {dueDateFormatted}</span>
-              </div>
-              {p.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{p.next_action}</p>}
-            </div>
-          )}
-          {p.board_group === "in_progress" && (
-            <div className="hidden lg:block p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-medium text-emerald-300">
-                  {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
