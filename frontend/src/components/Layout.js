@@ -3,7 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
-  User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield
+  User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
+  Video, TrendingUp
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 import Tour from "../components/Tour";
 import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
+import AIAssistantDrawer from "../components/AIAssistantDrawer";
 
 export default function Layout({ user }) {
   const navigate = useNavigate();
