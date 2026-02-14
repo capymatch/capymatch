@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { 
   LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
-  User, ChevronDown, X, MessageSquare, Eye, Clock
+  User, ChevronDown, X, MessageSquare, Eye, Clock, Menu
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
