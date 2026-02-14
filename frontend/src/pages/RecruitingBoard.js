@@ -278,14 +278,28 @@ function ProgramCard({ p, navigate, matchScore }) {
                 )}
               </div>
             )}
-            {/* Key date alert inline on mobile */}
-            {p.next_action_due && (
+            {/* Action alert - contextual message based on why it needs attention */}
+            {p.board_group === "action_required" && (() => {
+              const alert = isOverdue
+                ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400", Icon: AlertCircle }
+                : p.recruiting_status === "Not Contacted"
+                ? { text: "You haven't contacted the coach yet", color: "text-rose-400", Icon: AlertCircle }
+                : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
+                ? { text: "No reply yet — consider following up", color: "text-amber-400", Icon: Clock }
+                : p.reply_status === "Awaiting Reply"
+                ? { text: "Still awaiting a reply", color: "text-amber-400", Icon: Clock }
+                : { text: "Needs your attention", color: "text-rose-400", Icon: AlertCircle };
+              return (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <alert.Icon className={`w-3 h-3 ${alert.color}`} />
+                  <span className={`text-[11px] font-medium ${alert.color}`}>{alert.text}</span>
+                </div>
+              );
+            })()}
+            {/* Key date for upcoming/in_progress on mobile */}
+            {p.board_group !== "action_required" && p.next_action_due && isDueSoon && (
               <div className="flex items-center gap-1.5 mt-1.5 lg:hidden">
-                {isOverdue ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-400"><AlertCircle className="w-3 h-3" />Overdue since {dueDateFormatted}</span>
-                ) : isDueSoon ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400"><Clock className="w-3 h-3" />Due {dueDateFormatted}</span>
-                ) : null}
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400"><Clock className="w-3 h-3" />Due {dueDateFormatted}</span>
               </div>
             )}
           </div>
