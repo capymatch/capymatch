@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCAA Recruiting Timeline - Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1117; color: #e2e8f0; }
+  
+  .layout { display: flex; min-height: 100vh; }
+  
+  /* Sidebar */
+  .sidebar { width: 240px; background: #13151c; border-right: 1px solid #1e2130; padding: 24px 0; flex-shrink: 0; }
+  .sidebar-logo { padding: 0 24px 24px; border-bottom: 1px solid #1e2130; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6, #6366f1); display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; }
+  .logo-text { font-weight: 700; font-size: 16px; }
+  .logo-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; font-size: 14px; color: #94a3b8; cursor: pointer; }
+  .nav-item:hover { background: rgba(139, 92, 246, 0.08); }
+  .nav-item.active { background: #8b5cf6; color: white; border-radius: 12px; margin: 0 12px; padding: 12px 16px; }
+  
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .header { height: 64px; border-bottom: 1px solid #1e2130; display: flex; align-items: center; padding: 0 24px; gap: 12px; background: #13151c; }
+  .header-title { font-size: 15px; font-weight: 600; }
+  .header-icon { color: #64748b; }
+  
+  .content { flex: 1; padding: 24px; overflow-y: auto; }
+  
+  /* Tab Bar */
+  .tabs { display: flex; gap: 4px; background: #1a1d2b; border-radius: 12px; padding: 4px; margin-bottom: 24px; width: fit-content; }
+  .tab { padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; }
+  .tab.active { background: #8b5cf6; color: white; }
+  .tab:hover:not(.active) { color: #cbd5e1; }
+  
+  /* Current Period Banner */
+  .current-period { 
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04));
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-left: 4px solid #10b981;
+    border-radius: 16px; 
+    padding: 20px 24px; 
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .current-period-left { display: flex; align-items: center; gap: 16px; }
+  .period-dot { width: 12px; height: 12px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .period-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #10b981; font-weight: 700; margin-bottom: 4px; }
+  .period-title { font-size: 18px; font-weight: 700; color: #e2e8f0; }
+  .period-sub { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+  .period-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.3); }
+  
+  /* Division Selector */
+  .division-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .div-chip { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid #2a2d3e; color: #94a3b8; cursor: pointer; }
+  .div-chip.active { background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); color: #a78bfa; }
+  .div-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 600; margin-right: 8px; }
+
+  /* Timeline Visual */
+  .timeline-visual { 
+    background: #1a1d2b; 
+    border: 1px solid #2a2d3e; 
+    border-radius: 16px; 
+    padding: 24px; 
+    margin-bottom: 24px; 
+  }
+  .timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .timeline-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .timeline-year { font-size: 12px; color: #64748b; }
+  
+  .months-row { display: flex; gap: 2px; margin-bottom: 8px; }
+  .month-label { flex: 1; text-align: center; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #64748b; padding-bottom: 8px; }
+  .month-label.current { color: #a78bfa; }
+  
+  .period-bar-row { display: flex; gap: 2px; margin-bottom: 12px; }
+  .period-bar-label { width: 100px; font-size: 11px; font-weight: 600; color: #94a3b8; padding-top: 4px; flex-shrink: 0; }
+  .period-bars { flex: 1; display: flex; gap: 2px; position: relative; }
+  .bar-segment { flex: 1; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .bar-contact { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+  .bar-dead { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .bar-eval { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+  .bar-quiet { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.25); }
+  
+  .now-marker { position: absolute; left: 38%; top: -8px; bottom: -8px; width: 2px; background: #a78bfa; z-index: 2; }
+  .now-marker::after { content: 'NOW'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 8px; font-weight: 800; color: #a78bfa; letter-spacing: 1px; background: #1a1d2b; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(139, 92, 246, 0.4); }
+  
+  /* Legend */
+  .legend { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2d3e; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #94a3b8; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .legend-dot.contact { background: rgba(16, 185, 129, 0.5); }
+  .legend-dot.dead { background: rgba(239, 68, 68, 0.4); }
+  .legend-dot.eval { background: rgba(59, 130, 246, 0.4); }
+  .legend-dot.quiet { background: rgba(251, 191, 36, 0.35); }
+  
+  /* Key Dates */
+  .key-dates { 
+    background: #1a1d2b; 
+    border: 1px solid #2a2d3e; 
+    border-radius: 16px; 
+    padding: 24px; 
+  }
+  .key-dates-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .dates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .date-card { 
+    padding: 14px 16px; 
+    border-radius: 12px; 
+    border: 1px solid #2a2d3e; 
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .date-icon { 
+    width: 40px; height: 40px; border-radius: 10px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 16px; flex-shrink: 0;
+  }
+  .date-icon.nli { background: rgba(139, 92, 246, 0.12); }
+  .date-icon.portal { background: rgba(59, 130, 246, 0.12); }
+  .date-icon.eval { background: rgba(16, 185, 129, 0.12); }
+  .date-icon.camp { background: rgba(251, 191, 36, 0.12); }
+  .date-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .date-range { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .date-tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-top: 4px; display: inline-block; }
+  .tag-upcoming { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .tag-active { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .tag-passed { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">&#10024;</div>
+      <div>
+        <div class="logo-text">Recruiting HQ</div>
+        <div class="logo-sub">Pro Edition</div>
+      </div>
+    </div>
+    <div class="nav-item">&#127968; Dashboard</div>
+    <div class="nav-item">&#9776; Pipeline</div>
+    <div class="nav-item active">&#128197; Calendar</div>
+    <div class="nav-item">&#128229; Inbox</div>
+    <div class="nav-item">&#9745; Tasks</div>
+    <div class="nav-item">&#127891; Schools</div>
+    <div class="nav-item">&#128202; Analytics</div>
+    <div class="nav-item">&#9881; Settings</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="header">
+      <span class="header-icon">&#128197;</span>
+      <span class="header-title">Calendar</span>
+    </div>
+    
+    <div class="content">
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab">My Calendar</div>
+        <div class="tab active">NCAA Timeline</div>
+      </div>
+      
+      <!-- Current Period Banner -->
+      <div class="current-period">
+        <div class="current-period-left">
+          <div class="period-dot"></div>
+          <div>
+            <div class="period-label">Current Period - D1</div>
+            <div class="period-title">Contact Period</div>
+            <div class="period-sub">Coaches can call, text, and email you directly &middot; Ends Apr 15, 2026</div>
+          </div>
+        </div>
+        <div class="period-badge">62 days remaining</div>
+      </div>
+      
+      <!-- Division Selector -->
+      <div class="division-row">
+        <span class="div-label">Division:</span>
+        <div class="div-chip active">D1</div>
+        <div class="div-chip">D2</div>
+        <div class="div-chip">D3</div>
+        <div class="div-chip">NAIA</div>
+      </div>
+      
+      <!-- Timeline Visual -->
+      <div class="timeline-visual">
+        <div class="timeline-header">
+          <div class="timeline-title">&#128197; NCAA D1 Recruiting Calendar</div>
+          <div class="timeline-year">2025-26 Season</div>
+        </div>
+        
+        <div class="months-row">
+          <div class="month-label">Sep</div>
+          <div class="month-label">Oct</div>
+          <div class="month-label">Nov</div>
+          <div class="month-label">Dec</div>
+          <div class="month-label">Jan</div>
+          <div class="month-label current">Feb</div>
+          <div class="month-label">Mar</div>
+          <div class="month-label">Apr</div>
+          <div class="month-label">May</div>
+          <div class="month-label">Jun</div>
+          <div class="month-label">Jul</div>
+          <div class="month-label">Aug</div>
+        </div>
+        
+        <!-- Contact Periods -->
+        <div class="period-bar-row">
+          <div class="period-bar-label">Contact</div>
+          <div class="period-bars">
+            <div class="bar-segment bar-contact" style="flex: 2">Contact</div>
+            <div class="bar-segment" style="flex: 1; background: transparent;"></div>
+            <div class="bar-segment bar-contact" style="flex: 4">Contact Period</div>
+            <div class="bar-segment" style="flex: 1; background: transparent;"></div>
+            <div class="bar-segment bar-contact" style="flex: 3">Contact</div>
+            <div class="bar-segment" style="flex: 1; background: transparent;"></div>
+            <div class="now-marker"></div>
+          </div>
+        </div>
+        
+        <!-- Dead Periods -->
+        <div class="period-bar-row">
+          <div class="period-bar-label">Dead</div>
+          <div class="period-bars">
+            <div class="bar-segment" style="flex: 3; background: transparent;"></div>
+            <div class="bar-segment bar-dead" style="flex: 1">Dead</div>
+            <div class="bar-segment" style="flex: 5; background: transparent;"></div>
+            <div class="bar-segment bar-dead" style="flex: 0.5">Dead</div>
+            <div class="bar-segment" style="flex: 2.5; background: transparent;"></div>
+          </div>
+        </div>
+        
+        <!-- Evaluation -->
+        <div class="period-bar-row">
+          <div class="period-bar-label">Evaluation</div>
+          <div class="period-bars">
+            <div class="bar-segment" style="flex: 2; background: transparent;"></div>
+            <div class="bar-segment bar-eval" style="flex: 1.5">Eval</div>
+            <div class="bar-segment" style="flex: 4; background: transparent;"></div>
+            <div class="bar-segment bar-eval" style="flex: 2">Evaluation</div>
+            <div class="bar-segment" style="flex: 2.5; background: transparent;"></div>
+          </div>
+        </div>
+        
+        <!-- Quiet -->
+        <div class="period-bar-row">
+          <div class="period-bar-label">Quiet</div>
+          <div class="period-bars">
+            <div class="bar-segment" style="flex: 7; background: transparent;"></div>
+            <div class="bar-segment bar-quiet" style="flex: 1.5">Quiet</div>
+            <div class="bar-segment" style="flex: 3.5; background: transparent;"></div>
+          </div>
+        </div>
+        
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot contact"></div> Contact Period</div>
+          <div class="legend-item"><div class="legend-dot dead"></div> Dead Period</div>
+          <div class="legend-item"><div class="legend-dot eval"></div> Evaluation Period</div>
+          <div class="legend-item"><div class="legend-dot quiet"></div> Quiet Period</div>
+        </div>
+      </div>
+      
+      <!-- Key Dates -->
+      <div class="key-dates">
+        <div class="key-dates-title">&#128205; Key NCAA Dates & Deadlines</div>
+        <div class="dates-grid">
+          <div class="date-card">
+            <div class="date-icon nli">&#9997;</div>
+            <div>
+              <div class="date-name">NLI Early Signing Period</div>
+              <div class="date-range">Nov 13 - Nov 20, 2025</div>
+              <div class="date-tag tag-passed">Passed</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="date-icon portal">&#128260;</div>
+            <div>
+              <div class="date-name">Transfer Portal Window</div>
+              <div class="date-range">Apr 15 - Apr 30, 2026</div>
+              <div class="date-tag tag-upcoming">60 days away</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="date-icon eval">&#128065;</div>
+            <div>
+              <div class="date-name">Spring Evaluation Period</div>
+              <div class="date-range">Apr 16 - May 31, 2026</div>
+              <div class="date-tag tag-upcoming">61 days away</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="date-icon camp">&#127947;</div>
+            <div>
+              <div class="date-name">Summer Camp Season</div>
+              <div class="date-range">Jun 1 - Aug 1, 2026</div>
+              <div class="date-tag tag-upcoming">107 days away</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="date-icon nli">&#9997;</div>
+            <div>
+              <div class="date-name">NLI Regular Signing Period</div>
+              <div class="date-range">Apr 15 - Aug 1, 2026</div>
+              <div class="date-tag tag-upcoming">60 days away</div>
+            </div>
+          </div>
+          <div class="date-card">
+            <div class="date-icon eval">&#128197;</div>
+            <div>
+              <div class="date-name">Fall Contact Period Begins</div>
+              <div class="date-range">Sep 1, 2026</div>
+              <div class="date-tag tag-upcoming">199 days away</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+</body>
+</html>
