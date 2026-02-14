@@ -11,7 +11,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)" }} data-testid="login-page">
       <div className="max-w-md w-full mx-4">
         <div className="rounded-xl p-8 text-center shadow-lg border border-white/10" style={{ backgroundColor: "rgba(30, 30, 50, 0.8)" }}>
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-gradient-to-br from-pink-600 to-indigo-600">
             <Activity className="w-8 h-8 text-white" strokeWidth={1.5} />
           </div>
           <h1 className="font-heading text-3xl font-bold text-white mb-2" data-testid="login-title">

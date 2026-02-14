@@ -16,7 +16,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-40 border-b border-white/[0.06]" style={{ backgroundColor: "rgba(13,13,26,0.85)", backdropFilter: "blur(16px)" }}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-600 to-indigo-600 flex items-center justify-center">
               <Activity className="w-4.5 h-4.5 text-white" strokeWidth={2} />
             </div>
             <span className="text-white font-bold text-lg tracking-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>RECRUITING HQ</span>
@@ -159,7 +159,7 @@ export default function LandingPage() {
                 icon: Eye,
                 title: "Profile View Tracking",
                 desc: "Know when coaches view your public profile. Highlights visits from .edu domains.",
-                accent: "from-purple-500/20 to-transparent",
+                accent: "from-pink-600/20 to-transparent",
                 iconColor: "#a855f7",
               },
               {
@@ -313,7 +313,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/[0.06] py-10">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-md bg-gradient-to-br from-pink-600 to-indigo-600 flex items-center justify-center">
               <Activity className="w-3.5 h-3.5 text-white" strokeWidth={2} />
             </div>
             <span className="text-white font-bold text-sm tracking-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>RECRUITING HQ</span>
