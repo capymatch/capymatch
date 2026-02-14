@@ -313,7 +313,7 @@ function ProgramCard({ p, navigate, matchScore }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <button
-                onClick={() => navigate(`/journey/${p.program_id}`)}
+                onClick={() => navigate(`/programs/${p.program_id}`)}
                 data-testid={`program-link-${p.program_id}`}
                 className="font-heading font-bold text-base leading-tight truncate transition-colors hover:text-purple-400"
                 style={{ color: "var(--t-text)" }}
