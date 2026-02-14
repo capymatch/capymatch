@@ -643,6 +643,8 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+        </>
+      )}
 
       {/* Event Modal */}
       {showModal && (
