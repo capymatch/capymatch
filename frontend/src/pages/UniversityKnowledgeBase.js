@@ -46,6 +46,12 @@ export default function UniversityKnowledgeBase() {
 
   useEffect(() => { fetchUniversities(); }, [fetchUniversities]);
 
+  useEffect(() => {
+    api.get("/suggested-schools").then(res => {
+      setSuggestions(res.data?.suggestions || []);
+    }).catch(() => {}).finally(() => setSuggestionsLoading(false));
+  }, []);
+
   const addToBoard = async (uni) => {
     setAdding((prev) => ({ ...prev, [uni.university_name]: true }));
     try {
