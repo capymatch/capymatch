@@ -581,15 +581,6 @@ export default function CalendarPage() {
               </div>
             )}
           </div>
-
-          {/* Compact Event Legend */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1 px-3 py-2 rounded-lg text-[10px]" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-pink-600"></span><span style={{ color: "var(--t-text-muted)" }}>Camp</span></span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span><span style={{ color: "var(--t-text-muted)" }}>Tournament</span></span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span><span style={{ color: "var(--t-text-muted)" }}>Showcase</span></span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500"></span><span style={{ color: "var(--t-text-muted)" }}>Meeting</span></span>
-          </div>
         </div>
       </div>
         </div>
