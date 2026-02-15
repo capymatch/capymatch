@@ -820,5 +820,3 @@ async def get_coach_watch_alert_for_school(university_name: str, request: Reques
         {"_id": 0}
     )
     return {"alert": alert}
-
-        raise HTTPException(status_code=500, detail=f"Highlight advice error: {str(e)}")
