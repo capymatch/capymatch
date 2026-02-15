@@ -116,7 +116,7 @@ export default function LoginPage({ onAuth }) {
                     onChange={(e) => setName(e.target.value)}
                     required
                     data-testid="register-name-input"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 focus:outline-none transition-colors bg-white"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
                   />
                 </div>
               )}
@@ -129,7 +129,7 @@ export default function LoginPage({ onAuth }) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="login-email-input"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 focus:outline-none transition-colors bg-white"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
                 />
               </div>
               <div className="relative">
@@ -142,7 +142,7 @@ export default function LoginPage({ onAuth }) {
                   required
                   minLength={6}
                   data-testid="login-password-input"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 focus:outline-none transition-colors bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
                 />
                 <button
                   type="button"
@@ -157,10 +157,10 @@ export default function LoginPage({ onAuth }) {
               {mode === "login" && (
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
-                    <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 accent-purple-600" />
+                    <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 accent-pink-700" />
                     <span className="text-[13px]">Remember me</span>
                   </label>
-                  <button type="button" className="text-[13px] text-purple-600 hover:text-purple-700 font-medium transition-colors">
+                  <button type="button" className="text-[13px] text-pink-700 hover:text-pink-800 font-medium transition-colors">
                     Forgot password?
                   </button>
                 </div>
@@ -192,9 +192,9 @@ export default function LoginPage({ onAuth }) {
               <div className="flex-1 h-px bg-gray-200" />
               <span className="text-[13px] text-gray-500 whitespace-nowrap">
                 {mode === "login" ? (
-                  <>New here?{" "}<button onClick={() => { setMode("register"); setError(""); }} className="text-purple-600 hover:text-purple-700 font-semibold transition-colors" data-testid="switch-to-register">Create an account</button></>
+                  <>New here?{" "}<button onClick={() => { setMode("register"); setError(""); }} className="text-pink-700 hover:text-pink-800 font-semibold transition-colors" data-testid="switch-to-register">Create an account</button></>
                 ) : (
-                  <>Already a member?{" "}<button onClick={() => { setMode("login"); setError(""); }} className="text-purple-600 hover:text-purple-700 font-semibold transition-colors" data-testid="switch-to-login">Sign in</button></>
+                  <>Already a member?{" "}<button onClick={() => { setMode("login"); setError(""); }} className="text-pink-700 hover:text-pink-800 font-semibold transition-colors" data-testid="switch-to-login">Sign in</button></>
                 )}
               </span>
               <div className="flex-1 h-px bg-gray-200" />
@@ -216,7 +216,7 @@ export default function LoginPage({ onAuth }) {
             </button>
 
             <p className="text-center text-[11px] text-gray-400 mt-4">
-              By logging in, you agree to <button className="text-purple-600 hover:underline">Terms</button> & <button className="text-purple-600 hover:underline">Privacy Policy</button>
+              By logging in, you agree to <button className="text-pink-700 hover:underline">Terms</button> & <button className="text-pink-700 hover:underline">Privacy Policy</button>
             </p>
           </div>
         </div>
