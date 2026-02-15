@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime, timezone, timedelta
 from database import db
 from subscriptions import SUBSCRIPTION_TIERS
+from ws_manager import manager
 import uuid
 
 router = APIRouter(prefix="/api/admin")
@@ -355,6 +356,14 @@ async def change_subscription(user_id: str, request: Request):
     }
     await db.subscription_logs.insert_one(log_entry)
     log_entry.pop("_id", None)
+
+    # Notify user in real-time via WebSocket
+    await manager.send_to_tenant(tenant["tenant_id"], {
+        "type": "plan_changed",
+        "old_plan": old_plan,
+        "new_plan": new_plan,
+        "reason": reason,
+    })
 
     return {"ok": True, "log": log_entry}
 
