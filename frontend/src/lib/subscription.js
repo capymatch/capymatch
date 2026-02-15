@@ -20,6 +20,9 @@ export function SubscriptionProvider({ children }) {
 
   useEffect(() => {
     refresh();
+    // Re-fetch subscription every 30 seconds to catch admin-side changes
+    const interval = setInterval(refresh, 30000);
+    return () => clearInterval(interval);
   }, [refresh]);
 
   return (

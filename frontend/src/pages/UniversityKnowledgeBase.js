@@ -66,7 +66,12 @@ export default function UniversityKnowledgeBase() {
       toast.success(`${uni.university_name} added to your board`);
       setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
     } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to add");
+      const detail = err.response?.data?.detail;
+      if (detail?.error === "subscription_limit") {
+        toast.error(detail.message || "School limit reached. Upgrade your plan.");
+      } else {
+        toast.error(typeof detail === "string" ? detail : "Failed to add");
+      }
     } finally {
       setAdding((prev) => ({ ...prev, [uni.university_name]: false }));
     }
