@@ -677,7 +677,10 @@ export default function RecruitingJourney() {
         {/* Sidebar (right col) */}
         <div className="lg:col-span-1 space-y-4">
           {/* AI Insights */}
-          <AISidebarCard programId={programId} onDraftEmail={openEmail} />
+          <div className="relative">
+            <AISidebarCard programId={programId} onDraftEmail={openEmail} />
+            {isBasic && <LockedOverlay label="AI Recruiting Insights" />}
+          </div>
 
           {/* Coaches */}
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
