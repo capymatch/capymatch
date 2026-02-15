@@ -47,6 +47,15 @@ Public-facing Volleyball Recruiting CRM with:
 - Subscription context auto-refreshes on plan change events
 - Auto-reconnect on WebSocket disconnect (5s delay)
 
+## Stripe Integration (Feb 2026)
+- Self-serve subscription upgrades via Stripe Checkout
+- `POST /api/stripe/checkout` creates checkout sessions for Pro ($19/mo) or Premium ($39/mo)
+- `GET /api/stripe/checkout/status/{session_id}` polls payment status
+- `POST /api/webhook/stripe` handles Stripe webhook events
+- On successful payment, plan auto-upgrades + WebSocket notification sent
+- Payment transactions stored in `payment_transactions` collection
+- Frontend: UpgradeModal buttons redirect to Stripe, PaymentSuccess page polls for confirmation
+
 ## Upcoming Tasks (P1)
 - Stripe Integration (Phase 4) - real subscription payments for self-serve upgrades
 
