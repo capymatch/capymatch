@@ -658,8 +658,9 @@ export default function RecruitingJourney() {
                   <MessageSquare className="w-3 h-3 mr-1.5" />Log
                 </Button>
                 <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openEmail}
-                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-email-btn">
-                  <Mail className="w-3 h-3 mr-1.5" />Email
+                  disabled={isBasic}
+                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: isBasic ? 0.4 : 1 }} data-testid="timeline-email-btn">
+                  <Mail className="w-3 h-3 mr-1.5" />{isBasic ? <><Lock className="w-3 h-3 mr-1" />Email</> : "Email"}
                 </Button>
               </div>
             </div>
