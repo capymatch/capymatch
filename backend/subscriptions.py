@@ -17,13 +17,13 @@ SUBSCRIPTION_TIERS = {
         "public_profile": False,
         "analytics": False,
         "match_scores_limit": 3,
+        "description": "Perfect for exploring schools and getting organized.",
         "features": [
             "Track up to 5 schools",
-            "3 school matches",
-            "Basic recruiting board",
+            "Simple recruiting pipeline",
             "University knowledge base",
-            "Calendar & events",
-            "1 user account",
+            "Events & calendar tracking",
+            "One athlete profile",
         ],
     },
     "pro": {
