@@ -689,7 +689,7 @@ export default function RecruitingJourney() {
           <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
-              <button onClick={() => { setShowCoachForm(true); setEditCoach(null); }} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
+              <button onClick={() => { if (!isBasic) { setShowCoachForm(true); setEditCoach(null); } }} className={`p-1 rounded-lg hover:bg-[var(--t-surface-alt)] ${isBasic ? "opacity-40 cursor-not-allowed" : ""}`} data-testid="add-coach-btn" title={isBasic ? "Upgrade to add coaches" : "Add coach"}><Plus className="w-4 h-4 text-pink-500" /></button>
             </div>
             <div className="space-y-2">
               {coaches.length === 0 && !showCoachForm && <p className="text-xs text-center py-2" style={{ color: "var(--t-text-muted)" }}>No coaches added yet</p>}
