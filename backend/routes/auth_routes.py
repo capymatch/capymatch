@@ -4,8 +4,79 @@ from database import db
 from auth import get_current_user, get_tenant_id
 import uuid
 import httpx
+import bcrypt
 
 router = APIRouter(prefix="/api")
+
+
+@router.post("/auth/register")
+async def register(request: Request, response: Response):
+    body = await request.json()
+    email = (body.get("email") or "").strip().lower()
+    password = body.get("password") or ""
+    name = (body.get("name") or "").strip()
+    if not email or not password or not name:
+        raise HTTPException(status_code=400, detail="Name, email and password are required")
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=409, detail="An account with this email already exists")
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    user = {
+        "user_id": user_id,
+        "email": email,
+        "name": name,
+        "picture": "",
+        "password_hash": hashed,
+        "auth_provider": "local",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.users.insert_one(user)
+    session_token = f"sess_{uuid.uuid4().hex}"
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.user_sessions.insert_one({
+        "session_token": session_token,
+        "user_id": user_id,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    await get_tenant_id({"user_id": user_id, "name": name})
+    response.set_cookie(
+        key="session_token", value=session_token, httponly=True,
+        secure=True, samesite="none", path="/", max_age=7*24*3600
+    )
+    return {"user_id": user_id, "email": email, "name": name, "picture": ""}
+
+
+@router.post("/auth/login")
+async def login(request: Request, response: Response):
+    body = await request.json()
+    email = (body.get("email") or "").strip().lower()
+    password = body.get("password") or ""
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    user = await db.users.find_one({"email": email}, {"_id": 0})
+    if not user or not user.get("password_hash"):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not bcrypt.checkpw(password.encode(), user["password_hash"].encode()):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    user_id = user["user_id"]
+    session_token = f"sess_{uuid.uuid4().hex}"
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.user_sessions.delete_many({"user_id": user_id})
+    await db.user_sessions.insert_one({
+        "session_token": session_token,
+        "user_id": user_id,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    response.set_cookie(
+        key="session_token", value=session_token, httponly=True,
+        secure=True, samesite="none", path="/", max_age=7*24*3600
+    )
+    return {"user_id": user_id, "email": user["email"], "name": user.get("name", ""), "picture": user.get("picture", "")}
 
 
 @router.post("/auth/session")
