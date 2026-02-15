@@ -77,6 +77,11 @@ async def send_welcome_email(name: str, email: str):
 
 
 async def send_invitation_email(inviter_name: str, invitee_email: str, app_url: str):
+    # Check if invitation emails are enabled
+    settings = await db.email_settings.find_one({"setting_id": "global"}, {"_id": 0})
+    if settings and not settings.get("invitation_email", True):
+        return None
+
     html = f"""
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px;">
       <div style="text-align: center; margin-bottom: 32px;">
