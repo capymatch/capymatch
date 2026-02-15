@@ -112,7 +112,7 @@ export default function Layout({ user, onLogout }) {
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
-    { to: "/outreach-analysis", icon: TrendingUp, label: "Outreach AI", premium: true },
+    { to: "/outreach-analysis", icon: TrendingUp, label: "Engagement AI", premium: true },
     { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true },
   ];
 
