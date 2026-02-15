@@ -74,7 +74,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
 
         <div className="h-px mb-3" style={{ background: dark ? (isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)") : (isRecommended ? "rgba(244,63,94,0.12)" : "#e5e7eb") }} />
 
-        <ul className="space-y-1.5 mb-3 flex-1">
+        <ul className="space-y-2 mb-4 flex-1">
           {tier.features.map((f, i) => (
             <li key={i} className="flex items-start gap-1.5">
               <div className={`w-3 h-3 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
