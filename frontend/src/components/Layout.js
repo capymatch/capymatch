@@ -223,7 +223,7 @@ export default function Layout({ user, onLogout }) {
             onClick={() => {
               const tier = subscription?.tier;
               if (!tier || tier === "basic") {
-                toast.error("AI Advisor is available on Pro and Premium plans", { action: { label: "Upgrade", onClick: () => navigate("/account") } });
+                setShowUpgrade(true);
               } else {
                 setShowAssistant(true);
               }
