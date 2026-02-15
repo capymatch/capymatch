@@ -62,7 +62,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           </div>
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-black tracking-tight" style={{ color: dark ? "#fff" : "#1f2937" }}>${tier.price}</span>
             <span className="text-[10px] font-medium" style={{ color: dark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>/mo</span>
