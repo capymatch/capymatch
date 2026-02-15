@@ -1,0 +1,302 @@
+import { useState, useEffect } from "react";
+import api from "../lib/api";
+import { toast } from "sonner";
+import {
+  Mail, CreditCard, Sparkles, CheckCircle2, XCircle, AlertCircle,
+  Eye, EyeOff, RefreshCw, Trash2, Save, ExternalLink, Loader2
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+
+function StatusDot({ active }) {
+  return (
+    <span
+      className={`inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${active ? "bg-emerald-400" : "bg-zinc-500"}`}
+      data-testid={`status-dot-${active ? "active" : "inactive"}`}
+    />
+  );
+}
+
+function IntegrationCard({ icon: Icon, title, subtitle, status, statusLabel, accent, badge, children }) {
+  return (
+    <div
+      className="rounded-xl border overflow-hidden"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      data-testid={`integration-card-${title.toLowerCase().replace(/\s+/g, "-")}`}
+    >
+      <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--t-border)" }}>
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${accent}`}>
+            <Icon className="w-5 h-5" strokeWidth={1.5} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-sm" style={{ color: "var(--t-text)" }}>{title}</h3>
+              {badge && (
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${badge.class}`}>
+                  {badge.text}
+                </span>
+              )}
+            </div>
+            <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{subtitle}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <StatusDot active={status} />
+          <span className={`text-xs font-medium ${status ? "text-emerald-400" : "text-zinc-500"}`}>{statusLabel}</span>
+        </div>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
+
+function StatRow({ label, value }) {
+  return (
+    <div className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+      <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{label}</span>
+      <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{value}</span>
+    </div>
+  );
+}
+
+export default function AdminIntegrations() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [stripeKey, setStripeKey] = useState("");
+  const [showKey, setShowKey] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(null);
+
+  const fetchIntegrations = async () => {
+    try {
+      const res = await api.get("/admin/integrations");
+      setData(res.data);
+    } catch {
+      toast.error("Failed to load integrations");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchIntegrations(); }, []);
+
+  const saveStripeKey = async () => {
+    if (!stripeKey.trim()) return;
+    setSaving(true);
+    try {
+      const res = await api.put("/admin/integrations/stripe", { api_key: stripeKey.trim() });
+      toast.success(`Stripe key updated (${res.data.mode} mode)`);
+      setStripeKey("");
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to update key");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const disconnectGmail = async (userId) => {
+    setDisconnecting(userId);
+    try {
+      await api.delete(`/admin/integrations/gmail/${userId}`);
+      toast.success("Gmail disconnected");
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to disconnect");
+    } finally {
+      setDisconnecting(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24" data-testid="integrations-loading">
+        <Loader2 className="w-6 h-6 animate-spin text-pink-500" />
+      </div>
+    );
+  }
+
+  const gmail = data?.gmail || {};
+  const stripe = data?.stripe || {};
+  const ai = data?.ai || {};
+
+  return (
+    <div className="space-y-6 max-w-3xl" data-testid="admin-integrations-page">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>Integrations</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>
+            Manage connected services and API keys
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchIntegrations}
+          className="gap-1.5"
+          style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+          data-testid="integrations-refresh"
+        >
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh
+        </Button>
+      </div>
+
+      {/* Gmail */}
+      <IntegrationCard
+        icon={Mail}
+        title="Gmail"
+        subtitle="Send and receive coach emails directly from the app"
+        status={gmail.connected}
+        statusLabel={gmail.connected ? `${gmail.total_connected} user${gmail.total_connected !== 1 ? "s" : ""} connected` : "Not connected"}
+        accent="bg-red-500/15 text-red-400"
+      >
+        {gmail.configured ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>OAuth credentials configured</span>
+            </div>
+
+            {gmail.connected_users?.length > 0 ? (
+              <div className="space-y-2 mt-3">
+                <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Connected Accounts</span>
+                {gmail.connected_users.map((u) => (
+                  <div
+                    key={u.user_id}
+                    className="flex items-center justify-between py-2.5 px-3 rounded-lg border"
+                    style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}
+                    data-testid={`gmail-user-${u.user_id}`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Mail className="w-4 h-4 text-red-400" />
+                      <div>
+                        <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{u.name || "User"}</span>
+                        <span className="text-xs ml-2" style={{ color: "var(--t-text-muted)" }}>{u.email}</span>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => disconnectGmail(u.user_id)}
+                      disabled={disconnecting === u.user_id}
+                      className="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 gap-1"
+                      data-testid={`gmail-disconnect-${u.user_id}`}
+                    >
+                      {disconnecting === u.user_id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                      Disconnect
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
+                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                <span>No users have connected Gmail yet. Users can connect from Settings.</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
+            <XCircle className="w-3.5 h-3.5 text-rose-400" />
+            <span>Gmail OAuth credentials not configured. Add GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET to .env</span>
+          </div>
+        )}
+      </IntegrationCard>
+
+      {/* Stripe */}
+      <IntegrationCard
+        icon={CreditCard}
+        title="Stripe"
+        subtitle="Process subscription payments and manage billing"
+        status={stripe.connected}
+        statusLabel={stripe.connected ? "Connected" : "Not configured"}
+        accent="bg-violet-500/15 text-violet-400"
+        badge={stripe.connected ? { text: stripe.mode, class: stripe.is_live ? "bg-emerald-500/15 text-emerald-400" : "bg-amber-500/15 text-amber-400" } : null}
+      >
+        <div className="space-y-4">
+          {/* Current key info */}
+          {stripe.connected && (
+            <div className="space-y-1">
+              <StatRow label="API Key" value={stripe.key_masked} />
+              <StatRow label="Total Transactions" value={stripe.stats?.total_transactions || 0} />
+              <StatRow label="Successful Payments" value={stripe.stats?.paid_transactions || 0} />
+              <StatRow label="Pending" value={stripe.stats?.pending_transactions || 0} />
+              <StatRow label="Revenue Collected" value={`$${(stripe.stats?.total_revenue || 0).toFixed(2)}`} />
+            </div>
+          )}
+
+          {/* Update key form */}
+          <div className="pt-2">
+            <label className="text-xs font-medium uppercase tracking-wider block mb-2" style={{ color: "var(--t-text-muted)" }}>
+              {stripe.connected ? "Update API Key" : "Add Stripe API Key"}
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type={showKey ? "text" : "password"}
+                  value={stripeKey}
+                  onChange={(e) => setStripeKey(e.target.value)}
+                  placeholder="sk_test_... or sk_live_..."
+                  className="pr-10 text-sm"
+                  style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  data-testid="stripe-key-input"
+                />
+                <button
+                  onClick={() => setShowKey(!showKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--t-text-muted)" }}
+                  data-testid="stripe-key-toggle"
+                >
+                  {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <Button
+                onClick={saveStripeKey}
+                disabled={!stripeKey.trim() || saving}
+                className="bg-violet-600 hover:bg-violet-700 text-white gap-1.5"
+                data-testid="stripe-key-save"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save
+              </Button>
+            </div>
+            <p className="text-[11px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>
+              Get your key from{" "}
+              <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:text-violet-300 inline-flex items-center gap-0.5">
+                Stripe Dashboard <ExternalLink className="w-3 h-3" />
+              </a>
+            </p>
+          </div>
+        </div>
+      </IntegrationCard>
+
+      {/* AI */}
+      <IntegrationCard
+        icon={Sparkles}
+        title="AI Assistant"
+        subtitle="Claude Sonnet via Emergent LLM Key — powers email drafts, outreach insights, and highlight advice"
+        status={ai.connected}
+        statusLabel={ai.connected ? "Active" : "Not configured"}
+        accent="bg-pink-500/15 text-pink-400"
+      >
+        <div className="space-y-1">
+          {ai.connected ? (
+            <>
+              <StatRow label="Provider" value={ai.provider} />
+              <StatRow label="API Key" value={ai.key_masked} />
+              <StatRow label="Drafts This Month" value={ai.stats?.usage_this_month || 0} />
+              <StatRow label="Drafts All-Time" value={ai.stats?.usage_total || 0} />
+            </>
+          ) : (
+            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
+              <XCircle className="w-3.5 h-3.5 text-rose-400" />
+              <span>Emergent LLM Key not configured. Add EMERGENT_LLM_KEY to .env</span>
+            </div>
+          )}
+        </div>
+      </IntegrationCard>
+    </div>
+  );
+}
