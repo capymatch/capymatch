@@ -63,8 +63,17 @@ Public-facing Volleyball Recruiting CRM with:
 - AI card: provider info, masked key, monthly/total usage stats
 - Backend: `GET /api/admin/integrations`, `PUT /api/admin/integrations/stripe`, `DELETE /api/admin/integrations/gmail/{user_id}`
 
+## Product Tour (Feb 2026)
+- Custom-built tour component (`Tour.js`) replacing `react-joyride`
+- Dark-themed tooltip with pink/coral accent dots and buttons
+- 9-step tour covering: Dashboard, Pipeline, Calendar, Inbox, Schools, AI Tools, Profile
+- Spotlight cutout with animated pink border highlights the active UI element
+- Semi-transparent overlay (40% opacity) keeps underlying UI visible for context
+- Progress dots + step counter for orientation
+- Skip/Back/Next navigation with localStorage persistence
+
 ## Upcoming Tasks (P1)
-- Stripe Integration (Phase 4) - real subscription payments for self-serve upgrades
+- None currently queued
 
 ## Future/Backlog
 - App naming (user deciding)
