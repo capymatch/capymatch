@@ -689,7 +689,7 @@ export default function RecruitingJourney() {
         </div>
 
         {/* Sidebar (right col) */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-2.5">
           {/* AI Insights */}
           <div className="relative">
             <AISidebarCard programId={programId} onDraftEmail={openEmail} />
