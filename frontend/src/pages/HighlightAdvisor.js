@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Video, Play, Clock, AlertTriangle, CheckCircle, Loader2, Sparkles, ChevronRight, Send } from "lucide-react";
 import FeatureGate from "../components/FeatureGate";
+import UpgradeBenefitsPage from "../components/UpgradeBenefitsPage";
+import { useSubscription } from "../lib/subscription";
 import api from "../lib/api";
 
 export default function HighlightAdvisor() {
+  const { subscription } = useSubscription();
+  const isBasic = !subscription?.tier || subscription.tier === "basic";
   const [advice, setAdvice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState("");
