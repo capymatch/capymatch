@@ -617,6 +617,21 @@ export default function RecruitingJourney() {
           </div>
         </div>
       )}
+      {/* ─── Coach Watch Teaser for Starter ─── */}
+      {isBasic && (
+        <div className="rounded-xl border border-purple-500/20 p-3 flex items-center gap-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
+            <Lock className="w-4 h-4 text-purple-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch — Know when coaching staff changes</p>
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Get real-time alerts when coaches leave or new ones are hired at your schools.</p>
+          </div>
+          <a href="/account" className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
+            Upgrade
+          </a>
+        </div>
+      )}
       {/* ─── Header ─── */}
       <div className="space-y-3">
         <div className="flex items-start gap-3">
