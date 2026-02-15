@@ -55,12 +55,12 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
 /* ── Program Row ── */
 function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const divColor = {
-    D1: "bg-emerald-600 text-white",
-    D2: "bg-blue-600 text-white",
-    D3: "bg-violet-600 text-white",
-    NAIA: "bg-orange-600 text-white",
-    JUCO: "bg-yellow-500 text-slate-900",
-  }[p.division] || "bg-slate-500 text-white";
+    D1: "bg-emerald-500/20 text-emerald-400",
+    D2: "bg-blue-500/20 text-blue-400",
+    D3: "bg-violet-500/20 text-violet-400",
+    NAIA: "bg-orange-500/20 text-orange-400",
+    JUCO: "bg-yellow-500/20 text-yellow-400",
+  }[p.division] || "bg-gray-500/20 text-gray-400";
   const divFull = p.division === "D1" ? "NCAA I" : p.division === "D2" ? "NCAA II" : p.division === "D3" ? "NCAA III" : p.division;
 
   const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-700 bg-emerald-100 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-500/15 dark:border-emerald-500/30"
