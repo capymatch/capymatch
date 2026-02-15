@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 SUBSCRIPTION_TIERS = {
     "basic": {
-        "label": "Basic",
+        "label": "Starter",
         "price": 0,
         "max_schools": 5,
         "max_members": 1,
