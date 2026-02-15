@@ -276,7 +276,7 @@ function CoachWatch() {
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-4">
           {[...redAlerts, ...yellowAlerts, ...greenAlerts].map((alert) => {
             const cfg = SEVERITY_CONFIG[alert.severity] || SEVERITY_CONFIG.green;
             const Icon = cfg.icon;
