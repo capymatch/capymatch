@@ -35,7 +35,7 @@ export default function UpgradeBenefitsPage({ featureKey }) {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const config = FEATURE_BENEFITS[featureKey] || FEATURE_BENEFITS["outreach-analysis"];
   const Icon = config.icon;
-  const accent = config.color === "violet" ? "violet" : "pink";
+  const accent = "pink";
 
   return (
     <>
