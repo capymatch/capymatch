@@ -457,6 +457,8 @@ function AISidebarCard({ programId, onDraftEmail }) {
 export default function RecruitingJourney() {
   const { programId } = useParams();
   const navigate = useNavigate();
+  const { subscription } = useSubscription();
+  const isBasic = !subscription?.tier || subscription.tier === "basic";
   const [program, setProgram] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [coaches, setCoaches] = useState([]);
