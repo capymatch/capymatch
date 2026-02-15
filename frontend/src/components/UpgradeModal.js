@@ -224,6 +224,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
           <p className="text-[10px] text-white/25">14-day money-back guarantee. Cancel anytime.</p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
