@@ -56,6 +56,13 @@ Public-facing Volleyball Recruiting CRM with:
 - Payment transactions stored in `payment_transactions` collection
 - Frontend: UpgradeModal buttons redirect to Stripe, PaymentSuccess page polls for confirmation
 
+## Admin Integrations Management (Feb 2026)
+- New `/admin/integrations` page to manage all connected services
+- Gmail card: shows OAuth status, connected users, disconnect option
+- Stripe card: masked key display, TEST/LIVE badge, transaction stats, key update form
+- AI card: provider info, masked key, monthly/total usage stats
+- Backend: `GET /api/admin/integrations`, `PUT /api/admin/integrations/stripe`, `DELETE /api/admin/integrations/gmail/{user_id}`
+
 ## Upcoming Tasks (P1)
 - Stripe Integration (Phase 4) - real subscription payments for self-serve upgrades
 
