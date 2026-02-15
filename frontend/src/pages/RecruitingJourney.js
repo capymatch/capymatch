@@ -487,27 +487,33 @@ export default function RecruitingJourney() {
         const linked = (evtRes.data || []).filter(e => e.program_id === programId && e.start_date >= new Date().toISOString().slice(0, 10));
         setKeyDates(linked.slice(0, 5));
       } catch {}
-      // Fetch recruiting insights (non-blocking)
-      try {
-        const insightRes = await api.get("/recruiting-insights");
-        const insights = insightRes.data?.insights || [];
-        if (insights.length > 0) {
-          setCurrentInsight(insights[Math.floor(Math.random() * insights.length)]);
-        }
-      } catch {}
-      // Fetch match score for this program
-      try {
-        const msRes = await api.get("/match-scores");
-        const found = (msRes.data?.scores || []).find(s => s.program_id === programId);
-        if (found) setMatchScore(found);
-      } catch {}
-      // Fetch coach watch alert for this school
-      try {
-        if (progRes.data?.university_name) {
-          const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
-          if (cwRes.data?.alert) setCoachAlert(cwRes.data.alert);
-        }
-      } catch {}
+      // Fetch recruiting insights (non-blocking, Pro+ only)
+      if (!isBasic) {
+        try {
+          const insightRes = await api.get("/recruiting-insights");
+          const insights = insightRes.data?.insights || [];
+          if (insights.length > 0) {
+            setCurrentInsight(insights[Math.floor(Math.random() * insights.length)]);
+          }
+        } catch {}
+      }
+      // Fetch match score for this program (non-blocking, Pro+ only)
+      if (!isBasic) {
+        try {
+          const msRes = await api.get("/match-scores");
+          const found = (msRes.data?.scores || []).find(s => s.program_id === programId);
+          if (found) setMatchScore(found);
+        } catch {}
+      }
+      // Fetch coach watch alert for this school (non-blocking, Premium only)
+      if (!isBasic) {
+        try {
+          if (progRes.data?.university_name) {
+            const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
+            if (cwRes.data?.alert) setCoachAlert(cwRes.data.alert);
+          }
+        } catch {}
+      }
     } catch {
       toast.error("Failed to load journey data");
     } finally { setLoading(false); }
