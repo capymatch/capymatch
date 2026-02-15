@@ -49,6 +49,7 @@ Public-facing Volleyball Recruiting CRM with:
 
 ## Bug Fixes
 - **P0 Fix (Feb 2026)**: Subscription gate failure on plan downgrade. Root cause: `/api/knowledge-base/add-to-board` endpoint had NO subscription enforcement. Fixed by adding `enforce_school_limit()`. Also fixed frontend error display for subscription limit errors and added periodic subscription state refresh.
+- **P0 Fix (Feb 2026)**: "Connect your Gmail" checklist step was shown to Basic plan users who don't have Gmail access. Fixed by conditionally rendering the Gmail onboarding step only when `subscription.tier !== 'basic'` in `Dashboard.js`. The step dynamically appears when a user upgrades.
 
 ## Real-Time Notifications (Feb 2026)
 - WebSocket endpoint `/api/ws/{tenant_id}` for real-time push events
