@@ -145,3 +145,23 @@ async def logout(request: Request, response: Response):
         await db.user_sessions.delete_many({"session_token": session_token})
     response.delete_cookie("session_token", path="/", secure=True, samesite="none")
     return {"ok": True}
+
+
+
+@router.post("/auth/change-password")
+async def change_password(request: Request):
+    user = await get_current_user(request)
+    if not user.get("password_hash"):
+        raise HTTPException(status_code=400, detail="Password change is not available for social login accounts")
+    body = await request.json()
+    current_password = body.get("current_password") or ""
+    new_password = body.get("new_password") or ""
+    if not current_password or not new_password:
+        raise HTTPException(status_code=400, detail="Current and new password are required")
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="New password must be at least 6 characters")
+    if not bcrypt.checkpw(current_password.encode(), user["password_hash"].encode()):
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
+    hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    await db.users.update_one({"user_id": user["user_id"]}, {"$set": {"password_hash": hashed}})
+    return {"ok": True}
