@@ -215,7 +215,8 @@ export default function Layout({ user, onLogout }) {
           {/* AI Assistant Button */}
           <button
             onClick={() => {
-              if (subscription?.tier === "basic") {
+              const tier = subscription?.tier;
+              if (!tier || tier === "basic") {
                 toast.error("AI Advisor is available on Pro and Premium plans", { action: { label: "Upgrade", onClick: () => navigate("/account") } });
               } else {
                 setShowAssistant(true);
