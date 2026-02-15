@@ -335,24 +335,31 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
           <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
           <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
         </div>
-        <div className="flex gap-2.5 flex-shrink-0">
-          {isBasic && step.type === "email" ? (
-            <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
-              disabled data-testid="next-step-action-btn">
-              <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
-            </Button>
-          ) : (
-            <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
-              onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
-              {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
-              {step.action}
-            </Button>
-          )}
-          {program.next_action_due && (
-            <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
-              style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
-              Snooze 3 days
-            </Button>
+        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+          <div className="flex gap-2.5">
+            {isBasic && step.type === "email" ? (
+              <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
+                disabled data-testid="next-step-action-btn">
+                <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
+              </Button>
+            ) : (
+              <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
+                onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
+                {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
+                {step.action}
+              </Button>
+            )}
+            {program.next_action_due && (
+              <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
+                style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
+                Snooze 3 days
+              </Button>
+            )}
+          </div>
+          {isBasic && step.type === "email" && (
+            <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
+              Upgrade to Active Recruit to email coaches
+            </a>
           )}
         </div>
       </div>
