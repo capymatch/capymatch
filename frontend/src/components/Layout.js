@@ -147,7 +147,9 @@ export default function Layout({ user, onLogout }) {
             </div>
             <div className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>
               <span className="font-heading text-lg font-bold block leading-tight text-white">Recruiting HQ</span>
-              <span className="text-[10px] uppercase tracking-widest text-white/60">Pro Edition</span>
+              <span className="text-[10px] uppercase tracking-widest text-white/60">
+                {subscription?.tier ? `${TIER_LABELS[subscription.tier] || subscription.tier} Edition` : "Basic Edition"}
+              </span>
             </div>
           </div>
           {/* Collapse button - Desktop only */}
@@ -258,9 +260,6 @@ export default function Layout({ user, onLogout }) {
         {/* Subscription Badge + Admin Link */}
         <div className="px-4 pb-2 mt-auto">
           <div className="border-t mb-3" style={{ borderColor: "rgba(255,255,255,0.15)" }} />
-          <div className={`mb-2 ${sidebarCollapsed ? 'lg:flex lg:justify-center' : ''}`}>
-            <SubscriptionBadge collapsed={sidebarCollapsed} />
-          </div>
           <NavLink
             to="/admin"
             data-testid="nav-admin"
