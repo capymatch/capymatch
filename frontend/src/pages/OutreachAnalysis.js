@@ -67,7 +67,7 @@ export default function OutreachAnalysis() {
 
   return (
     <FeatureGate feature="auto_reply_detection">
-      <div className="space-y-5" data-testid="outreach-analysis-page">
+      <div className="space-y-3" data-testid="outreach-analysis-page">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Engagement Analysis</h2>
@@ -93,7 +93,7 @@ export default function OutreachAnalysis() {
         ) : (
           <>
             {/* Top Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
               <StatBox label="Schools Tracked" value={data.stats.total_schools} icon={Target} color="text-blue-400" />
               <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-pink-400" />
               <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-emerald-400" />
@@ -103,46 +103,46 @@ export default function OutreachAnalysis() {
             {data.ai_insights && (
               <>
                 {/* Score + Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="rounded-xl border p-5 flex flex-col items-center justify-center relative" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="outreach-score">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                  <div className="rounded-xl border p-4 flex flex-col items-center justify-center relative" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="outreach-score">
                     <ScoreRing score={data.ai_insights.overall_score} label={data.ai_insights.score_label} />
                   </div>
-                  <div className="md:col-span-2 rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                    <h3 className="text-sm font-semibold mb-3" style={{ color: "var(--t-text)" }}>AI Summary</h3>
-                    <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--t-text-secondary)" }}>
+                  <div className="md:col-span-2 rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                    <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--t-text)" }}>AI Summary</h3>
+                    <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--t-text-secondary)" }}>
                       {data.ai_insights.summary}
                     </p>
                     {data.ai_insights.division_insights && (
-                      <div className="rounded-lg p-3 border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-                        <p className="text-[10px] font-medium mb-1" style={{ color: "var(--t-text-muted)" }}>Division Insights</p>
-                        <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{data.ai_insights.division_insights}</p>
+                      <div className="rounded-lg p-2.5 border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+                        <p className="text-[10px] font-medium mb-0.5" style={{ color: "var(--t-text-muted)" }}>Division Insights</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{data.ai_insights.division_insights}</p>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Strengths + Improvements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                    <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                  <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                    <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
                       <CheckCircle className="w-4 h-4 text-emerald-400" /> Strengths
                     </h3>
-                    <ul className="space-y-2">
+                    <ul className="space-y-1.5">
                       {(data.ai_insights.strengths || []).map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "var(--t-text-secondary)" }}>
+                        <li key={i} className="flex items-start gap-2 text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
                           <ArrowUpRight className="w-3.5 h-3.5 mt-0.5 text-emerald-400 flex-shrink-0" />
                           <span>{s}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                    <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+                  <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                    <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
                       <Zap className="w-4 h-4 text-amber-400" /> Areas to Improve
                     </h3>
-                    <ul className="space-y-2">
+                    <ul className="space-y-1.5">
                       {(data.ai_insights.improvements || []).map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "var(--t-text-secondary)" }}>
+                        <li key={i} className="flex items-start gap-2 text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
                           <ChevronRight className="w-3.5 h-3.5 mt-0.5 text-amber-400 flex-shrink-0" />
                           <span>{s}</span>
                         </li>
@@ -152,13 +152,13 @@ export default function OutreachAnalysis() {
                 </div>
 
                 {/* Next Steps */}
-                <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+                <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                  <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
                     <Target className="w-4 h-4 text-pink-400" /> Recommended Next Steps
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
                     {(data.ai_insights.next_steps || []).map((step, i) => (
-                      <div key={i} className="rounded-lg border p-3 flex items-start gap-2" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+                      <div key={i} className="rounded-lg border p-2.5 flex items-start gap-2" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
                         <span className="w-5 h-5 rounded-full bg-pink-600/15 text-pink-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                           {i + 1}
                         </span>
@@ -170,11 +170,11 @@ export default function OutreachAnalysis() {
 
                 {/* Interaction Breakdown */}
                 {data.stats.by_type && Object.keys(data.stats.by_type).length > 0 && (
-                  <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                    <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-                      <BarChart3 className="w-4 h-4 text-blue-400" /> Outreach by Type
+                  <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                    <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+                      <BarChart3 className="w-4 h-4 text-blue-400" /> Engagement by Type
                     </h3>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       {Object.entries(data.stats.by_type).sort((a, b) => b[1] - a[1]).map(([type, count]) => (
                         <div key={type} className="flex items-center gap-3">
                           <span className="text-xs w-24 text-right" style={{ color: "var(--t-text-muted)" }}>{type}</span>
