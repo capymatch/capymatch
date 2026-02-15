@@ -73,8 +73,8 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
 
   return (
     <div
-      className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-all hover:bg-[var(--t-surface-alt)]"
-      style={{ borderColor: "var(--t-border)" }}
+      className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
+      style={{ borderColor: "rgba(255,255,255,0.04)" }}
       data-testid={`program-row-${p.program_id}`}
     >
       {/* Accent bar */}
