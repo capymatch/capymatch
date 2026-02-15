@@ -112,7 +112,6 @@ export default function Layout({ user, onLogout }) {
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
-    { to: "/analytics", icon: BarChart3, label: "Analytics" },
     { to: "/outreach-analysis", icon: TrendingUp, label: "Outreach AI", premium: true },
     { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true },
   ];
@@ -298,7 +297,7 @@ export default function Layout({ user, onLogout }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/outreach-analysis": "Outreach Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/outreach-analysis": "Outreach Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
@@ -367,7 +366,7 @@ export default function Layout({ user, onLogout }) {
                             } else if (notif.type === "follow_up_due") {
                               navigate("/pipeline");
                             } else if (notif.type === "profile_view_edu") {
-                              navigate("/analytics");
+                              navigate("/board");
                             }
                             setNotifOpen(false);
                           }}
