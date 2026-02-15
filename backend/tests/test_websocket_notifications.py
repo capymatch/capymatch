@@ -167,7 +167,9 @@ class TestKnowledgeBaseSchoolLimit:
         # Check current school count
         programs_response = requests.get(f"{BASE_URL}/api/programs")
         assert programs_response.status_code == 200
-        school_count = len(programs_response.json().get("programs", []))
+        programs_data = programs_response.json()
+        # API returns a list directly
+        school_count = len(programs_data) if isinstance(programs_data, list) else len(programs_data.get("programs", []))
         print(f"Current schools on board: {school_count}")
         
         # Basic plan has 5 school limit
