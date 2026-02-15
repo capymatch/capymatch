@@ -160,8 +160,8 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center md:p-4">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      <div className="absolute inset-0 bg-[#100c1c]" onClick={onClose} />
 
       <div
         className="relative w-full max-h-[90vh] md:max-w-4xl rounded-t-2xl md:rounded-3xl border overflow-y-auto"
