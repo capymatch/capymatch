@@ -162,59 +162,6 @@ export default function SettingsPage() {
       {/* Team Management */}
       <TeamSection />
 
-      {/* Notifications */}
-      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-            <Bell className="w-5 h-5 text-orange-500" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Notifications</h2>
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Manage your notification preferences</p>
-          </div>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <div>
-              <p className="text-sm" style={{ color: "var(--t-text)" }}>Follow-up Reminders</p>
-              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Get notified when follow-ups are due</p>
-            </div>
-            <div className="w-10 h-6 bg-pink-700 rounded-full relative cursor-pointer">
-              <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full"></div>
-            </div>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <div>
-              <p className="text-sm" style={{ color: "var(--t-text)" }}>Email Notifications</p>
-              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Receive updates via email</p>
-            </div>
-            <div className="w-10 h-6 rounded-full relative cursor-pointer" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-              <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-gray-400 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Privacy */}
-      <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-green-500" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Privacy</h2>
-            <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Control your data and privacy</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-          <div>
-            <p className="text-sm" style={{ color: "var(--t-text)" }}>Data Export</p>
-            <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Download all your recruiting data</p>
-          </div>
-          <button className="px-4 py-2 text-sm rounded-lg transition-colors" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}>Export</button>
-        </div>
-      </div>
-
       {/* Replay Tour */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
