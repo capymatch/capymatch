@@ -68,8 +68,8 @@ export default function OutreachAnalysis() {
       <div className="space-y-5" data-testid="outreach-analysis-page">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Outreach Analysis</h2>
-            <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI-powered insights into your recruiting outreach</p>
+            <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Engagement Analysis</h2>
+            <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI-powered insights into your recruiting engagement</p>
           </div>
         </div>
 
