@@ -67,7 +67,7 @@ export default function OutreachAnalysis() {
 
   return (
     <FeatureGate feature="auto_reply_detection">
-      <div className="space-y-3" data-testid="outreach-analysis-page">
+      <div className="space-y-4" data-testid="outreach-analysis-page">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Engagement Analysis</h2>
