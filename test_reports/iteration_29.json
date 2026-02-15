@@ -1,0 +1,76 @@
+{
+  "summary": "Stripe integration for self-serve subscription upgrades fully tested. All 12 backend API tests passed. Frontend Upgrade Modal and Payment Success page working correctly. User can click 'Upgrade to Pro' ($19) or 'Upgrade to Premium' ($39) to create Stripe Checkout sessions and get redirected to Stripe for payment.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/stripe/checkout/status/{session_id}",
+        "issue": "Returns 500 for invalid session_id instead of 404 - calls Stripe API before checking if transaction exists in DB",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Onboarding Tour",
+        "issues": ["Tour modal persists across pages and blocks interactions - consider only showing on first dashboard visit"]
+      }
+    ]
+  },
+  "passed_tests": [
+    "POST /api/stripe/checkout with plan=pro returns Stripe Checkout URL and session_id",
+    "POST /api/stripe/checkout with plan=premium returns Stripe Checkout URL and session_id",
+    "POST /api/stripe/checkout rejects invalid plans (e.g., 'mega') with 400",
+    "POST /api/stripe/checkout rejects same tier upgrade with 400",
+    "POST /api/stripe/checkout rejects lower tier upgrade with 400",
+    "POST /api/stripe/checkout requires origin_url parameter (400 if missing/empty)",
+    "GET /api/stripe/checkout/status/{session_id} returns payment status (open/unpaid for unpaid sessions)",
+    "Payment transaction is created in payment_transactions collection with status=pending",
+    "POST /api/webhook/stripe endpoint exists and accepts POST requests",
+    "POST /api/knowledge-base/add-to-board enforces school limits (regression check - 403 Forbidden)",
+    "Frontend: Upgrade Modal appears when user hits school limit",
+    "Frontend: 'Upgrade to Pro' button calls /api/stripe/checkout and redirects to Stripe ($19)",
+    "Frontend: 'Upgrade to Premium' button calls /api/stripe/checkout and redirects to Stripe ($39)",
+    "Frontend: /payment-success route exists and shows 'Processing Payment' state with spinner",
+    "Frontend: Payment polling shows 'Payment Not Completed' after max attempts with invalid session",
+    "Frontend: 'Back to Dashboard' button visible on payment failed state"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_stripe_integration.py",
+    "/app/test_reports/pytest/stripe_integration_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: GET /api/stripe/checkout/status could check DB for transaction existence before calling Stripe API to return proper 404 for unknown sessions"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_stripe_integration.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% (all Stripe checkout and payment success flows verified)"
+  },
+  "test_credentials": "No credentials needed - auth is MOCKED (static user user_public_default)",
+  "seed_data_creation": "User has 15 schools on board (basic plan limit). Plan changes made during testing reset to basic.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Stripe integration complete. Key endpoints: POST /api/stripe/checkout (creates checkout session), GET /api/stripe/checkout/status/{session_id} (polls status), POST /api/webhook/stripe (webhook). Frontend: UpgradeModal.js triggers checkout, PaymentSuccess.js handles polling. Stripe uses test key sk_test_emergent. User is on basic plan with 15 schools.",
+  "verified_api_endpoints": [
+    "POST /api/stripe/checkout - Creates Stripe Checkout session, returns {url, session_id}",
+    "GET /api/stripe/checkout/status/{session_id} - Returns {status, payment_status, amount_total, currency, plan}",
+    "POST /api/webhook/stripe - Webhook endpoint for Stripe events",
+    "POST /api/knowledge-base/add-to-board - Enforces school limits (403 at limit)"
+  ],
+  "mocked_features": [
+    "Authentication (get_current_user returns static user user_public_default)",
+    "Stripe (test mode key sk_test_emergent - creates real test sessions)"
+  ],
+  "stripe_integration_details": {
+    "checkout_flow": "User hits limit -> Upgrade Modal -> Click Upgrade to Pro/Premium -> POST /api/stripe/checkout -> Redirect to Stripe Checkout -> Payment -> Redirect to /payment-success?session_id=... -> Polling GET /api/stripe/checkout/status/{session_id} -> Plan upgraded on 'paid' status",
+    "plan_prices": {"pro": 19.00, "premium": 39.00},
+    "test_key": "sk_test_emergent (already in backend/.env)"
+  }
+}
