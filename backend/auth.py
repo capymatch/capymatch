@@ -26,16 +26,41 @@ async def get_current_user(request: Request):
 
 
 async def get_tenant_id(user):
-    tenant = await db.tenants.find_one({"owner_user_id": user["user_id"]}, {"_id": 0})
+    """Get tenant_id for user. Checks ownership first, then team membership."""
+    user_id = user["user_id"]
+
+    # Check if user owns a tenant
+    tenant = await db.tenants.find_one({"owner_user_id": user_id}, {"_id": 0})
+
+    # Check if user is a member of another tenant
+    membership = await db.team_members.find_one(
+        {"user_id": user_id, "role": "member"}, {"_id": 0}
+    )
+    if membership:
+        return membership["tenant_id"]
+
+    # If no membership, use owned tenant (create if needed)
     if not tenant:
-        tenant_id = f"tenant_{user['user_id']}"
+        tenant_id = f"tenant_{user_id}"
         tenant = {
             "tenant_id": tenant_id,
             "athlete_name": user.get("name", "My Athlete"),
-            "owner_user_id": user["user_id"],
+            "owner_user_id": user_id,
             "plan": "free",
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         await db.tenants.insert_one(tenant)
         del tenant["_id"]
+
     return tenant["tenant_id"]
+
+
+async def get_user_role(user):
+    """Get user's role in their current tenant: 'owner' or 'member'."""
+    user_id = user["user_id"]
+    membership = await db.team_members.find_one(
+        {"user_id": user_id, "role": "member"}, {"_id": 0}
+    )
+    if membership:
+        return "member"
+    return "owner"
