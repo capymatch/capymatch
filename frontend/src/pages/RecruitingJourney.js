@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { useSubscription } from "../lib/subscription";
 import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
   MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
