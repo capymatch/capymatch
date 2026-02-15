@@ -43,8 +43,8 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
             className={`flex items-center gap-2 px-3 py-2 rounded-lg flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${group.key}`}
           >
-            <span className={`text-xs font-medium hidden sm:inline ${isActive ? "text-white" : group.countText}`}>{group.label}</span>
-            <span className={`text-sm font-bold ${isActive ? "text-white" : ""}`} style={isActive ? {} : { color: "var(--t-text)" }}>{count}</span>
+            <span className={`text-xs font-medium hidden sm:inline ${group.countText}`}>{group.label}</span>
+            <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
       })}
