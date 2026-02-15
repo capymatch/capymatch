@@ -16,7 +16,7 @@ const TOUR_STEPS = [
   },
   {
     target: '[data-testid="nav-pipeline"]',
-    title: "Pipeline",
+    title: "My Schools",
     description: "Track every school you're recruiting with. Drag-and-drop to update status, manage contacts, and log follow-ups.",
     position: "right",
   },
@@ -35,7 +35,7 @@ const TOUR_STEPS = [
   {
     target: '[data-testid="nav-schools"]',
     title: "School Database",
-    description: "Browse 1,000+ volleyball programs across D1, D2, and D3. Add schools to your pipeline with one click.",
+    description: "Browse 1,000+ volleyball programs across D1, D2, and D3. Add schools to your list with one click.",
     position: "right",
   },
   {

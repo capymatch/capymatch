@@ -109,7 +109,7 @@ export default function Layout({ user, onLogout }) {
 
   const sidebarItems = [
     { to: "/board", icon: Home, label: "Dashboard" },
-    { to: "/pipeline", icon: Kanban, label: "Pipeline" },
+    { to: "/pipeline", icon: Kanban, label: "My Schools" },
     { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
@@ -281,7 +281,7 @@ export default function Layout({ user, onLogout }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/knowledge-base": "Schools", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "My Schools", "/calendar": "Calendar", "/inbox": "Inbox", "/knowledge-base": "Schools", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
