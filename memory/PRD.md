@@ -142,8 +142,15 @@ Public-facing Volleyball Recruiting CRM with:
 
 ## Completed (Feb 15, 2026)
 - Removed redundant "Analytics" sidebar link (merged into Dashboard)
-- Cleaned up unused BarChart3 import
-- Redirected profile_view_edu notification to /board instead of /analytics
+- Removed "Tasks" feature from sidebar, header icon, and route
+- Renamed "Outreach AI" to "Engagement AI" / "Engagement Analysis" across sidebar and page
+- Cleaned up mock data (removed invalid "Social Media" interaction type)
+- **Coach Watch (Premium)**: AI-powered coaching staff monitoring
+  - Scans news for coaching changes at pipeline schools via DuckDuckGo + Claude AI
+  - Displays color-coded alerts (red/yellow/green) on Engagement AI page
+  - Warning banners on Journey page for affected schools
+  - Bell notifications for red/yellow alerts
+  - Gated to Premium tier only
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
