@@ -99,7 +99,8 @@ export default function Tour({ onComplete }) {
   };
 
   const getTooltipStyle = () => {
-    if (current.position === "center" || !rect) {
+    const isMobile = window.innerWidth < 768;
+    if (current.position === "center" || !rect || isMobile) {
       return { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
     }
     if (current.position === "right") {
@@ -117,7 +118,7 @@ export default function Tour({ onComplete }) {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Spotlight cutout */}
-      {rect && (
+      {rect && window.innerWidth >= 768 && (
         <div
           className="absolute rounded-xl transition-all duration-300"
           style={{
@@ -135,7 +136,7 @@ export default function Tour({ onComplete }) {
 
       {/* Tooltip */}
       <div
-        className="w-[340px] rounded-2xl p-5 shadow-2xl z-10"
+        className="w-[90vw] max-w-[340px] rounded-2xl p-5 shadow-2xl z-10"
         style={{
           ...getTooltipStyle(),
           backgroundColor: "var(--t-surface, #1a1625)",
