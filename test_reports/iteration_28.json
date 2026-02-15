@@ -1,0 +1,77 @@
+{
+  "summary": "WebSocket real-time notifications feature fully tested. All core functionality working: WebSocket endpoint accepts connections, plan change messages are broadcast correctly, toast notifications appear, persistent banner with correct colors (green for upgrade, amber for downgrade), dismiss button works, subscription context auto-refreshes. P0 bug fix regression verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard events table",
+        "issues": [
+          "React hydration warning: <tr> inside <span> and <span> inside <tbody> (development warning, not blocking)"
+        ]
+      }
+    ]
+  },
+  "passed_tests": [
+    "WebSocket endpoint /api/ws/tenant_public_default accepts connections",
+    "PUT /api/admin/subscriptions/user_public_default correctly changes plan and returns audit log",
+    "WebSocket message is sent to connected clients when plan changes (type: 'plan_changed')",
+    "Toast notification appears with 'Plan Upgraded!' or 'Plan Changed' title and correct description",
+    "Persistent banner appears below header with data-testid='plan-change-banner'",
+    "Banner shows green/emerald styling for upgrades (basic → premium)",
+    "Banner shows amber styling for downgrades (premium → pro)",
+    "Dismiss button (X) with data-testid='plan-change-banner-dismiss' removes the banner",
+    "Subscription context auto-refreshes after receiving WebSocket plan change event (badge updates from 'Basic Plan' to 'Premium Plan')",
+    "WebSocket reconnects automatically after disconnection (5 second delay)",
+    "POST /api/knowledge-base/add-to-board enforces school limits - P0 bug fix regression PASSED",
+    "Invalid plan name correctly rejected with 400",
+    "Nonexistent user correctly rejected with 404",
+    "GET /api/admin/subscription-logs returns audit trail"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_websocket_notifications.py",
+    "/app/test_reports/pytest/websocket_notifications_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "React hydration warnings in Dashboard.js - <span> wrappers around <tr> elements causing HTML validation issues. Minor issue, doesn't affect functionality."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_websocket_notifications.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (all WebSocket notification features verified via Playwright)"
+  },
+  "test_credentials": "No credentials needed - auth is MOCKED (get_current_user returns static user user_public_default)",
+  "seed_data_creation": "User has 15 schools on board. Tests change plan via PUT /api/admin/subscriptions/user_public_default",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "WebSocket notification feature is complete and working. Key test data-testids: plan-change-banner, plan-change-banner-dismiss, subscription-badge. WebSocket URL: wss://<host>/api/ws/tenant_public_default. To test: 1) Open app 2) Call PUT /api/admin/subscriptions/user_public_default with {plan: 'premium'} 3) Verify toast and banner appear. User currently on basic plan.",
+  "verified_api_endpoints": [
+    "GET /api/ - API root health check",
+    "PUT /api/admin/subscriptions/{user_id} - Changes user plan, broadcasts WebSocket message",
+    "GET /api/admin/subscription-logs - Returns audit trail of plan changes",
+    "GET /api/subscription - Returns current tier info",
+    "POST /api/knowledge-base/add-to-board - Enforces school limits (P0 fix verified)"
+  ],
+  "mocked_features": [
+    "Authentication (get_current_user returns static user user_public_default)"
+  ],
+  "websocket_verification": {
+    "endpoint": "/api/ws/{tenant_id}",
+    "message_format": {"type": "plan_changed", "old_plan": "string", "new_plan": "string", "reason": "string"},
+    "reconnect_delay": "5 seconds",
+    "frontend_component": "SubscriptionProvider in /app/frontend/src/lib/subscription.js"
+  },
+  "frontend_data_testids_verified": [
+    "app-layout",
+    "plan-change-banner",
+    "plan-change-banner-dismiss",
+    "subscription-badge"
+  ]
+}
