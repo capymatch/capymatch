@@ -114,7 +114,7 @@ export default function Tour({ onComplete }) {
   return (
     <div className="fixed inset-0 z-[9999]" data-testid="tour-overlay">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/65" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Spotlight cutout */}
       {rect && (
@@ -125,7 +125,7 @@ export default function Tour({ onComplete }) {
             left: rect.left - 6,
             width: rect.width + 12,
             height: rect.height + 12,
-            boxShadow: "0 0 0 9999px rgba(0,0,0,0.65), 0 0 20px 4px rgba(244,63,94,0.15)",
+            boxShadow: "0 0 0 9999px rgba(0,0,0,0.40), 0 0 20px 4px rgba(244,63,94,0.25)",
             zIndex: 1,
             pointerEvents: "none",
             border: "2px solid rgba(244, 63, 94, 0.5)",
