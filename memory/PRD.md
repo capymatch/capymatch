@@ -101,8 +101,9 @@ Public-facing Volleyball Recruiting CRM with:
 
 ## Subscription Tiers
 - **Basic** ($0): 5 schools, no AI, basic features
-- **Pro** ($19): 25 schools, 10 AI drafts/mo, Gmail, insights, analytics
-- **Premium** ($39): Unlimited schools & AI, all features
+- **Pro** ($19): 25 schools, 10 AI drafts/mo, Gmail, insights, analytics — "Most Popular"
+- **Premium** ($39): Unlimited schools & AI, all features — "Best Value"
+- **UpgradeModal redesign (Feb 2026)**: Professional dark glass-morphic design with recommended tier scaled up and glowing. Dynamic badge placement (next tier above current gets spotlight). Stripe Checkout integration on CTA buttons.
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
