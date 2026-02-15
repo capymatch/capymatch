@@ -342,14 +342,15 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    global reply_check_task
+    global reply_check_task, coach_watch_task
     
-    # Cancel background task
-    if reply_check_task:
-        reply_check_task.cancel()
-        try:
-            await reply_check_task
-        except asyncio.CancelledError:
-            pass
+    # Cancel background tasks
+    for task in [reply_check_task, coach_watch_task]:
+        if task:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
     
     client.close()
