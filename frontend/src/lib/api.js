@@ -11,9 +11,14 @@ const api = axios.create({
 
 // Track subscription error listeners
 let subscriptionErrorHandler = null;
+let authFailHandler = null;
 
 export function onSubscriptionError(handler) {
   subscriptionErrorHandler = handler;
+}
+
+export function onAuthFail(handler) {
+  authFailHandler = handler;
 }
 
 api.interceptors.response.use(
@@ -27,7 +32,7 @@ api.interceptors.response.use(
       }
     }
     if (status === 401 && !error.config?.url?.includes("/auth/")) {
-      window.location.href = "/login";
+      if (authFailHandler) authFailHandler();
     }
     return Promise.reject(error);
   }
