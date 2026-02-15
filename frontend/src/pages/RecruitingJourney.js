@@ -6,7 +6,7 @@ import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
   MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
   Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
-  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap
+  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap, Lock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
