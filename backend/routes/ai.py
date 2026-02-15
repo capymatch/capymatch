@@ -657,9 +657,7 @@ Return JSON:
         return {"advice": {"error": "Unable to generate advice. Please try again."}}
     except Exception as e:
         logger.error(f"Highlight advice error: {e}")
-
-
-# ── Coach Watch (Premium) ─────────────────────────────────────
+        raise HTTPException(status_code=500, detail=f"Highlight advice error: {str(e)}") ─────────────────────────────────────
 
 async def _search_coaching_news(school_names: list[str]) -> dict:
     """Search for volleyball coaching news for given schools using DuckDuckGo."""
