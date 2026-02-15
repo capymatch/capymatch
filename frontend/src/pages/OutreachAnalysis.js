@@ -67,8 +67,8 @@ export default function OutreachAnalysis() {
 
   return (
     <FeatureGate feature="auto_reply_detection">
-      <div className="space-y-8" data-testid="outreach-analysis-page">
-        <div className="flex items-center justify-between">
+      <div data-testid="outreach-analysis-page">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Engagement Analysis</h2>
             <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI-powered insights into your recruiting engagement</p>
@@ -93,7 +93,7 @@ export default function OutreachAnalysis() {
         ) : (
           <>
             {/* Top Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <StatBox label="Schools Tracked" value={data.stats.total_schools} icon={Target} color="text-blue-400" />
               <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-pink-400" />
               <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-emerald-400" />
