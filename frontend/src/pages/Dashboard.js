@@ -268,6 +268,35 @@ export default function Dashboard() {
               <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Upcoming Events</h3>
             </div>
             <button onClick={() => navigate("/calendar")} className="text-xs text-pink-600 hover:text-pink-500 transition-colors flex items-center gap-1" data-testid="view-all-events">
+              View all <ChevronRight className="w-3 h-3" />
+            </button>
+          </div>
+          {upcoming.length > 0 ? (
+            <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
+              {upcoming.map((evt) => (
+                <div key={evt.event_id} onClick={() => navigate("/calendar")} className="flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors"
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{evt.title}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                      {formatDate(evt.start_date)}{evt.end_date && evt.end_date !== evt.start_date ? ` – ${formatDate(evt.end_date)}` : ""}
+                      {evt.location ? ` · ${evt.location}` : ""}
+                    </p>
+                  </div>
+                  <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md flex-shrink-0 ${typeBg[evt.event_type] || "bg-gray-500/15 text-gray-400"}`}>{evt.event_type}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 px-5">
+              <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
+              <button onClick={() => navigate("/calendar")} className="mt-2 text-sm text-pink-600 hover:text-pink-500">+ Add event</button>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* ── Pipeline Funnel + Division Breakdown ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
