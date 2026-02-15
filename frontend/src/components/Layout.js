@@ -188,26 +188,6 @@ export default function Layout({ user, onLogout }) {
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1" data-testid="sidebar-nav">
           {sidebarItems.map((item) => {
-            const isBasic = !subscription?.tier || subscription.tier === "basic";
-            if (item.premium && isBasic) {
-              return (
-                <button
-                  key={item.to}
-                  onClick={() => toast.error(`${item.label} is available on Pro and Premium plans`, { action: { label: "Upgrade", onClick: () => navigate("/account") } })}
-                  data-testid={`nav-${item.label.toLowerCase()}`}
-                  title={sidebarCollapsed ? item.label : undefined}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white ${
-                    sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
-                  <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                  {!sidebarCollapsed && (
-                    <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Pro</span>
-                  )}
-                </button>
-              );
-            }
             return (
               <NavLink
                 key={item.to}
@@ -227,9 +207,12 @@ export default function Layout({ user, onLogout }) {
               >
                 <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
                 <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                {item.premium && !sidebarCollapsed && (
-                  <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Pro</span>
-                )}
+                {item.premium && !sidebarCollapsed && (() => {
+                  const isBasic = !subscription?.tier || subscription.tier === "basic";
+                  return isBasic ? (
+                    <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Pro</span>
+                  ) : null;
+                })()}
               </NavLink>
             );
           })}
