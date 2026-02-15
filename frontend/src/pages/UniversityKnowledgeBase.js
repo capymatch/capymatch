@@ -182,7 +182,7 @@ export default function UniversityKnowledgeBase() {
             </div>
             <div>
               <p className="text-sm font-semibold text-pink-300">
-                You're seeing up to 3 school matches on the Basic plan
+                You're seeing up to 3 school matches on the Starter plan
               </p>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
                 Upgrade to <span className="text-pink-400 font-medium">Active Recruit</span> or <span className="text-pink-400 font-medium">Commit Ready</span> to unlock unlimited matches based on your profile.
