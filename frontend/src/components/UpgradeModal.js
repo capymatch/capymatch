@@ -72,7 +72,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           {tier.id === "premium" && <p className="text-[10px] text-amber-500">Save $96/yr annually</p>}
         </div>
 
-        <div className="h-px mb-2" style={{ background: dark ? (isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)") : (isRecommended ? "rgba(244,63,94,0.12)" : "#e5e7eb") }} />
+        <div className="h-px mb-3" style={{ background: dark ? (isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)") : (isRecommended ? "rgba(244,63,94,0.12)" : "#e5e7eb") }} />
 
         <ul className="space-y-1.5 mb-3 flex-1">
           {tier.features.map((f, i) => (
