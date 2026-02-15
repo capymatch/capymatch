@@ -124,7 +124,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
-                {tier.price === 0 ? "Downgrade" : `Get ${tier.label}`}
+                {tier.price === 0 ? "Downgrade" : `Upgrade to ${tier.label}`}
                 {tier.price > 0 && <ArrowRight className="w-3.5 h-3.5" />}
               </>
             )}
