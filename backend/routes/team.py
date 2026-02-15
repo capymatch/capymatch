@@ -139,6 +139,10 @@ async def invite_member(request: Request):
     }
     await db.team_invitations.insert_one(invite)
 
+    # Send invitation email (fire-and-forget)
+    app_url = os.environ.get("APP_URL", request.headers.get("origin", ""))
+    asyncio.create_task(send_invitation_email(user.get("name", "Someone"), email, app_url))
+
     return {"invite_id": invite_id, "email": email, "status": "pending"}
 
 
