@@ -40,6 +40,13 @@ Public-facing Volleyball Recruiting CRM with:
 ## Bug Fixes
 - **P0 Fix (Feb 2026)**: Subscription gate failure on plan downgrade. Root cause: `/api/knowledge-base/add-to-board` endpoint had NO subscription enforcement. Fixed by adding `enforce_school_limit()`. Also fixed frontend error display for subscription limit errors and added periodic subscription state refresh.
 
+## Real-Time Notifications (Feb 2026)
+- WebSocket endpoint `/api/ws/{tenant_id}` for real-time push events
+- When admin changes a user's plan, a WebSocket message is broadcast instantly
+- Frontend shows a toast notification + persistent banner (green for upgrades, amber for downgrades)
+- Subscription context auto-refreshes on plan change events
+- Auto-reconnect on WebSocket disconnect (5s delay)
+
 ## Upcoming Tasks (P1)
 - Stripe Integration (Phase 4) - real subscription payments for self-serve upgrades
 
