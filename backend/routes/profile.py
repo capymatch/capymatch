@@ -146,6 +146,9 @@ async def public_schedule(tenant_id: str, request: Request):
 async def get_profile_views(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    subscription = await get_user_subscription(tenant_id)
+    if not subscription.get("public_profile", False):
+        return {"views": [], "total": 0, "today": 0, "this_week": 0}
     views = await db.profile_views.find(
         {"tenant_id": tenant_id}, {"_id": 0}
     ).sort("viewed_at", -1).to_list(100)
