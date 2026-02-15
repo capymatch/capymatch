@@ -44,7 +44,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
     >
       {config.badge && !isCurrent && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-          <div className={`px-3 py-0.5 rounded-full bg-gradient-to-r ${config.gradient} text-white text-[9px] font-bold uppercase tracking-widest shadow-lg flex items-center gap-1`}>
+          <div className={`px-4 py-1 rounded-full bg-gradient-to-r ${config.gradient} text-white text-[11px] font-bold uppercase tracking-widest shadow-lg flex items-center gap-1.5`}>
             <Star className="w-2.5 h-2.5" fill="currentColor" />
             {config.badge}
           </div>
