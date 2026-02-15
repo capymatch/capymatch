@@ -16,7 +16,7 @@ import AIAssistantDrawer from "../components/AIAssistantDrawer";
 
 const TIER_LABELS = { basic: "Basic", pro: "Pro", premium: "Premium" };
 
-export default function Layout({ user }) {
+export default function Layout({ user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
@@ -64,8 +64,9 @@ export default function Layout({ user }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Auth bypassed: logout disabled
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    if (onLogout) onLogout();
+  };
 
   const markNotificationRead = async (notifId) => {
     try {
