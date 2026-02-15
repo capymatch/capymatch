@@ -194,7 +194,128 @@ export default function OutreachAnalysis() {
             )}
           </>
         )}
+
+        {/* Coach Watch Section */}
+        <CoachWatch />
       </div>
     </FeatureGate>
+  );
+}
+
+const SEVERITY_CONFIG = {
+  red: { color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/30", icon: AlertTriangle, label: "Coaching Change" },
+  yellow: { color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", icon: Eye, label: "Monitor" },
+  green: { color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", icon: CheckCircle, label: "Stable" },
+};
+
+function CoachWatch() {
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scannedAt, setScannedAt] = useState(null);
+
+  useEffect(() => {
+    api.get("/ai/coach-watch/alerts").then(res => {
+      setAlerts(res.data.alerts || []);
+    }).catch(() => {});
+  }, []);
+
+  const runScan = async () => {
+    setScanning(true);
+    try {
+      const res = await api.post("/ai/coach-watch/scan");
+      setAlerts(res.data.alerts || []);
+      setScannedAt(res.data.scanned_at);
+    } catch (err) {
+      console.error("Coach watch scan failed:", err);
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const redAlerts = alerts.filter(a => a.severity === "red");
+  const yellowAlerts = alerts.filter(a => a.severity === "yellow");
+  const greenAlerts = alerts.filter(a => a.severity === "green");
+
+  return (
+    <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-watch-section">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Shield className="w-4 h-4 text-pink-400" />
+          <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</h3>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-400">PREMIUM</span>
+        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={runScan}
+          disabled={scanning}
+          className="h-7 text-xs gap-1.5"
+          data-testid="coach-watch-scan-btn"
+        >
+          {scanning ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+          {scanning ? "Scanning..." : "Scan Now"}
+        </Button>
+      </div>
+
+      <p className="text-[11px] mb-4" style={{ color: "var(--t-text-muted)" }}>
+        AI monitors coaching staff changes at schools in your pipeline. Scan weekly to stay ahead of disruptions.
+      </p>
+
+      {scanning ? (
+        <div className="flex flex-col items-center justify-center py-10">
+          <Loader2 className="w-6 h-6 animate-spin text-pink-500 mb-2" />
+          <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Scanning news for coaching changes...</p>
+          <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>This may take 30-60 seconds</p>
+        </div>
+      ) : alerts.length === 0 ? (
+        <div className="text-center py-8">
+          <Radio className="w-6 h-6 mx-auto opacity-20 mb-2" style={{ color: "var(--t-text-muted)" }} />
+          <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
+            {scannedAt ? "No coaching changes detected. Your pipeline looks stable." : "Click \"Scan Now\" to check for coaching changes at your target schools."}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {[...redAlerts, ...yellowAlerts, ...greenAlerts].map((alert) => {
+            const cfg = SEVERITY_CONFIG[alert.severity] || SEVERITY_CONFIG.green;
+            const Icon = cfg.icon;
+            return (
+              <div
+                key={alert.alert_id}
+                className={`rounded-lg border p-3 ${cfg.border}`}
+                style={{ backgroundColor: "var(--t-surface-alt)" }}
+                data-testid={`coach-alert-${alert.severity}`}
+              >
+                <div className="flex items-start gap-2">
+                  <div className={`w-7 h-7 rounded-md ${cfg.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                    <Icon className={`w-3.5 h-3.5 ${cfg.color}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{alert.university_name}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfg.bg} ${cfg.color}`}>{cfg.label}</span>
+                    </div>
+                    <p className="text-xs font-medium mb-1" style={{ color: "var(--t-text-secondary)" }}>{alert.headline}</p>
+                    <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{alert.summary}</p>
+                    {alert.recommendation && (
+                      <div className="mt-2 rounded-md p-2 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                        <p className="text-[10px] font-medium mb-0.5" style={{ color: "var(--t-text-muted)" }}>What this means for you</p>
+                        <p className="text-[11px]" style={{ color: "var(--t-text-secondary)" }}>{alert.recommendation}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          {scannedAt && (
+            <p className="text-[10px] text-right pt-1" style={{ color: "var(--t-text-muted)" }}>
+              Last scan: {new Date(scannedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
