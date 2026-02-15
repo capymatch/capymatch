@@ -366,6 +366,8 @@ export default function Layout({ user, onLogout }) {
                               navigate("/pipeline");
                             } else if (notif.type === "profile_view_edu") {
                               navigate("/board");
+                            } else if (notif.type === "coach_watch") {
+                              navigate("/outreach-analysis");
                             }
                             setNotifOpen(false);
                           }}
