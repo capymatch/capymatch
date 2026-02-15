@@ -65,7 +65,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
         <div className="mb-3">
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-black tracking-tight" style={{ color: dark ? "#fff" : "#1f2937" }}>${tier.price}</span>
-            <span className="text-xs font-medium" style={{ color: dark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>/mo</span>
+            <span className="text-xs font-medium" style={{ color: dark ? "rgba(255,255,255,0.35)" : "#6b7280" }}>/mo</span>
           </div>
           {tier.price === 0 && <p className="text-[10px]" style={{ color: dark ? "rgba(255,255,255,0.3)" : "#9ca3af" }}>Free forever</p>}
           {tier.id === "pro" && <p className="text-[10px] text-pink-500">Save $48/year with annual billing</p>}
