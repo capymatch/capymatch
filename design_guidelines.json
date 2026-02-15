@@ -1,139 +1,143 @@
 {
-  "project_name": "Volleyball Recruiting CRM - Creative Tim Style",
-  "version": "1.0",
-  "design_philosophy": {
-    "identity": "E1 - The Anti-AI Designer",
-    "theme": "Dark Navy & Pink Material",
-    "core_principles": [
-      "Depth over Flatness: Use shadows and floating elements (Material Design)",
-      "Vibrant Accents: Pink/Salmon gradients against deep navy",
-      "Athletic Typography: Condensed headings for impact",
-      "Visual Hierarchy: Color is function. Pink = Active/Primary"
-    ]
-  },
-  "typography": {
-    "font_family": {
-      "heading": "Barlow Condensed, sans-serif",
-      "body": "DM Sans, sans-serif",
-      "mono": "JetBrains Mono, monospace"
+  "design_system": {
+    "identity": {
+      "name": "VolleyRecruit Pro",
+      "archetype": "The Performance Pro",
+      "vibe": "Energetic, Athletic, Focused, Digital-First",
+      "target_audience": "High School Volleyball Athletes & Families"
     },
-    "scale": {
-      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
-      "h2": "text-3xl md:text-4xl font-bold tracking-tight",
-      "h3": "text-2xl md:text-3xl font-semibold",
-      "h4": "text-xl md:text-2xl font-semibold",
-      "p": "text-base leading-relaxed text-gray-300",
-      "small": "text-sm text-gray-400"
-    }
-  },
-  "colors": {
-    "palette": {
-      "background": {
-        "main": "#1a1f2e",
-        "surface": "#202940",
-        "card": "#202940",
-        "sidebar": "#1a1f2e"
+    "typography": {
+      "font_family": {
+        "heading": "Barlow Condensed, sans-serif",
+        "body": "DM Sans, sans-serif",
+        "accent": "Teko, sans-serif"
       },
-      "text": {
-        "primary": "#ffffff",
-        "secondary": "#a0aec0",
-        "muted": "#718096"
-      },
-      "gradients": {
-        "primary": "linear-gradient(195deg, #ec407a 0%, #d81b60 100%)",
-        "info": "linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%)",
-        "success": "linear-gradient(195deg, #66BB6A 0%, #43A047 100%)",
-        "warning": "linear-gradient(195deg, #FFA726 0%, #FB8C00 100%)",
-        "danger": "linear-gradient(195deg, #EF5350 0%, #E53935 100%)",
-        "dark": "linear-gradient(195deg, #42424a 0%, #191919 100%)"
-      },
-      "shadows": {
-        "primary": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(233, 30, 99, 0.4)",
-        "info": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 188, 212, 0.4)",
-        "success": "0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(76, 175, 80, 0.4)"
+      "usage_rules": {
+        "headings": "Uppercase, tracking-tight for large titles, tracking-wide for overlines. Weight 700-900.",
+        "body": "Clean, readable, generous line-height (1.6). Weight 400-500.",
+        "numbers": "Use Barlow Condensed for stats (Match %, Rankings) to feel like a scoreboard."
       }
     },
-    "mapping": {
-      "--background": "220 28% 14%",
-      "--foreground": "0 0% 100%",
-      "--card": "223 33% 19%",
-      "--card-foreground": "0 0% 100%",
-      "--popover": "223 33% 19%",
-      "--popover-foreground": "0 0% 100%",
-      "--primary": "333 71% 51%",
-      "--primary-foreground": "0 0% 100%",
-      "--secondary": "220 28% 14%",
-      "--secondary-foreground": "0 0% 100%",
-      "--muted": "220 28% 14%",
-      "--muted-foreground": "215 20% 65%",
-      "--accent": "333 71% 51%",
-      "--accent-foreground": "0 0% 100%",
-      "--destructive": "0 62% 30%",
-      "--destructive-foreground": "0 0% 100%",
-      "--border": "215 28% 30%",
-      "--input": "215 28% 30%",
-      "--ring": "333 71% 51%"
+    "colors": {
+      "palette": {
+        "primary": {
+          "base": "#be185d",
+          "hover": "#9d174d",
+          "active": "#831843",
+          "text_contrast": "#ffffff"
+        },
+        "neutral": {
+          "light_bg": "#f8fafc",
+          "dark_bg": "#0f172a",
+          "card_light": "#ffffff",
+          "card_dark": "#1e293b",
+          "text_primary_light": "#0f172a",
+          "text_primary_dark": "#f8fafc",
+          "text_secondary_light": "#64748b",
+          "text_secondary_dark": "#94a3b8"
+        },
+        "functional": {
+          "success": "#10b981",
+          "warning": "#f59e0b",
+          "danger": "#ef4444",
+          "info": "#3b82f6"
+        },
+        "divisions": {
+          "d1": "#059669",
+          "d2": "#2563eb",
+          "d3": "#7c3aed",
+          "naia": "#ea580c",
+          "juco": "#eab308"
+        },
+        "match_score": {
+          "high": "#10b981",
+          "medium": "#f59e0b",
+          "low": "#64748b"
+        }
+      },
+      "gradients": {
+        "primary_gradient": "linear-gradient(135deg, #be185d 0%, #db2777 100%)",
+        "card_gradient_hover": "linear-gradient(180deg, rgba(190, 24, 93, 0.02) 0%, rgba(190, 24, 93, 0.05) 100%)"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-4 md:p-8 lg:p-12",
+      "card_padding": "p-5",
+      "gap_default": "gap-4",
+      "gap_wide": "gap-8"
+    },
+    "radius": {
+      "card": "rounded-xl",
+      "button": "rounded-full",
+      "badge": "rounded-sm"
+    },
+    "shadows": {
+      "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "card_hover": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "floating": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+    }
+  },
+  "components": {
+    "PageLayout": {
+      "structure": "Container > Header (Title + Search + Actions) > FilterBar > Kanban/Grid Content",
+      "guidelines": "Use a max-width container (max-w-7xl) centered. Background should be neutral-light/dark, not pure white/black."
+    },
+    "FilterBar": {
+      "style": "pill",
+      "interaction": "Horizontal scroll on mobile. Active state fills with Primary Color + White Text. Inactive is transparent with Ring border.",
+      "layout": "flex gap-2 overflow-x-auto pb-2 no-scrollbar"
+    },
+    "SchoolCard": {
+      "concept": "The 'Scouting Report' Card",
+      "structure": {
+        "header": "Left border strip indicating status color. Top row: Logo (left) + Match Score Badge (right).",
+        "body": "University Name (H3) + Conference (subtitle). Division Badge below name.",
+        "footer": "Status text (colored) + 'Journey' Action Button.",
+        "interaction": "Hover: Lift translateY(-2px) + Shadow-lg. Border color intensifies."
+      },
+      "visuals": "White/Dark-Card bg. Subtle border (border-slate-200 / border-slate-700). meaningful whitespace."
+    },
+    "Badges": {
+      "division": "Solid background, white text. Bold font. Small text-xs uppercase.",
+      "match_score": "Circular or Pill. Ring border for lower visual weight, or soft background (bg-opacity-10) with strong text."
+    },
+    "ProgressBar": {
+      "journey": "Step wizard style. Active step is filled circle, future is empty ring. Connecting lines."
     }
   },
   "layout_strategies": {
-    "dashboard_wrapper": "flex h-screen overflow-hidden bg-[#1a1f2e]",
-    "sidebar": {
-      "styles": "hidden md:flex w-64 flex-col fixed inset-y-4 left-4 z-50 rounded-xl bg-[#202940] shadow-xl border border-white/5",
-      "active_item": "bg-gradient-to-tr from-pink-600 to-pink-400 shadow-md shadow-pink-500/20 text-white rounded-lg transition-all duration-200"
-    },
-    "main_content": "flex-1 md:ml-72 p-4 md:p-8 overflow-y-auto",
-    "grid_system": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+    "grid_system": "Responsive Masonry or Bento Grid. Mobile: 1 col. Tablet: 2 cols. Desktop: 3 or 4 cols.",
+    "group_headers": "Sticky headers when scrolling. Distinct typography (Barlow Condensed Uppercase) with pill badge count."
   },
-  "components": {
-    "StatCard": {
-      "description": "Signature Creative Tim card with floating icon",
-      "structure": "relative flex flex-col bg-[#202940] rounded-xl shadow-lg border border-white/5 pt-4 pb-4 px-4 mt-6",
-      "icon_wrapper": "absolute -top-6 left-4 p-4 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 shadow-lg shadow-pink-500/40 text-white flex items-center justify-center w-16 h-16",
-      "content": "text-right pt-2",
-      "value": "text-2xl font-bold text-white font-heading",
-      "label": "text-sm text-gray-400 font-medium",
-      "footer": "border-t border-white/10 mt-4 pt-4 text-sm text-gray-400 flex items-center gap-2"
-    },
-    "ChartCard": {
-      "structure": "relative flex flex-col bg-[#202940] rounded-xl shadow-lg border border-white/5 mt-12 p-4",
-      "chart_wrapper": "absolute -top-8 left-4 right-4 h-48 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 shadow-lg shadow-blue-500/40 p-1"
-    },
-    "PipelineColumn": {
-      "structure": "bg-[#202940]/50 rounded-xl p-4 border border-white/5 flex flex-col gap-4 min-h-[500px]"
-    },
-    "Buttons": {
-      "primary": "bg-gradient-to-tr from-pink-600 to-pink-400 text-white shadow-md shadow-pink-500/20 hover:shadow-lg hover:shadow-pink-500/40 transition-all rounded-lg px-6 py-2 font-medium text-sm uppercase tracking-wider",
-      "secondary": "border border-white/20 text-white hover:bg-white/5 transition-all rounded-lg px-6 py-2 font-medium text-sm uppercase tracking-wider"
+  "motion": {
+    "hover_effects": "transition-all duration-300 ease-out",
+    "list_transitions": "Staggered entrance for cards. Layout LayoutGroup for smooth filtering reordering."
+  },
+  "assets": {
+    "icons": "Lucide React (Feather icons). Use thin strokes (1.5px) for elegance.",
+    "images": {
+      "placeholders": [
+        "https://images.unsplash.com/photo-1765109260914-de67ccbbcab3?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "https://images.unsplash.com/photo-1770827401349-3499200c5e61?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "https://images.unsplash.com/photo-1760131556605-7f2e63d00385?crop=entropy&cs=srgb&fm=jpg&q=85"
+      ],
+      "usage": "Use generic campus photos for card backgrounds (with heavy overlay) if no logo is present, or for page headers."
     }
   },
-  "images": {
-    "hero_volleyball": "https://images.unsplash.com/photo-1765109260914-de67ccbbcab3?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "player_celebration": "https://images.unsplash.com/photo-1765109384407-a7d1180796b1?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "match_action": "https://images.unsplash.com/photo-1765109380575-ba33954b43b9?crop=entropy&cs=srgb&fm=jpg&q=85"
-  },
-  "icons": {
-    "library": "lucide-react",
-    "preferred_set": ["Users", "Trophy", "Calendar", "Activity", "FileText", "Settings", "LogOut", "Menu", "Bell"]
-  },
-  "visual_enhancers": {
-    "glass_effect": "backdrop-blur-xl bg-opacity-80",
-    "neon_glow": "shadow-[0_0_10px_rgba(236,64,122,0.5)]",
-    "border_subtle": "border border-white/10"
-  },
   "instructions_to_main_agent": [
-    "1. Update tailwind.config.js to include the new custom colors (navy-900: #1a1f2e, navy-800: #202940, etc).",
-    "2. OVERWRITE the .dark variables in index.css with the values provided in 'colors.mapping'.",
-    "3. Refactor the Sidebar component to use the 'Floating' style with the pink gradient active state.",
-    "4. Create a reusable 'StatCard' component that implements the 'floating icon' pattern.",
-    "5. Ensure all text has sufficient contrast against the #1a1f2e background.",
-    "6. Use 'Barlow Condensed' for all numeric values and headers to give that sport/jersey feel.",
-    "7. DO NOT use purple accents anymore. Replace all purple with Pink (#ec407a) or Blue (#49a3f1)."
+    "1. IMPLEMENTATION: Create the 'My Schools' board as a single comprehensive component or set of sub-components in 'src/components/recruiting/'.",
+    "2. THEME SUPPORT: Use Tailwind 'dark:' modifiers for ALL color definitions. Ensure contrast passes in both modes.",
+    "3. DATA-TESTID: Add data-testid attributes to all interactive elements (filters, buttons, cards).",
+    "4. NO MOCK DATA IN PROD: Create a mock data file 'src/data/mockSchools.js' ONLY for demonstration if backend is not ready, but structure it for easy API replacement.",
+    "5. ACCESSIBILITY: Ensure status colors have text labels, not just color indicators.",
+    "6. MICRO-INTERACTIONS: animate the 'Journey' button on hover (e.g., arrow moves right).",
+    "7. EMPTY STATES: Design a beautiful empty state for 'No Schools Found' using a light illustration or icon."
   ],
   "universal_guidelines": [
-    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
-    "Create depth through layered design elements with z-index hierarchy",
-    "Use glass-morphism effects with backdrop filters (12-24px blur)",
-    "Every interaction needs micro-animations",
-    "Use sonner for toasts"
+    "Don't make generic centered layouts.",
+    "Create depth through layered design elements.",
+    "Use glass-morphism effects for sticky headers.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Every interaction needs micro-animations."
   ]
 }
