@@ -84,6 +84,7 @@ function AppRouter() {
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
         <Route path="subscriptions" element={<AdminSubscriptions />} />
+        <Route path="integrations" element={<AdminIntegrations />} />
         <Route path="universities" element={<AdminUniversities />} />
       </Route>
       <Route path="/login" element={<Navigate to="/board" replace />} />
