@@ -4,7 +4,7 @@ import {
   LayoutGrid, Inbox, GraduationCap, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
-  Video, TrendingUp, LogOut, CreditCard
+  Video, TrendingUp, LogOut, CreditCard, Star
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
