@@ -152,6 +152,7 @@ export default function AdminIntegrations() {
   const gmail = data?.gmail || {};
   const stripe = data?.stripe || {};
   const ai = data?.ai || {};
+  const email = data?.email || {};
 
   return (
     <div className="space-y-6 max-w-3xl" data-testid="admin-integrations-page">
