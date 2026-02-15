@@ -51,7 +51,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
         </div>
       )}
 
-      <div className="p-5">
+      <div className="p-6">
         <div className="flex items-center gap-2.5 mb-3">
           <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg`}>
             <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2} />
