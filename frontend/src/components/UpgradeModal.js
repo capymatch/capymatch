@@ -92,7 +92,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
                   tier.id === "premium" ? "text-amber-500" : tier.id === "pro" ? "text-pink-500" : "text-zinc-400"
                 }`} strokeWidth={3} />
               </div>
-              <span className="text-[11px] leading-snug" style={{ color: dark ? "rgba(255,255,255,0.7)" : "#4b5563" }}>{f}</span>
+              <span className="text-xs leading-snug" style={{ color: dark ? "rgba(255,255,255,0.7)" : "#4b5563" }}>{f}</span>
             </li>
           ))}
         </ul>
