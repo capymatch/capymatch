@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request, Response
 from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
+from email_service import send_welcome_email
 import uuid
 import httpx
 import bcrypt
