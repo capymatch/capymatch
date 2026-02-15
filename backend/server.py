@@ -239,13 +239,105 @@ app.add_middleware(
 
 # ─── Lifecycle ───
 
+async def coach_watch_weekly_scan():
+    """Background task: weekly Coach Watch scan for all Premium tenants."""
+    from routes.ai import _search_coaching_news
+    from routes.notifications import create_notification
+    from subscriptions import get_user_subscription
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    import json
+    import uuid
+
+    while True:
+        try:
+            await asyncio.sleep(604800)  # 7 days
+
+            premium_tenants = await db.tenants.find({"plan": "premium"}, {"_id": 0}).to_list(500)
+            logger.info(f"Coach Watch: scanning {len(premium_tenants)} premium tenants")
+
+            for tenant in premium_tenants:
+                tenant_id = tenant["tenant_id"]
+                try:
+                    programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0, "university_name": 1}).to_list(100)
+                    if not programs:
+                        continue
+
+                    school_names = list(set(p["university_name"] for p in programs))
+                    news_results = await _search_coaching_news(school_names)
+
+                    news_ctx = ""
+                    for school, articles in news_results.items():
+                        if articles:
+                            news_ctx += f"\n## {school}\n"
+                            for a in articles:
+                                news_ctx += f"- {a['title']} ({a['date']})\n  {a['body'][:200]}\n"
+                        else:
+                            news_ctx += f"\n## {school}\nNo recent news found.\n"
+
+                    api_key = os.environ.get("EMERGENT_LLM_KEY")
+                    chat = LlmChat(
+                        api_key=api_key,
+                        session_id=f"cw_auto_{uuid.uuid4().hex[:8]}",
+                        system_message="You are a volleyball recruiting analyst. Analyze news for coaching changes. Return ONLY valid JSON.",
+                    ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+                    prompt = f"""Analyze these news articles about volleyball coaching staff. For EACH school with noteworthy changes, return a JSON array entry.
+{news_ctx}
+Return JSON array: [{{"university_name":"","severity":"red|yellow|green","headline":"","summary":"","coach_name":"","change_type":"departure|new_hire|extension|staff_change|stable","recommendation":""}}]
+If no changes found, return []"""
+
+                    response = await chat.send_message(UserMessage(text=prompt))
+                    response_text = response.text if hasattr(response, "text") else str(response)
+                    response_text = response_text.strip()
+                    if response_text.startswith("```"):
+                        response_text = response_text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+                    alerts = json.loads(response_text)
+                    if not isinstance(alerts, list):
+                        alerts = []
+
+                    from datetime import datetime, timezone
+                    now = datetime.now(timezone.utc).isoformat()
+                    await db.coach_watch_alerts.delete_many({"tenant_id": tenant_id})
+
+                    for alert in alerts:
+                        alert["alert_id"] = f"cw_{uuid.uuid4().hex[:12]}"
+                        alert["tenant_id"] = tenant_id
+                        alert["created_at"] = now
+                        alert["read"] = False
+                        await db.coach_watch_alerts.insert_one(alert)
+
+                        if alert.get("severity") in ("red", "yellow"):
+                            await create_notification(
+                                tenant_id, "coach_watch",
+                                f"Coach Watch: {alert['university_name']}",
+                                alert.get("headline", "Coaching update detected"),
+                                {"university_name": alert["university_name"], "severity": alert["severity"]},
+                            )
+
+                    logger.info(f"Coach Watch: {tenant_id} - {len(alerts)} alerts found")
+                except Exception as e:
+                    logger.error(f"Coach Watch scan error for {tenant_id}: {e}")
+                    continue
+
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"Coach Watch background task error: {e}")
+            await asyncio.sleep(3600)  # Retry in 1 hour on error
+
+
 @app.on_event("startup")
 async def startup_event():
-    global reply_check_task
+    global reply_check_task, coach_watch_task
     
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
     logger.info("Started background task: coach reply checker (runs every 10 minutes)")
+    
+    # Start background task for weekly Coach Watch
+    coach_watch_task = asyncio.create_task(coach_watch_weekly_scan())
+    logger.info("Started background task: Coach Watch (runs weekly)")
 
 
 @app.on_event("shutdown")
