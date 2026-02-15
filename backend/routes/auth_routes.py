@@ -131,7 +131,7 @@ async def exchange_session(request: Request, response: Response):
 @router.get("/auth/me")
 async def auth_me(request: Request):
     user = await get_current_user(request)
-    return {k: v for k, v in user.items() if k != "_id"}
+    return {k: v for k, v in user.items() if k not in ("_id", "password_hash")}
 
 
 @router.post("/auth/logout")
