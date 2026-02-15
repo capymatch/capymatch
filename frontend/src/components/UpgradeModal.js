@@ -57,7 +57,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
             <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2} />
           </div>
           <div>
-            <h3 className="font-bold text-sm" style={{ color: dark ? "#fff" : "#1f2937" }}>{tier.label}</h3>
+            <h3 className="font-bold text-base" style={{ color: dark ? "#fff" : "#1f2937" }}>{tier.label}</h3>
             {isCurrent && <span className="text-[9px] uppercase tracking-wider font-semibold" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>Current Plan</span>}
           </div>
         </div>
