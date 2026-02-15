@@ -166,6 +166,39 @@ export default function UniversityKnowledgeBase() {
         </div>
       )}
 
+      {/* Upgrade Prompt for Basic Users */}
+      {isBasic && (
+        <div
+          data-testid="basic-upgrade-prompt"
+          className="rounded-xl border p-4 flex items-center justify-between gap-4"
+          style={{
+            backgroundColor: "rgba(236, 72, 153, 0.06)",
+            borderColor: "rgba(236, 72, 153, 0.25)",
+          }}
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-pink-600/20">
+              <Zap className="w-4.5 h-4.5 text-pink-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-pink-300">
+                You're seeing up to 3 school matches on the Basic plan
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                Upgrade to <span className="text-pink-400 font-medium">Pro</span> or <span className="text-pink-400 font-medium">Premium</span> to unlock unlimited matches based on your profile.
+              </p>
+            </div>
+          </div>
+          <a
+            href="/account"
+            data-testid="basic-upgrade-link"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors bg-pink-600 hover:bg-pink-700 text-white"
+          >
+            Upgrade Plan <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      )}
+
       {/* Search Bar */}
       <div className="flex items-center gap-4 rounded-lg p-4 shadow-sm border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="relative flex-1">
