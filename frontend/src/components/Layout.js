@@ -28,7 +28,7 @@ export default function Layout({ user, onLogout }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const [showAssistant, setShowAssistant] = useState(false);
-  const { planEvent, dismissPlanEvent } = useSubscription();
+  const { planEvent, dismissPlanEvent, subscription } = useSubscription();
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
@@ -214,7 +214,13 @@ export default function Layout({ user, onLogout }) {
 
           {/* AI Assistant Button */}
           <button
-            onClick={() => setShowAssistant(true)}
+            onClick={() => {
+              if (subscription?.tier === "basic") {
+                toast.error("AI Advisor is available on Pro and Premium plans", { action: { label: "Upgrade", onClick: () => navigate("/account") } });
+              } else {
+                setShowAssistant(true);
+              }
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white mt-1 ${
               sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
             }`}
