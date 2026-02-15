@@ -12,6 +12,9 @@ import asyncio
 import websockets
 from concurrent.futures import ThreadPoolExecutor
 
+# Configure pytest-asyncio
+pytest_plugins = ('pytest_asyncio',)
+
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 class TestWebSocketEndpoint:
