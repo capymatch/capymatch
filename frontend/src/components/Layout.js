@@ -456,6 +456,33 @@ export default function Layout({ user }) {
           </div>
         </header>
 
+        {/* Plan Change Banner */}
+        {planEvent && (
+          <div
+            className={`flex items-center justify-between px-4 lg:px-6 py-3 text-sm font-medium ${
+              planEvent.isUpgrade
+                ? "bg-emerald-600/15 border-b border-emerald-500/30"
+                : "bg-amber-600/15 border-b border-amber-500/30"
+            }`}
+            data-testid="plan-change-banner"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className={`w-4 h-4 ${planEvent.isUpgrade ? "text-emerald-400" : "text-amber-400"}`} />
+              <span style={{ color: "var(--t-text)" }}>
+                Your plan was changed from <strong>{TIER_LABELS[planEvent.old_plan] || planEvent.old_plan}</strong> to <strong>{TIER_LABELS[planEvent.new_plan] || planEvent.new_plan}</strong>
+              </span>
+            </div>
+            <button
+              onClick={dismissPlanEvent}
+              className="p-1 rounded hover:bg-white/10 transition-colors"
+              style={{ color: "var(--t-text-muted)" }}
+              data-testid="plan-change-banner-dismiss"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
         {/* Page Content */}
         <main className="flex-1 overflow-auto p-4 lg:p-6">
           <Outlet />
