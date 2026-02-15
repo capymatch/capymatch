@@ -657,4 +657,168 @@ Return JSON:
         return {"advice": {"error": "Unable to generate advice. Please try again."}}
     except Exception as e:
         logger.error(f"Highlight advice error: {e}")
+
+
+# ── Coach Watch (Premium) ─────────────────────────────────────
+
+async def _search_coaching_news(school_names: list[str]) -> dict:
+    """Search for volleyball coaching news for given schools using DuckDuckGo."""
+    from duckduckgo_search import DDGS
+    import asyncio
+
+    results = {}
+    ddgs = DDGS()
+
+    def _search(school):
+        try:
+            articles = ddgs.news(f'"{school}" volleyball head coach', max_results=5)
+            return school, [{"title": a.get("title", ""), "url": a.get("url", ""), "date": a.get("date", ""), "body": a.get("body", "")} for a in articles]
+        except Exception as e:
+            logger.warning(f"Coach watch search failed for {school}: {e}")
+            return school, []
+
+    loop = asyncio.get_event_loop()
+    for school in school_names:
+        name, articles = await loop.run_in_executor(None, _search, school)
+        results[name] = articles
+
+    return results
+
+
+@router.post("/coach-watch/scan")
+async def coach_watch_scan(request: Request):
+    """Scan for coaching changes at schools in user's pipeline. Premium only."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "auto_reply_detection", "Coach Watch", "premium")
+
+    programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0, "university_name": 1}).to_list(100)
+    if not programs:
+        return {"alerts": [], "message": "Add schools to your pipeline first."}
+
+    school_names = list(set(p["university_name"] for p in programs))
+
+    # Search for news
+    news_results = await _search_coaching_news(school_names)
+
+    # Build context for AI
+    news_ctx = ""
+    for school, articles in news_results.items():
+        if articles:
+            news_ctx += f"\n## {school}\n"
+            for a in articles:
+                news_ctx += f"- {a['title']} ({a['date']})\n  {a['body'][:200]}\n"
+        else:
+            news_ctx += f"\n## {school}\nNo recent news found.\n"
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"coachwatch_{uuid.uuid4().hex[:8]}",
+            system_message="You are a volleyball recruiting analyst specializing in coaching staff changes. Analyze news articles and identify coaching changes, contract updates, and staff stability. Return ONLY valid JSON.",
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        prompt = f"""Analyze these recent news articles about volleyball coaching staff at these universities.
+For EACH school, determine:
+- Is there a coaching change (departure, new hire, firing)?
+- Is there a contract update (extension, expiration)?
+- Is the coaching situation stable?
+
+NEWS ARTICLES:
+{news_ctx}
+
+Return a JSON array. One entry per school. ONLY include schools where something noteworthy was found (changes, extensions, new hires, departures). Skip schools with no news or no relevant coaching updates.
+
+[
+  {{
+    "university_name": "School Name",
+    "severity": "red|yellow|green",
+    "headline": "Short alert headline",
+    "summary": "2-3 sentence summary of the situation",
+    "coach_name": "Coach name involved",
+    "change_type": "departure|new_hire|extension|contract_update|staff_change|stable",
+    "recommendation": "What this means for a recruit targeting this school"
+  }}
+]
+
+Severity guide:
+- red: Head coach departed/fired, or new head coach hired (major disruption)
+- yellow: Assistant changes, contract negotiations, rumors, new coach in early tenure (year 1-2)
+- green: Contract extension, long-tenured stable coach (positive signal)
+
+If NO schools have noteworthy coaching news, return an empty array: []"""
+
+        response = await chat.send_message(UserMessage(text=prompt))
+        response_text = response.text if hasattr(response, "text") else str(response)
+        response_text = response_text.strip()
+        if response_text.startswith("```"):
+            response_text = response_text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        await track_ai_usage(tenant_id)
+        alerts = json.loads(response_text)
+
+        if not isinstance(alerts, list):
+            alerts = []
+
+        # Store alerts in DB
+        now = datetime.now(timezone.utc).isoformat()
+        await db.coach_watch_alerts.delete_many({"tenant_id": tenant_id})
+
+        from routes.notifications import create_notification
+
+        for alert in alerts:
+            alert["alert_id"] = f"cw_{uuid.uuid4().hex[:12]}"
+            alert["tenant_id"] = tenant_id
+            alert["created_at"] = now
+            alert["read"] = False
+            await db.coach_watch_alerts.insert_one(alert)
+            alert.pop("_id", None)
+
+            # Create notification for red/yellow alerts
+            if alert.get("severity") in ("red", "yellow"):
+                await create_notification(
+                    tenant_id,
+                    "coach_watch",
+                    f"Coach Watch: {alert['university_name']}",
+                    alert.get("headline", "Coaching update detected"),
+                    {"university_name": alert["university_name"], "severity": alert["severity"]},
+                )
+
+        return {"alerts": alerts, "scanned_at": now, "schools_scanned": len(school_names)}
+
+    except json.JSONDecodeError:
+        return {"alerts": [], "error": "Failed to parse AI response"}
+    except Exception as e:
+        logger.error(f"Coach watch error: {e}")
+        raise HTTPException(status_code=500, detail=f"Coach watch error: {str(e)}")
+
+
+@router.get("/coach-watch/alerts")
+async def get_coach_watch_alerts(request: Request):
+    """Get stored coach watch alerts for user's pipeline."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "auto_reply_detection", "Coach Watch", "premium")
+
+    alerts = await db.coach_watch_alerts.find({"tenant_id": tenant_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return {"alerts": alerts}
+
+
+@router.get("/coach-watch/alert/{university_name}")
+async def get_coach_watch_alert_for_school(university_name: str, request: Request):
+    """Get coach watch alert for a specific school (used by Journey page)."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    alert = await db.coach_watch_alerts.find_one(
+        {"tenant_id": tenant_id, "university_name": university_name},
+        {"_id": 0}
+    )
+    return {"alert": alert}
+
         raise HTTPException(status_code=500, detail=f"Highlight advice error: {str(e)}")
