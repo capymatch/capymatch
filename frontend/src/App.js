@@ -23,6 +23,7 @@ import CalendarPage from "./pages/CalendarPage";
 import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
 import { onSubscriptionError } from "./lib/api";
@@ -75,6 +76,7 @@ function AppRouter() {
         <Route path="highlight-advisor" element={<HighlightAdvisor />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="payment-success" element={<PaymentSuccess />} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
