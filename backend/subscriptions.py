@@ -53,7 +53,7 @@ SUBSCRIPTION_TIERS = {
         ],
     },
     "premium": {
-        "label": "Premium",
+        "label": "Commit Ready",
         "price": 39,
         "max_schools": -1,
         "max_members": -1,
