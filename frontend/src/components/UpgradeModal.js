@@ -160,7 +160,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       <div className="absolute inset-0 bg-[#100c1c]" onClick={onClose} />
 
       <div
