@@ -20,7 +20,7 @@ SUBSCRIPTION_TIERS = {
         "description": "Perfect for exploring schools and getting organized.",
         "features": [
             "Track up to 5 schools",
-            "Simple recruiting pipeline",
+            "3 Best-Fit Schools",
             "University knowledge base",
             "Events & calendar tracking",
             "One athlete profile",
