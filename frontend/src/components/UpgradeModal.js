@@ -70,7 +70,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           {tier.price === 0 && <p className="text-[10px]" style={{ color: dark ? "rgba(255,255,255,0.3)" : "#6b7280" }}>Free forever</p>}
           {tier.id === "pro" && <p className="text-[10px] text-pink-500">Save $48/year with annual billing</p>}
           {tier.id === "premium" && <p className="text-[10px] text-amber-500">Save $96/year with annual billing</p>}
-          {tier.description && <p className="text-[10px] mt-1" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#6b7280" }}>{tier.description}</p>}
+          {tier.description && <p className="text-[10px] mt-1" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#4b5563" }}>{tier.description}</p>}
         </div>
 
         <div className="h-px mb-3" style={{ background: dark ? (isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)") : (isRecommended ? "rgba(244,63,94,0.12)" : "#e5e7eb") }} />
