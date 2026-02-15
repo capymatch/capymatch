@@ -1,54 +1,59 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { X, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
 
 const TOUR_STEPS = [
   {
     target: null,
     title: "Welcome to Recruiting HQ",
-    description: "Let's take a quick 30-second tour so you know where everything is.",
+    description: "Let's take a quick tour so you know where everything is. This will only take 30 seconds.",
     position: "center",
   },
   {
     target: '[data-testid="nav-dashboard"]',
     title: "Dashboard",
-    description: "Your command center. See stats, upcoming events, follow-up reminders, and who's viewed your profile.",
+    description: "Your command center — stats, upcoming events, follow-up reminders, and profile views at a glance.",
     position: "right",
   },
   {
     target: '[data-testid="nav-pipeline"]',
     title: "Pipeline",
-    description: "Track every school you're interested in. Manage recruiting status, coach contacts, and follow-ups.",
+    description: "Track every school you're recruiting with. Drag-and-drop to update status, manage contacts, and log follow-ups.",
     position: "right",
   },
   {
     target: '[data-testid="nav-calendar"]',
     title: "Calendar",
-    description: "Keep track of camps, showcases, tournaments, and campus visits all in one place.",
+    description: "Camps, showcases, tournaments, and campus visits — all in one place so you never miss an opportunity.",
     position: "right",
   },
   {
     target: '[data-testid="nav-inbox"]',
     title: "Inbox",
-    description: "Connect your Gmail to send and receive coach emails without leaving the app. AI can draft emails for you.",
+    description: "Connect Gmail to email coaches directly from the app. AI will help you draft personalized outreach.",
     position: "right",
   },
   {
     target: '[data-testid="nav-schools"]',
     title: "School Database",
-    description: "Browse 40+ D1, D2, and D3 volleyball programs. Add any school to your pipeline with one click.",
+    description: "Browse 1,000+ volleyball programs across D1, D2, and D3. Add schools to your pipeline with one click.",
+    position: "right",
+  },
+  {
+    target: '[data-testid="nav-outreach ai"]',
+    title: "AI-Powered Tools",
+    description: "Pro & Premium members get AI outreach analysis, highlight reel advice, and a personal recruiting assistant.",
     position: "right",
   },
   {
     target: '[data-testid="profile-dropdown-trigger"]',
     title: "Your Profile",
-    description: "Set up your athlete profile here — it powers your public page, share link, and AI-generated emails.",
+    description: "Set up your athlete profile — it powers your public page, share link, and AI-generated emails to coaches.",
     position: "bottom-left",
   },
   {
     target: null,
     title: "You're all set!",
-    description: "Head to the Schools page to add your first target school, then set up your athlete profile. Happy recruiting!",
+    description: "Start by adding your first target school from the Schools page, then build out your athlete profile. Let's go!",
     position: "center",
   },
 ];
@@ -56,7 +61,6 @@ const TOUR_STEPS = [
 export default function Tour({ onComplete }) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState(null);
-  const navigate = useNavigate();
 
   const current = TOUR_STEPS[step];
 
@@ -94,29 +98,15 @@ export default function Tour({ onComplete }) {
     if (step > 0) setStep(step - 1);
   };
 
-  // Tooltip positioning
   const getTooltipStyle = () => {
     if (current.position === "center" || !rect) {
-      return {
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      };
+      return { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
     }
     if (current.position === "right") {
-      return {
-        position: "fixed",
-        top: Math.max(8, rect.top - 10),
-        left: rect.left + rect.width + 16,
-      };
+      return { position: "fixed", top: Math.max(8, rect.top - 10), left: rect.left + rect.width + 16 };
     }
     if (current.position === "bottom-left") {
-      return {
-        position: "fixed",
-        top: rect.top + rect.height + 12,
-        right: 16,
-      };
+      return { position: "fixed", top: rect.top + rect.height + 12, right: 16 };
     }
     return {};
   };
@@ -124,7 +114,7 @@ export default function Tour({ onComplete }) {
   return (
     <div className="fixed inset-0 z-[9999]" data-testid="tour-overlay">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-black/65" />
 
       {/* Spotlight cutout */}
       {rect && (
@@ -135,25 +125,26 @@ export default function Tour({ onComplete }) {
             left: rect.left - 6,
             width: rect.width + 12,
             height: rect.height + 12,
-            boxShadow: "0 0 0 9999px rgba(0,0,0,0.6)",
+            boxShadow: "0 0 0 9999px rgba(0,0,0,0.65), 0 0 20px 4px rgba(244,63,94,0.15)",
             zIndex: 1,
             pointerEvents: "none",
-            border: "2px solid rgba(168, 85, 247, 0.6)",
+            border: "2px solid rgba(244, 63, 94, 0.5)",
           }}
         />
       )}
 
       {/* Tooltip */}
       <div
-        className="w-[340px] rounded-2xl border p-5 shadow-2xl z-10"
+        className="w-[340px] rounded-2xl p-5 shadow-2xl z-10"
         style={{
           ...getTooltipStyle(),
-          backgroundColor: "#1a1a2e",
-          borderColor: "rgba(168, 85, 247, 0.3)",
+          backgroundColor: "var(--t-surface, #1a1625)",
+          border: "1px solid rgba(244, 63, 94, 0.2)",
+          boxShadow: "0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(244,63,94,0.1)",
         }}
         data-testid="tour-tooltip"
       >
-        {/* Step indicator */}
+        {/* Step dots */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
             {TOUR_STEPS.map((_, i) => (
@@ -162,35 +153,58 @@ export default function Tour({ onComplete }) {
                 className="h-1.5 rounded-full transition-all duration-300"
                 style={{
                   width: i === step ? 20 : 6,
-                  backgroundColor: i === step ? "#a855f7" : i < step ? "#a855f7" : "rgba(255,255,255,0.15)",
+                  backgroundColor: i <= step ? "#f43f5e" : "rgba(255,255,255,0.1)",
                 }}
               />
             ))}
           </div>
           <button
             onClick={finish}
-            className="p-1 rounded-lg text-gray-500 hover:text-gray-300 transition-colors"
+            className="p-1 rounded-lg transition-colors hover:bg-white/10"
+            style={{ color: "var(--t-text-muted, #6b7280)" }}
             data-testid="tour-skip-btn"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content */}
+        {/* Icon for center steps */}
         {current.position === "center" && step === 0 && (
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-3 mx-auto">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center mb-3 mx-auto shadow-lg shadow-pink-900/30">
+            <Rocket className="w-5 h-5 text-white" />
           </div>
         )}
-        <h3 className="text-base font-bold text-white mb-1.5 text-center">{current.title}</h3>
-        <p className="text-sm text-gray-400 leading-relaxed text-center">{current.description}</p>
+        {current.position === "center" && step === TOUR_STEPS.length - 1 && (
+          <div className="text-3xl text-center mb-2">&#127751;</div>
+        )}
+
+        <h3
+          className="text-base font-bold mb-1.5 text-center"
+          style={{ color: "var(--t-text, #fff)" }}
+        >
+          {current.title}
+        </h3>
+        <p
+          className="text-sm leading-relaxed text-center"
+          style={{ color: "var(--t-text-muted, #9ca3af)" }}
+        >
+          {current.description}
+        </p>
+
+        {/* Step counter */}
+        <div className="text-center mt-2">
+          <span className="text-[11px] font-medium" style={{ color: "rgba(244,63,94,0.6)" }}>
+            {step + 1} / {TOUR_STEPS.length}
+          </span>
+        </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex items-center justify-between mt-4">
           {step > 0 ? (
             <button
               onClick={prev}
-              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-xs transition-colors hover:text-white"
+              style={{ color: "var(--t-text-muted, #9ca3af)" }}
               data-testid="tour-prev-btn"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
@@ -198,7 +212,8 @@ export default function Tour({ onComplete }) {
           ) : (
             <button
               onClick={finish}
-              className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+              className="text-xs transition-colors hover:text-white"
+              style={{ color: "var(--t-text-muted, #6b7280)" }}
               data-testid="tour-skip-all-btn"
             >
               Skip tour
@@ -206,7 +221,7 @@ export default function Tour({ onComplete }) {
           )}
           <button
             onClick={next}
-            className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-colors"
+            className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white transition-all bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 shadow-lg shadow-pink-900/30"
             data-testid="tour-next-btn"
           >
             {step === TOUR_STEPS.length - 1 ? "Get Started" : step === 0 ? "Start Tour" : "Next"}
