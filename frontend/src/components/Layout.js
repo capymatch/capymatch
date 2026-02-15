@@ -110,7 +110,6 @@ export default function Layout({ user, onLogout }) {
     { to: "/pipeline", icon: Kanban, label: "Pipeline" },
     { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
-    { to: "/follow-ups", icon: CheckSquare, label: "Tasks" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
     { to: "/outreach-analysis", icon: TrendingUp, label: "Engagement AI", premium: true },
     { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true },
@@ -297,7 +296,7 @@ export default function Layout({ user, onLogout }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/knowledge-base": "Schools", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
