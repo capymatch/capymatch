@@ -41,6 +41,7 @@ SUBSCRIPTION_TIERS = {
         "public_profile": True,
         "analytics": True,
         "match_scores_limit": -1,
+        "description": "Built for athletes actively communicating with coaches.",
         "features": [
             "Track up to 25 schools",
             "AI email drafts (10/mo)",
