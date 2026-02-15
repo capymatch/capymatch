@@ -45,6 +45,17 @@ async def get_integrations_status():
     ai_usage_month = await db.ai_usage.count_documents({"created_at": {"$gte": month_start}})
     ai_usage_total = await db.ai_usage.count_documents({})
 
+    # ── Email (Resend) ──
+    resend_key = os.environ.get("RESEND_API_KEY", "")
+    resend_connected = bool(resend_key)
+    resend_key_masked = f"re_...{resend_key[-6:]}" if len(resend_key) > 10 else ("Set" if resend_key else "Not set")
+    sender_email = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
+
+    # Check email settings in DB
+    email_settings = await db.email_settings.find_one({"setting_id": "global"}, {"_id": 0})
+    if not email_settings:
+        email_settings = {"welcome_email": True, "invitation_email": True}
+
     return {
         "gmail": {
             "connected": len(gmail_connected_users) > 0,
@@ -72,6 +83,16 @@ async def get_integrations_status():
             "stats": {
                 "usage_this_month": ai_usage_month,
                 "usage_total": ai_usage_total,
+            },
+        },
+        "email": {
+            "connected": resend_connected,
+            "provider": "Resend",
+            "key_masked": resend_key_masked,
+            "sender_email": sender_email,
+            "settings": {
+                "welcome_email": email_settings.get("welcome_email", True),
+                "invitation_email": email_settings.get("invitation_email", True),
             },
         },
     }
