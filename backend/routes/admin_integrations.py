@@ -155,3 +155,71 @@ async def disconnect_gmail(user_id: str):
         raise HTTPException(status_code=404, detail="Gmail connection not found for this user")
     logger.info(f"Gmail disconnected for user {user_id}")
     return {"ok": True}
+
+
+
+@router.put("/email")
+async def update_resend_key(request: Request):
+    """Update the Resend API key."""
+    body = await request.json()
+    new_key = body.get("api_key", "").strip()
+
+    if not new_key:
+        raise HTTPException(status_code=400, detail="API key is required")
+    if not new_key.startswith("re_"):
+        raise HTTPException(status_code=400, detail="Invalid Resend key format. Must start with re_")
+
+    os.environ["RESEND_API_KEY"] = new_key
+    import resend
+    resend.api_key = new_key
+
+    env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+    lines = []
+    found = False
+    try:
+        with open(env_path, "r") as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        pass
+
+    new_lines = []
+    for line in lines:
+        if line.strip().startswith("RESEND_API_KEY="):
+            new_lines.append(f"RESEND_API_KEY={new_key}\n")
+            found = True
+        else:
+            new_lines.append(line)
+    if not found:
+        new_lines.append(f"RESEND_API_KEY={new_key}\n")
+
+    with open(env_path, "w") as f:
+        f.writelines(new_lines)
+
+    masked = f"re_...{new_key[-6:]}" if len(new_key) > 10 else "Set"
+    logger.info(f"Resend key updated")
+    return {"ok": True, "key_masked": masked}
+
+
+@router.put("/email/settings")
+async def update_email_settings(request: Request):
+    """Toggle email notification types."""
+    body = await request.json()
+    welcome = body.get("welcome_email")
+    invitation = body.get("invitation_email")
+
+    update = {}
+    if welcome is not None:
+        update["welcome_email"] = bool(welcome)
+    if invitation is not None:
+        update["invitation_email"] = bool(invitation)
+
+    if not update:
+        raise HTTPException(status_code=400, detail="No settings provided")
+
+    await db.email_settings.update_one(
+        {"setting_id": "global"},
+        {"$set": update},
+        upsert=True
+    )
+
+    return {"ok": True, **update}
