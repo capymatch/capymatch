@@ -28,6 +28,7 @@ export default function Layout({ user, onLogout }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const [showAssistant, setShowAssistant] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const { planEvent, dismissPlanEvent, subscription } = useSubscription();
   const profileRef = useRef(null);
   const notifRef = useRef(null);
