@@ -151,6 +151,7 @@ Public-facing Volleyball Recruiting CRM with:
   - Warning banners on Journey page for affected schools
   - Bell notifications for red/yellow alerts
   - Gated to Premium tier only
+- **Schools Page Upgrade Prompt (Basic tier)**: Added a banner on the Knowledge Base/Schools page for Basic users informing them they see up to 3 school matches and can upgrade to Pro/Premium for unlimited matches. Links to /account page for self-serve upgrade.
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
