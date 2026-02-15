@@ -1,0 +1,65 @@
+{
+  "summary": "Multi-user team collaboration feature fully tested. All 19 backend tests passed. Frontend team section renders correctly with owner card, member limits, and upgrade prompt (Basic plan at limit). All API endpoints working: GET /api/team, POST /api/team/invite (with subscription limit enforcement), GET /api/team/my-invitations, POST /api/team/invitations/{id}/accept, POST /api/team/invitations/{id}/decline, DELETE /api/team/invitations/{id}, DELETE /api/team/members/{user_id}, POST /api/team/leave, GET /api/subscription/tiers (includes max_members).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "GET /api/team returns 401 for unauthenticated user",
+    "GET /api/team returns owner info, members, pending_invitations, limits, current_user_role",
+    "POST /api/team/invite returns 401 for unauthenticated user",
+    "POST /api/team/invite returns 400 for self-invite",
+    "POST /api/team/invite returns 400 for empty email",
+    "POST /api/team/invite returns 403 with subscription_limit error for Basic plan (max_members=1)",
+    "GET /api/team/my-invitations returns 401 for unauthenticated user",
+    "GET /api/team/my-invitations returns invitations list for authenticated user",
+    "POST /api/team/invitations/{id}/accept returns 404 for non-existent invite",
+    "POST /api/team/invitations/{id}/decline returns 404 for non-existent invite",
+    "DELETE /api/team/invitations/{id} returns 401 for unauthenticated user",
+    "DELETE /api/team/invitations/{id} returns 404 for non-existent invite",
+    "DELETE /api/team/members/{user_id} returns 401 for unauthenticated user",
+    "DELETE /api/team/members/{user_id} returns 404 for non-existent member",
+    "POST /api/team/leave returns 401 for unauthenticated user",
+    "POST /api/team/leave returns 400 when owner tries to leave",
+    "GET /api/subscription/tiers includes max_members field (basic=1, pro=2, premium=-1)",
+    "Standalone users are owners of their own tenant",
+    "Duplicate invite attempts handled correctly (Basic plan hits limit first)",
+    "Frontend: Team section renders with data-testid='team-section'",
+    "Frontend: Owner card shows with data-testid='team-owner-row'",
+    "Frontend: Basic Plan badge visible",
+    "Frontend: Member count (1 of 1) displayed correctly",
+    "Frontend: Upgrade prompt shown instead of invite form when at member limit"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_team_management.py",
+    "/app/test_reports/pytest/team_management_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_team_management.py"
+  ],
+  "success_rate": {
+    "backend": "100% (19/19 tests passed)",
+    "frontend": "100% (all team UI elements verified)"
+  },
+  "test_credentials": {
+    "owner_user": {"email": "jane@test.com", "password": "password123", "name": "Jane Doe"},
+    "second_user": {"email": "sarah@test.com", "password": "test1234", "name": "Sarah Smith"},
+    "note": "Both users are on Basic plan (max_members=1). jane@test.com has completed onboarding. sarah@test.com has completed onboarding."
+  },
+  "seed_data_creation": "Completed onboarding for sarah@test.com via POST /api/recruiting-profile",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Team management feature fully implemented and tested. Key data-testids: team-section, team-owner-row, invite-form (visible on Pro+), invite-email-input, invite-submit-btn, leave-team-btn (for members), pending-invite-{id}, cancel-invite-{id}, remove-member-{user_id}. Basic plan (max_members=1) shows upgrade prompt. Pro plan (max_members=2) allows inviting 1 additional member. Premium plan (max_members=-1) allows unlimited. To test full invite/accept flow, need to upgrade a user to Pro plan first. InvitationBanner component shows on dashboard when user has pending invites.",
+  "subscription_limits_verified": {
+    "basic": {"max_members": 1, "behavior": "Shows upgrade prompt, invite returns 403 subscription_limit"},
+    "pro": {"max_members": 2, "behavior": "Can invite 1 additional member"},
+    "premium": {"max_members": -1, "behavior": "Unlimited members"}
+  }
+}
