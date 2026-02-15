@@ -48,6 +48,9 @@ async def register(request: Request, response: Response):
         key="session_token", value=session_token, httponly=True,
         secure=True, samesite="none", path="/", max_age=7*24*3600
     )
+    # Send welcome email (fire-and-forget)
+    import asyncio
+    asyncio.create_task(send_welcome_email(name, email))
     return {"user_id": user_id, "email": email, "name": name, "picture": ""}
 
 
