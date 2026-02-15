@@ -154,7 +154,7 @@ export default function Dashboard() {
   const eventsDone = events.length > 0;
   const onboardingSteps = [
     { key: "profile", label: "Set up your athlete profile", description: "Add your name, position, stats, and a highlight video", icon: User, done: profileDone, action: () => navigate("/profile") },
-    { key: "schools", label: "Add your first target school", description: "Browse the database and add schools to your pipeline", icon: GraduationCap, done: schoolsDone, action: () => navigate("/knowledge-base") },
+    { key: "schools", label: "Add your first target school", description: "Browse the database and add schools to your list", icon: GraduationCap, done: schoolsDone, action: () => navigate("/knowledge-base") },
     ...(subscription?.tier !== "basic" ? [{ key: "gmail", label: "Connect your Gmail", description: "Send and receive coach emails right from the app", icon: MailIcon, done: gmailDone, action: () => navigate("/settings") }] : []),
     { key: "events", label: "Add an upcoming event", description: "Camps, showcases, and visits — keep them all in one place", icon: Calendar, done: eventsDone, action: () => navigate("/calendar") },
   ];
@@ -211,7 +211,7 @@ export default function Dashboard() {
 
       {/* ── Stats Row ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        <StatCard icon={Target} iconBg="bg-pink-500/15" iconColor="text-pink-500" label="Schools Tracked" value={totalSchools} sub="In your pipeline" trend={totalSchools > 0 ? 12 : null} />
+        <StatCard icon={Target} iconBg="bg-pink-500/15" iconColor="text-pink-500" label="Schools Tracked" value={totalSchools} sub="In your list" trend={totalSchools > 0 ? 12 : null} />
         <StatCard icon={Mail} iconBg="bg-blue-500/15" iconColor="text-blue-500" label="Response Rate" value={`${responseRate}%`} sub={`${replied} of ${contacted} contacted`} trend={responseRate > 0 ? 8 : null} />
         <StatCard icon={Eye} iconBg="bg-emerald-500/15" iconColor="text-emerald-500" label="Profile Views (7d)" value={profileViews?.this_week || 0} sub={`${profileViews?.today || 0} today`} trend={profileViews?.this_week > 0 ? 5 : null} />
         <StatCard icon={TrendingUp} iconBg="bg-amber-500/15" iconColor="text-amber-500" label="Offers Received" value={offers} sub={offers > 0 ? "Congratulations!" : "Keep going!"} trend={null} />
@@ -312,7 +312,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-center py-8" style={{ color: "var(--t-text-muted)" }}>Add schools to see your pipeline breakdown</p>
+            <p className="text-sm text-center py-8" style={{ color: "var(--t-text-muted)" }}>Add schools to see your recruiting breakdown</p>
           )}
         </div>
 
