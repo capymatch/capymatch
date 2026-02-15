@@ -186,7 +186,7 @@ async def get_match_scores(request: Request):
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
-    sub = await get_subscription(tenant_id)
+    sub = await get_user_subscription(tenant_id)
     limit = sub.get("match_scores_limit", 3)
     if limit != -1:
         scores = scores[:limit]
@@ -297,7 +297,7 @@ async def get_suggested_schools(request: Request):
             })
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
-    sub = await get_subscription(tenant_id)
+    sub = await get_user_subscription(tenant_id)
     limit = sub.get("match_scores_limit", 3)
     if limit == -1:
         suggestions = suggestions[:12]
