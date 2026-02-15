@@ -330,6 +330,102 @@ export default function AdminIntegrations() {
           )}
         </div>
       </IntegrationCard>
+
+      {/* Email Notifications */}
+      <IntegrationCard
+        icon={Mail}
+        title="Email Notifications"
+        subtitle="Transactional emails via Resend — welcome emails and team invitations"
+        status={email.connected}
+        statusLabel={email.connected ? "Active" : "Not configured"}
+        accent="bg-cyan-500/15 text-cyan-400"
+      >
+        <div className="space-y-4">
+          {email.connected && (
+            <div className="space-y-1">
+              <StatRow label="Provider" value={email.provider || "Resend"} />
+              <StatRow label="API Key" value={email.key_masked} />
+              <StatRow label="Sender Address" value={email.sender_email} />
+            </div>
+          )}
+
+          {/* Toggle email types */}
+          <div className="space-y-3 pt-2">
+            <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Active Email Types</span>
+            <div className="flex items-center justify-between py-2.5 px-3 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Welcome Email</p>
+                <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Sent when a new user registers</p>
+              </div>
+              <button
+                onClick={() => toggleEmailSetting("welcome_email", !email.settings?.welcome_email)}
+                disabled={togglingEmail === "welcome_email"}
+                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.welcome_email ? "bg-emerald-500" : "bg-zinc-600"}`}
+                data-testid="toggle-welcome-email"
+              >
+                <span className={`absolute top-0.5 ${email.settings?.welcome_email ? "left-[22px]" : "left-0.5"} w-5 h-5 rounded-full bg-white transition-all shadow-sm`} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between py-2.5 px-3 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Invitation Email</p>
+                <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Sent when a team member is invited</p>
+              </div>
+              <button
+                onClick={() => toggleEmailSetting("invitation_email", !email.settings?.invitation_email)}
+                disabled={togglingEmail === "invitation_email"}
+                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.invitation_email ? "bg-emerald-500" : "bg-zinc-600"}`}
+                data-testid="toggle-invitation-email"
+              >
+                <span className={`absolute top-0.5 ${email.settings?.invitation_email ? "left-[22px]" : "left-0.5"} w-5 h-5 rounded-full bg-white transition-all shadow-sm`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Update key form */}
+          <div className="pt-2">
+            <label className="text-xs font-medium uppercase tracking-wider block mb-2" style={{ color: "var(--t-text-muted)" }}>
+              {email.connected ? "Update Resend API Key" : "Add Resend API Key"}
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type={showResendKey ? "text" : "password"}
+                  value={resendKey}
+                  onChange={(e) => setResendKey(e.target.value)}
+                  placeholder="re_..."
+                  className="pr-10 text-sm"
+                  style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  data-testid="resend-key-input"
+                />
+                <button
+                  onClick={() => setShowResendKey(!showResendKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--t-text-muted)" }}
+                  data-testid="resend-key-toggle"
+                >
+                  {showResendKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <Button
+                onClick={saveResendKey}
+                disabled={!resendKey.trim() || savingResend}
+                className="bg-cyan-600 hover:bg-cyan-700 text-white gap-1.5"
+                data-testid="resend-key-save"
+              >
+                {savingResend ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save
+              </Button>
+            </div>
+            <p className="text-[11px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>
+              Get your key from{" "}
+              <a href="https://resend.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-0.5">
+                Resend Dashboard <ExternalLink className="w-3 h-3" />
+              </a>
+            </p>
+          </div>
+        </div>
+      </IntegrationCard>
     </div>
   );
 }
