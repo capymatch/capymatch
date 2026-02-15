@@ -68,10 +68,11 @@ export default function OutreachAnalysis() {
       }
     };
     fetchAnalysis();
-  }, []);
+  }, [isBasic]);
+
+  if (isBasic) return <UpgradeBenefitsPage featureKey="outreach-analysis" />;
 
   return (
-    <FeatureGate feature="auto_reply_detection">
       <div data-testid="outreach-analysis-page">
         <div className="flex items-center justify-between mb-6">
           <div>
