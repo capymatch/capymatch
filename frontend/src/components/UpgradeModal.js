@@ -75,7 +75,14 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
         <div className="h-px mb-3" style={{ background: dark ? (isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)") : (isRecommended ? "rgba(244,63,94,0.12)" : "#e5e7eb") }} />
 
         <ul className="space-y-2 mb-4 flex-1">
-          {tier.features.map((f, i) => (
+          {tier.id === "premium" && (
+            <li className="text-[11px] font-semibold mb-1" style={{ color: dark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+              Everything in Pro, plus:
+            </li>
+          )}
+          {(tier.id === "premium" ? tier.features.filter(f =>
+            !["Gmail integration", "Follow-up reminders", "Recruiting insights", "Public athlete profile"].includes(f)
+          ) : tier.features).map((f, i) => (
             <li key={i} className="flex items-start gap-1.5">
               <div className={`w-3 h-3 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                 tier.id === "premium" ? "bg-amber-500/10" : tier.id === "pro" ? "bg-pink-500/10" : "bg-zinc-500/10"
