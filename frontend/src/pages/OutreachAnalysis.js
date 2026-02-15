@@ -67,7 +67,7 @@ export default function OutreachAnalysis() {
 
   return (
     <FeatureGate feature="auto_reply_detection">
-      <div className="space-y-4" data-testid="outreach-analysis-page">
+      <div className="space-y-5" data-testid="outreach-analysis-page">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Engagement Analysis</h2>
@@ -93,7 +93,7 @@ export default function OutreachAnalysis() {
         ) : (
           <>
             {/* Top Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatBox label="Schools Tracked" value={data.stats.total_schools} icon={Target} color="text-blue-400" />
               <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-pink-400" />
               <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-emerald-400" />
@@ -122,7 +122,7 @@ export default function OutreachAnalysis() {
                 </div>
 
                 {/* Strengths + Improvements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                     <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
                       <CheckCircle className="w-4 h-4 text-emerald-400" /> Strengths
