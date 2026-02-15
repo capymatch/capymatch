@@ -186,6 +186,10 @@ async def get_match_scores(request: Request):
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
+    sub = await get_subscription(tenant_id)
+    limit = sub.get("match_scores_limit", 3)
+    if limit != -1:
+        scores = scores[:limit]
     return {"scores": scores, "profile_exists": True}
 
 
