@@ -27,8 +27,7 @@ export default function HighlightAdvisor() {
     }
   };
 
-  return (
-    <FeatureGate feature="auto_reply_detection">
+  return isBasic ? <UpgradeBenefitsPage featureKey="highlight-advisor" /> : (
       <div className="space-y-5" data-testid="highlight-advisor-page">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
