@@ -211,7 +211,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
               <span className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider">Upgrade</span>
             </div>
             <h2 className="text-lg md:text-2xl font-bold mb-0.5" style={{ color: dark ? "#fff" : "#1f2937" }}>
-              Choose the Plan That Moves Your Recruiting Forward
+              Choose the Plan That Moves Your College Journey Forward
             </h2>
             <p className="text-xs md:text-sm max-w-lg mx-auto mb-1" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#6b7280" }}>
               Stay organized, never miss a coach response, and always know your next move.
