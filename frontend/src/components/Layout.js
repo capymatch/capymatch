@@ -13,6 +13,7 @@ import Tour from "../components/Tour";
 import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
 import AIAssistantDrawer from "../components/AIAssistantDrawer";
+import InvitationBanner from "../components/InvitationBanner";
 
 const TIER_LABELS = { basic: "Basic", pro: "Pro", premium: "Premium" };
 
