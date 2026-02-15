@@ -42,10 +42,8 @@ export default function UpgradeBenefitsPage({ featureKey }) {
       <div className="max-w-3xl mx-auto py-8 px-4" data-testid={`upgrade-benefits-${featureKey}`}>
         {/* Header */}
         <div className="text-center mb-10">
-          <div className={`w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center ${
-            accent === "violet" ? "bg-violet-500/15" : "bg-pink-500/15"
-          }`}>
-            <Icon className={`w-8 h-8 ${accent === "violet" ? "text-violet-500" : "text-pink-500"}`} />
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center bg-pink-500/15">
+            <Icon className="w-8 h-8 text-pink-500" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
             Unlock {config.title}
