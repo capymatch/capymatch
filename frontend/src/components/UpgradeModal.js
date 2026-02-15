@@ -50,36 +50,36 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade }
         </div>
       )}
 
-      <div className="p-4 lg:p-5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg`}>
-            <Icon className="w-4 h-4 text-white" strokeWidth={2} />
+      <div className="p-4">
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg`}>
+            <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2} />
           </div>
           <div>
-            <h3 className="font-bold text-base text-white">{tier.label}</h3>
+            <h3 className="font-bold text-sm text-white">{tier.label}</h3>
             {isCurrent && <span className="text-[9px] uppercase tracking-wider font-semibold text-white/40">Current Plan</span>}
           </div>
         </div>
 
-        <div className="mb-3">
+        <div className="mb-2">
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl lg:text-4xl font-black tracking-tight text-white">${tier.price}</span>
-            <span className="text-xs font-medium text-white/35">/mo</span>
+            <span className="text-2xl font-black tracking-tight text-white">${tier.price}</span>
+            <span className="text-[10px] font-medium text-white/35">/mo</span>
           </div>
-          {tier.price === 0 && <p className="text-[11px] text-white/30 mt-0.5">Free forever</p>}
-          {tier.id === "pro" && <p className="text-[11px] text-pink-400/70 mt-0.5">Save $48/yr annually</p>}
-          {tier.id === "premium" && <p className="text-[11px] text-amber-400/70 mt-0.5">Save $96/yr annually</p>}
+          {tier.price === 0 && <p className="text-[10px] text-white/30">Free forever</p>}
+          {tier.id === "pro" && <p className="text-[10px] text-pink-400/70">Save $48/yr annually</p>}
+          {tier.id === "premium" && <p className="text-[10px] text-amber-400/70">Save $96/yr annually</p>}
         </div>
 
-        <div className="h-px mb-3" style={{ background: isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)" }} />
+        <div className="h-px mb-2" style={{ background: isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)" }} />
 
-        <ul className="space-y-2 mb-4 flex-1">
+        <ul className="space-y-1.5 mb-3 flex-1">
           {tier.features.map((f, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${config.accentBg}`}>
+            <li key={i} className="flex items-start gap-1.5">
+              <div className={`w-3 h-3 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${config.accentBg}`}>
                 <Check className={`w-2 h-2 ${config.checkColor}`} strokeWidth={3} />
               </div>
-              <span className="text-xs text-white/70 leading-snug">{f}</span>
+              <span className="text-[11px] text-white/70 leading-snug">{f}</span>
             </li>
           ))}
         </ul>
