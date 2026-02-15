@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Shield, Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles } from "lucide-react";
+import { Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles } from "lucide-react";
 import api, { BACKEND_URL } from "../lib/api";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
