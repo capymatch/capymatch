@@ -75,6 +75,7 @@ SUBSCRIPTION_TIERS = {
             "Weekly recruiting digest",
             "Public athlete profile",
             "Full analytics suite",
+            "Coach Watch alerts",
             "Priority support",
             "Unlimited team members",
         ],
