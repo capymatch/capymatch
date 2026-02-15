@@ -103,7 +103,7 @@ export default function OutreachAnalysis() {
             {data.ai_insights && (
               <>
                 {/* Score + Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-3">
                   <div className="rounded-xl border p-4 flex flex-col items-center justify-center relative" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="outreach-score">
                     <ScoreRing score={data.ai_insights.overall_score} label={data.ai_insights.score_label} />
                   </div>
@@ -122,7 +122,7 @@ export default function OutreachAnalysis() {
                 </div>
 
                 {/* Strengths + Improvements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-3">
                   <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                     <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
                       <CheckCircle className="w-4 h-4 text-emerald-400" /> Strengths
