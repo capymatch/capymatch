@@ -87,7 +87,7 @@ export default function LoginPage({ onAuth }) {
         {/* ── Right: Login Card ── */}
         <div className="w-full max-w-[420px] rounded-2xl overflow-hidden shadow-xl bg-white" data-testid="login-card">
           {/* Purple Banner */}
-          <div className="relative h-[160px] overflow-hidden" style={{ background: "linear-gradient(135deg, #a855f7 0%, #9333ea 40%, #7c3aed 100%)" }}>
+          <div className="relative h-[160px] overflow-hidden" style={{ background: "linear-gradient(135deg, #6b1530 0%, #8b2252 40%, #a83262 100%)" }}>
             <img src={BANNER_IMG} alt="" className="absolute inset-0 w-full h-full object-cover mix-blend-soft-light opacity-70" />
             <div className="relative z-10 p-6 pb-4 flex flex-col justify-end h-full">
               <div className="flex items-center gap-1.5 mb-2">
@@ -175,7 +175,7 @@ export default function LoginPage({ onAuth }) {
                 disabled={loading}
                 data-testid="auth-submit-btn"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #d8b4fe 100%)" }}
+                style={{ background: "linear-gradient(135deg, #6b1530 0%, #a83262 50%, #d4577e 100%)" }}
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
