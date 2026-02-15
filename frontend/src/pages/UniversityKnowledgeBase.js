@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../lib/api";
+import { useSubscription } from "../lib/subscription";
 import { DIVISIONS, REGIONS } from "../lib/constants";
-import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown, Sparkles, ChevronLeft, ChevronRight, User, Mail } from "lucide-react";
+import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown, Sparkles, ChevronLeft, ChevronRight, User, Mail, ArrowRight, Zap } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
