@@ -220,7 +220,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
           )}
         </div>
 
-        <div className="px-5 pb-4 md:px-8 md:pb-6 text-center">
+        <div className="px-5 pb-3 md:px-8 md:pb-4 text-center">
           <p className="text-[10px] text-white/25">14-day money-back guarantee. Cancel anytime.</p>
         </div>
       </div>
