@@ -105,7 +105,9 @@ Public-facing Volleyball Recruiting CRM with:
 - **Member**: Full access to all recruiting features (pipeline, schools, AI, etc.) but cannot manage billing or team
 - Invite by email, accept/decline flow, leave team option for members
 - Team section in Settings page shows members, pending invitations, invite form
-- InvitationBanner shows on dashboard when user has pending team invitations
+- **Contextual instructions**: Collapsible "How team collaboration works" guide in Team section explaining owner/member roles, how to invite, and what members can do
+- **Basic Plan upgrade card**: Friendly explanation for Basic users about upgrading to invite collaborators
+- **InvitationBanner**: Shows on dashboard with expandable "What does this mean?" section explaining shared data, feature access, and data safety
 - Backend: `/api/team/*` endpoints with subscription enforcement
 - DB collections: `team_members`, `team_invitations`
 
