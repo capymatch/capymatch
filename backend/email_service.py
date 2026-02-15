@@ -32,6 +32,11 @@ async def send_email(to: str, subject: str, html: str):
 
 
 async def send_welcome_email(name: str, email: str):
+    # Check if welcome emails are enabled
+    settings = await db.email_settings.find_one({"setting_id": "global"}, {"_id": 0})
+    if settings and not settings.get("welcome_email", True):
+        return None
+
     html = f"""
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px;">
       <div style="text-align: center; margin-bottom: 32px;">
