@@ -28,7 +28,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import LoginPage from "./pages/LoginPage";
 import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
-import { onSubscriptionError } from "./lib/api";
+import { onSubscriptionError, onAuthFail } from "./lib/api";
 import UpgradeModal from "./components/UpgradeModal";
 import api from "./lib/api";
 import "./App.css";
@@ -74,23 +74,14 @@ function OnboardingGate({ children }) {
   return children;
 }
 
-function AppRouter({ user, onAuth, onLogout }) {
+function AuthedRoutes({ user, onAuth, onLogout }) {
   return (
     <Routes>
-      {/* Public routes */}
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
-      <Route path="/login" element={user ? <Navigate to="/board" replace /> : <LoginPage onAuth={onAuth} />} />
-
-      {/* OAuth callback — works whether or not already logged in */}
-      <Route path="/" element={
-        /* If URL has session_id param, handle OAuth callback */
-        window.location.search.includes("session_id")
-          ? <OAuthCallback onAuth={onAuth} />
-          : user
-            ? <OnboardingGate><Layout user={user} onLogout={onLogout} /></OnboardingGate>
-            : <Navigate to="/login" replace />
-      }>
+      <Route path="/login" element={<Navigate to="/board" replace />} />
+      <Route path="/onboarding" element={<AthleteProfileQuiz />} />
+      <Route path="/" element={<OnboardingGate><Layout user={user} onLogout={onLogout} /></OnboardingGate>}>
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
         <Route path="pipeline" element={<RecruitingBoard />} />
@@ -107,8 +98,7 @@ function AppRouter({ user, onAuth, onLogout }) {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
       </Route>
-      <Route path="/onboarding" element={user ? <AthleteProfileQuiz /> : <Navigate to="/login" replace />} />
-      <Route path="/admin" element={user ? <AdminLayout /> : <Navigate to="/login" replace />}>
+      <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
@@ -116,8 +106,20 @@ function AppRouter({ user, onAuth, onLogout }) {
         <Route path="integrations" element={<AdminIntegrations />} />
         <Route path="universities" element={<AdminUniversities />} />
       </Route>
-      {/* Catch all */}
-      <Route path="*" element={<Navigate to={user ? "/board" : "/login"} replace />} />
+      <Route path="*" element={<Navigate to="/board" replace />} />
+    </Routes>
+  );
+}
+
+function UnauthRoutes({ onAuth }) {
+  return (
+    <Routes>
+      <Route path="/s/:shortId" element={<PublicSchedule />} />
+      <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
+      <Route path="/login" element={<LoginPage onAuth={onAuth} />} />
+      {/* Handle OAuth callback at root with session_id */}
+      <Route path="/" element={<OAuthCallback onAuth={onAuth} />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
@@ -158,14 +160,24 @@ function App() {
     setUser(null);
   }, []);
 
+  // Register auth fail handler for session expiry
+  useEffect(() => {
+    onAuthFail(() => setUser(null));
+  }, []);
+
   // Check session on mount
   useEffect(() => {
+    // If URL has session_id, let the OAuth callback handle it
+    if (window.location.search.includes("session_id")) {
+      setUser(null);
+      return;
+    }
     api.get("/auth/me")
       .then(res => setUser(res.data))
       .catch(() => setUser(null));
   }, []);
 
-  // Show nothing while checking auth
+  // Loading state
   if (user === undefined) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
@@ -176,13 +188,19 @@ function App() {
 
   return (
     <ThemeProvider>
-      <SubscriptionProvider>
-        <SubscriptionGuard>
-          <BrowserRouter>
-            <AppRouter user={user} onAuth={handleAuth} onLogout={handleLogout} />
-          </BrowserRouter>
-        </SubscriptionGuard>
-      </SubscriptionProvider>
+      {user ? (
+        <SubscriptionProvider>
+          <SubscriptionGuard>
+            <BrowserRouter>
+              <AuthedRoutes user={user} onAuth={handleAuth} onLogout={handleLogout} />
+            </BrowserRouter>
+          </SubscriptionGuard>
+        </SubscriptionProvider>
+      ) : (
+        <BrowserRouter>
+          <UnauthRoutes onAuth={handleAuth} />
+        </BrowserRouter>
+      )}
       <Toaster richColors position="top-right" />
     </ThemeProvider>
   );
