@@ -14,15 +14,25 @@ Public-facing Volleyball Recruiting CRM with:
 
 ## Tech Stack
 - **Frontend**: React, react-router-dom, Tailwind CSS, Shadcn/UI, axios
-- **Backend**: FastAPI, Pydantic
+- **Backend**: FastAPI, Pydantic, bcrypt
 - **Database**: MongoDB (via motor)
-- **Auth**: Mocked (static user bypass)
-- **3rd Party**: Gmail API, Anthropic Claude Sonnet 4.5 (Emergent LLM Key), React Joyride, lucide-react
+- **Auth**: Session-based (cookie) with Google OAuth + email/password login
+- **3rd Party**: Gmail API, Anthropic Claude Sonnet 4.5 (Emergent LLM Key), lucide-react, Stripe
 
 ## Architecture
 - Backend: /app/backend/server.py (FastAPI main), routes/ directory
 - Frontend: /app/frontend/src/ with pages/, components/, lib/
 - Subscription gating: backend/subscriptions.py + frontend lib/subscription.js
+
+## Authentication System (Feb 2026)
+- Real session-based auth replacing the previous static user bypass
+- **Google OAuth**: Redirect to Emergent Auth, session exchange via `/api/auth/session`
+- **Email/Password**: Register (`/api/auth/register`) and login (`/api/auth/login`)
+- Password hashing with bcrypt, session cookies (7-day expiry)
+- Login page shows both options with toggle between Sign In / Sign Up
+- Route protection: unauthenticated users redirected to `/login`
+- Logout via profile dropdown clears session cookie
+- New users redirected to onboarding quiz after registration
 
 ## Completed Features
 1. Dynamic Recruiting Board with grouping (action_required, upcoming, in_progress, closed)
