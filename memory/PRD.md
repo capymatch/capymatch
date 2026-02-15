@@ -99,6 +99,16 @@ Public-facing Volleyball Recruiting CRM with:
 - PUT /api/admin/subscriptions/{user_id} - Admin plan change with audit log
 - POST /api/ai/assistant, /api/ai/outreach-insights, /api/ai/highlight-reel - AI features
 
+## Team Collaboration (Feb 2026)
+- Multi-user collaboration with tier-based limits: Basic=1 user, Pro=2 users, Premium=unlimited
+- **Owner**: Creates account, manages billing/subscription, invites/removes members
+- **Member**: Full access to all recruiting features (pipeline, schools, AI, etc.) but cannot manage billing or team
+- Invite by email, accept/decline flow, leave team option for members
+- Team section in Settings page shows members, pending invitations, invite form
+- InvitationBanner shows on dashboard when user has pending team invitations
+- Backend: `/api/team/*` endpoints with subscription enforcement
+- DB collections: `team_members`, `team_invitations`
+
 ## Subscription Tiers
 - **Basic** ($0): 5 schools, no AI, basic features
 - **Pro** ($19): 25 schools, 10 AI drafts/mo, Gmail, insights, analytics — "Most Popular"
