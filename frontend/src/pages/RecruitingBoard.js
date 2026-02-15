@@ -63,9 +63,9 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   }[p.division] || "bg-gray-500/20 text-gray-400";
   const divFull = p.division === "D1" ? "NCAA I" : p.division === "D2" ? "NCAA II" : p.division === "D3" ? "NCAA III" : p.division;
 
-  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-700 bg-emerald-100 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-500/15 dark:border-emerald-500/30"
-    : matchScore?.match_score >= 60 ? "text-amber-700 bg-amber-100 border-amber-200 dark:text-amber-400 dark:bg-amber-500/15 dark:border-amber-500/30"
-    : "text-slate-600 bg-slate-100 border-slate-200 dark:text-gray-400 dark:bg-gray-500/15 dark:border-gray-500/30";
+  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+    : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
+    : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
   const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
