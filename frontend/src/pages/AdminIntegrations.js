@@ -64,8 +64,12 @@ export default function AdminIntegrations() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stripeKey, setStripeKey] = useState("");
+  const [resendKey, setResendKey] = useState("");
   const [showKey, setShowKey] = useState(false);
+  const [showResendKey, setShowResendKey] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savingResend, setSavingResend] = useState(false);
+  const [togglingEmail, setTogglingEmail] = useState(null);
   const [disconnecting, setDisconnecting] = useState(null);
 
   const fetchIntegrations = async () => {
