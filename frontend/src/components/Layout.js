@@ -208,11 +208,11 @@ export default function Layout({ user, onLogout }) {
                 style={() => ({})}
               >
                 <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
-                <span className={`truncate ${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
+                <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                 {item.premium && !sidebarCollapsed && (() => {
                   const isBasic = !subscription?.tier || subscription.tier === "basic";
                   return isBasic ? (
-                    <span className="ml-auto text-[7px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 flex-shrink-0">Upgrade</span>
+                    <Star className="ml-auto w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" />
                   ) : null;
                 })()}
               </NavLink>
