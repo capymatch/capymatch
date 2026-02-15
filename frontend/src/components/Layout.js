@@ -212,7 +212,7 @@ export default function Layout({ user, onLogout }) {
                 {item.premium && !sidebarCollapsed && (() => {
                   const isBasic = !subscription?.tier || subscription.tier === "basic";
                   return isBasic ? (
-                    <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Upgrade</span>
+                    <span className="ml-auto text-[7px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 flex-shrink-0">Upgrade</span>
                   ) : null;
                 })()}
               </NavLink>
