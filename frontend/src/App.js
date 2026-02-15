@@ -15,7 +15,7 @@ import RecruitingBoard from "./pages/RecruitingBoard";
 import RecruitingJourney from "./pages/RecruitingJourney";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
-import NeedsFollowUp from "./pages/NeedsFollowUp"; // kept for direct URL access
+// Tasks/follow-ups feature removed
 import ProgramDetail from "./pages/ProgramDetail";
 import Inbox from "./pages/Inbox";
 import Analytics from "./pages/Analytics";
