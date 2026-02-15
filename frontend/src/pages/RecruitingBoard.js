@@ -43,8 +43,8 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
             className={`flex items-center gap-2 px-3 py-2 rounded-lg flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "bg-gray-900 dark:bg-white/10" : "hover:bg-[var(--t-surface-alt)]"}`}
             data-testid={`funnel-${group.key}`}
           >
-            <span className={`text-xs font-medium hidden sm:inline ${isActive ? "text-white dark:text-gray-200" : ""}`} style={!isActive ? { color: "var(--t-text-secondary)" } : {}}>{group.label}</span>
-            <span className={`text-sm font-bold ${isActive ? "text-white dark:text-gray-200" : ""}`} style={!isActive ? { color: "var(--t-text)" } : {}}>{count}</span>
+            <span className={`text-xs font-medium hidden sm:inline ${group.countText}`}>{group.label}</span>
+            <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
           </div>
         );
       })}
@@ -55,15 +55,17 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
 /* ── Program Row ── */
 function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const divColor = {
-    D1: "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    D2: "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    D3: "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    NAIA: "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    JUCO: "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-  }[p.division] || "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+    D1: "bg-emerald-500/20 text-emerald-400",
+    D2: "bg-blue-500/20 text-blue-400",
+    D3: "bg-violet-500/20 text-violet-400",
+    NAIA: "bg-orange-500/20 text-orange-400",
+    JUCO: "bg-yellow-500/20 text-yellow-400",
+  }[p.division] || "bg-gray-500/20 text-gray-400";
   const divFull = p.division === "D1" ? "NCAA I" : p.division === "D2" ? "NCAA II" : p.division === "D3" ? "NCAA III" : p.division;
 
-  const scoreColor = "text-gray-600 bg-gray-100 border-gray-200 dark:text-gray-400 dark:bg-gray-700/50 dark:border-gray-600";
+  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+    : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
+    : "text-gray-400 bg-gray-500/15 border-gray-500/30";
 
   const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
@@ -120,27 +122,27 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
       <div className="flex items-center gap-3 flex-shrink-0">
         {p.board_group === "action_required" && (() => {
           const alert = isOverdue
-            ? { text: `Overdue since ${dueDateFormatted}` }
+            ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400" }
             : p.recruiting_status === "Not Contacted"
-            ? { text: "Not contacted yet" }
+            ? { text: "Not contacted yet", color: "text-rose-400" }
             : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
-            ? { text: "No reply yet" }
+            ? { text: "No reply yet", color: "text-amber-400" }
             : p.reply_status === "Awaiting Reply"
-            ? { text: "Awaiting reply" }
-            : { text: "Needs attention" };
-          return <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>{alert.text}</span>;
+            ? { text: "Awaiting reply", color: "text-amber-400" }
+            : { text: "Needs attention", color: "text-rose-400" };
+          return <span className={`hidden sm:block text-[11px] font-medium whitespace-nowrap ${alert.color}`}>{alert.text}</span>;
         })()}
         {p.board_group === "upcoming" && p.next_action_due && (
-          <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>Due {dueDateFormatted}</span>
+          <span className="hidden sm:block text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
         )}
         {p.board_group === "in_progress" && (
-          <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>
+          <span className="hidden sm:block text-[11px] font-medium text-emerald-400 whitespace-nowrap">
             {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
           </span>
         )}
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-md transition-colors border text-gray-700 bg-gray-100 hover:bg-gray-200 border-gray-200 dark:text-gray-300 dark:bg-gray-700/50 dark:hover:bg-gray-700 dark:border-gray-600"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
           data-testid={`view-journey-${p.program_id}`}
         >
           Journey
