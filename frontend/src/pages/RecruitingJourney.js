@@ -588,7 +588,7 @@ export default function RecruitingJourney() {
   if (!program) return (
     <div className="text-center py-24">
       <p style={{ color: "var(--t-text-muted)" }}>Program not found</p>
-      <Button onClick={() => navigate("/pipeline")} className="mt-4">Back to Pipeline</Button>
+      <Button onClick={() => navigate("/pipeline")} className="mt-4">Back to My Schools</Button>
     </div>
   );
 
