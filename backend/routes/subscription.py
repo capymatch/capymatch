@@ -65,6 +65,7 @@ async def get_all_tiers():
             "label": tier_data["label"],
             "price": tier_data.get("price", 0),
             "features": tier_data.get("features", []),
+            "description": tier_data.get("description", ""),
             "max_schools": tier_data["max_schools"],
             "max_members": tier_data.get("max_members", 1),
             "ai_drafts_per_month": tier_data["ai_drafts_per_month"],
