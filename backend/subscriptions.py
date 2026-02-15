@@ -21,6 +21,7 @@ SUBSCRIPTION_TIERS = {
         "features": [
             "Track up to 5 schools",
             "3 Best-Fit Schools",
+            "Simple recruiting pipeline",
             "University knowledge base",
             "Events & calendar tracking",
             "One athlete profile",
