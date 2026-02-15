@@ -3,7 +3,10 @@ from datetime import datetime, timezone
 from database import db
 from auth import get_current_user, get_tenant_id, get_user_role
 from subscriptions import get_user_subscription
+from email_service import send_invitation_email
 import uuid
+import asyncio
+import os
 
 router = APIRouter(prefix="/api/team")
 
