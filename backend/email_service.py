@@ -3,6 +3,7 @@ import asyncio
 import logging
 import resend
 from dotenv import load_dotenv
+from database import db
 
 load_dotenv()
 logger = logging.getLogger(__name__)
