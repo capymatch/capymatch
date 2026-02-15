@@ -719,9 +719,10 @@ export default function RecruitingJourney() {
           </div>
 
           {/* Schedule Follow-up */}
-          <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="followup-section">
+          <div className="relative rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="followup-section">
             <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Clock className="w-4 h-4 text-pink-500" />Schedule Follow-up</h3>
             <FollowUpScheduler program={program} onSaved={fetchData} />
+            {isBasic && <LockedOverlay label="Smart Follow-up Reminders" />}
           </div>
         </div>
       </div>
