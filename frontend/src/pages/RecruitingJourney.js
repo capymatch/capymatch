@@ -562,6 +562,27 @@ export default function RecruitingJourney() {
 
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5">
+      {/* ─── Coach Watch Alert Banner ─── */}
+      {coachAlert && (coachAlert.severity === "red" || coachAlert.severity === "yellow") && (
+        <div
+          className={`rounded-xl border p-3 flex items-start gap-3 ${coachAlert.severity === "red" ? "border-red-500/40 bg-red-500/5" : "border-amber-500/40 bg-amber-500/5"}`}
+          data-testid="coach-watch-banner"
+        >
+          <AlertCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${coachAlert.severity === "red" ? "text-red-400" : "text-amber-400"}`} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className={`text-xs font-bold ${coachAlert.severity === "red" ? "text-red-400" : "text-amber-400"}`}>
+                {coachAlert.severity === "red" ? "Coaching Change Alert" : "Coach Watch"}
+              </span>
+            </div>
+            <p className="text-xs font-medium" style={{ color: "var(--t-text)" }}>{coachAlert.headline}</p>
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{coachAlert.summary}</p>
+            {coachAlert.recommendation && (
+              <p className="text-[11px] mt-1.5 font-medium" style={{ color: "var(--t-text-secondary)" }}>{coachAlert.recommendation}</p>
+            )}
+          </div>
+        </div>
+      )}
       {/* ─── Header ─── */}
       <div className="space-y-3">
         <div className="flex items-start gap-3">
