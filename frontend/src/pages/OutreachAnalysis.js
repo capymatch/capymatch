@@ -48,11 +48,14 @@ function StatBox({ label, value, icon: Icon, color }) {
 }
 
 export default function OutreachAnalysis() {
+  const { subscription } = useSubscription();
+  const isBasic = !subscription?.tier || subscription.tier === "basic";
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (isBasic) { setLoading(false); return; }
     const fetchAnalysis = async () => {
       try {
         const res = await api.get("/ai/outreach-analysis");
