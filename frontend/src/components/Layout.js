@@ -252,7 +252,7 @@ export default function Layout({ user, onLogout }) {
             <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
             <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Advisor</span>
             {!sidebarCollapsed && (
-              <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-pink-500/15 text-pink-400">AI</span>
+              <span className="ml-auto text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">Pro</span>
             )}
           </button>
         </nav>
