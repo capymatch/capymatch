@@ -276,14 +276,14 @@ function CoachWatch() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div>
           {[...redAlerts, ...yellowAlerts, ...greenAlerts].map((alert) => {
             const cfg = SEVERITY_CONFIG[alert.severity] || SEVERITY_CONFIG.green;
             const Icon = cfg.icon;
             return (
               <div
                 key={alert.alert_id}
-                className={`rounded-lg border p-3 ${cfg.border}`}
+                className={`rounded-lg border p-3 mb-4 ${cfg.border}`}
                 style={{ backgroundColor: "var(--t-surface-alt)" }}
                 data-testid={`coach-alert-${alert.severity}`}
               >
