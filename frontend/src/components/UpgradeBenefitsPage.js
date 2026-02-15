@@ -79,7 +79,7 @@ export default function UpgradeBenefitsPage({ featureKey }) {
           style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
         >
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Crown className={`w-5 h-5 ${accent === "violet" ? "text-violet-500" : "text-pink-500"}`} />
+            <Crown className="w-5 h-5 text-pink-500" />
             <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
               Available on Pro & Premium plans
             </span>
