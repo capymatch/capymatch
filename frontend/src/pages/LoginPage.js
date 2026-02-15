@@ -40,7 +40,7 @@ export default function LoginPage({ onAuth }) {
 
         {/* ── Left: Marketing Copy ── */}
         <div className="flex-1 max-w-md lg:max-w-[420px]">
-          <h1 className="text-3xl sm:text-4xl font-bold italic text-gray-900 leading-tight mb-4" data-testid="login-headline">
+          <h1 className="text-3xl sm:text-4xl font-bold italic text-gray-900 leading-tight mb-4 whitespace-nowrap" data-testid="login-headline">
             College Journey, organized.
           </h1>
           <p className="text-gray-500 text-[15px] leading-relaxed mb-8">
