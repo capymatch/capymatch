@@ -191,7 +191,7 @@ class TestStripeCheckoutRegression:
             f"{BASE_URL}/api/stripe/checkout",
             json={
                 "plan": "pro",
-                "origin_url": "https://court-crm.preview.emergentagent.com/settings"
+                "origin_url": "https://court-crm-1.preview.emergentagent.com/settings"
             }
         )
         
