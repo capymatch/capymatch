@@ -27,10 +27,10 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
     <div className="flex items-center gap-1 p-1 rounded-[10px] border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
       <div
         onClick={() => onFocusGroup(null)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "bg-gray-900 dark:bg-white/10" : "hover:bg-[var(--t-surface-alt)]"}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
         data-testid="funnel-all"
       >
-        <span className={`text-xs font-medium ${!activeFilter ? "text-white dark:text-gray-200" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
+        <span className={`text-xs font-medium ${!activeFilter ? "text-pink-500" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
         <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
       </div>
       {BOARD_GROUPS.map((group) => {
