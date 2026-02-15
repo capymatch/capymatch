@@ -656,8 +656,8 @@ export default function RecruitingJourney() {
       <NextStepHero program={program} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
-      {showLogForm && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} />}
-      {showEmailComposer && <EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} />}
+      {showLogForm && <div className="mt-4"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
+      {showEmailComposer && <div className="mt-4"><EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} /></div>}
 
       {/* ─── Main Grid ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
