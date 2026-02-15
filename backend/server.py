@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from pathlib import Path
@@ -180,6 +180,19 @@ async def check_coach_replies():
         except Exception as e:
             logger.error(f"Error in reply check background task: {e}")
             await asyncio.sleep(60)  # Wait a minute before retrying on error
+
+# ─── WebSocket ───
+
+from ws_manager import manager
+
+@app.websocket("/api/ws/{tenant_id}")
+async def websocket_endpoint(ws: WebSocket, tenant_id: str):
+    await manager.connect(tenant_id, ws)
+    try:
+        while True:
+            await ws.receive_text()  # keep-alive; ignore client messages
+    except WebSocketDisconnect:
+        manager.disconnect(tenant_id, ws)
 
 # ─── Root ───
 
