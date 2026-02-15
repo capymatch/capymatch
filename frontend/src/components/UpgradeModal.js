@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { X, Sparkles, Check, Zap, Crown } from "lucide-react";
+import { X, Sparkles, Check, Zap, Crown, Loader2 } from "lucide-react";
 import api from "../lib/api";
+import { toast } from "sonner";
 
 const tierIcons = {
   basic: Zap,
@@ -17,6 +18,7 @@ const tierColors = {
 export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "basic" }) {
   const [tiers, setTiers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
 
   useEffect(() => {
     if (!isOpen) return;
