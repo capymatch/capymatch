@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime, timezone
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_school_limit
 import uuid
 import logging
 
@@ -30,6 +31,9 @@ async def list_knowledge_base(division: Optional[str] = None, conference: Option
 async def add_to_board(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    # Enforce subscription school limit
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_school_limit(tenant_id, subscription)
     body = await request.json()
     uni_name = body.get("university_name")
     if not uni_name:
