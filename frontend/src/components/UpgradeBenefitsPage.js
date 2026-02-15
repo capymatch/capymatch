@@ -81,7 +81,7 @@ export default function UpgradeBenefitsPage({ featureKey }) {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="w-5 h-5 text-pink-500" />
             <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-              Available on Pro & Premium plans
+              Available on Active Recruit & Commit Ready plans
             </span>
           </div>
           <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
