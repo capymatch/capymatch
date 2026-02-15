@@ -5,6 +5,8 @@ import {
   Shield, RefreshCw, Eye, Radio
 } from "lucide-react";
 import FeatureGate from "../components/FeatureGate";
+import UpgradeBenefitsPage from "../components/UpgradeBenefitsPage";
+import { useSubscription } from "../lib/subscription";
 import api from "../lib/api";
 import { Button } from "../components/ui/button";
 
