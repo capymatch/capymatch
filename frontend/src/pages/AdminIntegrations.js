@@ -113,6 +113,34 @@ export default function AdminIntegrations() {
     }
   };
 
+  const saveResendKey = async () => {
+    if (!resendKey.trim()) return;
+    setSavingResend(true);
+    try {
+      const res = await api.put("/admin/integrations/email", { api_key: resendKey.trim() });
+      toast.success("Resend key updated");
+      setResendKey("");
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to update key");
+    } finally {
+      setSavingResend(false);
+    }
+  };
+
+  const toggleEmailSetting = async (key, value) => {
+    setTogglingEmail(key);
+    try {
+      await api.put("/admin/integrations/email/settings", { [key]: value });
+      toast.success(`${key === "welcome_email" ? "Welcome emails" : "Invitation emails"} ${value ? "enabled" : "disabled"}`);
+      fetchIntegrations();
+    } catch {
+      toast.error("Failed to update setting");
+    } finally {
+      setTogglingEmail(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24" data-testid="integrations-loading">
