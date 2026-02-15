@@ -14,10 +14,10 @@ import { toast } from "sonner";
 
 /* ── Board Groups Config ── */
 const BOARD_GROUPS = [
-  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Overdue, needs response, or stale" },
-  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
-  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
-  { key: "closed", label: "Closed", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Not a fit, committed, or archived" },
+  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-red-500", countBg: "bg-red-500/10", countText: "text-red-500", accentBar: "bg-red-500", description: "Overdue, needs response, or stale" },
+  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/10", countText: "text-amber-600", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
+  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/10", countText: "text-emerald-600", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
+  { key: "closed", label: "Closed", icon: Archive, dot: "bg-slate-400", countBg: "bg-slate-400/10", countText: "text-slate-500", accentBar: "bg-slate-400", description: "Not a fit, committed, or archived" },
 ];
 
 /* ── Group Funnel ── */
