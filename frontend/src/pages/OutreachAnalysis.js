@@ -204,7 +204,6 @@ export default function OutreachAnalysis() {
         {/* Coach Watch Section */}
         <CoachWatch />
       </div>
-    </FeatureGate>
   );
 }
 
