@@ -327,6 +327,8 @@ async def create_interaction(data: InteractionCreate, request: Request):
 async def list_follow_ups(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    subscription = await get_user_subscription(tenant_id)
+    enforce_feature(subscription, "follow_up_reminders", "Follow-up Reminders", "pro")
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     programs = await db.programs.find({
         "tenant_id": tenant_id,
