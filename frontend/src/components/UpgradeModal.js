@@ -198,7 +198,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
         </div>
 
         {/* Tier Cards */}
-        <div className="px-4 pb-4 md:px-6 md:pb-8">
+        <div className="px-4 pb-3 md:px-6 md:pb-5">
           {loading ? (
             <div className="text-center py-12">
               <Loader2 className="w-6 h-6 animate-spin text-pink-400 mx-auto mb-3" />
