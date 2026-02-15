@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { 
-  LayoutGrid, Inbox, CheckSquare, GraduationCap, BarChart3, Settings, 
+  LayoutGrid, Inbox, CheckSquare, GraduationCap, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
   Video, TrendingUp, LogOut, CreditCard
