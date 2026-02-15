@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ThemeProvider } from "./lib/theme";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -25,6 +25,7 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import LoginPage from "./pages/LoginPage";
 import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
 import { onSubscriptionError } from "./lib/api";
@@ -32,8 +33,25 @@ import UpgradeModal from "./components/UpgradeModal";
 import api from "./lib/api";
 import "./App.css";
 
-// Auth bypassed: static user for public access
-const PUBLIC_USER = { user_id: "user_public_default", name: "Athlete", email: "athlete@recruitinghq.app", picture: "" };
+/* Google OAuth callback handler */
+function OAuthCallback({ onAuth }) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    if (!sessionId) { navigate("/login", { replace: true }); return; }
+    api.post("/auth/session", { session_id: sessionId })
+      .then(res => { onAuth(res.data); navigate("/board", { replace: true }); })
+      .catch(() => navigate("/login", { replace: true }));
+  }, [searchParams, navigate, onAuth]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
+      <div className="text-white/60 text-sm">Signing you in...</div>
+    </div>
+  );
+}
 
 function OnboardingGate({ children }) {
   const navigate = useNavigate();
@@ -56,13 +74,23 @@ function OnboardingGate({ children }) {
   return children;
 }
 
-function AppRouter() {
+function AppRouter({ user, onAuth, onLogout }) {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
-      <Route path="/onboarding" element={<AthleteProfileQuiz />} />
-      <Route path="/" element={<OnboardingGate><Layout user={PUBLIC_USER} /></OnboardingGate>}>
+      <Route path="/login" element={user ? <Navigate to="/board" replace /> : <LoginPage onAuth={onAuth} />} />
+
+      {/* OAuth callback — works whether or not already logged in */}
+      <Route path="/" element={
+        /* If URL has session_id param, handle OAuth callback */
+        window.location.search.includes("session_id")
+          ? <OAuthCallback onAuth={onAuth} />
+          : user
+            ? <OnboardingGate><Layout user={user} onLogout={onLogout} /></OnboardingGate>
+            : <Navigate to="/login" replace />
+      }>
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
         <Route path="pipeline" element={<RecruitingBoard />} />
@@ -79,7 +107,8 @@ function AppRouter() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
       </Route>
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/onboarding" element={user ? <AthleteProfileQuiz /> : <Navigate to="/login" replace />} />
+      <Route path="/admin" element={user ? <AdminLayout /> : <Navigate to="/login" replace />}>
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
@@ -87,7 +116,8 @@ function AppRouter() {
         <Route path="integrations" element={<AdminIntegrations />} />
         <Route path="universities" element={<AdminUniversities />} />
       </Route>
-      <Route path="/login" element={<Navigate to="/board" replace />} />
+      {/* Catch all */}
+      <Route path="*" element={<Navigate to={user ? "/board" : "/login"} replace />} />
     </Routes>
   );
 }
@@ -99,7 +129,7 @@ function SubscriptionGuard({ children }) {
   useEffect(() => {
     onSubscriptionError((detail) => {
       setUpgradeInfo(detail);
-      refresh(); // Re-fetch subscription to get current state
+      refresh();
     });
   }, [refresh]);
 
@@ -117,12 +147,39 @@ function SubscriptionGuard({ children }) {
 }
 
 function App() {
+  const [user, setUser] = useState(undefined); // undefined = loading, null = not authed
+
+  const handleAuth = useCallback((userData) => {
+    setUser(userData);
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    try { await api.post("/auth/logout"); } catch {}
+    setUser(null);
+  }, []);
+
+  // Check session on mount
+  useEffect(() => {
+    api.get("/auth/me")
+      .then(res => setUser(res.data))
+      .catch(() => setUser(null));
+  }, []);
+
+  // Show nothing while checking auth
+  if (user === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
+        <div className="text-white/50 text-sm">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider>
       <SubscriptionProvider>
         <SubscriptionGuard>
           <BrowserRouter>
-            <AppRouter />
+            <AppRouter user={user} onAuth={handleAuth} onLogout={handleLogout} />
           </BrowserRouter>
         </SubscriptionGuard>
       </SubscriptionProvider>
