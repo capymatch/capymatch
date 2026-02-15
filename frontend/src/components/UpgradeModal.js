@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Check, Zap, Crown, Loader2, Rocket, ArrowRight, Star } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
