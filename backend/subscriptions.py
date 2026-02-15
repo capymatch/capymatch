@@ -70,6 +70,7 @@ SUBSCRIPTION_TIERS = {
         "match_scores_limit": -1,
         "description": "For serious athletes who can't afford to miss opportunities.",
         "features": [
+            "Unlimited schools",
             "Unlimited AI email drafts",
             "Gmail integration",
             "Follow-up reminders",
