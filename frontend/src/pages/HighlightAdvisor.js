@@ -212,6 +212,5 @@ export default function HighlightAdvisor() {
           </>
         )}
       </div>
-    </FeatureGate>
   );
 }
