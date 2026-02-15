@@ -75,9 +75,9 @@ export default function AdminDashboard() {
         <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <h3 className="text-sm font-semibold mb-4" style={{ color: "var(--t-text)" }}>Subscription Distribution</h3>
           <div className="space-y-3">
-            <PlanBar label="Basic" count={stats.plan_counts.basic} total={stats.total_users} color="bg-gray-400" />
-            <PlanBar label="Pro" count={stats.plan_counts.pro} total={stats.total_users} color="bg-pink-500" />
-            <PlanBar label="Premium" count={stats.plan_counts.premium} total={stats.total_users} color="bg-amber-500" />
+            <PlanBar label="Starter" count={stats.plan_counts.basic} total={stats.total_users} color="bg-gray-400" />
+            <PlanBar label="Active Recruit" count={stats.plan_counts.pro} total={stats.total_users} color="bg-pink-500" />
+            <PlanBar label="Commit Ready" count={stats.plan_counts.premium} total={stats.total_users} color="bg-amber-500" />
           </div>
         </div>
 
