@@ -50,7 +50,7 @@ export default function LoginPage({ onAuth }) {
           <div className="space-y-6">
             <div className="flex gap-3.5">
               <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Compass className="w-[18px] h-[18px] text-purple-600" />
+                <Compass className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">College Tracker</h3>
@@ -59,8 +59,8 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Mail className="w-[18px] h-[18px] text-purple-600" />
+              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Mail className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Coach Inbox</h3>
@@ -69,8 +69,8 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Sparkles className="w-[18px] h-[18px] text-purple-600" />
+              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Sparkles className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Coach Watch Alerts</h3>
