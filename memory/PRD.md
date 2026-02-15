@@ -47,6 +47,12 @@ Public-facing Volleyball Recruiting CRM with:
 10. Athlete profile and onboarding quiz
 11. Match scores and suggested schools
 
+## Login Page Light Theme (Feb 2026)
+- Redesigned login page from dark theme to clean light theme
+- White card on light gray (#f8f9fb) background
+- All text, inputs, dividers updated to light-mode colors
+- Pink CTA gradient button preserved as accent
+
 ## Bug Fixes
 - **P0 Fix (Feb 2026)**: Subscription gate failure on plan downgrade. Root cause: `/api/knowledge-base/add-to-board` endpoint had NO subscription enforcement. Fixed by adding `enforce_school_limit()`. Also fixed frontend error display for subscription limit errors and added periodic subscription state refresh.
 - **P0 Fix (Feb 2026)**: "Connect your Gmail" checklist step was shown to Basic plan users who don't have Gmail access. Fixed by conditionally rendering the Gmail onboarding step only when `subscription.tier !== 'basic'` in `Dashboard.js`. The step dynamically appears when a user upgrades.
@@ -82,6 +88,13 @@ Public-facing Volleyball Recruiting CRM with:
 - Semi-transparent overlay (40% opacity) keeps underlying UI visible for context
 - Progress dots + step counter for orientation
 - Skip/Back/Next navigation with localStorage persistence
+
+## Account Page (Feb 2026)
+- New `/account` route accessible from profile dropdown
+- **Subscription card** moved from Dashboard to Account page (plan name, pricing, upgrade button, usage bars)
+- **Change Password** form with current/new/confirm fields and backend validation
+- **Danger Zone** with account deletion placeholder
+- Backend: `POST /api/auth/change-password` endpoint with bcrypt verification
 
 ## Upcoming Tasks (P1)
 - None currently queued
