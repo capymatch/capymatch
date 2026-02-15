@@ -26,6 +26,8 @@ export default function UniversityKnowledgeBase() {
   const [conferences, setConferences] = useState([]);
   const [regions, setRegions] = useState(REGIONS);
   const [page, setPage] = useState(1);
+  const { subscription } = useSubscription();
+  const isBasic = subscription?.tier === "basic";
 
   // Fetch dynamic filters
   useEffect(() => {
