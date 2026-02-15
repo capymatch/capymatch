@@ -63,10 +63,8 @@ export default function UpgradeBenefitsPage({ featureKey }) {
                 className="rounded-xl border p-5 transition-all hover:shadow-md"
                 style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
               >
-                <div className={`w-10 h-10 rounded-lg mb-3 flex items-center justify-center ${
-                  accent === "violet" ? "bg-violet-500/10" : "bg-pink-500/10"
-                }`}>
-                  <BIcon className={`w-5 h-5 ${accent === "violet" ? "text-violet-500" : "text-pink-500"}`} />
+                <div className="w-10 h-10 rounded-lg mb-3 flex items-center justify-center bg-pink-500/10">
+                  <BIcon className="w-5 h-5 text-pink-500" />
                 </div>
                 <h3 className="font-semibold text-sm mb-1" style={{ color: "var(--t-text)" }}>{b.title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{b.desc}</p>
