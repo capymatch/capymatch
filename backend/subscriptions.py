@@ -19,6 +19,7 @@ SUBSCRIPTION_TIERS = {
         "match_scores_limit": 3,
         "features": [
             "Track up to 5 schools",
+            "3 school matches",
             "Basic recruiting board",
             "University knowledge base",
             "Calendar & events",
