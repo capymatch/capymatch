@@ -14,6 +14,7 @@ import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
 import AIAssistantDrawer from "../components/AIAssistantDrawer";
 import InvitationBanner from "../components/InvitationBanner";
+import UpgradeModal from "../components/UpgradeModal";
 
 const TIER_LABELS = { basic: "Basic", pro: "Pro", premium: "Premium" };
 
