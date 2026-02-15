@@ -17,7 +17,7 @@ Public-facing Volleyball Recruiting CRM with:
 - **Backend**: FastAPI, Pydantic, bcrypt
 - **Database**: MongoDB (via motor)
 - **Auth**: Session-based (cookie) with Google OAuth + email/password login
-- **3rd Party**: Gmail API, Anthropic Claude Sonnet 4.5 (Emergent LLM Key), lucide-react, Stripe
+- **3rd Party**: Gmail API, Anthropic Claude Sonnet 4.5 (Emergent LLM Key), lucide-react, Stripe, Resend
 
 ## Architecture
 - Backend: /app/backend/server.py (FastAPI main), routes/ directory
@@ -110,6 +110,15 @@ Public-facing Volleyball Recruiting CRM with:
 - **InvitationBanner**: Shows on dashboard with expandable "What does this mean?" section explaining shared data, feature access, and data safety
 - Backend: `/api/team/*` endpoints with subscription enforcement
 - DB collections: `team_members`, `team_invitations`
+
+## Email Notifications — Resend Integration (Feb 2026)
+- **Provider**: Resend (transactional email API)
+- **Welcome Email**: Sent on registration with getting-started steps and plan info
+- **Invitation Email**: Sent when team owner invites a member with CTA to sign in
+- **Admin Controls**: Toggle email types on/off, update API key from Admin Integrations page
+- **Fire-and-forget**: Emails sent via `asyncio.create_task` so they don't block API responses
+- **Settings**: Stored in `db.email_settings` collection, checked before each send
+- **Note**: In testing mode, Resend only delivers to verified email addresses
 
 ## Subscription Tiers
 - **Basic** ($0): 5 schools, no AI, basic features
