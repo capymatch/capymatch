@@ -187,7 +187,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
       <div className="absolute inset-0" style={{ backgroundColor: bgColor }} onClick={onClose} />
 
       <div
-        className="relative w-full max-h-[100vh] md:max-w-4xl rounded-2xl md:rounded-3xl border overflow-y-auto"
+        className="relative w-full max-h-[100vh] md:max-w-5xl rounded-2xl md:rounded-3xl border overflow-y-auto"
         style={{
           backgroundColor: bgColor,
           borderColor: dark ? "rgba(255,255,255,0.06)" : "#e5e7eb",
