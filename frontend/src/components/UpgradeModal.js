@@ -1,19 +1,156 @@
 import { useState, useEffect } from "react";
-import { X, Sparkles, Check, Zap, Crown, Loader2 } from "lucide-react";
+import { X, Check, Zap, Crown, Loader2, Rocket, ArrowRight, Star } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
 
-const tierIcons = {
-  basic: Zap,
-  pro: Sparkles,
-  premium: Crown,
+const TIER_CONFIG = {
+  basic: {
+    icon: Zap,
+    gradient: "from-slate-500 to-zinc-600",
+    glow: "rgba(161,161,170,0.12)",
+    accentText: "text-zinc-300",
+    accentBg: "bg-zinc-500/10",
+    checkColor: "text-zinc-400",
+    badge: null,
+    ring: "ring-zinc-700/40",
+  },
+  pro: {
+    icon: Rocket,
+    gradient: "from-pink-500 via-rose-500 to-pink-600",
+    glow: "rgba(244,63,94,0.18)",
+    accentText: "text-pink-400",
+    accentBg: "bg-pink-500/10",
+    checkColor: "text-pink-400",
+    badge: "Most Popular",
+    ring: "ring-pink-500/50",
+  },
+  premium: {
+    icon: Crown,
+    gradient: "from-amber-400 via-yellow-500 to-orange-500",
+    glow: "rgba(245,158,11,0.18)",
+    accentText: "text-amber-400",
+    accentBg: "bg-amber-500/10",
+    checkColor: "text-amber-400",
+    badge: "Best Value",
+    ring: "ring-amber-500/40",
+  },
 };
 
-const tierColors = {
-  basic: { bg: "bg-zinc-800", border: "border-zinc-700", accent: "text-zinc-400" },
-  pro: { bg: "bg-pink-950/40", border: "border-pink-700/60", accent: "text-pink-400" },
-  premium: { bg: "bg-amber-950/30", border: "border-amber-600/50", accent: "text-amber-400" },
-};
+function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, onClose }) {
+  const config = TIER_CONFIG[tier.id] || TIER_CONFIG.basic;
+  const Icon = config.icon;
+
+  return (
+    <div
+      className={`relative flex flex-col rounded-2xl border transition-all duration-500 ${
+        isRecommended
+          ? `scale-[1.05] z-10 ring-2 ${config.ring} shadow-2xl`
+          : "hover:scale-[1.02]"
+      } ${isCurrent ? "opacity-55 pointer-events-none" : ""}`}
+      style={{
+        backgroundColor: isRecommended ? "rgba(30, 24, 42, 0.95)" : "rgba(24, 20, 36, 0.85)",
+        borderColor: isRecommended ? "rgba(244,63,94,0.35)" : "rgba(255,255,255,0.06)",
+        boxShadow: isRecommended
+          ? `0 0 60px ${config.glow}, 0 20px 40px rgba(0,0,0,0.4)`
+          : "0 4px 20px rgba(0,0,0,0.2)",
+      }}
+      data-testid={`tier-card-${tier.id}`}
+    >
+      {/* Badge */}
+      {config.badge && !isCurrent && (
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20">
+          <div className={`px-4 py-1 rounded-full bg-gradient-to-r ${config.gradient} text-white text-[10px] font-bold uppercase tracking-widest shadow-lg flex items-center gap-1.5`}>
+            <Star className="w-3 h-3" fill="currentColor" />
+            {config.badge}
+          </div>
+        </div>
+      )}
+
+      <div className={`${isRecommended ? "p-7" : "p-5"}`}>
+        {/* Tier Icon + Label */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className={`${isRecommended ? "w-11 h-11" : "w-9 h-9"} rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg`}>
+            <Icon className={`${isRecommended ? "w-5 h-5" : "w-4 h-4"} text-white`} strokeWidth={2} />
+          </div>
+          <div>
+            <h3 className={`font-bold ${isRecommended ? "text-lg" : "text-base"} text-white`}>
+              {tier.label}
+            </h3>
+            {isCurrent && (
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Current Plan</span>
+            )}
+          </div>
+        </div>
+
+        {/* Price */}
+        <div className="mb-5">
+          <div className="flex items-baseline gap-1">
+            <span className={`${isRecommended ? "text-5xl" : "text-4xl"} font-black tracking-tight text-white`}>
+              ${tier.price}
+            </span>
+            <span className="text-sm font-medium text-white/35">/mo</span>
+          </div>
+          {tier.price === 0 && (
+            <p className="text-xs text-white/30 mt-1">Free forever</p>
+          )}
+          {tier.id === "pro" && (
+            <p className="text-xs text-pink-400/70 mt-1">Save $48/yr with annual billing</p>
+          )}
+          {tier.id === "premium" && (
+            <p className="text-xs text-amber-400/70 mt-1">Save $96/yr with annual billing</p>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="h-px mb-5" style={{ background: isRecommended ? "rgba(244,63,94,0.15)" : "rgba(255,255,255,0.06)" }} />
+
+        {/* Features */}
+        <ul className={`space-y-3 mb-6 ${isRecommended ? "min-h-[220px]" : "min-h-[200px]"}`}>
+          {tier.features.map((f, i) => (
+            <li key={i} className="flex items-start gap-2.5">
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${config.accentBg}`}>
+                <Check className={`w-2.5 h-2.5 ${config.checkColor}`} strokeWidth={3} />
+              </div>
+              <span className={`${isRecommended ? "text-sm" : "text-xs"} text-white/70 leading-snug`}>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA Button */}
+        {isCurrent ? (
+          <div
+            className="w-full py-3 rounded-xl text-center text-sm font-medium border border-white/10 text-white/30"
+            data-testid={`tier-current-${tier.id}`}
+          >
+            Your Current Plan
+          </div>
+        ) : (
+          <button
+            className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+              isRecommended
+                ? `bg-gradient-to-r ${config.gradient} text-white hover:shadow-xl hover:shadow-pink-500/20 hover:scale-[1.02] active:scale-[0.98]`
+                : tier.id === "premium"
+                  ? `bg-gradient-to-r ${config.gradient} text-black hover:shadow-lg hover:shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98]`
+                  : "bg-white/8 hover:bg-white/12 text-white/80 border border-white/10"
+            }`}
+            data-testid={`tier-upgrade-${tier.id}`}
+            disabled={checkoutLoading === tier.id}
+            onClick={() => onUpgrade(tier)}
+          >
+            {checkoutLoading === tier.id ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                {tier.price === 0 ? "Downgrade" : `Get ${tier.label}`}
+                {tier.price > 0 && <ArrowRight className="w-4 h-4" />}
+              </>
+            )}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "basic" }) {
   const [tiers, setTiers] = useState([]);
@@ -41,128 +178,101 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
     auto_reply_detection: "Automatically detect when coaches reply to your emails.",
   };
 
+  // Determine recommended tier (one step above current)
+  const tierOrder = ["basic", "pro", "premium"];
+  const currentIdx = tierOrder.indexOf(currentTier);
+  const recommendedTier = currentIdx < tierOrder.length - 1 ? tierOrder[currentIdx + 1] : "premium";
+
+  const handleUpgrade = async (tier) => {
+    if (tier.price === 0) {
+      onClose();
+      return;
+    }
+    setCheckoutLoading(tier.id);
+    try {
+      const res = await api.post("/stripe/checkout", {
+        plan: tier.id,
+        origin_url: window.location.origin,
+      });
+      window.location.href = res.data.url;
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      toast.error(typeof detail === "string" ? detail : "Failed to start checkout");
+      setCheckoutLoading(null);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+
       <div
-        className="relative w-full max-w-3xl rounded-2xl border overflow-hidden"
-        style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+        className="relative w-full max-w-4xl rounded-3xl border overflow-hidden"
+        style={{
+          backgroundColor: "rgba(16, 12, 28, 0.97)",
+          borderColor: "rgba(255,255,255,0.06)",
+          boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
+        }}
         data-testid="upgrade-modal"
       >
+        {/* Close */}
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 z-20 p-2 rounded-xl hover:bg-white/8 transition-colors text-white/40 hover:text-white/70"
+          data-testid="upgrade-modal-close"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
         {/* Header */}
-        <div className="relative px-6 pt-6 pb-4">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors"
-            style={{ color: "var(--t-text-muted)" }}
-            data-testid="upgrade-modal-close"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-amber-500 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+        <div className="relative px-8 pt-8 pb-6 text-center overflow-hidden">
+          {/* Decorative glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-pink-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/20 mb-4">
+              <Rocket className="w-3.5 h-3.5 text-pink-400" />
+              <span className="text-xs font-semibold text-pink-400 uppercase tracking-wider">Upgrade Your Recruiting</span>
             </div>
-            <div>
-              <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>
-                Unlock This Feature
-              </h2>
-              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
-                {featureMessages[feature] || "Upgrade your plan to access this feature."}
-              </p>
-            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Choose the Right Plan for Your Journey
+            </h2>
+            <p className="text-sm text-white/40 max-w-lg mx-auto">
+              {featureMessages[feature] || "Unlock powerful tools to elevate your college volleyball recruiting."}
+            </p>
           </div>
         </div>
 
         {/* Tier Cards */}
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-8">
           {loading ? (
-            <div className="text-center py-8" style={{ color: "var(--t-text-muted)" }}>Loading plans...</div>
+            <div className="text-center py-16">
+              <Loader2 className="w-6 h-6 animate-spin text-pink-400 mx-auto mb-3" />
+              <p className="text-sm text-white/40">Loading plans...</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {tiers.map((tier) => {
-                const isCurrent = tier.id === currentTier;
-                const colors = tierColors[tier.id] || tierColors.basic;
-                const Icon = tierIcons[tier.id] || Zap;
-                const isRecommended = tier.id === "pro";
-
-                return (
-                  <div
-                    key={tier.id}
-                    className={`relative rounded-xl border p-5 transition-all ${colors.border} ${
-                      isCurrent ? "opacity-60" : "hover:border-pink-500/50 cursor-pointer"
-                    }`}
-                    style={{ backgroundColor: "var(--t-surface-alt)" }}
-                    data-testid={`tier-card-${tier.id}`}
-                  >
-                    {isRecommended && !isCurrent && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-pink-600 text-white text-[10px] font-bold uppercase tracking-wider">
-                        Recommended
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 mb-3">
-                      <Icon className={`w-5 h-5 ${colors.accent}`} />
-                      <span className={`text-sm font-bold ${colors.accent}`}>{tier.label}</span>
-                    </div>
-                    <div className="mb-4">
-                      <span className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>
-                        ${tier.price}
-                      </span>
-                      <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>/mo</span>
-                    </div>
-                    <ul className="space-y-2 mb-5">
-                      {tier.features.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "var(--t-text-secondary)" }}>
-                          <Check className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${colors.accent}`} />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    {isCurrent ? (
-                      <div
-                        className="w-full py-2 rounded-lg text-center text-sm font-medium border"
-                        style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}
-                        data-testid={`tier-current-${tier.id}`}
-                      >
-                        Current Plan
-                      </div>
-                    ) : (
-                      <button
-                        className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                          isRecommended
-                            ? "bg-gradient-to-r from-pink-600 to-rose-600 text-white hover:from-pink-500 hover:to-rose-500 shadow-lg shadow-pink-900/30"
-                            : "bg-white/10 hover:bg-white/15 text-white"
-                        }`}
-                        data-testid={`tier-upgrade-${tier.id}`}
-                        disabled={checkoutLoading === tier.id}
-                        onClick={async () => {
-                          if (tier.price === 0) {
-                            onClose();
-                            return;
-                          }
-                          setCheckoutLoading(tier.id);
-                          try {
-                            const res = await api.post("/stripe/checkout", {
-                              plan: tier.id,
-                              origin_url: window.location.origin,
-                            });
-                            window.location.href = res.data.url;
-                          } catch (err) {
-                            const detail = err.response?.data?.detail;
-                            toast.error(typeof detail === "string" ? detail : "Failed to start checkout");
-                            setCheckoutLoading(null);
-                          }
-                        }}
-                      >
-                        {checkoutLoading === tier.id && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {tier.price === 0 ? "Downgrade" : `Upgrade to ${tier.label}`}
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
+              {tiers.map((tier) => (
+                <TierCard
+                  key={tier.id}
+                  tier={tier}
+                  isCurrent={tier.id === currentTier}
+                  isRecommended={tier.id === recommendedTier}
+                  checkoutLoading={checkoutLoading}
+                  onUpgrade={handleUpgrade}
+                  onClose={onClose}
+                />
+              ))}
             </div>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-8 pb-6 text-center">
+          <p className="text-[11px] text-white/25">
+            All plans include a 14-day money-back guarantee. Cancel anytime.
+          </p>
         </div>
       </div>
     </div>
