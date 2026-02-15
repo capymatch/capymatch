@@ -30,6 +30,7 @@ from routes.athlete_profile import router as athlete_profile_router
 from routes.admin import router as admin_router
 from routes.admin_universities import router as admin_universities_router
 from routes.subscription import router as subscription_router
+from routes.stripe import router as stripe_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
@@ -44,6 +45,27 @@ app.include_router(athlete_profile_router)
 app.include_router(admin_router)
 app.include_router(admin_universities_router)
 app.include_router(subscription_router)
+app.include_router(stripe_router)
+
+
+# ─── Stripe Webhook (must be outside router prefix) ───
+
+@app.post("/api/webhook/stripe")
+async def stripe_webhook(request: Request):
+    from emergentintegrations.payments.stripe.checkout import StripeCheckout
+    import os
+    api_key = os.environ.get("STRIPE_API_KEY")
+    host_url = str(request.base_url).rstrip("/")
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
+    body = await request.body()
+    sig = request.headers.get("Stripe-Signature", "")
+    try:
+        event = await stripe_checkout.handle_webhook(body, sig)
+        logging.getLogger(__name__).info(f"Stripe webhook: {event.event_type} session={event.session_id}")
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Stripe webhook error: {e}")
+    return {"ok": True}
 
 # ─── Background Task: Auto-detect coach replies ───
 
