@@ -8,6 +8,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminUniversities from "./pages/AdminUniversities";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
+import AdminIntegrations from "./pages/AdminIntegrations";
 import OutreachAnalysis from "./pages/OutreachAnalysis";
 import HighlightAdvisor from "./pages/HighlightAdvisor";
 import RecruitingBoard from "./pages/RecruitingBoard";
