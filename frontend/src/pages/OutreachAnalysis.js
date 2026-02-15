@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import {
   TrendingUp, BarChart3, Target, ArrowUpRight, Loader2,
-  Zap, AlertTriangle, CheckCircle, ChevronRight, MessageCircle
+  Zap, AlertTriangle, CheckCircle, ChevronRight, MessageCircle,
+  Shield, RefreshCw, Eye, Radio
 } from "lucide-react";
 import FeatureGate from "../components/FeatureGate";
 import api from "../lib/api";
+import { Button } from "../components/ui/button";
 
 function ScoreRing({ score, label }) {
   const radius = 40;
