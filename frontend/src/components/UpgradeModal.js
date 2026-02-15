@@ -28,7 +28,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
     <div
       className={`relative flex flex-col rounded-2xl border transition-all duration-500 ${
         isRecommended ? `md:scale-[1.05] z-10 shadow-2xl ring-2 ${tier.id === "pro" ? "ring-pink-500/50" : "ring-amber-500/40"}` : "hover:scale-[1.02]"
-      } ${isCurrent ? "opacity-55 pointer-events-none" : ""}`}
+      } ${isCurrent ? "pointer-events-none" : ""}`}
       style={{
         backgroundColor: dark
           ? (isRecommended ? "rgba(30, 24, 42, 0.95)" : "rgba(24, 20, 36, 0.85)")
