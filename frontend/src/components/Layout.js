@@ -16,7 +16,7 @@ import AIAssistantDrawer from "../components/AIAssistantDrawer";
 import InvitationBanner from "../components/InvitationBanner";
 import UpgradeModal from "../components/UpgradeModal";
 
-const TIER_LABELS = { basic: "Basic", pro: "Pro", premium: "Premium" };
+const TIER_LABELS = { basic: "Starter", pro: "Active Recruit", premium: "Commit Ready" };
 
 export default function Layout({ user, onLogout }) {
   const navigate = useNavigate();
