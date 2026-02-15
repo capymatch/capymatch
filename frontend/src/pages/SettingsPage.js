@@ -165,8 +165,8 @@ export default function SettingsPage() {
       {/* Replay Tour */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-indigo-500" />
+          <div className="w-10 h-10 rounded-lg bg-pink-600/20 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-pink-600" />
           </div>
           <div>
             <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Guided Tour</h2>
@@ -180,7 +180,7 @@ export default function SettingsPage() {
             localStorage.removeItem("onboarding_dismissed");
             window.location.href = "/board";
           }}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm rounded-xl font-medium text-white bg-pink-600 hover:bg-pink-700 transition-colors"
         >
           <Sparkles className="w-4 h-4" />
           Replay Tour
