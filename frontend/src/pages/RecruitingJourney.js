@@ -595,7 +595,7 @@ export default function RecruitingJourney() {
   const formatDate = (d) => { try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); } catch { return d; } };
 
   return (
-    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-8">
+    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5">
       {/* ─── Coach Watch Alert Banner ─── */}
       {coachAlert && (coachAlert.severity === "red" || coachAlert.severity === "yellow") && (
         <div
