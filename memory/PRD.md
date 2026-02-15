@@ -140,5 +140,10 @@ Public-facing Volleyball Recruiting CRM with:
 - **Premium** ($39): Unlimited schools & AI, all features — "Best Value"
 - **UpgradeModal redesign (Feb 2026)**: Professional dark glass-morphic design with recommended tier scaled up and glowing. Dynamic badge placement (next tier above current gets spotlight). Stripe Checkout integration on CTA buttons.
 
+## Completed (Feb 15, 2026)
+- Removed redundant "Analytics" sidebar link (merged into Dashboard)
+- Cleaned up unused BarChart3 import
+- Redirected profile_view_edu notification to /board instead of /analytics
+
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
