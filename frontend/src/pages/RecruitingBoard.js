@@ -120,27 +120,27 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
       <div className="flex items-center gap-3 flex-shrink-0">
         {p.board_group === "action_required" && (() => {
           const alert = isOverdue
-            ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400" }
+            ? { text: `Overdue since ${dueDateFormatted}` }
             : p.recruiting_status === "Not Contacted"
-            ? { text: "Not contacted yet", color: "text-rose-400" }
+            ? { text: "Not contacted yet" }
             : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
-            ? { text: "No reply yet", color: "text-amber-400" }
+            ? { text: "No reply yet" }
             : p.reply_status === "Awaiting Reply"
-            ? { text: "Awaiting reply", color: "text-amber-400" }
-            : { text: "Needs attention", color: "text-rose-400" };
-          return <span className={`hidden sm:block text-[11px] font-medium whitespace-nowrap ${alert.color}`}>{alert.text}</span>;
+            ? { text: "Awaiting reply" }
+            : { text: "Needs attention" };
+          return <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>{alert.text}</span>;
         })()}
         {p.board_group === "upcoming" && p.next_action_due && (
-          <span className="hidden sm:block text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
+          <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>Due {dueDateFormatted}</span>
         )}
         {p.board_group === "in_progress" && (
-          <span className="hidden sm:block text-[11px] font-medium text-emerald-400 whitespace-nowrap">
+          <span className="hidden sm:block text-[11px] font-medium whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>
             {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
           </span>
         )}
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-md transition-colors border text-gray-700 bg-gray-100 hover:bg-gray-200 border-gray-200 dark:text-gray-300 dark:bg-gray-700/50 dark:hover:bg-gray-700 dark:border-gray-600"
           data-testid={`view-journey-${p.program_id}`}
         >
           Journey
