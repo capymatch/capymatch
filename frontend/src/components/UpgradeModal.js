@@ -245,7 +245,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
         </div>
 
         <div className="px-5 pb-3 md:px-8 md:pb-4 text-center">
-          <p className="text-[10px]" style={{ color: dark ? "rgba(255,255,255,0.25)" : "#9ca3af" }}>14-day money-back guarantee. Cancel anytime.</p>
+          <p className="text-sm" style={{ color: dark ? "rgba(255,255,255,0.25)" : "#6b7280" }}>14-day money-back guarantee. Cancel anytime.</p>
         </div>
       </div>
     </div>,
