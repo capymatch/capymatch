@@ -208,7 +208,7 @@ export default function Layout({ user, onLogout }) {
                 style={() => ({})}
               >
                 <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
-                <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
+                <span className={`truncate ${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                 {item.premium && !sidebarCollapsed && (() => {
                   const isBasic = !subscription?.tier || subscription.tier === "basic";
                   return isBasic ? (
