@@ -69,6 +69,7 @@ export default function NeedsFollowUp() {
   }
 
   return (
+    <FeatureGate feature="follow_up_reminders">
     <div data-testid="needs-follow-up" className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -156,5 +157,6 @@ export default function NeedsFollowUp() {
         </div>
       )}
     </div>
+    </FeatureGate>
   );
 }
