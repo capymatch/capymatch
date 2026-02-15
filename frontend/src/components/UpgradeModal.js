@@ -196,7 +196,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
         </button>
 
         {/* Header */}
-        <div className="relative px-5 pt-4 pb-3 md:px-8 md:pt-6 md:pb-4 text-center overflow-hidden">
+        <div className="relative px-5 pt-4 pb-2 md:px-8 md:pt-5 md:pb-2 text-center overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-pink-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 mb-3">
