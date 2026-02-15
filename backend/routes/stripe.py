@@ -100,16 +100,19 @@ async def get_checkout_status(session_id: str, request: Request):
     """Poll the status of a checkout session and upgrade plan if paid."""
     from emergentintegrations.payments.stripe.checkout import StripeCheckout
 
+    # Check DB first
+    txn = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
+    if not txn:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
     stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
 
-    status = await stripe_checkout.get_checkout_status(session_id)
-
-    # Find the transaction
-    txn = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
-    if not txn:
-        raise HTTPException(status_code=404, detail="Transaction not found")
+    try:
+        status = await stripe_checkout.get_checkout_status(session_id)
+    except Exception:
+        raise HTTPException(status_code=404, detail="Checkout session not found")
 
     # Update transaction status
     await db.payment_transactions.update_one(
