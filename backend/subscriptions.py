@@ -27,7 +27,7 @@ SUBSCRIPTION_TIERS = {
         ],
     },
     "pro": {
-        "label": "Pro",
+        "label": "Active Recruit",
         "price": 19,
         "max_schools": 25,
         "max_members": 2,
