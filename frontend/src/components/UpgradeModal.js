@@ -128,17 +128,33 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
                       </div>
                     ) : (
                       <button
-                        className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                        className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
                           isRecommended
                             ? "bg-gradient-to-r from-pink-600 to-rose-600 text-white hover:from-pink-500 hover:to-rose-500 shadow-lg shadow-pink-900/30"
                             : "bg-white/10 hover:bg-white/15 text-white"
                         }`}
                         data-testid={`tier-upgrade-${tier.id}`}
-                        onClick={() => {
-                          // For now, close modal - Stripe integration will replace this
-                          onClose();
+                        disabled={checkoutLoading === tier.id}
+                        onClick={async () => {
+                          if (tier.price === 0) {
+                            onClose();
+                            return;
+                          }
+                          setCheckoutLoading(tier.id);
+                          try {
+                            const res = await api.post("/stripe/checkout", {
+                              plan: tier.id,
+                              origin_url: window.location.origin,
+                            });
+                            window.location.href = res.data.url;
+                          } catch (err) {
+                            const detail = err.response?.data?.detail;
+                            toast.error(typeof detail === "string" ? detail : "Failed to start checkout");
+                            setCheckoutLoading(null);
+                          }
                         }}
                       >
+                        {checkoutLoading === tier.id && <Loader2 className="w-4 h-4 animate-spin" />}
                         {tier.price === 0 ? "Downgrade" : `Upgrade to ${tier.label}`}
                       </button>
                     )}
