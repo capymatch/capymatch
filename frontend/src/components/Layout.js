@@ -14,6 +14,8 @@ import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
 import AIAssistantDrawer from "../components/AIAssistantDrawer";
 
+const TIER_LABELS = { basic: "Basic", pro: "Pro", premium: "Premium" };
+
 export default function Layout({ user }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,6 +27,7 @@ export default function Layout({ user }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
   const [showAssistant, setShowAssistant] = useState(false);
+  const { planEvent, dismissPlanEvent } = useSubscription();
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
