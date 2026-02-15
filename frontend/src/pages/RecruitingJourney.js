@@ -294,7 +294,7 @@ function FollowUpScheduler({ program, onSaved }) {
 }
 
 // ─── Next Step Hero Card ───
-function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight }) {
+function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic }) {
   const getNextStep = () => {
     const now = new Date();
     if (program.next_action_due) {
