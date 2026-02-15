@@ -32,6 +32,7 @@ from routes.admin_universities import router as admin_universities_router
 from routes.subscription import router as subscription_router
 from routes.stripe import router as stripe_router
 from routes.admin_integrations import router as admin_integrations_router
+from routes.team import router as team_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
@@ -48,6 +49,7 @@ app.include_router(admin_universities_router)
 app.include_router(subscription_router)
 app.include_router(stripe_router)
 app.include_router(admin_integrations_router)
+app.include_router(team_router)
 
 
 # ─── Stripe Webhook (must be outside router prefix) ───
