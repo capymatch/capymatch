@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { 
-  LayoutGrid, Inbox, CheckSquare, GraduationCap, Settings, 
+  LayoutGrid, Inbox, GraduationCap, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
   Video, TrendingUp, LogOut, CreditCard
@@ -406,9 +406,6 @@ export default function Layout({ user, onLogout }) {
 
             {/* Notification Icons */}
             <div className="flex items-center gap-1">
-              <button onClick={() => navigate("/follow-ups")} className="relative p-2 lg:p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-tasks-btn">
-                <CheckSquare className="w-5 h-5" strokeWidth={1.5} />
-              </button>
               <button onClick={() => navigate("/inbox")} className="relative p-2 lg:p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-mail-btn">
                 <Mail className="w-5 h-5" strokeWidth={1.5} />
               </button>
