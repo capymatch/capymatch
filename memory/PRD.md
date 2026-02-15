@@ -97,7 +97,7 @@ Public-facing Volleyball Recruiting CRM with:
 - Backend: `POST /api/auth/change-password` endpoint with bcrypt verification
 
 ## Upcoming Tasks (P1)
-- None currently queued
+- Fix UI spacing on Engagement Analysis page (OutreachAnalysis.js)
 
 ## Future/Backlog
 - App naming (user deciding)
@@ -151,7 +151,7 @@ Public-facing Volleyball Recruiting CRM with:
   - Warning banners on Journey page for affected schools
   - Bell notifications for red/yellow alerts
   - Gated to Premium tier only
-- **Schools Page Upgrade Prompt (Basic tier)**: Added a banner on the Knowledge Base/Schools page for Basic users informing them they see up to 3 school matches and can upgrade to Pro/Premium for unlimited matches. Links to /account page for self-serve upgrade.
+- **Schools Page Upgrade Prompt (Starter tier)**: Added a banner on the Knowledge Base/Schools page for Starter users informing them they see up to 3 school matches and can upgrade for unlimited matches. Links to /account page for self-serve upgrade.
 
 ## Completed (Feb 15, 2026 - Session 2)
 - **Subscription Tier Rename**: Basic→Starter, Pro→Active Recruit, Premium→Commit Ready across entire stack
