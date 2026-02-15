@@ -170,7 +170,7 @@ export default function UniversityKnowledgeBase() {
       {isBasic && (
         <div
           data-testid="basic-upgrade-prompt"
-          className="rounded-xl border p-4 flex items-center justify-between gap-4"
+          className="rounded-xl border p-4 mt-2 flex items-center justify-between gap-4"
           style={{
             backgroundColor: "rgba(236, 72, 153, 0.06)",
             borderColor: "rgba(236, 72, 153, 0.25)",
