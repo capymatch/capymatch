@@ -100,7 +100,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
         {isCurrent ? (
           <div
             className="w-full py-2.5 rounded-xl text-center text-xs font-medium border"
-            style={{ borderColor: dark ? "rgba(255,255,255,0.1)" : "#e5e7eb", color: dark ? "rgba(255,255,255,0.3)" : "#9ca3af" }}
+            style={{ borderColor: dark ? "rgba(255,255,255,0.1)" : "#d1d5db", color: dark ? "rgba(255,255,255,0.3)" : "#6b7280" }}
             data-testid={`tier-current-${tier.id}`}
           >
             Your Current Plan
