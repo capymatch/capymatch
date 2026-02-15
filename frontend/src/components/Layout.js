@@ -269,7 +269,7 @@ export default function Layout({ user, onLogout }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/outreach-analysis": "Outreach Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "Pipeline", "/calendar": "Calendar", "/inbox": "Inbox", "/follow-ups": "Tasks", "/knowledge-base": "Schools", "/analytics": "Analytics", "/outreach-analysis": "Outreach Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;
@@ -449,6 +449,17 @@ export default function Layout({ user, onLogout }) {
                     >
                       <Settings className="w-4 h-4" strokeWidth={1.5} />
                       Settings
+                    </button>
+                    <button
+                      onClick={() => { setProfileOpen(false); navigate("/account"); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left"
+                      style={{ color: "var(--t-text-secondary)" }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                      data-testid="profile-account-link"
+                    >
+                      <CreditCard className="w-4 h-4" strokeWidth={1.5} />
+                      Account
                     </button>
                     <div className="border-t my-1" style={{ borderColor: "var(--t-border)" }} />
                     <button

@@ -20,6 +20,7 @@ import ProgramDetail from "./pages/ProgramDetail";
 import Inbox from "./pages/Inbox";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
+import AccountPage from "./pages/AccountPage";
 import CalendarPage from "./pages/CalendarPage";
 import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
@@ -96,6 +97,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="highlight-advisor" element={<HighlightAdvisor />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="account" element={<AccountPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
