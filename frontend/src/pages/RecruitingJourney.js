@@ -467,6 +467,7 @@ export default function RecruitingJourney() {
   const [editCoach, setEditCoach] = useState(null);
   const [currentInsight, setCurrentInsight] = useState(null);
   const [matchScore, setMatchScore] = useState(null);
+  const [coachAlert, setCoachAlert] = useState(null);
 
   const fetchData = useCallback(async () => {
     try {
