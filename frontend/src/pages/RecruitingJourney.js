@@ -639,10 +639,7 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Next Step Hero ─── */}
-      <div className="relative">
-        <NextStepHero program={program} coaches={coaches} onSendEmail={openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} />
-        {isBasic && <LockedOverlay label="AI-Powered Next Steps" />}
-      </div>
+      <NextStepHero program={program} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
       {showLogForm && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} />}
