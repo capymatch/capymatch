@@ -19,11 +19,15 @@ export function onSubscriptionError(handler) {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error?.response?.status;
     const detail = error?.response?.data?.detail;
-    if (error?.response?.status === 403 && detail?.error === "subscription_limit") {
+    if (status === 403 && detail?.error === "subscription_limit") {
       if (subscriptionErrorHandler) {
         subscriptionErrorHandler(detail);
       }
+    }
+    if (status === 401 && !error.config?.url?.includes("/auth/")) {
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
