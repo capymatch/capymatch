@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_feature
 import uuid
 
 router = APIRouter(prefix="/api")
