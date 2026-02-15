@@ -1,0 +1,59 @@
+{
+  "summary": "P0 Bug Fix Verified: Subscription limit enforcement on /api/knowledge-base/add-to-board now working correctly. After admin downgrades user from Premium to Basic, the endpoint properly returns 403 with subscription_limit error. Frontend displays proper error messages (not [object Object]) and shows UpgradeModal.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "POST /api/knowledge-base/add-to-board returns 403 with subscription_limit error when Basic user is at school limit (15/5)",
+    "POST /api/knowledge-base/add-to-board succeeds on Premium plan (unlimited schools)",
+    "P0 BUG FIX: After admin downgrades user from Premium to Basic via PUT /api/admin/subscriptions/user_public_default, add-to-board is correctly blocked with 403",
+    "POST /api/programs also enforces school limits (existing check verified)",
+    "GET /api/subscription returns correct tier after admin change (basic/pro/premium)",
+    "403 error contains all required fields: error, feature, message, current, limit, upgrade_to",
+    "PUT /api/admin/subscriptions/{user_id} changes plan and creates audit log",
+    "Frontend: Toast shows proper message 'You've reached your Basic plan limit of 5 schools. Upgrade to track more.' (NOT [object Object])",
+    "Frontend: UpgradeModal appears correctly with 3 tier cards when subscription limit 403 is returned",
+    "Frontend: Basic tier shows 'Current Plan', Pro tier shows 'RECOMMENDED' badge"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_subscription_limit_fix.py",
+    "/app/test_reports/pytest/subscription_limit_fix_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_subscription_limit_fix.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "100% (all features verified via Playwright)"
+  },
+  "test_credentials": "No credentials needed - auth is MOCKED (get_current_user returns static user user_public_default)",
+  "seed_data_creation": "User has 15 schools on board - above Basic tier limit of 5, used for testing limit enforcement",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "P0 bug fix verified. Key endpoints: POST /api/knowledge-base/add-to-board (now enforces school limits), PUT /api/admin/subscriptions/{user_id} (changes plan), GET /api/subscription (returns current tier). Frontend data-testids: add-to-board-{school-name}, upgrade-modal. The fix added 2 lines to knowledge.py: subscription = await get_user_subscription(tenant_id) and await enforce_school_limit(tenant_id, subscription). User restored to premium after tests.",
+  "verified_api_endpoints": [
+    "POST /api/knowledge-base/add-to-board - Now enforces school limits (P0 FIX)",
+    "POST /api/programs - Also enforces school limits (existing)",
+    "GET /api/subscription - Returns correct tier after admin change",
+    "PUT /api/admin/subscriptions/{user_id} - Changes user plan with audit logging",
+    "GET /api/admin/subscription-logs - Returns audit trail"
+  ],
+  "mocked_features": [
+    "Authentication (get_current_user returns static user user_public_default)"
+  ],
+  "p0_bug_fix_verification": {
+    "bug_description": "After admin downgrades user from Premium to Basic, user could still add schools via /api/knowledge-base/add-to-board beyond Basic tier limit",
+    "root_cause": "/api/knowledge-base/add-to-board endpoint had NO subscription enforcement check",
+    "fix_applied": "Added enforce_school_limit() check to add_to_board endpoint (lines 35-36 in knowledge.py)",
+    "verification_result": "PASS - Endpoint now returns 403 subscription_limit error when at limit",
+    "frontend_fix": "Error handler in UniversityKnowledgeBase.js now properly extracts message from detail object instead of showing [object Object]"
+  }
+}
