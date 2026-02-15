@@ -449,6 +449,17 @@ export default function Layout({ user, onLogout }) {
                       <Settings className="w-4 h-4" strokeWidth={1.5} />
                       Settings
                     </button>
+                    <div className="border-t my-1" style={{ borderColor: "var(--t-border)" }} />
+                    <button
+                      onClick={() => { setProfileOpen(false); handleLogout(); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left text-rose-400 hover:text-rose-300"
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                      data-testid="logout-btn"
+                    >
+                      <LogOut className="w-4 h-4" strokeWidth={1.5} />
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               )}
