@@ -162,7 +162,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-      <div className="absolute inset-0 bg-[#100c1c]" onClick={onClose} />
+      <div className="absolute inset-0 bg-[#1e1a2e]" onClick={onClose} />
 
       <div
         className="relative w-full max-h-[100vh] md:max-w-4xl rounded-2xl md:rounded-3xl border overflow-y-auto"
