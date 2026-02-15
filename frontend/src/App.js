@@ -89,14 +89,15 @@ function AppRouter() {
 }
 
 function SubscriptionGuard({ children }) {
-  const { subscription } = useSubscription();
+  const { subscription, refresh } = useSubscription();
   const [upgradeInfo, setUpgradeInfo] = useState(null);
 
   useEffect(() => {
     onSubscriptionError((detail) => {
       setUpgradeInfo(detail);
+      refresh(); // Re-fetch subscription to get current state
     });
-  }, []);
+  }, [refresh]);
 
   return (
     <>
