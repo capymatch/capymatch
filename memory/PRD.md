@@ -134,11 +134,11 @@ Public-facing Volleyball Recruiting CRM with:
 - **Settings**: Stored in `db.email_settings` collection, checked before each send
 - **Note**: In testing mode, Resend only delivers to verified email addresses
 
-## Subscription Tiers
-- **Basic** ($0): 5 schools, no AI, basic features
-- **Pro** ($19): 25 schools, 10 AI drafts/mo, Gmail, insights, analytics — "Most Popular"
-- **Premium** ($39): Unlimited schools & AI, all features — "Best Value"
-- **UpgradeModal redesign (Feb 2026)**: Professional dark glass-morphic design with recommended tier scaled up and glowing. Dynamic badge placement (next tier above current gets spotlight). Stripe Checkout integration on CTA buttons.
+## Subscription Tiers (Renamed Feb 2026)
+- **Starter** ($0, formerly Basic): 5 schools, no AI, basic features
+- **Active Recruit** ($19, formerly Pro): 25 schools, 10 AI drafts/mo, Gmail, insights, analytics — "Most Popular"
+- **Commit Ready** ($39, formerly Premium): Unlimited schools & AI, all features — "Best Value"
+- **UpgradeModal redesign (Feb 2026)**: Professional dark glass-morphic design with recommended tier scaled up and glowing. Dynamic badge placement (next tier above current gets spotlight). Stripe Checkout integration on CTA buttons. Theme-aware (light/dark), responsive, uses React Portal.
 
 ## Completed (Feb 15, 2026)
 - Removed redundant "Analytics" sidebar link (merged into Dashboard)
@@ -152,6 +152,32 @@ Public-facing Volleyball Recruiting CRM with:
   - Bell notifications for red/yellow alerts
   - Gated to Premium tier only
 - **Schools Page Upgrade Prompt (Basic tier)**: Added a banner on the Knowledge Base/Schools page for Basic users informing them they see up to 3 school matches and can upgrade to Pro/Premium for unlimited matches. Links to /account page for self-serve upgrade.
+
+## Completed (Feb 15, 2026 - Session 2)
+- **Subscription Tier Rename**: Basic→Starter, Pro→Active Recruit, Premium→Commit Ready across entire stack
+- **Upgrade Modal Refactor**: Theme-aware, responsive, React Portal for z-index, new tier names
+- **Gated Content Upsell**: UpgradeBenefitsPage replaces toast notifications for premium pages
+- **Journey Page Granular Locking**: Starter users can access Journey page; premium features locked per-feature:
+  - Next Step Hero section: UNLOCKED (visible to all users)
+  - Send Email button in Next Step Hero: LOCKED for Starter (disabled, gray, lock icon)
+  - Timeline Email button: LOCKED for Starter
+  - AI Insights sidebar: LOCKED for Starter
+  - Follow-up Scheduler: LOCKED for Starter
+  - Coach management (Add Coach): LOCKED for Starter
+  - Log Interaction: UNLOCKED for all users
+- **Schools Page Upgrade Banner**: Added for Starter users on Knowledge Base page
+- **Sidebar Upgrade Indicators**: Replaced text badges with star icons for premium features
+
+## Upcoming Tasks
+- **P1**: Fix UI spacing on Engagement Analysis page (OutreachAnalysis.js) — recurring issue
+- **P0**: Migrate to persistent MongoDB database (currently mocked in-memory)
+
+## Future/Backlog
+- Add more coach data to university database
+- Camp/Tournament ROI tracker
+- Email templates & bulk outreach
+- App naming (blocked on user decision — "Vollura" was taken)
+- Family Collaboration (read-only parent/viewer role)
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
