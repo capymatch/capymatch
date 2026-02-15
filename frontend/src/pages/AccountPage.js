@@ -99,7 +99,7 @@ export default function AccountPage() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>AI drafts this month</span>
                   <span className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>
-                    {subscription.usage.ai_drafts_used}/{subscription.usage.ai_drafts_limit === -1 ? "\u221e" : subscription.usage.ai_drafts_limit === 0 ? "0" : subscription.usage.ai_drafts_limit}
+                    {subscription.usage.ai_drafts_used}/{subscription.usage.ai_drafts_limit === -1 ? "\u221e" : subscription.usage.ai_drafts_limit === 0 ? "Upgrade to unlock" : subscription.usage.ai_drafts_limit}
                   </span>
                 </div>
                 <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
