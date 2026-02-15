@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from database import db
 from auth import get_current_user, get_tenant_id
-from subscriptions import get_subscription
+from subscriptions import get_user_subscription
 from datetime import datetime, timezone
 
 router = APIRouter(prefix="/api")
