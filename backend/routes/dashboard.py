@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
+from subscriptions import get_user_subscription, enforce_feature
 
 router = APIRouter(prefix="/api")
 
@@ -18,8 +19,10 @@ async def get_dashboard(request: Request):
         "tenant_id": tenant_id, "next_action_due": {"$ne": "", "$lte": today}
     })
     
-    # Generate weekly summary if one doesn't exist this week
-    await generate_weekly_summary(tenant_id)
+    # Generate weekly summary if eligible (Premium only)
+    subscription = await get_user_subscription(tenant_id)
+    if subscription.get("weekly_digest", False):
+        await generate_weekly_summary(tenant_id)
     
     # Check for follow-ups due today and create notifications if not already created
     if follow_ups_due > 0:
@@ -82,6 +85,9 @@ async def get_dashboard(request: Request):
 async def get_reminders(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+    subscription = await get_user_subscription(tenant_id)
+    if not subscription.get("follow_up_reminders", False):
+        return {"reminders": [], "total_overdue": 0}
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     overdue = await db.programs.find({
         "tenant_id": tenant_id,
