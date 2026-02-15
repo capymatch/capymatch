@@ -6,6 +6,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
+import FeatureGate from "../components/FeatureGate";
 
 const DIVISION_BADGE = {
   D1: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
