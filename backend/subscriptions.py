@@ -68,7 +68,7 @@ SUBSCRIPTION_TIERS = {
         "public_profile": True,
         "analytics": True,
         "match_scores_limit": -1,
-        "description": "For serious athletes who can't afford to miss opportunities.",
+        "description": "Designed for junior & senior athletes in high-visibility recruiting phases.",
         "features": [
             "Unlimited schools",
             "Unlimited AI emails & summaries",
