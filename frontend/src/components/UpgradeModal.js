@@ -107,7 +107,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           </div>
         ) : (
           <button
-            className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+            className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
               isRecommended
                 ? `bg-gradient-to-r ${config.gradient} text-white hover:shadow-xl hover:shadow-pink-500/20`
                 : tier.id === "premium"
