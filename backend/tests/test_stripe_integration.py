@@ -145,6 +145,59 @@ class TestStripeCheckoutStatus:
             print("  NOTE: Returns 500 because it calls Stripe API before checking DB - could be improved to check DB first")
 
 
+class TestStripeCheckoutTierValidation:
+    """Tests for same/lower tier rejection"""
+    
+    def test_checkout_same_tier_rejected(self):
+        """POST /api/stripe/checkout rejects checkout for same tier"""
+        # First upgrade user to pro via admin
+        admin_response = requests.put(
+            f"{BASE_URL}/api/admin/subscriptions/user_public_default",
+            json={"plan": "pro"}
+        )
+        assert admin_response.status_code == 200, f"Admin upgrade failed: {admin_response.text}"
+        
+        # Now try to checkout for pro (same tier)
+        response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
+            "plan": "pro",
+            "origin_url": "https://athlete-hub-dev.preview.emergentagent.com"
+        })
+        
+        assert response.status_code == 400, f"Expected 400 for same tier, got {response.status_code}"
+        data = response.json()
+        assert "already" in data["detail"].lower(), f"Error should mention already on plan: {data['detail']}"
+        
+        print(f"✓ Same tier checkout rejected: {data['detail']}")
+        
+        # Reset back to basic
+        requests.put(f"{BASE_URL}/api/admin/subscriptions/user_public_default", json={"plan": "basic"})
+    
+    def test_checkout_lower_tier_rejected(self):
+        """POST /api/stripe/checkout rejects checkout for lower tier"""
+        # First upgrade user to premium via admin
+        admin_response = requests.put(
+            f"{BASE_URL}/api/admin/subscriptions/user_public_default",
+            json={"plan": "premium"}
+        )
+        assert admin_response.status_code == 200, f"Admin upgrade failed: {admin_response.text}"
+        
+        # Now try to checkout for pro (lower tier)
+        response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
+            "plan": "pro",
+            "origin_url": "https://athlete-hub-dev.preview.emergentagent.com"
+        })
+        
+        assert response.status_code == 400, f"Expected 400 for lower tier, got {response.status_code}"
+        data = response.json()
+        assert "already" in data["detail"].lower() or "higher" in data["detail"].lower(), \
+            f"Error should mention already on higher plan: {data['detail']}"
+        
+        print(f"✓ Lower tier checkout rejected: {data['detail']}")
+        
+        # Reset back to basic
+        requests.put(f"{BASE_URL}/api/admin/subscriptions/user_public_default", json={"plan": "basic"})
+
+
 class TestPaymentTransactions:
     """Tests to verify payment transactions are created in MongoDB"""
     
