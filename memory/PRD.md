@@ -96,8 +96,8 @@ Public-facing Volleyball Recruiting CRM with:
 - **Danger Zone** with account deletion placeholder
 - Backend: `POST /api/auth/change-password` endpoint with bcrypt verification
 
-## Upcoming Tasks (P1)
-- Fix UI spacing on Engagement Analysis page (OutreachAnalysis.js)
+## Upcoming Tasks (P0)
+- Migrate to persistent MongoDB database (currently mocked in-memory)
 
 ## Future/Backlog
 - App naming (user deciding)
