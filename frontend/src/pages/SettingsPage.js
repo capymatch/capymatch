@@ -159,6 +159,9 @@ export default function SettingsPage() {
         )}
       </div>
 
+      {/* Team Management */}
+      <TeamSection />
+
       {/* Notifications */}
       <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center gap-3 mb-6">
