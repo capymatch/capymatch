@@ -204,7 +204,7 @@ class TestKnowledgeBaseSchoolLimit:
 class TestWebSocketAsync:
     """Async tests for WebSocket functionality"""
     
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="function")
     async def test_websocket_connection_and_plan_change_message(self):
         """Test WebSocket connection receives plan change message"""
         # Convert HTTP URL to WebSocket URL
