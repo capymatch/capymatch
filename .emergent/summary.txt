@@ -1,73 +1,66 @@
 <analysis>**original_problem_statement:**
-The user's project is a public-facing Volleyball Recruiting CRM. The initial goal was a major redesign of the **Recruiting Journey** and **Recruiting Board** pages.
+The user's project is a public-facing Volleyball Recruiting CRM. The initial goals included redesigning the Recruiting Journey and Recruiting Board, populating a knowledge base, and making the application mobile-friendly. The scope has since expanded significantly to include a full-app visual redesign, UI cleanup tasks, a collapsible sidebar, and the creation of a comprehensive admin area for managing users, university data, and subscriptions.
 
-Over the course of the sessions, the user has requested:
-1.  A complete overhaul of the Recruiting Board's grouping logic to be dynamic (Action Required, Upcoming, In Progress, Closed).
-2.  Populate the University Knowledge Base with ~1,000 colleges.
-3.  A series of significant UI/UX refinements on the Recruiting Board page based on iterative feedback.
-4.  Implementation of an introduction page for the onboarding questionnaire to improve user experience.
-5.  Making the entire application mobile-friendly.
-6.  Implement an NCAA Recruiting Timeline feature.
+PRODUCT REQUIREMENTS:
+1.  Dynamic Recruiting Board with custom grouping.
+2.  Populate and manage a University Knowledge Base.
+3.  Make the entire application mobile-friendly.
+4.  Full-app visual redesign (dark theme with pink/coral accents).
+5.  Collapsible sidebar for more content space.
+6.  Admin Area with:
+    *   User Management (view users, details).
+    *   University Data Management (CRUD operations).
+    *   Subscription Management (view/change user tiers).
+7.  Subscription Engine with feature gating based on tiers (Basic, Pro, Premium).
+8.  Stripe integration for payments.
+9.  AI-powered features for premium tiers: AI Assistant, outreach analysis, and a highlight reel creator.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack Volleyball Recruiting CRM (React/FastAPI/MongoDB).
--   The Recruiting Board () is fully functional with a dynamic grouping logic that categorizes schools into Action Required, Upcoming, In Progress, and Closed based on backend rules.
--   The UI for the Recruiting Board has been significantly refined with a compact, card-based layout.
--   An introductory page has been added to the onboarding questionnaire () to explain its purpose to users, titled Your Volleyball Journey.
--   The application is largely mobile-responsive. A collapsible sidebar (hamburger menu) has been implemented, and the Dashboard, Pipeline, and Questionnaire pages have been optimized for mobile viewing.
--   The  MongoDB collection is populated with 1,053 universities.
--   The Schools page () displays all universities with pagination and filters.
+The application is a full-stack Volleyball Recruiting CRM using React, FastAPI, and a mocked MongoDB backend. It features a dark-themed, mobile-responsive UI, a collapsible sidebar, a redesigned Recruiting Board, a Calendar, and a Knowledge Base. A comprehensive admin area allows for user management, university data CRUD, and subscription plan management. A full Subscription Engine has been implemented with feature gating for different tiers (Basic, Pro, Premium). Three new AI features (AI Assistant, Outreach Insights, Highlight Reel Creator) have also been added and gated for Pro/Premium users.
 
 **Last working item**:
--   **Last item agent was working**: The user reported that the  page is not mobile-friendly. The agent was in the process of investigating the file  to make it responsive, similar to how the Dashboard and Pipeline pages were fixed.
+-   **Last item agent was working**: Investigating a critical bug reported by the user. After an admin downgrades a user's subscription from 'Premium' to 'Basic', the user is still able to add schools beyond the 'Basic' tier's limit. This indicates a failure in the subscription gating logic to update and enforce limits dynamically after a plan change.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: screenshot tool (to verify the mobile layout after the fix).
--   **User Testing Done**: N
+-   **Which testing method agent to use?**: both. The backend logic needs to be fixed and verified to ensure it uses the most current user subscription data for gating. This can be tested with . The frontend state management needs to be checked to ensure it reflects subscription changes immediately, which can be verified with the screenshot tool. A full regression test using  is highly recommended post-fix.
+-   **User Testing Done**: Y (User discovered and reported the bug)
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Journey page is not mobile-friendly (P0)**
-    -   **Description**: The user provided a screenshot showing that the content on the  page does not adapt to mobile viewports, causing layout issues. This is the last remaining page that needs a responsive design fix.
-    -   **Attempted fixes**: The agent has viewed the  file but has not yet implemented any code changes.
+-   **Issue 1: Subscription gate failure on plan downgrade (P0)**
+    -   **Description**: The core logic enforcing plan limits is not working correctly when a user's plan is changed by an admin. The user  was able to add schools beyond the 'Basic' tier's limit after being downgraded from 'Premium'.
+    -   **Attempted fixes**: None. The investigation has just begun.
     -   **Next debug checklist**:
-        -   Modify .
-        -   Apply responsive Tailwind CSS classes (e.g., , , , ) to make the components stack vertically on smaller screens.
-        -   Use the screenshot tool with a mobile viewport size to verify the fix.
-    -   **Why fix this issue and what will be achieved with the fix?**: This will complete the task of making the entire application mobile-friendly, ensuring a consistent user experience across all devices.
+        -   ****: This is the most likely cause. The mock  function likely returns a static user object that isn't updated when the admin modifies the user's subscription via the API. The  function needs to be refactored to retrieve the *current* state of the user from the shared mock user list on every request.
+        -   ****: Check how and when the subscription status is fetched. It might be caching a stale state and not re-fetching after the user navigates or performs an action.
+        -   ****: Confirm the  dependency is correctly applied to the endpoint that adds schools.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical bug that undermines the entire subscription model. Fixing it will ensure that plan limits are correctly enforced, which is essential for monetization.
     -   **Status**: IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None.
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: both
+    -   **Blocked on other issue**: None. This is the highest priority blocker.
 
 **In progress Task List**:
--   **Task 1: Complete Mobile Responsiveness Overhaul (P0)**
-    -   **Where to resume**: The agent needs to apply responsive design principles to .
-    -   **What will be achieved with this?**: The entire application will be fully mobile-friendly, addressing the user's feedback.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on something**: No.
+None. The bug fix is the only active item.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   **P1 - NCAA Recruiting Timeline Implementation**: Implement the new timeline feature as a tab or section on the  page. The approved mockup is located at . This was deferred to prioritize the board redesign and mobile responsiveness.
+    *   **Stripe Integration (Phase 4) (P1)**: Integrate Stripe to handle real subscription payments, allowing users to self-serve upgrades.
 *   **Future Tasks:**
-    *   **App Naming**: The user wants a unique name for the app. Vollura was taken. This is blocked pending user decision.
-    *   **Add Coach Data**: The user expressed interest in adding more coach names and emails to the university data.
+    *   **App Naming**: The user wants a unique name for the app. Vollura was taken. This is blocked pending a user decision.
+    *   **Add Coach Data**: Add more coach names and emails to the university data.
     *   **Recruiting Intelligence**: Add a Camp/Tournament ROI tracker.
-    -   **Outreach Power-Ups**: Add email templates and bulk outreach capabilities.
+    *   **Outreach Power-Ups**: Add email templates and bulk outreach capabilities.
     *   **Family Collaboration**: Add a read-only dashboard for parents/guardians.
 
 **Completed work in this session**
--   **Dynamic Recruiting Board**: Implemented the entire dynamic grouping logic (Action Required, Upcoming, In Progress, Closed) on the backend () and frontend ().
--   **Recruiting Board UI Refinements**: Iteratively adjusted the UI based on user feedback, including moving the Add Program button and making the funnel summary and section headers more compact.
--   **Full E2E Testing**: Successfully ran the testing agent to verify the new dynamic board feature, with all backend and frontend tests passing.
--   **Questionnaire Intro Page**: Designed and implemented a new introduction screen for the onboarding questionnaire to improve user context and trust.
--   **Mobile Responsiveness Overhaul**:
-    -   Implemented a global collapsible sidebar with a hamburger menu for mobile.
-    -   Made the main Layout, Header, Dashboard, Recruiting Board, and Questionnaire pages fully responsive.
--   **Bug Fix**: Corrected the page title on the  route to display Journey instead of Dashboard.
+-   **Subscription Engine (Phase 2)**: Implemented backend middleware for feature gating (schools, AI usage), frontend UI for upgrade prompts, global API error handling for subscription issues, and dashboard widgets for usage tracking.
+-   **Admin Subscription Management (Phase 3)**: Built a dedicated admin page to view subscription stats (MRR, conversion), manage user subscription tiers inline, and view an audit log of plan changes.
+-   **New AI Features (for Pro/Premium)**:
+    -   Implemented a drawer-based **AI Assistant** for personalized advice.
+    -   Created an **Automated Outreach Insights** page.
+    -   Created a **Highlight Reel Creator** page.
 
 **Earlier issues found/mentioned but not fixed**
 None.
@@ -79,70 +72,88 @@ None.
 
 
 **Key Technical Concepts**
--   **Frontend**: React, Tailwind CSS, 
--   **Backend**: Python, FastAPI, Motor
--   **Database**: MongoDB
--   **Responsive Design**: Using Tailwind CSS utility classes (, , , ) to create a mobile-first, responsive layout.
+-   **Backend**: FastAPI, Pydantic.
+-   **Frontend**: React, , Tailwind CSS,  for API calls.
+-   **Authentication**: Mocked  function using a static user list. **This is a likely source of the current bug.**
+-   **Subscription Gating**: A FastAPI dependency () is used to protect routes based on the user's  and current .
+-   **State Management**: React Hooks (, , ) for managing user, subscription, and UI state. A global  context was created.
 
 **key DB schema**
--   **university_knowledge_base**: Static data for universities.
--   **athlete_profiles**: Stores user profile and questionnaire answers.
--   **programs**: Stores the user's list of schools. The logic for categorizing these programs is now implemented in .
+-   **users (mocked)**: 
+-   **subscription_audit_log (mocked)**: 
+-   **university_knowledge_base**: 
+-   **programs**: Stores user-specific school list.
 
 **changes in tech stack**
-None in this session.
-
-**All files of reference**
-*   : The file that needs to be modified to fix the last mobile responsiveness issue.
-*   : A good reference for how responsive design was implemented for a complex page.
-*   : Another reference for a responsive layout.
-*   : Contains the core logic for the responsive sidebar.
-*   : Contains the backend logic for the Recruiting Board.
-*   : Design for the next upcoming feature.
-
-**Areas that need refactoring**:
 None.
 
+**All files of reference**
+*   : **CRITICAL FILE FOR DEBUGGING.** Contains the mocked user authentication logic.
+*   : Contains the core feature gating logic.
+*   : Contains the endpoint for changing a user's subscription.
+*   : Manages subscription state on the frontend.
+*   : UI for the admin to manage subscriptions.
+*   : New AI feature component.
+*   : New AI feature page.
+*   : New AI feature page.
+
+**Areas that need refactoring**:
+- The mock authentication system in  needs to be refactored to ensure  returns a live, mutable user object from the list, not a static copy.
+
 **key api endpoints**
--   : This endpoint now returns a JSON object with programs categorized into , , , and .
+-   : Endpoint used by admins to change a user's plan.
+-   : Endpoint for the frontend to get the current user's plan and usage.
+-   : New endpoint for the AI Assistant.
+-   : New endpoint for Outreach Insights.
+-   : New endpoint for the Highlight Reel Creator.
+-   : Endpoint for adding a school, which is incorrectly accessible after a downgrade.
 
 **Critical Info for New Agent**
-Your immediate and highest priority task (P0) is to fix the mobile layout of the **Journey page** (). The user has pointed out it's the last page that isn't mobile-friendly. You should follow the pattern used in  and  to make the components stack vertically on mobile screens. Once this is done, the entire application should be fully responsive. After that, you can propose moving on to the  feature.
+Your immediate and only priority is to fix the critical subscription bug. The root cause is almost certainly in . The mock  function is likely providing a stale copy of the user data to the feature-gating middleware, which doesn't reflect the changes made by the admin. You must modify this to fetch the user's current data from the central mock user list on every API request. After fixing the backend, verify that the frontend () also updates its state correctly to provide immediate feedback to the user.
 
 **documents and test reports created in this job**
+*    (updated)
+*   
 -   
 -   
--   A wireframe/mockup image for the questionnaire intro was generated and is stored in the job's image directory.
+-   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**:  - Reports the current issue. (PENDING)
-2.  **User**:  - Reported the dashboard responsiveness issue. (RESOLVED)
-3.  **User**:  - Feedback on section header size. (RESOLVED)
-4.  **User**:  - Feedback on UI size. (RESOLVED)
-5.  **User**:  - Feedback on the Group Funnel size. (RESOLVED)
-6.  **User**:  - Request to move + Add Program button. (RESOLVED)
-7.  **User**:  - UI change request. (RESOLVED)
-8.  **User**:  - Reported a bug with the page title. (RESOLVED)
-9.  **User**:  - Approved the new questionnaire intro copy. (RESOLVED)
-10. **User**:  - Asked for opinion on naming. (RESOLVED)
+1.  **User**: Reports that after changing subscription from premium to basic, they were able to add extra schools, which should be blocked. (BUG REPORT)
+2.  **Agent**: Acknowledges the issue and starts planning the fix.
+3.  **User**: Build all 3 AI Assistant modal/drawer (Instruction to build the now-completed AI features).
+4.  **User**: will these features increase my monthly payment? (Clarification question about pricing).
+5.  **Agent**: Explains that the features are part of the existing Pro/Premium tiers and do not increase the price of those tiers.
+6.  **User**: yes AI feature first (Prioritizing AI features over Stripe integration).
+7.  **Agent**: Asks which AI features to build.
+8.  **User**: what are the AI-powered features for Pro/Premium tiers? (Request for information).
+9.  **Agent**: Finishes implementing Admin Subscription Management.
+10. **Agent**: Proposes plan to build the Admin Subscription Management UI.
 
 **Project Health Check:**
--   **Broken**: None.
--   **Mocked**:  in  is permanently mocked.
+-   **Broken**: The subscription enforcement logic is fundamentally broken for dynamic plan changes.
+-   **Mocked**: User authentication and all database interactions.
 
 **3rd Party Integrations**
 -   Gmail API
 -   Anthropic Claude Sonnet 4.5 (via Emergent LLM Key)
 -   React Joyride
+-    (for icons)
 
 **Testing status**
--   **Testing agent used after significant changes**: YES (for the dynamic board feature).
+-   **Testing agent used after significant changes**: YES. The agent was used after implementing the Subscription Engine, Admin Management, and AI features. However, it missed the specific edge case of a plan downgrade.
 -   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: None.
--   **Known regressions**: None.
+-   **Known regressions**: YES. The subscription gating logic has a major regression.
 
 **Credentials to test flow:**
-N/A. The application is public and requires no credentials.
+N/A. Use the mocked users. To reproduce the bug:
+1.  Log in as the admin.
+2.  Navigate to Admin -> Subscriptions.
+3.  Change the plan for  to 'Premium'.
+4.  In a separate browser/incognito window, log in as .
+5.  Go back to the admin view and downgrade  to 'Basic'.
+6.  As the athlete, attempt to add a school. The action should be blocked but currently is not.
 
 **What agent forgot to execute**
-Nothing. The agent successfully addressed a long list of feature implementations and iterative UI feedback from the user.</analysis>
+The agent did not properly test the state synchronization between the admin action (changing a plan) and the user session (having the new limits enforced). The testing focused on static plan checks, not dynamic updates, leading to this critical bug.</analysis>
