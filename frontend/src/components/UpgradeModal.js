@@ -205,7 +205,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
               <p className="text-sm text-white/40">Loading plans...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-stretch">
               {tiers.map((tier) => (
                 <TierCard
                   key={tier.id}
