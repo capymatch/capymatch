@@ -90,11 +90,7 @@ export default function UpgradeBenefitsPage({ featureKey }) {
           <button
             onClick={() => setShowUpgrade(true)}
             data-testid="upgrade-benefits-cta"
-            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:shadow-lg ${
-              accent === "violet"
-                ? "bg-gradient-to-r from-violet-500 to-purple-600 hover:shadow-violet-500/20"
-                : "bg-gradient-to-r from-pink-500 to-rose-600 hover:shadow-pink-500/20"
-            }`}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:shadow-lg bg-gradient-to-r from-pink-500 to-rose-600 hover:shadow-pink-500/20"
           >
             View Plans <ArrowRight className="w-4 h-4" />
           </button>
