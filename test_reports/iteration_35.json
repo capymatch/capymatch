@@ -1,0 +1,71 @@
+{
+  "summary": "Tier differentiation testing complete. All 12 backend tests passed and all 8 frontend UI tests passed. The Pro (Active Recruit) and Premium (Commit Ready) tiers now have proper visible differentiation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "BACKEND - Starter user has basic tier with recruiting_insights=false and auto_reply_detection=false",
+    "BACKEND - Pro user has pro tier with recruiting_insights=true and auto_reply_detection=false",
+    "BACKEND - Premium user has premium tier with recruiting_insights=true and auto_reply_detection=true",
+    "BACKEND - Starter user gets 403 for GET /api/ai/outreach-analysis (gated by recruiting_insights)",
+    "BACKEND - Pro user can access GET /api/ai/outreach-analysis (has recruiting_insights)",
+    "BACKEND - Premium user can access GET /api/ai/outreach-analysis",
+    "BACKEND - Starter user gets 403 for POST /api/ai/highlight-advice (gated by auto_reply_detection)",
+    "BACKEND - Pro user gets 403 for POST /api/ai/highlight-advice (auto_reply_detection=false for pro)",
+    "BACKEND - Premium user can access POST /api/ai/highlight-advice",
+    "BACKEND - Starter user gets 403 for GET /api/ai/coach-watch/alerts",
+    "BACKEND - Pro user gets 403 for GET /api/ai/coach-watch/alerts (premium only)",
+    "BACKEND - Premium user can access GET /api/ai/coach-watch/alerts",
+    "FRONTEND - Starter Account Page: Shows 'Your plan includes' section with 4 COMMIT READY badges for premium-only features",
+    "FRONTEND - Pro Account Page: Shows 'Your plan includes' with checkmarks for Pro features (School tracking, AI drafts, Gmail, Engagement AI, Analytics, Follow-ups) and 4 COMMIT READY badges for premium-only features",
+    "FRONTEND - Premium Account Page: 'Your plan includes' section is HIDDEN (premium has all features)",
+    "FRONTEND - Pro Engagement AI: Shows actual Engagement Analysis page with locked Coach Watch section showing 'Commit Ready Exclusive' overlay and 'Upgrade to Commit Ready' button",
+    "FRONTEND - Premium Engagement AI: Shows fully unlocked Coach Watch section with 'Scan Now' button accessible",
+    "FRONTEND - Starter Engagement AI: Shows UpgradeBenefitsPage with 'Available on Active Recruit & Commit Ready plans' and '$19/mo' pricing",
+    "FRONTEND - Pro Highlight AI: Shows UpgradeBenefitsPage with 'Highlight AI is a Commit Ready Feature' and 'Exclusive to Commit Ready plan' (NOT 'Available on Active Recruit')",
+    "FRONTEND - Premium Highlight AI: Shows actual Highlight Reel Advisor page with Generate Advice button",
+    "FRONTEND - Sidebar Stars (Starter): Shows stars on Engagement AI, Highlight AI, and AI Advisor",
+    "FRONTEND - Sidebar Stars (Pro): Shows star ONLY on Highlight AI (Engagement AI accessible, no star)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_tier_differentiation.py",
+    "/app/test_reports/pytest/tier_differentiation_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_tier_differentiation.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% (8/8 UI tests passed)"
+  },
+  "test_credentials": {
+    "starter_user": {"email": "csstest@test.com", "password": "test1234"},
+    "pro_user": {"email": "prouser@test.com", "password": "test1234"},
+    "premium_user": {"email": "premuser@test.com", "password": "test1234"}
+  },
+  "seed_data_creation": "Used existing test users for Starter, Pro, and Premium tiers",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Tier differentiation feature tested comprehensively. Key gating: recruiting_insights=true for Pro+ (enables Engagement AI), auto_reply_detection=true for Premium only (enables Highlight AI, Coach Watch, Auto reply detection, Weekly digest). Account page shows 'Your plan includes' for Starter/Pro with COMMIT READY badges on premium-only features, hidden for Premium. Sidebar shows star icons only for locked features per tier. UpgradeBenefitsPage uses premiumOnly prop to show correct messaging ($39/mo for premium vs $19/mo for pro features).",
+  "tier_differentiation_summary": {
+    "starter_features": {
+      "included": ["School tracking (5 max)", "University knowledge base", "Events/calendar", "One athlete profile"],
+      "locked": ["AI email drafts", "Gmail integration", "Engagement AI", "Analytics", "Follow-ups", "Highlight AI", "Coach Watch", "Auto reply", "Weekly digest"]
+    },
+    "pro_features": {
+      "included": ["School tracking (25 max)", "AI drafts (10/mo)", "Gmail integration", "Engagement AI", "Analytics", "Follow-ups", "Public profile"],
+      "locked": ["Highlight AI", "Coach Watch", "Auto reply detection", "Weekly digest"]
+    },
+    "premium_features": {
+      "included": ["Unlimited schools", "Unlimited AI drafts", "All Pro features", "Highlight AI", "Coach Watch", "Auto reply detection", "Weekly digest", "Priority support"]
+    }
+  }
+}
