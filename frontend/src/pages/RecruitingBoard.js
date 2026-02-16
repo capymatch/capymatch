@@ -71,26 +71,25 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
 
-  // Compute next step
+  // Compute next step with title + subtitle
   const nextStep = (() => {
     if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
-      return { text: `Follow-up is ${Math.abs(daysUntil)}d overdue`, icon: AlertCircle, color: "text-orange-400" };
+      return { title: `Follow-up is ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`, sub: "Send your follow-up email now", urgent: true };
     }
     if (p.next_action_due && daysUntil !== null && daysUntil <= 7) {
-      return { text: `Follow up in ${daysUntil}d`, icon: Clock, color: "text-amber-400" };
+      return { title: `Follow-up due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}`, sub: p.next_action || "Send a follow-up email with your updated stats", urgent: daysUntil <= 2 };
     }
     if (p.recruiting_status === "Not Contacted") {
-      return { text: "Send intro email", icon: Mail, color: "text-pink-400" };
+      return { title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", urgent: false };
     }
     if (p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted") {
-      return { text: "Send follow-up", icon: Mail, color: "text-amber-400" };
+      return { title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", urgent: false };
     }
     if (p.reply_status === "In Conversation") {
-      return { text: "Continue conversation", icon: Activity, color: "text-emerald-400" };
+      return { title: "Keep the conversation going", sub: "Log your latest interaction to keep your recruiting journey up to date", urgent: false };
     }
-    return { text: "Log next interaction", icon: CheckCircle2, color: "text-gray-400" };
+    return { title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", urgent: false };
   })();
-  const StepIcon = nextStep.icon;
 
   return (
     <div
