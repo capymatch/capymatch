@@ -137,10 +137,18 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
             </span>
           )}
         </div>
-        {/* Next Step */}
-        <div className="flex items-center gap-1.5 mt-1" data-testid={`next-step-${p.program_id}`}>
-          <StepIcon className={`w-3 h-3 flex-shrink-0 ${nextStep.color}`} />
-          <span className={`text-[11px] font-medium ${nextStep.color}`}>Next: {nextStep.text}</span>
+        {/* Next Step badge */}
+        <div className={`flex items-center gap-1.5 mt-1`} data-testid={`next-step-${p.program_id}`}>
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+            nextStep.color === "text-orange-400" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" :
+            nextStep.color === "text-amber-400" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
+            nextStep.color === "text-pink-400" ? "bg-pink-500/10 text-pink-400 border border-pink-500/20" :
+            nextStep.color === "text-emerald-400" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+            "bg-gray-500/10 text-gray-400 border border-gray-500/20"
+          }`}>
+            <StepIcon className="w-3 h-3" />
+            {nextStep.text}
+          </span>
         </div>
       </div>
 
