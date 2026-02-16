@@ -139,14 +139,21 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
           </h3>
           <div className="flex items-center gap-2">
             {!replyTo && (
-              <button
-                data-testid="ai-draft-toggle"
-                onClick={() => setShowAiPanel(!showAiPanel)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showAiPanel ? "bg-pink-700 text-white" : "bg-pink-600/15 text-pink-600 hover:bg-pink-600/25"}`}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                AI Draft
-              </button>
+              isPremium ? (
+                <button
+                  data-testid="ai-draft-toggle"
+                  onClick={() => setShowAiPanel(!showAiPanel)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showAiPanel ? "bg-pink-700 text-white" : "bg-pink-600/15 text-pink-600 hover:bg-pink-600/25"}`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI Draft
+                </button>
+              ) : (
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-400" data-testid="ai-draft-locked">
+                  <Lock className="w-3 h-3" />
+                  AI Draft
+                </span>
+              )
             )}
             <button onClick={onClose} className="p-1.5 rounded-lg transition-colors" style={{ color: "var(--t-text-muted)" }}>
               <X className="w-5 h-5" />
