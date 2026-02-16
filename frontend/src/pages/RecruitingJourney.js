@@ -242,13 +242,20 @@ function EmailComposer({ coaches, programId, onSent, onCancel, isPremium = false
         <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Compose Email</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
       </div>
-      <div className="flex gap-1.5 flex-wrap">
-        {["intro", "follow_up", "thank_you", "interest_update"].map(t => (
-          <button key={t} onClick={() => draftAI(t)} disabled={drafting}
-            className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
-            <Sparkles className="w-3 h-3 inline mr-0.5" />{t.replace(/_/g, " ")}
-          </button>
-        ))}
+      <div className="flex gap-1.5 flex-wrap items-center">
+        {isPremium ? (
+          ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
+            <button key={t} onClick={() => draftAI(t)} disabled={drafting}
+              className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
+              <Sparkles className="w-3 h-3 inline mr-0.5" />{t.replace(/_/g, " ")}
+            </button>
+          ))
+        ) : (
+          <div className="flex items-center gap-2 w-full py-1 px-2.5 rounded-lg bg-purple-500/5 border border-purple-500/15" data-testid="ai-draft-locked">
+            <Lock className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+            <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Commit Ready</a></span>
+          </div>
+        )}
       </div>
       {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-600" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
       <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-to-select">
