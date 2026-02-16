@@ -1,0 +1,70 @@
+{
+  "summary": "Comprehensive Pro/Premium AI feature gating verification PASSED. All 11 backend tests passed (100%). All frontend UI tests passed for both Pro and Premium users. Pro users correctly see locked/teaser UI for all AI features. Premium users correctly have full access to all AI features. No error toasts or upgrade modals appeared automatically.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: Pro user subscription has ai_drafts_limit=0 and recruiting_insights=False",
+    "Backend: POST /api/ai/next-step returns 403 subscription_limit for Pro user",
+    "Backend: POST /api/ai/draft-email (intro) returns 403 subscription_limit for Pro user",
+    "Backend: POST /api/ai/draft-email (follow_up) returns 403 subscription_limit for Pro user",
+    "Backend: POST /api/ai/draft-email (thank_you) returns 403 subscription_limit for Pro user",
+    "Backend: POST /api/ai/draft-email (interest_update) returns 403 subscription_limit for Pro user",
+    "Backend: POST /api/ai/journey-summary returns 403 subscription_limit for Pro user",
+    "Backend: Premium user subscription has ai_drafts_limit=-1 (unlimited)",
+    "Backend: Premium user can call /api/ai/next-step without 403",
+    "Backend: Premium user can call /api/ai/draft-email without 403",
+    "Backend: Premium user can call /api/ai/journey-summary without 403",
+    "Frontend Pro: Journey page shows Coach Watch TEASER with 'How it works' and 'Upgrade'",
+    "Frontend Pro: Journey page shows AI Insights TEASER with 'How it works' and 'Upgrade'",
+    "Frontend Pro: Journey page shows AI-Powered Next Step Suggestions TEASER",
+    "Frontend Pro: No AI Suggest button visible in Next Step card",
+    "Frontend Pro: Email composer shows 'AI email drafts require Premium' locked notice",
+    "Frontend Pro: No AI draft buttons visible (intro, follow_up, thank_you, interest_update)",
+    "Frontend Pro: No error toasts appeared automatically on page load",
+    "Frontend Pro: No upgrade modal appeared automatically on page load",
+    "Frontend Premium: Journey page shows AI Suggest button with 'Get a personalized recommendation'",
+    "Frontend Premium: Journey page shows AI Insights card with Generate button",
+    "Frontend Premium: No Coach Watch teaser shown (Premium has access)",
+    "Frontend Premium: Email composer shows all 4 AI draft buttons (intro, follow_up, thank_you, interest_update)",
+    "Frontend Premium: No AI draft locked notice visible",
+    "Frontend Premium: No error toasts appeared"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_pro_ai_gating_comprehensive.py",
+    "/app/test_reports/pytest/pro_ai_gating_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Code review PASSED: RecruitingJourney.js correctly uses isPremium prop to conditionally render AI features",
+    "Code review PASSED: EmailComposer correctly shows canUseAIDrafts check (subscription?.tier === 'premium')",
+    "Code review PASSED: AISidebarTeaser component shown for non-Premium users instead of AISidebarCard",
+    "Code review PASSED: NextStepHero shows teaser for !isPremium && !isBasic users",
+    "Code review PASSED: Coach Watch teaser shown for !isPremium users",
+    "Code review PASSED: Backend enforce_ai_limit correctly returns 403 for Pro users (ai_drafts_per_month=0)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_pro_ai_gating_comprehensive.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (25/25 UI checks passed)"
+  },
+  "test_credentials": {
+    "pro_user": {"email": "pro@test.com", "password": "password"},
+    "premium_user": {"email": "premium@test.com", "password": "password"},
+    "pro_program": "UCLA (prog_pro_test1)",
+    "premium_program": "Stanford University (prog_3cbb4ff4df51)"
+  },
+  "seed_data_creation": "None - used existing test data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "AI feature gating for Pro users is FULLY VERIFIED. Key elements tested: [data-testid='ai-draft-locked'] shows 'AI email drafts require Premium' for Pro users. [data-testid='ai-suggest-next-step-btn'] is only visible for Premium users. [data-testid='ai-insights-teaser'] shows for Pro users with 'How it works' toggle. [data-testid='coach-watch-teaser'] shows for non-Premium users. All AI draft buttons (draft-intro-btn, draft-follow_up-btn, etc.) only visible for Premium. Backend correctly returns 403 subscription_limit for all AI endpoints when called by Pro users.",
+  "recurring_bug_status": "VERIFIED FIXED - Pro users no longer see Premium AI features or receive error toasts on page load"
+}
