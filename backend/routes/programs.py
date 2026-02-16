@@ -121,11 +121,7 @@ async def list_programs(
     grouped: Optional[bool] = False
 ):
     """
-    List programs. If grouped=true, returns programs categorized into dynamic groups:
-    - action_required: Default catch-all (overdue, needs response, stale)
-    - upcoming: Follow-up within next 14 days
-    - in_progress: Recently contacted (7 days) or active conversation
-    - closed: Explicitly closed/committed statuses
+    List programs with data-driven interaction signals and dynamic board grouping.
     """
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
@@ -143,7 +139,7 @@ async def list_programs(
     
     programs = await db.programs.find(query, {"_id": 0}).to_list(1000)
     
-    # Enrich with coach data
+    # Enrich with coach data and interaction signals
     for p in programs:
         coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(50)
         primary_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
@@ -152,11 +148,12 @@ async def list_programs(
         p["coach_email"] = primary_coach.get("email", "") if primary_coach else ""
         p["recruiting_coordinator"] = coordinator.get("coach_name", "") if coordinator else ""
         p["coordinator_email"] = coordinator.get("email", "") if coordinator else ""
-        # Add dynamic group category
+        # Compute data-driven interaction signals
+        p["signals"] = await compute_interaction_signals(tenant_id, p["program_id"])
+        # Add dynamic group category based on signals
         p["board_group"] = categorize_program(p)
     
     if grouped:
-        # Return programs organized by group
         groups = {
             "action_required": [],
             "upcoming": [],
