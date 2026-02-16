@@ -1,15 +1,15 @@
 """
-Test Premium-Only AI Features - Validates that ALL AI features are now Commit Ready (Premium) tier only.
+Test Premium-Only AI Features - Validates that ALL AI features are now Premium (Premium) tier only.
 
 This test validates the updated subscription tiers where:
 - Starter (Basic): No AI features
-- Pro (Active Recruit): No AI features (ai_drafts_per_month=0, recruiting_insights=False)
-- Premium (Commit Ready): All AI features enabled
+- Pro (Pro): No AI features (ai_drafts_per_month=0, recruiting_insights=False)
+- Premium (Premium): All AI features enabled
 
 Test Credentials:
 - Starter user: csstest@test.com / test1234
-- Pro (Active Recruit) user: prouser@test.com / test1234  
-- Premium (Commit Ready) user: premuser@test.com / test1234
+- Pro (Pro) user: prouser@test.com / test1234  
+- Premium (Premium) user: premuser@test.com / test1234
 
 Key Tests:
 1. Subscription tier verification (Pro now has recruiting_insights=False, ai_drafts_per_month=0)
@@ -43,7 +43,7 @@ def starter_session():
 
 @pytest.fixture(scope="module")
 def pro_session():
-    """Authenticated session for Pro (Active Recruit) user"""
+    """Authenticated session for Pro (Pro) user"""
     session = requests.Session()
     response = session.post(f"{BASE_URL}/api/auth/login", json=PRO_USER)
     if response.status_code != 200:
@@ -53,7 +53,7 @@ def pro_session():
 
 @pytest.fixture(scope="module")
 def premium_session():
-    """Authenticated session for Premium (Commit Ready) user"""
+    """Authenticated session for Premium (Premium) user"""
     session = requests.Session()
     response = session.post(f"{BASE_URL}/api/auth/login", json=PREMIUM_USER)
     if response.status_code != 200:
@@ -86,7 +86,7 @@ class TestUpdatedSubscriptionTiers:
         assert response.status_code == 200
         data = response.json()
         assert data.get("tier") == "pro", f"Expected 'pro' tier, got '{data.get('tier')}'"
-        assert data.get("label") == "Active Recruit"
+        assert data.get("label") == "Pro"
         # Check feature limits - NO AI features for pro anymore
         limits = data.get("limits", {})
         assert limits.get("recruiting_insights") == False, f"Pro should have recruiting_insights=False, got {limits.get('recruiting_insights')}"
@@ -102,7 +102,7 @@ class TestUpdatedSubscriptionTiers:
         assert response.status_code == 200
         data = response.json()
         assert data.get("tier") == "premium", f"Expected 'premium' tier, got '{data.get('tier')}'"
-        assert data.get("label") == "Commit Ready"
+        assert data.get("label") == "Premium"
         # Check feature limits - ALL AI features
         limits = data.get("limits", {})
         assert limits.get("recruiting_insights") == True, "Premium should have recruiting_insights=True"

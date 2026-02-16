@@ -1,11 +1,11 @@
 """
-Test Tier Differentiation - Validates that Pro (Active Recruit) and Premium (Commit Ready) 
+Test Tier Differentiation - Validates that Pro (Pro) and Premium (Premium) 
 tiers have proper feature gating.
 
 Test Credentials:
 - Starter user: csstest@test.com / test1234
-- Pro (Active Recruit) user: prouser@test.com / test1234  
-- Premium (Commit Ready) user: premuser@test.com / test1234
+- Pro (Pro) user: prouser@test.com / test1234  
+- Premium (Premium) user: premuser@test.com / test1234
 
 Key Tests:
 1. Backend API gating for outreach-analysis (gated by recruiting_insights, available for pro+)
@@ -37,7 +37,7 @@ def starter_session():
 
 @pytest.fixture(scope="module")
 def pro_session():
-    """Authenticated session for Pro (Active Recruit) user"""
+    """Authenticated session for Pro (Pro) user"""
     session = requests.Session()
     response = session.post(f"{BASE_URL}/api/auth/login", json=PRO_USER)
     if response.status_code != 200:
@@ -47,7 +47,7 @@ def pro_session():
 
 @pytest.fixture(scope="module")
 def premium_session():
-    """Authenticated session for Premium (Commit Ready) user"""
+    """Authenticated session for Premium (Premium) user"""
     session = requests.Session()
     response = session.post(f"{BASE_URL}/api/auth/login", json=PREMIUM_USER)
     if response.status_code != 200:
@@ -76,7 +76,7 @@ class TestSubscriptionTiers:
         assert response.status_code == 200
         data = response.json()
         assert data.get("tier") == "pro", f"Expected 'pro' tier, got '{data.get('tier')}'"
-        assert data.get("label") == "Active Recruit"
+        assert data.get("label") == "Pro"
         # Check feature limits
         assert data.get("limits", {}).get("recruiting_insights") == True, "Pro should have recruiting_insights"
         assert data.get("limits", {}).get("auto_reply_detection") == False, "Pro should NOT have auto_reply_detection"
@@ -88,7 +88,7 @@ class TestSubscriptionTiers:
         assert response.status_code == 200
         data = response.json()
         assert data.get("tier") == "premium", f"Expected 'premium' tier, got '{data.get('tier')}'"
-        assert data.get("label") == "Commit Ready"
+        assert data.get("label") == "Premium"
         # Check feature limits
         assert data.get("limits", {}).get("recruiting_insights") == True
         assert data.get("limits", {}).get("auto_reply_detection") == True
