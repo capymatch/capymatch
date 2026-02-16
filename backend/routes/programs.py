@@ -237,6 +237,43 @@ async def delete_program(program_id: str, request: Request):
     return {"ok": True}
 
 
+# ─── Mark as Replied ───
+
+@router.post("/programs/{program_id}/mark-replied")
+async def mark_as_replied(program_id: str, data: MarkAsReplied, request: Request):
+    """Log a coach reply to the timeline. Requires a note describing the reply."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+    if not data.note.strip():
+        raise HTTPException(status_code=400, detail="A note is required when marking a reply")
+    # Create a coach_reply interaction
+    interaction_id = f"int_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+    doc = {
+        "interaction_id": interaction_id,
+        "tenant_id": tenant_id,
+        "program_id": program_id,
+        "university_name": program.get("university_name", ""),
+        "date_time": now.isoformat(),
+        "type": "coach_reply",
+        "outcome": "Positive",
+        "notes": data.note.strip(),
+        "message_copy": "",
+        "links": "",
+        "created_at": now.isoformat(),
+    }
+    await db.interactions.insert_one(doc)
+    doc.pop("_id", None)
+    # Return updated program with fresh signals
+    updated = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
+    updated["signals"] = await compute_interaction_signals(tenant_id, program_id)
+    return updated
+
+
+
 # ─── Coaches CRUD ───
 
 @router.get("/coaches")
