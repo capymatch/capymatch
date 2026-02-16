@@ -125,13 +125,13 @@ export default function AccountPage() {
                     { label: "Recruiting analytics", value: null, included: subscription.limits?.analytics },
                     { label: "Follow-up reminders", value: null, included: subscription.limits?.follow_up_reminders },
                     { label: "Public athlete profile", value: null, included: subscription.limits?.public_profile },
-                    { label: "AI email drafts", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "Engagement AI", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "Highlight AI", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "AI Advisor", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "Coach Watch alerts", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "Auto reply detection", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
-                    { label: "Weekly digest", value: "Commit Ready", included: subscription.limits?.weekly_digest, premiumOnly: true },
+                    { label: "AI email drafts", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Engagement AI", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Highlight AI", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "AI Advisor", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Coach Watch alerts", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Auto reply detection", value: "Premium", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Weekly digest", value: "Premium", included: subscription.limits?.weekly_digest, premiumOnly: true },
                   ].map((feat, i) => (
                     <div key={i} className="flex items-center justify-between py-1">
                       <div className="flex items-center gap-2">
