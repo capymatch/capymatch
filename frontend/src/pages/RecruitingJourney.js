@@ -216,6 +216,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
 
   const draftAI = async (type) => {
+    if (!canUseAIDrafts) return;
     setDrafting(true);
     try {
       const res = await api.post("/ai/draft-email", { program_id: programId, email_type: type });
