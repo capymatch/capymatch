@@ -468,12 +468,14 @@ function AISidebarCard({ programId, onDraftEmail }) {
 }
 
 // ─── Locked Feature Overlay ───
-function LockedOverlay({ label }) {
+function LockedOverlay({ label, premiumOnly = false }) {
   return (
     <div className="absolute inset-0 z-10 rounded-xl flex flex-col items-center justify-center backdrop-blur-[2px]" style={{ backgroundColor: "var(--t-surface)", opacity: 0.92 }}>
       <Lock className="w-5 h-5 text-pink-500 mb-1.5" />
       <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{label}</p>
-      <a href="/account" className="text-[11px] text-pink-500 hover:underline mt-0.5">Upgrade to Active Recruit</a>
+      <a href="/account" className="text-[11px] text-pink-500 hover:underline mt-0.5">
+        {premiumOnly ? "Upgrade to Commit Ready" : "Upgrade to Active Recruit"}
+      </a>
     </div>
   );
 }
