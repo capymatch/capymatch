@@ -337,7 +337,7 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
         </div>
         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
           <div className="flex gap-2.5">
-            {!isPremium && step.type === "email" ? (
+            {isBasic && step.type === "email" ? (
               <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
                 disabled data-testid="next-step-action-btn">
                 <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
@@ -356,9 +356,9 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
               </Button>
             )}
           </div>
-          {!isPremium && step.type === "email" && (
+          {isBasic && step.type === "email" && (
             <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
-              {isBasic ? "Upgrade to Active Recruit to email coaches" : "Upgrade to Commit Ready for AI emails"}
+              Upgrade to Active Recruit to email coaches
             </a>
           )}
         </div>
@@ -671,7 +671,7 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Next Step Hero ─── */}
-      <NextStepHero program={program} coaches={coaches} onSendEmail={isPremium ? openEmail : null} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
+      <NextStepHero program={program} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
       {showLogForm && <div className="mt-4"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
@@ -690,9 +690,9 @@ export default function RecruitingJourney() {
                   <MessageSquare className="w-3 h-3 mr-1.5" />Log
                 </Button>
                 <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openEmail}
-                  disabled={!isPremium}
-                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: !isPremium ? 0.4 : 1 }} data-testid="timeline-email-btn">
-                  <Mail className="w-3 h-3 mr-1.5" />{!isPremium ? <><Lock className="w-3 h-3 mr-1" />Email</> : "Email"}
+                  disabled={isBasic}
+                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: isBasic ? 0.4 : 1 }} data-testid="timeline-email-btn">
+                  <Mail className="w-3 h-3 mr-1.5" />{isBasic ? <><Lock className="w-3 h-3 mr-1" />Email</> : "Email"}
                 </Button>
               </div>
             </div>
