@@ -291,6 +291,10 @@ class TestIsActiveToggleBehavior:
         """Setup authenticated session"""
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
+        self._authenticate()
+    
+    def _authenticate(self):
+        """Re-authenticate to get fresh token"""
         login_resp = self.session.post(f"{BASE_URL}/api/auth/login", json={
             "email": "pro@test.com",
             "password": "password"
