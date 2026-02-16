@@ -46,11 +46,11 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
             <Icon className="w-8 h-8 text-pink-500" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
-            {premiumOnly ? `${config.title} is a Commit Ready Feature` : `Unlock ${config.title}`}
+            {premiumOnly ? `${config.title} is a Premium Feature` : `Unlock ${config.title}`}
           </h1>
           <p className="text-sm md:text-base max-w-md mx-auto" style={{ color: "var(--t-text-muted)" }}>
             {premiumOnly
-              ? `Upgrade to Commit Ready to access ${config.title} and all premium features.`
+              ? `Upgrade to Premium to access ${config.title} and all premium features.`
               : config.subtitle}
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="w-5 h-5 text-pink-500" />
             <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-              {premiumOnly ? "Exclusive to Commit Ready plan" : "Available on Active Recruit & Commit Ready plans"}
+              {premiumOnly ? "Exclusive to Premium plan" : "Available on Pro & Premium plans"}
             </span>
           </div>
           <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
