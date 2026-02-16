@@ -4,102 +4,108 @@ from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_school_limit, enforce_feature
-from models import ProgramCreate, ProgramUpdate, CoachCreate, CoachUpdate, InteractionCreate, MarkFollowUpSent
+from models import ProgramCreate, ProgramUpdate, CoachCreate, CoachUpdate, InteractionCreate, MarkFollowUpSent, MarkAsReplied
 import uuid
 
 router = APIRouter(prefix="/api")
 
 
-# ─── Dynamic Board Grouping Logic ───
-CLOSED_STATUSES = ["Not a Fit / Closed", "Not Interested", "Committed"]
+# ─── Interaction Signals (Data-Driven) ───
+
+async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
+    """Compute data-driven signals from interactions for a program."""
+    interactions = await db.interactions.find(
+        {"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}
+    ).sort("date_time", -1).to_list(200)
+
+    now = datetime.now(timezone.utc)
+    emails_sent = 0
+    has_coach_reply = False
+    last_outreach_date = None
+    last_reply_date = None
+    total_interactions = len(interactions)
+
+    for ix in interactions:
+        ix_type = (ix.get("type") or "").lower()
+        dt_str = ix.get("date_time") or ix.get("created_at", "")
+        try:
+            dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+        except Exception:
+            dt = None
+
+        # Count emails sent (any outreach from athlete)
+        if ix_type in ("email", "follow up", "phone call", "video call", "text message"):
+            emails_sent += 1
+            if dt and (last_outreach_date is None or dt > last_outreach_date):
+                last_outreach_date = dt
+
+        # Check for coach replies
+        if ix_type == "coach_reply":
+            has_coach_reply = True
+            if dt and (last_reply_date is None or dt > last_reply_date):
+                last_reply_date = dt
+
+        # Also detect positive outcomes as implicit replies
+        outcome = (ix.get("outcome") or "").lower()
+        if outcome in ("positive", "positive response", "reply received"):
+            has_coach_reply = True
+            if dt and (last_reply_date is None or dt > last_reply_date):
+                last_reply_date = dt
+
+    days_since_outreach = (now - last_outreach_date).days if last_outreach_date else None
+    days_since_reply = (now - last_reply_date).days if last_reply_date else None
+
+    return {
+        "emails_sent": emails_sent,
+        "has_coach_reply": has_coach_reply,
+        "last_outreach_date": last_outreach_date.isoformat() if last_outreach_date else None,
+        "last_reply_date": last_reply_date.isoformat() if last_reply_date else None,
+        "days_since_outreach": days_since_outreach,
+        "days_since_reply": days_since_reply,
+        "total_interactions": total_interactions,
+    }
+
 
 def categorize_program(program: dict) -> str:
     """
-    Categorize a program into one of the 4 dynamic groups.
-    Priority order: Closed > In Progress > Upcoming > Action Required (default)
+    Data-driven board grouping based on interaction signals and active status.
+    Priority: Closed (inactive) > In Progress > Upcoming > Action Required
     """
-    now = datetime.now(timezone.utc)
-    today = now.date()
-    
-    status = program.get("recruiting_status", "")
-    reply_status = program.get("reply_status", "")
-    next_action_due = program.get("next_action_due", "")
-    initial_contact_sent = program.get("initial_contact_sent", "")
-    last_follow_up = program.get("last_follow_up", "")
-    
-    # 1. CLOSED: Status is explicitly closed/committed
-    if status in CLOSED_STATUSES:
+    today = datetime.now(timezone.utc).date()
+
+    # 1. CLOSED: Explicitly marked inactive
+    if not program.get("is_active", True):
         return "closed"
-    
-    # Parse dates for further logic
+
+    signals = program.get("signals", {})
+    next_action_due = program.get("next_action_due", "")
+
     due_date = None
-    last_contact_date = None
-    
     if next_action_due:
         try:
             due_date = datetime.strptime(next_action_due, "%Y-%m-%d").date()
         except ValueError:
             pass
-    
-    # Last contact is the more recent of initial_contact_sent or last_follow_up
-    for date_str in [last_follow_up, initial_contact_sent]:
-        if date_str:
-            try:
-                parsed = datetime.strptime(date_str, "%Y-%m-%d").date()
-                if last_contact_date is None or parsed > last_contact_date:
-                    last_contact_date = parsed
-            except ValueError:
-                pass
-    
-    # Calculate days since last contact
-    days_since_contact = None
-    if last_contact_date:
-        days_since_contact = (today - last_contact_date).days
-    
-    # 2. IN PROGRESS: Recently contacted (within 7 days) OR has active conversation, AND nothing overdue
-    is_recently_contacted = days_since_contact is not None and days_since_contact <= 7
-    has_active_conversation = reply_status in ["Reply Received", "In Conversation"]
+
     is_overdue = due_date is not None and due_date < today
-    
-    if (is_recently_contacted or has_active_conversation) and not is_overdue:
+    has_reply = signals.get("has_coach_reply", False)
+    days_since_outreach = signals.get("days_since_outreach")
+    is_recently_contacted = days_since_outreach is not None and days_since_outreach <= 7
+
+    # 2. IN PROGRESS: Has coach reply OR recently contacted, and not overdue
+    if (has_reply or is_recently_contacted) and not is_overdue:
         return "in_progress"
-    
-    # 3. UPCOMING: Has follow-up within next 14 days, but wasn't recently contacted
+
+    # 3. UPCOMING: Follow-up due within 14 days, not overdue
     if due_date is not None:
         days_until_due = (due_date - today).days
-        if 0 <= days_until_due <= 14 and not is_recently_contacted:
+        if 0 <= days_until_due <= 14:
             return "upcoming"
-    
-    # 4. ACTION REQUIRED: Default catch-all (overdue, needs response, stale, or no activity)
+
+    # 4. ACTION REQUIRED: Default (overdue, stale, no activity)
     return "action_required"
-
-
-def apply_automation_rules(existing, updates):
-    old_status = existing.get("recruiting_status", "")
-    new_status = updates.get("recruiting_status", old_status)
-    old_reply = existing.get("reply_status", "")
-    new_reply = updates.get("reply_status", old_reply)
-    old_contact = existing.get("initial_contact_sent", "")
-    new_contact = updates.get("initial_contact_sent", old_contact)
-    follow_up_days = updates.get("follow_up_days", existing.get("follow_up_days", 14))
-
-    if old_status != new_status and new_status == "Contacted":
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        updates["initial_contact_sent"] = today
-        new_contact = today
-
-    if old_reply != new_reply and new_reply == "Reply Received":
-        updates["priority"] = "Very High"
-
-    if old_contact != new_contact and new_contact:
-        try:
-            contact_date = datetime.strptime(new_contact, "%Y-%m-%d")
-            due_date = contact_date + timedelta(days=follow_up_days)
-            updates["next_action_due"] = due_date.strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-
-    return updates
 
 
 # ─── Programs CRUD ───
