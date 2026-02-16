@@ -225,7 +225,7 @@ export default function Layout({ user, onLogout }) {
           <button
             onClick={() => {
               const tier = subscription?.tier;
-              if (!tier || tier === "basic") {
+              if (tier !== "premium") {
                 setShowUpgrade(true);
               } else {
                 setShowAssistant(true);
