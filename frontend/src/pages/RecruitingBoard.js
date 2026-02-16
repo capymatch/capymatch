@@ -136,18 +136,16 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
             </span>
           )}
         </div>
-        {/* Next Step badge */}
-        <div className={`flex items-center gap-1.5 mt-1`} data-testid={`next-step-${p.program_id}`}>
-          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-            nextStep.color === "text-orange-400" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" :
-            nextStep.color === "text-amber-400" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
-            nextStep.color === "text-pink-400" ? "bg-pink-500/10 text-pink-400 border border-pink-500/20" :
-            nextStep.color === "text-emerald-400" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-            "bg-gray-500/10 text-gray-400 border border-gray-500/20"
-          }`}>
-            <StepIcon className="w-3 h-3" />
-            {nextStep.text}
-          </span>
+        {/* Next Step - Journey style */}
+        <div className="flex items-start gap-2 mt-2 pt-2 border-t" style={{ borderColor: "var(--t-border)" }} data-testid={`next-step-${p.program_id}`}>
+          <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${nextStep.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
+            {nextStep.urgent ? <AlertCircle className="w-3.5 h-3.5 text-orange-400" /> : <Zap className="w-3.5 h-3.5 text-pink-500" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className={`text-[9px] uppercase tracking-wider font-semibold mb-0.5 ${nextStep.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
+            <p className="text-[12px] font-semibold leading-snug" style={{ color: "var(--t-text)" }}>{nextStep.title}</p>
+            <p className="text-[10px] mt-0.5 leading-snug" style={{ color: "var(--t-text-muted)" }}>{nextStep.sub}</p>
+          </div>
         </div>
       </div>
 
