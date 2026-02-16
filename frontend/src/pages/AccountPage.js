@@ -121,12 +121,14 @@ export default function AccountPage() {
                 <div className="space-y-2">
                   {[
                     { label: "School tracking", value: subscription.usage.schools_limit === -1 ? "Unlimited" : `Up to ${subscription.usage.schools_limit}`, included: true },
-                    { label: "AI email drafts", value: subscription.usage.ai_drafts_limit === -1 ? "Unlimited" : subscription.usage.ai_drafts_limit === 0 ? "Not included" : `${subscription.usage.ai_drafts_limit}/month`, included: subscription.usage.ai_drafts_limit !== 0 },
                     { label: "Gmail integration", value: null, included: subscription.limits?.gmail_integration },
-                    { label: "Engagement AI", value: null, included: subscription.limits?.recruiting_insights },
                     { label: "Recruiting analytics", value: null, included: subscription.limits?.analytics },
                     { label: "Follow-up reminders", value: null, included: subscription.limits?.follow_up_reminders },
+                    { label: "Public athlete profile", value: null, included: subscription.limits?.public_profile },
+                    { label: "AI email drafts", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Engagement AI", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
                     { label: "Highlight AI", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "AI Advisor", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
                     { label: "Coach Watch alerts", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
                     { label: "Auto reply detection", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
                     { label: "Weekly digest", value: "Commit Ready", included: subscription.limits?.weekly_digest, premiumOnly: true },
