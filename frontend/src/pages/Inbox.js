@@ -74,6 +74,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
       setShowAiPanel(false);
       toast.success("Draft generated!");
     } catch (err) {
+      if (err.response?.data?.detail?.error === "subscription_limit") return;
       toast.error(err.response?.data?.detail || "Failed to generate draft");
     } finally {
       setDrafting(false);
