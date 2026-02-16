@@ -8,7 +8,7 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://recruiting-crm-1.preview.emergentagent.com"
+    BASE_URL = "https://coach-connect-125.preview.emergentagent.com"
 
 
 class TestAuthBypass:

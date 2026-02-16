@@ -1,5 +1,5 @@
 <analysis>**original_problem_statement:**
-The user's project is a public-facing Volleyball Recruiting CRM. The initial goals included redesigning the Recruiting Journey and Recruiting Board, populating a knowledge base, and making the application mobile-friendly. The scope has since expanded significantly to include a full-app visual redesign, UI cleanup tasks, a collapsible sidebar, and a comprehensive admin area for managing users, university data, and subscriptions.
+The user's project is a public-facing Volleyball Recruiting CRM. The initial goals included redesigning the Recruiting Journey and Recruiting Board, populating a knowledge base, and making the application mobile-friendly. The scope has since expanded significantly to include a full-app visual redesign, UI cleanup tasks, a collapsible sidebar, and a comprehensive admin area.
 
 PRODUCT REQUIREMENTS:
 1.  Dynamic Recruiting Board with custom grouping.
@@ -7,63 +7,76 @@ PRODUCT REQUIREMENTS:
 3.  Make the entire application mobile-friendly.
 4.  Full-app visual redesign (dark theme with pink/coral accents).
 5.  Collapsible sidebar for more content space.
-6.  Admin Area with:
-    *   User Management (view users, details).
-    *   University Data Management (CRUD operations).
-    *   Subscription Management (view/change user tiers).
-    *   Integration Management (Gmail, Stripe, AI, Email).
-7.  Subscription Engine with feature gating based on tiers (Basic, Pro, Premium).
+6.  Admin Area with: User, University Data, Subscription, and Integration Management.
+7.  Subscription Engine with feature gating for tiers: Starter (Free), Active Recruit (Paid), and Commit Ready (Paid).
 8.  Stripe integration for payments.
-9.  AI-powered features for premium tiers.
+9.  AI-powered features exclusively for the Commit Ready premium tier.
 10. Real-time WebSocket notifications for plan changes.
 11. Product tour feature ().
-12. **NEW:** Multi-user team collaboration with limits based on subscription tier.
-13. **NEW:** Transactional email notifications (Welcome & Team Invite) via Resend.
+12. Multi-user team collaboration with limits based on subscription tier.
+13. Transactional email notifications (Welcome & Team Invite) via Resend.
+14. AI-powered Coach Watch feature to monitor and alert on coaching staff changes.
+15. Complete removal of the Tasks feature.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack Volleyball Recruiting CRM using React, FastAPI, and a mocked MongoDB backend. It features a dark-themed, mobile-responsive UI with a collapsible sidebar. A complete authentication system supporting both username/password and Google OAuth is in place. It has a full subscription engine (Basic, Pro, Premium tiers) with self-serve upgrades via Stripe. A comprehensive admin area allows management of users, subscriptions, and integrations (Gmail, Stripe, AI, Resend). The latest features include multi-user team collaboration with tier-based limits and automated email notifications for registration and team invites.
+The application is a full-stack Volleyball Recruiting CRM (React/FastAPI) with a mocked in-memory database. The main focus of this session was to create a clear distinction between the Active Recruit (Pro) and Commit Ready (Premium) subscription tiers.
+
+Initially, both paid tiers had access to the same UI. This has been rectified. All AI-powered features (Engagement AI, AI Drafts, AI Advisor, Coach Watch, Highlight AI) have been moved exclusively to the Commit Ready tier. The frontend has been updated with proper feature gates, premium indicators on sidebar items, and locked-state UI for Pro users, prompting them to upgrade.
+
+The Account page now displays a detailed feature comparison table for all tiers. The Journey page was also updated to correctly lock AI features for Pro users, although this introduced a bug that is currently being fixed.
+
+A minor CSS and code cleanup was also performed on the  component and  file to remove dead code and improve consistency.
 
 **Last working item**:
--   **Last item agent was working**: The user reported that the Connect your Gmail task in the getting-started checklist is visible to users on the 'Basic' plan, even though they don't have access to this feature. The agent acknowledged the bug and was about to implement a fix.
+-   **Last item agent was working**: Fixing the email functionality on the Journey page. The agent incorrectly locked the entire email button for Active Recruit (Pro) users. The user clarified that Pro users should be able to send manual emails, while only the AI-powered email draft generation feature should be locked.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: screenshot tool. The agent should log in as a Basic user and capture the dashboard to verify the Connect your Gmail checklist item is no longer visible.
--   **User Testing Done**: Y
+-   **Which testing method agent to use?**: screenshot tool. The agent should log in as a Pro user (), navigate to the Journey page, open the email composer, and take a screenshot to verify that the manual email input fields and Send button are active, but the Generate with AI button is disabled/locked with an Upgrade prompt.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Connect Gmail step shown to Basic users (P0)**
-    -   **Description**: The getting-started checklist incorrectly shows the Connect your Gmail task to users on the Basic plan, which does not include Gmail integration. This creates a confusing user experience.
-    -   **Attempted fixes**: None yet.
-    -   **Next debug checklist**:
-        -   **File**: .
-        -   **Inspect**: The component that renders the checklist items.
-        -   **Action**: Wrap the Connect your Gmail list item in a conditional render that checks the user's subscription tier. Use the  to only display it if .
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a user experience bug. Fixing it will ensure users are only prompted to complete tasks relevant to their feature set.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on other issue**: None
+-   **Issue 1**: Manual email sending is blocked for Pro users on the Journey page. (Priority: P0)
+
+    -   **Issue Detail**:
+        -   **Attempted fixes**: The agent incorrectly disabled the Compose Intro Email button and the timeline Email button in  for non-premium users.
+        -   **Next debug checklist**:
+            1.  In , revert the changes that disable the email buttons based on . The buttons should be enabled for Pro users.
+            2.  Identify the component that renders the email composer/modal.
+            3.  Inside the email composer component, locate the Generate with AI button or feature.
+            4.  Apply a lock to *only* the AI draft feature using a  check. The manual text input and Send button must remain functional for Pro users.
+            5.  Display a tooltip or lock icon indicating that AI drafts require an upgrade to Commit Ready.
+        -   **Why fix this issue?**: To restore a key feature of the Active Recruit tier (manual emailing via Gmail integration) while correctly gating the premium-only AI feature.
+        -   **Status**: IN PROGRESS
+        -   **Is recurring issue?**: N
+        -   **Should Test frontend/backend/both after fix?**: Frontend
 
 **In progress Task List**:
 None.
 
 **Upcoming and Future Tasks**
+*   **Upcoming Tasks:**
+    *   **Migrate to persistent DB (P0)**: The entire application relies on a mocked, in-memory database. This is the most critical task for the application to be production-ready.
 *   **Future Tasks:**
-    *   **App Naming (P2)**: The user wants a unique name for the app. Vollura was taken. This is blocked pending a user decision.
     *   **Add Coach Data (P1)**: Add more coach names and emails to the university data.
     *   **Recruiting Intelligence (P1)**: Add a Camp/Tournament ROI tracker.
     *   **Outreach Power-Ups (P1)**: Add email templates and bulk outreach capabilities.
+    *   **App Naming (P2)**: The user wants a unique name for the app. Vollura was taken. This is blocked pending a user decision.
     *   **Family Collaboration Roles (P2)**: Add a read-only Parent/Viewer role for more granular permissions.
 
 **Completed work in this session**
--   **Resend Integration for Email Notifications**: Integrated the Resend API to send Welcome emails on registration and Team Invitation emails. Added a management card in the admin integrations page to handle the API key and toggle email types.
--   **Team Collaboration User Guide**: Added an informational How it works guide to the Team Management section in Settings to explain roles and the invitation process.
--   **Multi-User Team Collaboration**: Implemented a system for account owners to invite members, with user limits enforced by subscription tier (Basic: 1, Pro: 2, Premium: Unlimited). This included a new Team Management UI and an .
--   **Subscription Modal Redesign**: Visually revamped the upgrade modal to highlight the recommended subscription tier, making it larger and more prominent to encourage upgrades.
--   **Full Authentication System**: Re-enabled the hidden Google OAuth flow and built a complete username/password registration and login system, replacing the previous mock auth bypass with real session-based authentication.
--   **Product Tour UI Fix**: Resolved an accessibility issue by making the tour's background overlay semi-transparent, ensuring highlighted UI text is readable.
+-   **Subscription Tier Overhaul**:
+    -   Moved all AI features (Engagement AI, AI drafts, etc.) to be exclusive to the Commit Ready (Premium) tier in both the backend () and frontend.
+    -   Added UI gating on all AI-related pages (, ) and components () to lock access for Pro users.
+    -   Updated the sidebar () to show star icons on premium features for Pro users.
+    -   Created a feature comparison table on the  to clearly show the differences between Starter, Pro, and Premium tiers.
+-   **Journey Page Gating Fixes**:
+    -   Fixed a bug that incorrectly showed an upgrade modal to Pro users upon visiting the Journey page.
+    -   Implemented locked states for AI Recruiting Insights and a teaser for Coach Watch on the Journey page for Pro users.
+-   **Code Refactoring**:
+    -   Cleaned up  by replacing inline styles with Tailwind classes and removing unused code.
+    -   Removed dead code (, ) from .
 
 **Earlier issues found/mentioned but not fixed**
 None.
@@ -76,68 +89,57 @@ None.
 
 **Key Technical Concepts**
 -   **Backend**: FastAPI, Pydantic.
--   **Frontend**: React, , Tailwind CSS, , .
--   **Database**: Mocked MongoDB.
--   **Authentication**: Session-based with HTTP-only cookies (username/password + Google OAuth).
--   **Payments**: Stripe Checkout.
--   **Email**: Resend API for transactional emails.
--   **Collaboration**: Tenant-based system () for multi-user access.
+-   **Frontend**: React, , Tailwind CSS.
+-   **State Management**: React Context via a  hook that now provides , , and  booleans for granular feature gating.
+-   **Database**: Mocked in-memory dictionary (non-persistent).
 
 **key DB schema**
--   **users (mocked)**: 
--   **tenants (mocked)**: 
--   **team_invitations (mocked)**: 
--   **integration_settings (mocked)**: Stores API keys and settings for Stripe, Resend, etc.
+-   No changes made.
 
 **changes in tech stack**
--   **Resend**: Added for email notifications.
--   **bcrypt**: Added for password hashing.
+-   None.
 
 **All files of reference**
-*   : **CRITICAL FILE FOR NEXT STEP.** Contains the getting-started checklist that needs the conditional rendering fix.
-*   : New service for sending emails.
-*   : New routes for team management.
-*   : The new component with team management logic and user guide.
-*   : Updated to manage Resend settings.
-*   : Major changes to re-enable real authentication.
-*   : Updated to include both login methods.
+*   : Location of the current bug and extensive feature-gating logic.
+*   : Source of truth for subscription tier features.
+*   : The core of the frontend gating logic.
+*   : Displays the new feature comparison table.
 
 **Areas that need refactoring**:
--   The database is still entirely mocked in memory. Migrating to a persistent MongoDB instance is a significant future step to make the application production-ready.
+-   **Persistent Database**: The application's reliance on a mocked, in-memory database remains the most significant technical debt and is a P0 blocker for production use.
+-   ** Complexity**: This file has grown very large and contains complex conditional rendering logic. It should be broken down into smaller, more manageable components.
 
 **key api endpoints**
--   : New user registration.
--   : User login with email/password.
--   : Get current authenticated user details.
--   : Invite a new member to the team.
--   : Update Resend API key.
--   : Toggle email types (welcome/invite).
+-   : Used to fetch tier definitions.
+-   : All AI-related endpoints were modified on the backend to require a premium subscription.
 
 **Critical Info for New Agent**
-Your immediate priority is to fix a UI bug where the Connect your Gmail checklist item is shown to 'Basic' plan users who don't have this feature. You must locate this checklist in the frontend (likely ) and wrap the item in a conditional check () to hide it for non-eligible users.
+1.  **Fix the Email Button First**: The immediate priority is to fix the email functionality on the Journey page for Pro users. They must be able to send manual emails; only the AI draft generation should be locked.
+2.  **Strict Tier Separation**: All AI features are now exclusive to the Commit Ready (Premium) tier. The Active Recruit (Pro) tier's main benefits are higher usage limits (vs. Starter) and manual Gmail integration.
+3.  **Database Migration is P0**: After the email bug is fixed, the next major task must be the database migration to a persistent solution. This has been the top priority for a long time.
+4.  **Testing Credentials**: Use  /  to test the Active Recruit tier experience. Use  /  for Commit Ready (Premium).
 
 **documents and test reports created in this job**
+*    (Updated)
 *   
 *   
-- 
-- 
-- 
+*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-10. **User**: Reports that the Connect Gmail task shows for Basic users (bug). (PENDING ACTION)
-9.  **Agent**: Acknowledges the bug and plans to fix it.
-8.  **User**: Asks if a welcome email is sent on registration.
-7.  **Agent**: Explains no emails are sent and proposes adding them via SendGrid or Resend.
-6.  **User**: Asks what SendGrid/Resend are.
-5.  **Agent**: Explains they are email delivery services.
-4.  **User**: Asks if this should be added to the admin integration area.
-3.  **Agent**: Confirms it's a great idea and asks for provider preference.
-2.  **User**: Asks for a recommendation.
-1.  **Agent**: Recommends Resend for its simplicity and awaits confirmation.
+10. **User**: I am thinking about offering AI features only for premium. what do you think?
+9.  **Agent**: (Provided pros and cons, suggested a teaser for Pro users, asked for confirmation).
+8.  **User**: Yes, and please update the subscription tiers
+7.  **Agent**: (Implemented the change, making all AI premium-only, and ran tests).
+6.  **User**: so now with a pro plan, when I click in the journey, I see the subscription tier pricing and when I close it it shows the journey, but all the ai features are unlocked
+5.  **Agent**: (Investigated and identified the bug where Pro users saw unlocked AI features on the Journey page after dismissing an incorrect upgrade modal).
+4.  **Agent**: (Fixed the Journey page gating for AI sections).
+3.  **User**: this is in journey, they should not be available for pro, right? (Pointing out that the AI-powered email buttons were still available).
+2.  **Agent**: (Acknowledged the mistake and locked the AI email features).
+1.  **User**: the problem is that pro are allowed to send emails, but not ai templates! you locked the email button
 
 **Project Health Check:**
--   **Broken**: The getting-started checklist has a UI bug, showing a feature to users who don't have access to it.
--   **Mocked**: User authentication and all database interactions are mocked in memory.
+-   **Broken**: Manual emailing for Pro users is currently broken on the Journey page.
+-   **Mocked**: The entire database backend is mocked in memory. This is the application's most critical limitation.
 
 **3rd Party Integrations**
 -   Gmail API
@@ -146,17 +148,19 @@ Your immediate priority is to fix a UI bug where the Connect your Gmail checklis
 -    (Icons)
 -   Stripe (Payments) — requires User API Key
 -   Resend (Email Notifications) — requires User API Key
+-    /  (Web Scraping for Coach Watch feature)
 
 **Testing status**
--   **Testing agent used after significant changes**: YES. Used successfully after implementing the full auth system, team collaboration, and Resend integration.
+-   **Testing agent used after significant changes**: YES (3 times)
 -   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: None.
--   **Known regressions**: None.
+-   **Known regressions**: Manual emailing for Pro users was broken by the last fix.
 
 **Credentials to test flow:**
 -   **Admin User**:  / 
--   **Regular User**: Register a new account via the UI.
--   The Resend API key is stored in .
+-   **Starter User**: Register a new account.
+-   **Pro User**:  / 
+-   **Premium User**:  /  (Note: This was previously a Commit Ready tier user)
 
 **What agent forgot to execute**
-The agent did not add feature gating to the getting started checklist when implementing the subscription tiers, which led to the current bug where a premium feature is shown to basic users.</analysis>
+The agent correctly executed the high-level request to move AI features to premium but made a mistake in the fine-grained implementation on the Journey page, incorrectly locking a core Pro feature (manual emailing) instead of just the premium AI component within it.</analysis>
