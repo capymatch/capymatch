@@ -354,8 +354,10 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
   const displayAI = showAI && aiStep;
   const urgencyColors = { high: "text-red-400 bg-red-500/10", medium: "text-amber-400 bg-amber-500/10", low: "text-emerald-400 bg-emerald-500/10" };
 
+  if (!step && !displayAI && !isPremium) return null;
+
   return (
-    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${displayAI ? (aiStep.urgency === "high" ? "border-l-orange-500" : "border-l-purple-500") : step.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
+    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${displayAI ? (aiStep.urgency === "high" ? "border-l-orange-500" : "border-l-purple-500") : step?.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
 
       {/* AI-powered Next Step */}
