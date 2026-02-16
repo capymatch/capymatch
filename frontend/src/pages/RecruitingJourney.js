@@ -484,6 +484,7 @@ export default function RecruitingJourney() {
   const navigate = useNavigate();
   const { subscription } = useSubscription();
   const isBasic = !subscription?.tier || subscription.tier === "basic";
+  const isPremium = subscription?.tier === "premium";
   const [program, setProgram] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [coaches, setCoaches] = useState([]);
@@ -531,7 +532,7 @@ export default function RecruitingJourney() {
         } catch {}
       }
       // Fetch coach watch alert for this school (non-blocking, Premium only)
-      if (!isBasic) {
+      if (isPremium) {
         try {
           if (progRes.data?.university_name) {
             const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
