@@ -1,0 +1,89 @@
+{
+  "summary": "Premium-only AI gating testing completed. Backend: 14/14 tests passed - all AI endpoints correctly return 403 for Pro/Starter users. Frontend: 8/9 UI tests passed. One minor bug found: Pro user sidebar missing star on Engagement AI nav item (inconsistent with premium-only behavior).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Layout.js - Sidebar",
+        "issue": "Engagement AI nav item missing star for Pro users even though feature is now premium-only. Sidebar item has premium:true but not premiumOnly:true",
+        "selector": "[data-testid='nav-engagement ai']",
+        "priority": "LOW",
+        "fix": "Add premiumOnly: true to Engagement AI sidebar item in Layout.js line 116"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "BACKEND - Starter user has basic tier with ai_drafts_per_month=0, recruiting_insights=false",
+    "BACKEND - Pro user has pro tier with ai_drafts_per_month=0, recruiting_insights=false (ALL AI is premium-only now)",
+    "BACKEND - Premium user has premium tier with ai_drafts_per_month=-1 (unlimited), all AI features enabled",
+    "BACKEND - Starter user gets 403 for GET /api/ai/outreach-analysis",
+    "BACKEND - Pro user gets 403 for GET /api/ai/outreach-analysis (gated by auto_reply_detection - premium only)",
+    "BACKEND - Premium user can access GET /api/ai/outreach-analysis",
+    "BACKEND - Starter user gets 403 for POST /api/ai/draft-email",
+    "BACKEND - Pro user gets 403 for POST /api/ai/draft-email (ai_drafts_per_month=0)",
+    "BACKEND - Starter user gets 403 for POST /api/ai/assistant",
+    "BACKEND - Pro user gets 403 for POST /api/ai/assistant (ai_drafts_per_month=0)",
+    "BACKEND - GET /api/subscription/tiers: Pro tier has ai_drafts_per_month=0, no AI features in list",
+    "BACKEND - Starter user gets 403 for POST /api/ai/highlight-advice",
+    "BACKEND - Pro user gets 403 for POST /api/ai/highlight-advice (auto_reply_detection=false)",
+    "BACKEND - Premium user can access POST /api/ai/highlight-advice",
+    "FRONTEND - Pro user on Engagement AI (/outreach-analysis): Shows UpgradeBenefitsPage with 'Engagement AI is a Commit Ready Feature' and 'Exclusive to Commit Ready plan' text",
+    "FRONTEND - Premium user on Engagement AI: Shows actual engagement analysis page content (not upgrade page)",
+    "FRONTEND - Starter user on Engagement AI: Shows UpgradeBenefitsPage with 'Unlock Engagement AI' text",
+    "FRONTEND - Pro user on Highlight AI (/highlight-advisor): Shows UpgradeBenefitsPage with 'Highlight AI is a Commit Ready Feature' and 'Exclusive to Commit Ready plan' text",
+    "FRONTEND - Premium user on Highlight AI: Shows actual Highlight Reel Advisor page with Generate Advice button",
+    "FRONTEND - Pro user Account Page: Shows 'Your plan includes' with checkmarks for Pro features (School tracking, Gmail, Analytics, Follow-ups, Public profile) and X icons with COMMIT READY badges for all AI features (7 items)",
+    "FRONTEND - Premium user Account Page: 'Your plan includes' section correctly hidden",
+    "FRONTEND - Starter sidebar: All AI nav items (Engagement AI, Highlight AI, AI Advisor) show star icons",
+    "FRONTEND - Pro AI Advisor click: Opens upgrade modal correctly (not the AI advisor drawer)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_premium_ai_gating.py",
+    "/app/test_reports/pytest/premium_ai_gating_results.xml"
+  ],
+  "action_items": [
+    "LOW PRIORITY: Add premiumOnly: true to Engagement AI sidebar item in Layout.js line 116 to show star for Pro users (consistency fix)"
+  ],
+  "critical_code_review_comments": [
+    "Sidebar star logic at Layout.js line 212-219 only shows stars for Pro users when item.premiumOnly is true. Since Engagement AI is now premium-only, it should have premiumOnly: true added."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_premium_ai_gating.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "89% (8/9 UI tests passed - 1 minor inconsistency)"
+  },
+  "test_credentials": {
+    "starter_user": {"email": "csstest@test.com", "password": "test1234"},
+    "pro_user": {"email": "prouser@test.com", "password": "test1234"},
+    "premium_user": {"email": "premuser@test.com", "password": "test1234"}
+  },
+  "seed_data_creation": "Used existing test users",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "ALL AI features are now premium-only (Commit Ready tier). Backend gating verified: Pro/Starter users get 403 for all AI endpoints (draft-email, assistant, outreach-analysis, highlight-advice, coach-watch). Frontend shows UpgradeBenefitsPage with premiumOnly=true messaging for Pro users. Sidebar star inconsistency noted: Engagement AI missing premiumOnly:true prop.",
+  "premium_only_ai_features_summary": {
+    "subscription_changes": {
+      "pro_tier": "ai_drafts_per_month=0, recruiting_insights=false, auto_reply_detection=false",
+      "premium_tier": "ai_drafts_per_month=-1 (unlimited), recruiting_insights=true, auto_reply_detection=true"
+    },
+    "gating_verified": {
+      "outreach-analysis": "Gated by auto_reply_detection (premium only)",
+      "draft-email": "Gated by ai_drafts_per_month=0",
+      "assistant": "Gated by ai_drafts_per_month=0",
+      "highlight-advice": "Gated by auto_reply_detection (premium only)",
+      "coach-watch": "Gated by auto_reply_detection (premium only)"
+    },
+    "frontend_gating": {
+      "OutreachAnalysis.js": "isPremium check at top level",
+      "HighlightAdvisor.js": "isPremium check at top level",
+      "Layout.js": "AI Advisor button checks tier !== 'premium' to open upgrade modal"
+    }
+  }
+}
