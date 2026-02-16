@@ -12,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__), '..', '.env')) as f:
         line = line.strip()
         if '=' in line and not line.startswith('#'):
             k, v = line.split('=', 1)
-            os.environ[k] = v
+            os.environ[k] = v.strip('"').strip("'")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from database import db
