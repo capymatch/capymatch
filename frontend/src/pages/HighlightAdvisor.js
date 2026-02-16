@@ -8,6 +8,7 @@ import api from "../lib/api";
 export default function HighlightAdvisor() {
   const { subscription } = useSubscription();
   const isBasic = !subscription?.tier || subscription.tier === "basic";
+  const isPremium = subscription?.tier === "premium";
   const [advice, setAdvice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState("");
@@ -27,7 +28,7 @@ export default function HighlightAdvisor() {
     }
   };
 
-  return isBasic ? <UpgradeBenefitsPage featureKey="highlight-advisor" /> : (
+  if (!isPremium) return <UpgradeBenefitsPage featureKey="highlight-advisor" premiumOnly={!isBasic} />;
       <div className="space-y-5" data-testid="highlight-advisor-page">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
