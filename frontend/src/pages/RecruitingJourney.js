@@ -257,8 +257,8 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
             </button>
           ))
         ) : (
-          <div className="flex items-center gap-2 w-full py-1 px-2.5 rounded-lg bg-purple-500/5 border border-purple-500/15" data-testid="ai-draft-locked">
-            <Lock className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 w-full py-1 px-2.5 rounded-lg bg-amber-500/5 border border-amber-500/15" data-testid="ai-draft-locked">
+            <Crown className="w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
             <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Premium</a></span>
           </div>
         )}
@@ -484,7 +484,7 @@ function AISidebarCard({ programId, onDraftEmail }) {
 function LockedOverlay({ label, premiumOnly = false }) {
   return (
     <div className="absolute inset-0 z-10 rounded-xl flex flex-col items-center justify-center backdrop-blur-[2px]" style={{ backgroundColor: "var(--t-surface)", opacity: 0.92 }}>
-      <Lock className="w-5 h-5 text-pink-500 mb-1.5" />
+      <Crown className="w-5 h-5 text-amber-400/70 mb-1.5" />
       <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{label}</p>
       <a href="/account" className="text-[11px] text-pink-500 hover:underline mt-0.5">
         {premiumOnly ? "Upgrade to Premium" : "Upgrade to Pro"}
@@ -637,8 +637,8 @@ export default function RecruitingJourney() {
       {!isPremium && (
         <div className="rounded-xl border border-purple-500/20 p-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <Lock className="w-4 h-4 text-purple-400" />
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center">
+              <Crown className="w-4 h-4 text-amber-400/70" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</p>
