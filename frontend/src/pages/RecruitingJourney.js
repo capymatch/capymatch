@@ -446,9 +446,10 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
               )}
             </div>
           </div>
+          ) : null}
           {/* AI Suggest button for Premium users */}
           {isPremium && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <div className={`flex items-center gap-2 ${step ? "mt-3 pt-3 border-t" : ""}`} style={{ borderColor: "var(--t-border)" }}>
               <button onClick={generateAIStep} disabled={aiLoading}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors disabled:opacity-50"
                 data-testid="ai-suggest-next-step-btn">
