@@ -1,0 +1,75 @@
+{
+  "summary": "Major Journey Logic Refactor testing complete. All backend APIs (14/14 passed) and Frontend UI features verified. The new data-driven signals system correctly replaces manual recruiting_status/reply_status dropdowns with computed interaction signals.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/programs returns signals object with emails_sent, has_coach_reply, last_outreach_date, days_since_outreach, total_interactions",
+    "Backend: GET /api/programs?grouped=true returns 4 groups: action_required, upcoming, in_progress, closed",
+    "Backend: POST /api/programs/{id}/mark-replied creates coach_reply interaction with note",
+    "Backend: POST /api/programs/{id}/mark-replied returns 400 for empty note (validation works)",
+    "Backend: GET /api/programs/{id} returns program with signals object",
+    "Backend: PUT /api/programs/{id} with is_active=false moves to closed group",
+    "Backend: PUT /api/programs/{id} with is_active=true removes from closed group",
+    "Backend: GET /api/programs/{id}/journey shows coach_reply as email_received event type",
+    "Backend: Programs with coach_reply go to in_progress group",
+    "Backend: Programs recently contacted (within 7 days) go to in_progress group",
+    "Frontend Journey: Active/Inactive toggle present (data-testid='active-toggle')",
+    "Frontend Journey: No recruiting_status dropdown visible",
+    "Frontend Journey: No reply_status dropdown visible",
+    "Frontend Journey: Priority dropdown still works",
+    "Frontend Journey: Mark as Replied button appears when outreach sent but no reply",
+    "Frontend Journey: Mark as Replied modal opens with note field (data-testid='mark-replied-modal')",
+    "Frontend Journey: Timeline shows logged interactions with correct event types",
+    "Frontend Board: Group funnel shows data-driven counts (action_required, upcoming, in_progress, closed)",
+    "Frontend Board: ProgramRow shows data-driven Next Step based on signals",
+    "Frontend Board: UCLA moved from action_required to in_progress after logging interaction"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_journey_logic_refactor.py",
+    "/app/test_reports/pytest/journey_refactor_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_journey_logic_refactor.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all features verified)"
+  },
+  "test_credentials": "pro@test.com / password",
+  "seed_data_creation": "Created test interactions for UCLA program during frontend testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "The journey logic refactor is complete. Key changes: 1) recruiting_status and reply_status fields still exist in DB but are NOT used for UI logic or board grouping anymore. 2) New 'signals' object computed from interactions collection determines board grouping. 3) Active/Inactive toggle replaces manual status dropdowns on Journey page. 4) Mark as Replied button appears when outreach sent but no coach reply detected. 5) Board groups are: action_required (no activity/overdue), upcoming (due within 14 days), in_progress (coach reply OR recently contacted within 7 days), closed (is_active=false).",
+  "features_verified": {
+    "data_driven_signals": {
+      "compute_interaction_signals()": "Computes emails_sent, has_coach_reply, last_outreach_date, days_since_outreach, total_interactions from interactions collection",
+      "categorize_program()": "Uses signals + is_active + next_action_due to determine board group"
+    },
+    "board_grouping_logic": {
+      "action_required": "Default - no activity, overdue, or stale",
+      "upcoming": "next_action_due within 14 days, not overdue",
+      "in_progress": "has_coach_reply=true OR days_since_outreach <= 7 (recently contacted), not overdue",
+      "closed": "is_active=false"
+    },
+    "journey_page_changes": {
+      "active_toggle": "STATUS shows Active/Inactive pill toggle instead of recruiting_status dropdown",
+      "priority_dropdown": "Still works as before",
+      "mark_as_replied": "Button appears in NextStepHero when outreach sent but no reply",
+      "mark_as_replied_modal": "Opens with note field, creates coach_reply interaction"
+    },
+    "board_page_changes": {
+      "group_funnel": "Shows data-driven counts for all 4 groups",
+      "program_row": "Shows data-driven Next Step based on signals",
+      "journey_button": "Navigates to Journey page for each program"
+    }
+  }
+}
