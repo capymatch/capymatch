@@ -113,6 +113,46 @@ export default function AccountPage() {
                 </div>
               </div>
             </div>
+
+            {/* Plan Features Comparison */}
+            {subscription.tier !== "premium" && (
+              <div className="mt-5 pt-5 border-t" style={{ borderColor: "var(--t-border)" }}>
+                <p className="text-xs font-semibold mb-3" style={{ color: "var(--t-text-muted)" }}>Your plan includes</p>
+                <div className="space-y-2">
+                  {[
+                    { label: "School tracking", value: subscription.usage.schools_limit === -1 ? "Unlimited" : `Up to ${subscription.usage.schools_limit}`, included: true },
+                    { label: "AI email drafts", value: subscription.usage.ai_drafts_limit === -1 ? "Unlimited" : subscription.usage.ai_drafts_limit === 0 ? "Not included" : `${subscription.usage.ai_drafts_limit}/month`, included: subscription.usage.ai_drafts_limit !== 0 },
+                    { label: "Gmail integration", value: null, included: subscription.limits?.gmail_integration },
+                    { label: "Engagement AI", value: null, included: subscription.limits?.recruiting_insights },
+                    { label: "Recruiting analytics", value: null, included: subscription.limits?.analytics },
+                    { label: "Follow-up reminders", value: null, included: subscription.limits?.follow_up_reminders },
+                    { label: "Highlight AI", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Coach Watch alerts", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Auto reply detection", value: "Commit Ready", included: subscription.limits?.auto_reply_detection, premiumOnly: true },
+                    { label: "Weekly digest", value: "Commit Ready", included: subscription.limits?.weekly_digest, premiumOnly: true },
+                  ].map((feat, i) => (
+                    <div key={i} className="flex items-center justify-between py-1">
+                      <div className="flex items-center gap-2">
+                        {feat.included ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        ) : (
+                          <XIcon className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0" />
+                        )}
+                        <span className={`text-xs ${feat.included ? "" : "opacity-50"}`} style={{ color: "var(--t-text-secondary)" }}>
+                          {feat.label}
+                        </span>
+                        {!feat.included && feat.premiumOnly && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-400">COMMIT READY</span>
+                        )}
+                      </div>
+                      {feat.value && feat.included && (
+                        <span className="text-[11px] font-medium" style={{ color: "var(--t-text-muted)" }}>{feat.value}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
