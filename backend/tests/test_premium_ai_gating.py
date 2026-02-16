@@ -212,9 +212,14 @@ class TestSubscriptionTiersAPI:
         # Verify Pro tier has ai_drafts_per_month = 0
         assert pro_tier.get("ai_drafts_per_month") == 0, f"Pro ai_drafts_per_month should be 0, got {pro_tier.get('ai_drafts_per_month')}"
         
-        # Pro tier should NOT have AI-written email drafts in features list
-        ai_feature_present = any("ai" in feat.lower() and ("draft" in feat.lower() or "email" in feat.lower() or "summar" in feat.lower()) for feat in pro_features)
-        assert not ai_feature_present, f"Pro tier should not have AI drafts/emails/summaries feature in list: {pro_features}"
+        # Pro tier should NOT have AI-written email drafts in features list (checking for AI drafts/summaries, not regular email)
+        ai_feature_present = any(
+            ("ai" in feat.lower() and "draft" in feat.lower()) or 
+            ("ai" in feat.lower() and "summar" in feat.lower()) or
+            "ai-written" in feat.lower()
+            for feat in pro_features
+        )
+        assert not ai_feature_present, f"Pro tier should not have AI drafts/summaries feature in list: {pro_features}"
         
         print(f"✓ Pro tier features verified: ai_drafts_per_month=0, no AI email features: {pro_features}")
 
