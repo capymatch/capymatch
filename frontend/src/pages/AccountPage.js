@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSubscription } from "../lib/subscription";
-import { CreditCard, ChevronRight, Sparkles, Zap, Crown, Lock, Trash2, Loader2, Shield, Bell, Download } from "lucide-react";
+import { CreditCard, ChevronRight, Sparkles, Zap, Crown, Lock, Trash2, Loader2, Shield, Bell, Download, Check, X as XIcon } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
