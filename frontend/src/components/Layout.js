@@ -114,7 +114,7 @@ export default function Layout({ user, onLogout }) {
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
     { to: "/outreach-analysis", icon: TrendingUp, label: "Engagement AI", premium: true },
-    { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true },
+    { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true, premiumOnly: true },
   ];
 
   return (
@@ -211,8 +211,10 @@ export default function Layout({ user, onLogout }) {
                 <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                 {item.premium && !sidebarCollapsed && (() => {
                   const isBasic = !subscription?.tier || subscription.tier === "basic";
-                  return isBasic ? (
-                    <Star className="ml-auto w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" />
+                  const isPro = subscription?.tier === "pro";
+                  const showStar = isBasic || (item.premiumOnly && isPro);
+                  return showStar ? (
+                    <Star className={`ml-auto w-4 h-4 flex-shrink-0 ${item.premiumOnly && isPro ? "text-amber-400" : "text-amber-400"}`} fill="currentColor" />
                   ) : null;
                 })()}
               </NavLink>
