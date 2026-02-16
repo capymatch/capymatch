@@ -226,3 +226,22 @@ Public-facing Volleyball Recruiting CRM with:
 - /app/test_reports/iteration_37.json (Email gating fix - 12/12 tests passed)
 - /app/test_reports/iteration_35.json (Tier differentiation - 100% pass, 12 backend + 8 frontend)
 - /app/test_reports/iteration_36.json (Premium-only AI gating - 14/14 backend, 8/9 frontend + 1 fix applied)
+- /app/test_reports/iteration_40.json (Journey data-driven refactor - 14/14 backend, all frontend passed)
+
+## Completed (Feb 17, 2026) — Journey Data-Driven Refactor
+- **Data-Driven Journey Logic**: Replaced manual `recruiting_status`/`reply_status` dropdowns with automatic signal computation from timeline interactions
+  - Backend `compute_interaction_signals()`: derives `emails_sent`, `has_coach_reply`, `last_outreach_date`, `days_since_outreach`, `total_interactions`
+  - `categorize_program()` uses signals + `is_active` + `next_action_due` for board grouping
+- **Active/Inactive Toggle**: Simple toggle on Journey page replacing old dropdowns. Inactive → Closed group
+- **Mark as Replied**: `POST /api/programs/{id}/mark-replied` — logs coach reply to timeline with required note
+- **Board Grouping (data-driven)**: action_required (stale/overdue), upcoming (due 14 days), in_progress (has reply/recent), closed (inactive)
+- **Next Step Priority**: Due date overdue > Due soon > No outreach > Outreach no reply > Coach replied stale > AI
+
+## Upcoming Tasks
+- **P1**: Camp/Tournament ROI tracker
+- **P1**: Email templates & bulk outreach
+
+## Future/Backlog
+- App naming (blocked on user — "Vollura" taken)
+- Family Collaboration (read-only parent/viewer role)
+- `RecruitingJourney.js` component breakdown
