@@ -294,7 +294,7 @@ function FollowUpScheduler({ program, onSaved }) {
 }
 
 // ─── Next Step Hero Card ───
-function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic }) {
+function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic, isPremium }) {
   const getNextStep = () => {
     const now = new Date();
     if (program.next_action_due) {
@@ -337,7 +337,7 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
         </div>
         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
           <div className="flex gap-2.5">
-            {isBasic && step.type === "email" ? (
+            {!isPremium && step.type === "email" ? (
               <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
                 disabled data-testid="next-step-action-btn">
                 <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
@@ -356,9 +356,9 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
               </Button>
             )}
           </div>
-          {isBasic && step.type === "email" && (
+          {!isPremium && step.type === "email" && (
             <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
-              Upgrade to Active Recruit to email coaches
+              {isBasic ? "Upgrade to Active Recruit to email coaches" : "Upgrade to Commit Ready for AI emails"}
             </a>
           )}
         </div>
@@ -671,7 +671,7 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Next Step Hero ─── */}
-      <NextStepHero program={program} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} />
+      <NextStepHero program={program} coaches={coaches} onSendEmail={isPremium ? openEmail : null} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
       {showLogForm && <div className="mt-4"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
