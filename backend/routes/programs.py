@@ -218,10 +218,10 @@ async def update_program(program_id: str, data: ProgramUpdate, request: Request)
     updates = {k: v for k, v in data.model_dump().items() if v is not None}
     if not updates:
         return existing
-    updates = apply_automation_rules(existing, updates)
     updates["updated_at"] = datetime.now(timezone.utc).isoformat()
     await db.programs.update_one({"program_id": program_id, "tenant_id": tenant_id}, {"$set": updates})
     updated = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
+    updated["signals"] = await compute_interaction_signals(tenant_id, program_id)
     return updated
 
 
