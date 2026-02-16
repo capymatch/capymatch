@@ -4,7 +4,7 @@ import {
   LayoutGrid, Inbox, GraduationCap, Settings, 
   Bell, Mail, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
-  Video, TrendingUp, LogOut, CreditCard, Star
+  Video, TrendingUp, LogOut, CreditCard, Crown
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -214,7 +214,7 @@ export default function Layout({ user, onLogout }) {
                   const isPro = subscription?.tier === "pro";
                   const showStar = isBasic || (item.premiumOnly && isPro);
                   return showStar ? (
-                    <Star className={`ml-auto w-4 h-4 flex-shrink-0 ${item.premiumOnly && isPro ? "text-amber-400" : "text-amber-400"}`} fill="currentColor" />
+                    <Crown className="ml-auto w-3.5 h-3.5 flex-shrink-0 text-amber-400/70" />
                   ) : null;
                 })()}
               </NavLink>
@@ -240,7 +240,7 @@ export default function Layout({ user, onLogout }) {
             <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Advisor</span>
             {!sidebarCollapsed && (() => {
               const isPremium = subscription?.tier === "premium";
-              return !isPremium ? <Star className="ml-auto w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" /> : null;
+              return !isPremium ? <Crown className="ml-auto w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" /> : null;
             })()}
           </button>
         </nav>
