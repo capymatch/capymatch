@@ -543,7 +543,7 @@ export default function RecruitingJourney() {
     } catch {
       toast.error("Failed to load journey data");
     } finally { setLoading(false); }
-  }, [programId, isBasic]);
+  }, [programId, isBasic, isPremium]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
