@@ -182,14 +182,14 @@ Public-facing Volleyball Recruiting CRM with:
 ## Completed (Feb 16, 2026)
 - **CSS Cleanup - RecruitingBoard.js**: Replaced inline `style` object with Tailwind `flex flex-col gap-5` on groups container. Replaced hardcoded `rgba(255,255,255,0.04)` border with theme variable `var(--t-border)` for consistency.
 - **Dead Code Removal - constants.js**: Removed unused `STATUS_GROUPS` and `DIVISION_COLORS` exports (replaced by `BOARD_GROUPS` in RecruitingBoard.js and local division color maps).
-- **Tier Differentiation (Pro vs Premium)**: Implemented visible feature gating between Active Recruit and Commit Ready tiers:
-  - Backend: Changed outreach-analysis gate from `auto_reply_detection` to `recruiting_insights` (Pro+ access)
-  - Engagement AI page: Main analysis accessible to Pro+; Coach Watch section locked with overlay for Pro users showing "Commit Ready Exclusive" upgrade prompt
-  - Highlight AI page: Gated to Premium only; Pro users see upgrade page with "Commit Ready Feature" messaging
-  - Account page: Added "Your plan includes" checklist showing included features (checkmarks) vs locked features (X icons with COMMIT READY badges). Hidden for Premium users.
-  - Sidebar: Star icons now differentiate — Engagement AI shows star for Starter only, Highlight AI shows star for both Starter and Pro
-  - Journey page: Coach Watch alerts fetch restricted to Premium tier only
+- **AI Features Premium-Only**: Moved ALL AI features to Commit Ready (premium) tier only:
+  - Backend: Pro tier `ai_drafts_per_month=0`, `recruiting_insights=False`; all AI endpoints (draft-email, assistant, outreach-analysis, highlight-advice, coach-watch) now return 403 for non-premium users
+  - Frontend: Engagement AI & Highlight AI pages show "Commit Ready Feature" upgrade page for Pro users
+  - AI Advisor sidebar button opens upgrade modal for non-premium users
+  - Account page feature list updated: all AI features show COMMIT READY badges for non-premium tiers
+  - Sidebar star icons shown on all 3 AI nav items (Engagement AI, Highlight AI, AI Advisor) for Starter + Pro users
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
 - /app/test_reports/iteration_35.json (Tier differentiation - 100% pass, 12 backend + 8 frontend)
+- /app/test_reports/iteration_36.json (Premium-only AI gating - 14/14 backend, 8/9 frontend + 1 fix applied)
