@@ -661,7 +661,6 @@ export default function RecruitingJourney() {
             ))}
           </div>
         </div>
-        </div>
       )}
       {/* ─── Header ─── */}
       <div className="space-y-3">
