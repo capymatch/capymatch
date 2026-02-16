@@ -659,6 +659,7 @@ export default function Inbox() {
           onClose={() => { setShowCompose(false); setReplyTo(null); }}
           onSent={() => fetchEmails(activeSearch)}
           replyTo={replyTo}
+          isPremium={isPremium}
         />
       )}
     </div>
