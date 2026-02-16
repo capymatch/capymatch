@@ -200,6 +200,8 @@ Public-facing Volleyball Recruiting CRM with:
   - Pro users: email composer opens with To/Subject/Body/Send all functional; AI draft buttons replaced by "AI email drafts require Commit Ready" locked notice
   - Premium users: full email composer with all 4 AI draft buttons (intro, follow_up, thank_you, interest_update) visible
   - Timeline "Email" button remains active for Pro users (only disabled for Starter)
+  - Inbox ComposeModal AI Draft button gated for non-premium users (shows lock icon)
+  - Suppressed duplicate "Failed to generate draft" error toast on subscription_limit 403 errors (UpgradeModal handles it)
   - Test verification: 12/12 frontend tests passed (iteration_37.json)
 
 ## Test Reports
