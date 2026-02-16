@@ -78,7 +78,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
         <ul className="space-y-2 mb-4 flex-1">
           {tier.id === "premium" && (
             <li className="text-[11px] font-semibold mb-1" style={{ color: dark ? "rgba(255,255,255,0.5)" : "#374151" }}>
-              Everything in Active Recruit, plus:
+              Everything in Pro, plus:
             </li>
           )}
           {(tier.id === "premium" ? tier.features.filter(f =>
