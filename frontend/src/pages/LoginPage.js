@@ -63,8 +63,8 @@ export default function LoginPage({ onAuth }) {
                 <Mail className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
-                <h3 className="text-[15px] font-semibold text-gray-900">Coach Inbox</h3>
-                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Save coach emails, log replies, and never lose context.</p>
+                <h3 className="text-[15px] font-semibold text-gray-900">Recruiting Journey</h3>
+                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Track every step with each school — emails, notes, and next actions in one place.</p>
               </div>
             </div>
 
