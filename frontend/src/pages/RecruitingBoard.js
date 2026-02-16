@@ -98,7 +98,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
       data-testid={`program-row-${p.program_id}`}
     >
       {/* Accent bar */}
-      <div className={`w-[3px] self-stretch rounded-sm flex-shrink-0 ${accentColor}`} />
+      <div className={`w-[3px] h-9 rounded-sm flex-shrink-0 ${accentColor}`} />
 
       {/* Division badge */}
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
