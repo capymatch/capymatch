@@ -964,12 +964,14 @@ export default function RecruitingJourney() {
             ) : timeline.map((event, i) => <TimelineEvent key={event.id || i} event={event} />)}
             {/* Soft tip — shows when Next Step hero card is hidden */}
             {(() => {
+              const signals = program.signals || {};
               const dueDays = program.next_action_due ? Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000) : null;
               const hasHeroStep = (dueDays !== null && dueDays <= 7)
-                || program.recruiting_status === "Not Contacted"
-                || (program.reply_status === "No Reply" && program.recruiting_status !== "Not Contacted");
+                || (signals.emails_sent === 0 && signals.total_interactions === 0)
+                || (signals.emails_sent > 0 && !signals.has_coach_reply)
+                || (signals.has_coach_reply && signals.days_since_reply > 7);
               if (hasHeroStep) return null;
-              if (program.reply_status === "In Conversation") return (
+              if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply <= 7) return (
                 <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
                   <MessageSquare className="w-4 h-4 text-emerald-400/60 flex-shrink-0" />
                   <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
@@ -979,7 +981,7 @@ export default function RecruitingJourney() {
               );
               return (
                 <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
-                  <Activity className="w-4 h-4 text-blue-400/60 flex-shrink-0" />
+                  <Zap className="w-4 h-4 text-blue-400/60 flex-shrink-0" />
                   <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
                     Track your next interaction — <button onClick={openLog} className="text-blue-400 hover:underline font-medium">log a call, email, or visit</button> to keep your timeline current
                   </p>
