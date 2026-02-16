@@ -183,6 +183,222 @@ class JourneySummaryRequest(BaseModel):
     program_id: str
 
 
+class NextStepRequest(BaseModel):
+    program_id: str
+
+
+@router.post("/next-step")
+async def ai_next_step(data: NextStepRequest, request: Request):
+    """AI-powered next step suggestion based on journey timeline. Premium only."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_ai_limit(tenant_id, subscription)
+
+    program = await db.programs.find_one({"program_id": data.program_id, "tenant_id": tenant_id}, {"_id": 0})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    if not profile:
+        raise HTTPException(status_code=400, detail="Please set up your athlete profile first")
+
+    coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": data.program_id}, {"_id": 0}).to_list(10)
+    head_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
+
+    interactions = await db.interactions.find(
+        {"tenant_id": tenant_id, "program_id": data.program_id}, {"_id": 0}
+    ).sort("date_time", -1).to_list(50)
+
+    # Map recruiting_status to journey stage
+    status_to_stage = {
+        "Not Contacted": "Targeting",
+        "Contacted": "Contacted",
+        "Applied": "Engaged",
+        "Camp Attended": "Evaluating",
+        "Offer Received": "Offer",
+        "Committed": "Closed",
+        "Not Interested": "Closed",
+    }
+    stage = status_to_stage.get(program.get("recruiting_status", "Not Contacted"), "Targeting")
+
+    # Map reply_status to coach response
+    reply_to_response = {
+        "No Reply": "no response",
+        "Awaiting Reply": "no response",
+        "Reply Received": "responded",
+        "In Conversation": "asked for info",
+    }
+    coach_response = reply_to_response.get(program.get("reply_status", "No Reply"), "no response")
+
+    # Calculate last contact info
+    last_contact_date = "N/A"
+    last_contact_method = "N/A"
+    days_since_response = "N/A"
+    if interactions:
+        last = interactions[0]
+        last_contact_date = last.get("date_time", "")[:10] if last.get("date_time") else "N/A"
+        type_map = {"Phone Call": "call", "Video Call": "call", "Text Message": "email",
+                     "Campus Visit": "visit", "Camp Meeting": "camp", "Showcase": "camp"}
+        last_contact_method = type_map.get(last.get("type", ""), "email")
+        if last.get("date_time"):
+            try:
+                last_dt = datetime.fromisoformat(last["date_time"].replace("Z", "+00:00"))
+                days_since_response = (datetime.now(timezone.utc) - last_dt).days
+            except Exception:
+                days_since_response = "unknown"
+
+    # Engagement signals
+    coach_viewed = "unknown"
+    coach_attended = "unknown"
+    camp_upcoming = "no"
+    watch_alert = "no"
+
+    # Check for upcoming camps/events linked to this program
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    upcoming_events = await db.events.find(
+        {"tenant_id": tenant_id, "start_date": {"$gte": today}}, {"_id": 0}
+    ).sort("start_date", 1).to_list(10)
+    camp_events = [e for e in upcoming_events if e.get("event_type", "").lower() in ("camp", "clinic", "showcase")]
+    if camp_events:
+        camp_upcoming = f"yes — {camp_events[0].get('title', '')} on {camp_events[0].get('start_date', '')}"
+
+    # Check coach watch alerts
+    coach_alert = await db.coach_watch_alerts.find_one(
+        {"tenant_id": tenant_id, "university_name": program.get("university_name", "")}, {"_id": 0}
+    )
+    if coach_alert and coach_alert.get("severity") in ("red", "yellow"):
+        watch_alert = f"yes — {coach_alert.get('headline', 'Staff change detected')}"
+
+    # NCAA contact window (simplified — assume open for D2/D3, check timing for D1)
+    division = program.get("division", "")
+    ncaa_contact_open = "yes" if division in ("D2", "D3", "NAIA", "JUCO") else "check current NCAA calendar"
+
+    # Upcoming tournaments from events
+    tournament_events = [e for e in upcoming_events if e.get("event_type", "").lower() in ("tournament", "showcase", "match")]
+    tournaments_detail = "None scheduled"
+    if tournament_events:
+        tournaments_detail = "; ".join([f"{e.get('title', '')} on {e.get('start_date', '')}" for e in tournament_events[:3]])
+
+    system_message = """You are an AI recruiting assistant for a college-bound student-athlete.
+
+Your job is to recommend the single most important "Next Step" for a specific college program,
+based on the athlete's recruiting timeline, communication history, and engagement signals.
+
+You must adapt your recommendations based on NCAA division differences:
+
+Division I:
+- Coaches often recruit earlier.
+- Timing and follow-up cadence matter.
+- Emphasize visibility, highlights, camps, and responsiveness.
+- Respect NCAA contact windows strictly.
+
+Division II:
+- Coaches recruit later and value consistent communication.
+- Emphasize relationship-building, follow-ups, camps, and unofficial visits.
+- Outreach is often welcomed sooner and more directly.
+
+Division III:
+- Recruiting is coach-driven and relationship-focused.
+- Academics and admissions alignment are critical.
+- Emphasize direct communication, admissions coordination, and visits.
+- NCAA contact restrictions are minimal.
+
+Your recommendation must be:
+- Actionable and realistic
+- Appropriate to the division
+- Clear enough for a parent or athlete to act on immediately
+
+Return ONLY valid JSON in this format:
+{
+  "next_step": "The single best next step — one clear sentence",
+  "reasoning": "Brief 1-2 sentence explanation of why this is the right move",
+  "urgency": "high" or "medium" or "low",
+  "action_type": "email" or "call" or "visit" or "camp" or "highlight" or "academic" or "wait"
+}
+
+Do not provide multiple options. Return ONE best next step."""
+
+    user_prompt = f"""Student Profile:
+- Graduation Year: {profile.get('grad_year', 'N/A')}
+- Sport: Volleyball
+- Position: {profile.get('position', 'N/A')}
+- GPA: {profile.get('gpa', 'N/A')}
+- Current Journey Stage: {stage}
+  (Targeting | Contacted | Engaged | Evaluating | Visit | Offer | Closed)
+
+School Context:
+- School Name: {program.get('university_name', 'N/A')}
+- NCAA Division: {division or 'N/A'} (D1 | D2 | D3)
+- Conference: {program.get('conference', 'N/A')}
+
+Communication History:
+- Last Contact Date: {last_contact_date}
+- Last Contact Method: {last_contact_method}
+- Coach Response Status: {coach_response}
+- Days Since Last Coach Response: {days_since_response}
+
+Engagement Signals:
+- Coach viewed highlights: {coach_viewed}
+- Coach attended event or watched film: {coach_attended}
+- Camp or clinic upcoming: {camp_upcoming}
+- Watch Alert or staff change: {watch_alert}
+
+Timeline Constraints:
+- NCAA contact window open: {ncaa_contact_open}
+- Upcoming tournaments/showcases: {tournaments_detail}
+
+Task:
+Based on all information above, suggest the single best Next Step for this athlete at this school.
+
+If direct contact is not permitted due to NCAA rules,
+recommend a compliant alternative action (camp, highlight update, academic prep).
+
+Return ONLY valid JSON."""
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"nextstep_{uuid.uuid4().hex[:8]}",
+            system_message=system_message,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        response = await chat.send_message(UserMessage(text=user_prompt))
+        response_text = response.strip()
+        if response_text.startswith("```"):
+            response_text = response_text.split("```")[1]
+            if response_text.startswith("json"):
+                response_text = response_text[4:]
+        result = json.loads(response_text)
+
+        await track_ai_usage(tenant_id)
+
+        return {
+            "next_step": result.get("next_step", ""),
+            "reasoning": result.get("reasoning", ""),
+            "urgency": result.get("urgency", "medium"),
+            "action_type": result.get("action_type", "email"),
+            "program_id": data.program_id,
+            "university_name": program.get("university_name", ""),
+        }
+
+    except json.JSONDecodeError:
+        await track_ai_usage(tenant_id)
+        return {
+            "next_step": response_text[:300] if response_text else "Review your timeline and follow up with the coaching staff.",
+            "reasoning": "AI generated a recommendation but in an unexpected format.",
+            "urgency": "medium",
+            "action_type": "email",
+            "program_id": data.program_id,
+            "university_name": program.get("university_name", ""),
+        }
+    except Exception as e:
+        logger.error(f"AI next step error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate next step: {str(e)}")
+
+
 @router.post("/journey-summary")
 async def generate_journey_summary(data: JourneySummaryRequest, request: Request):
     """Generate AI summary of recruiting journey with a program"""
