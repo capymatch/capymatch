@@ -73,6 +73,16 @@ export default function LoginPage({ onAuth }) {
                 <Sparkles className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
+                <h3 className="text-[15px] font-semibold text-gray-900">AI-Powered Outreach</h3>
+                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Draft personalized coach emails, get engagement insights, and highlight reel advice — all powered by AI.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3.5">
+              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Eye className="w-[18px] h-[18px] text-rose-700" />
+              </div>
+              <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Coach Watch Alerts</h3>
                 <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Get notified when news could affect your outreach timing.</p>
               </div>
