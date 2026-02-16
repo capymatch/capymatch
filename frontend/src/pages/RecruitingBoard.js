@@ -14,10 +14,10 @@ import { toast } from "sonner";
 
 /* ── Board Groups Config ── */
 const BOARD_GROUPS = [
-  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-600 dark:text-rose-400", accentBar: "bg-rose-500", description: "Overdue, needs response, or stale" },
-  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-600 dark:text-amber-400", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
-  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-600 dark:text-emerald-400", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
-  { key: "closed", label: "Closed", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-600 dark:text-gray-400", accentBar: "bg-gray-500", description: "Not a fit, committed, or archived" },
+  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Overdue, needs response, or stale" },
+  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
+  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
+  { key: "closed", label: "Closed", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Not a fit, committed, or archived" },
 ];
 
 /* ── Group Funnel ── */
@@ -71,15 +71,6 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
 
-  const lastFollowUp = p.last_follow_up ? new Date(p.last_follow_up).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
-
-  const nextStep = p.recruiting_status === "Not Contacted" ? "Send intro email"
-    : p.reply_status === "No Reply" ? "Follow up"
-    : p.reply_status === "In Conversation" ? "Continue conversation"
-    : p.reply_status === "Awaiting Reply" ? "Wait for reply"
-    : isOverdue ? "Overdue follow-up"
-    : dueDateFormatted ? "Follow up" : "Log interaction";
-
   return (
     <div
       className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
@@ -124,22 +115,6 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
               )}
             </span>
           )}
-        </div>
-      </div>
-
-      {/* Middle: Last follow-up, Due date, Next step */}
-      <div className="hidden lg:flex items-center gap-6 flex-shrink-0 text-[11px]">
-        <div className="w-20 text-center" data-testid={`last-followup-${p.program_id}`}>
-          <p className="font-medium" style={{ color: "var(--t-text-muted)" }}>Last follow-up</p>
-          <p className="mt-0.5 font-semibold" style={{ color: "var(--t-text-secondary)" }}>{lastFollowUp || "—"}</p>
-        </div>
-        <div className="w-20 text-center" data-testid={`due-date-${p.program_id}`}>
-          <p className="font-medium" style={{ color: "var(--t-text-muted)" }}>Due date</p>
-          <p className={`mt-0.5 font-semibold ${isOverdue ? "text-rose-400" : ""}`} style={!isOverdue ? { color: "var(--t-text-secondary)" } : {}}>{dueDateFormatted || "—"}</p>
-        </div>
-        <div className="w-28 text-center" data-testid={`next-step-${p.program_id}`}>
-          <p className="font-medium" style={{ color: "var(--t-text-muted)" }}>Next step</p>
-          <p className="mt-0.5 font-semibold text-pink-400">{nextStep}</p>
         </div>
       </div>
 
