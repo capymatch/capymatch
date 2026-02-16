@@ -136,21 +136,25 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
             </span>
           )}
         </div>
-        {/* Next Step - Journey style */}
-        <div className="flex items-start gap-2 mt-2 pt-2 border-t" style={{ borderColor: "var(--t-border)" }} data-testid={`next-step-${p.program_id}`}>
+      </div>
+
+      {/* Right: Next Step | Journey */}
+      <div className="flex items-center gap-3 flex-shrink-0">
+        {/* Next Step */}
+        <div className="hidden md:flex items-start gap-2 max-w-[280px]" data-testid={`next-step-${p.program_id}`}>
           <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${nextStep.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
             {nextStep.urgent ? <AlertCircle className="w-3.5 h-3.5 text-orange-400" /> : <Zap className="w-3.5 h-3.5 text-pink-500" />}
           </div>
-          <div className="min-w-0 flex-1">
-            <p className={`text-[9px] uppercase tracking-wider font-semibold mb-0.5 ${nextStep.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
-            <p className="text-[12px] font-semibold leading-snug" style={{ color: "var(--t-text)" }}>{nextStep.title}</p>
-            <p className="text-[10px] mt-0.5 leading-snug" style={{ color: "var(--t-text-muted)" }}>{nextStep.sub}</p>
+          <div className="min-w-0">
+            <p className={`text-[9px] uppercase tracking-wider font-semibold ${nextStep.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
+            <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--t-text)" }}>{nextStep.title}</p>
+            <p className="text-[10px] leading-snug" style={{ color: "var(--t-text-muted)" }}>{nextStep.sub}</p>
           </div>
         </div>
-      </div>
 
-      {/* Right: journey */}
-      <div className="flex items-center gap-3 flex-shrink-0">
+        {/* Divider */}
+        <div className="hidden md:block w-px h-10 bg-[var(--t-border)]" />
+
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
           className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
