@@ -71,7 +71,8 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
 
-  // Compute next step — only for actionable states
+  // Compute next step from data-driven signals
+  const signals = p.signals || {};
   const nextStep = (() => {
     if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
       return { title: `Follow-up is ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`, sub: "Send your follow-up email now", urgent: true };
@@ -79,11 +80,14 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
     if (p.next_action_due && daysUntil !== null && daysUntil <= 7) {
       return { title: `Follow-up due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}`, sub: p.next_action || "Send a follow-up email with your updated stats", urgent: daysUntil <= 2 };
     }
-    if (p.recruiting_status === "Not Contacted") {
+    if (signals.emails_sent === 0 && signals.total_interactions === 0) {
       return { title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", urgent: false };
     }
-    if (p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted") {
+    if (signals.emails_sent > 0 && !signals.has_coach_reply) {
       return { title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", urgent: false };
+    }
+    if (signals.has_coach_reply && signals.days_since_reply > 7) {
+      return { title: `Coach replied ${signals.days_since_reply} days ago`, sub: "Keep the conversation going with a follow-up", urgent: false };
     }
     return null;
   })();
