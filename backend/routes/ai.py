@@ -204,9 +204,6 @@ async def ai_next_step(data: NextStepRequest, request: Request):
     if not profile:
         raise HTTPException(status_code=400, detail="Please set up your athlete profile first")
 
-    coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": data.program_id}, {"_id": 0}).to_list(10)
-    head_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
-
     interactions = await db.interactions.find(
         {"tenant_id": tenant_id, "program_id": data.program_id}, {"_id": 0}
     ).sort("date_time", -1).to_list(50)
