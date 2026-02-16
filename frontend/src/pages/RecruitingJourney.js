@@ -467,6 +467,12 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
             </div>
             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
               <div className="flex gap-2.5">
+                {step.showMarkReplied && (
+                  <Button size="sm" variant="outline" className="text-xs h-9 border-green-600/30 text-green-400 hover:bg-green-600/10"
+                    onClick={onMarkReplied} data-testid="mark-replied-btn">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />Mark as Replied
+                  </Button>
+                )}
                 {isBasic && step.type === "email" ? (
                   <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
                     disabled data-testid="next-step-action-btn">
