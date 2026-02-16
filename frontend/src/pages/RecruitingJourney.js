@@ -711,7 +711,7 @@ export default function RecruitingJourney() {
           {/* AI Insights */}
           <div className="relative">
             <AISidebarCard programId={programId} onDraftEmail={openEmail} />
-            {!isPremium && <LockedOverlay label="AI Recruiting Insights" />}
+            {!isPremium && <LockedOverlay label="AI Recruiting Insights" premiumOnly />}
           </div>
 
           {/* Coaches */}
