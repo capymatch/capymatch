@@ -462,7 +462,7 @@ async def outreach_analysis(request: Request):
     tenant_id = await get_tenant_id(user)
 
     subscription = await get_user_subscription(tenant_id)
-    enforce_feature(subscription, "auto_reply_detection", "Outreach Analysis", "premium")
+    enforce_feature(subscription, "recruiting_insights", "Outreach Analysis", "pro")
 
     # Gather all data
     programs = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(100)

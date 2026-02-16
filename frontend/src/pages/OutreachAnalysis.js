@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import {
   TrendingUp, BarChart3, Target, ArrowUpRight, Loader2,
   Zap, AlertTriangle, CheckCircle, ChevronRight, MessageCircle,
-  Shield, RefreshCw, Eye, Radio
+  Shield, RefreshCw, Eye, Radio, Lock, Crown
 } from "lucide-react";
 import FeatureGate from "../components/FeatureGate";
 import UpgradeBenefitsPage from "../components/UpgradeBenefitsPage";
 import { useSubscription } from "../lib/subscription";
 import api from "../lib/api";
 import { Button } from "../components/ui/button";
+import UpgradeModal from "../components/UpgradeModal";
 
 function ScoreRing({ score, label }) {
   const radius = 40;
@@ -50,6 +51,7 @@ function StatBox({ label, value, icon: Icon, color }) {
 export default function OutreachAnalysis() {
   const { subscription } = useSubscription();
   const isBasic = !subscription?.tier || subscription.tier === "basic";
+  const isPremium = subscription?.tier === "premium";
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
