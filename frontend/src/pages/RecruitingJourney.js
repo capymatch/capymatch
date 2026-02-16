@@ -307,7 +307,11 @@ function FollowUpScheduler({ program, onSaved }) {
 }
 
 // ─── Next Step Hero Card ───
-function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic, isPremium }) {
+function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic, isPremium }) {
+  const [aiStep, setAiStep] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAI, setShowAI] = useState(false);
+
   const getNextStep = () => {
     const now = new Date();
     if (program.next_action_due) {
@@ -333,58 +337,146 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
     return { urgent: false, title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", action: "Log Interaction", type: "log" };
   };
 
+  const generateAIStep = async () => {
+    setAiLoading(true);
+    try {
+      const res = await api.post("/ai/next-step", { program_id: programId });
+      setAiStep(res.data);
+      setShowAI(true);
+      toast.success("AI recommendation ready");
+    } catch (e) {
+      if (e.response?.data?.detail?.error === "subscription_limit") return;
+      toast.error("Failed to generate AI suggestion");
+    } finally { setAiLoading(false); }
+  };
+
   const INSIGHT_ICONS = { calendar: Calendar, clock: Clock, zap: Zap, target: Target, activity: Zap };
+  const ACTION_ICONS = { email: Mail, call: Phone, visit: MapPin, camp: Calendar, highlight: Video, academic: GraduationCap, wait: Clock };
   const step = getNextStep();
+  const displayAI = showAI && aiStep;
+  const urgencyColors = { high: "text-red-400 bg-red-500/10", medium: "text-amber-400 bg-amber-500/10", low: "text-emerald-400 bg-emerald-500/10" };
 
   return (
-    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${step.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
+    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${displayAI ? (aiStep.urgency === "high" ? "border-l-orange-500" : "border-l-purple-500") : step.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-        <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
-          {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-pink-500" />}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
-          <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
-          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
-        </div>
-        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-          <div className="flex gap-2.5">
-            {isBasic && step.type === "email" ? (
-              <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
-                disabled data-testid="next-step-action-btn">
-                <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
-              </Button>
-            ) : (
-              <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
-                onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
-                {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
-                {step.action}
-              </Button>
-            )}
-            {program.next_action_due && (
-              <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
-                style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
-                Snooze 3 days
-              </Button>
-            )}
+
+      {/* AI-powered Next Step */}
+      {displayAI ? (
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-5">
+            <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-[10px] uppercase tracking-wider font-semibold text-purple-400">AI Next Step</p>
+                <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${urgencyColors[aiStep.urgency] || urgencyColors.medium}`}>
+                  {aiStep.urgency}
+                </span>
+              </div>
+              <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{aiStep.next_step}</p>
+              <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>{aiStep.reasoning}</p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {(() => {
+                const AIcon = ACTION_ICONS[aiStep.action_type] || Zap;
+                const actionLabel = aiStep.action_type === "email" ? "Compose Email" : aiStep.action_type === "call" ? "Log Call" : "Log Interaction";
+                const actionHandler = aiStep.action_type === "email" ? onSendEmail : onLogInteraction;
+                return (
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 shadow-lg shadow-purple-600/20"
+                    onClick={actionHandler} data-testid="ai-next-step-action-btn">
+                    <AIcon className="w-3.5 h-3.5 mr-1.5" />{actionLabel}
+                  </Button>
+                );
+              })()}
+              <button onClick={() => setShowAI(false)} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors"
+                title="Show default suggestion" data-testid="toggle-default-step-btn">
+                <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+              </button>
+            </div>
           </div>
-          {isBasic && step.type === "email" && (
-            <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
-              Upgrade to Pro to email coaches
-            </a>
+          <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <Sparkles className="w-3 h-3 text-purple-400/60 flex-shrink-0" />
+            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
+              Personalized by AI based on your timeline, {program.division || "this school"}'s division, and recruiting signals
+            </p>
+            <button onClick={generateAIStep} disabled={aiLoading} className="ml-auto text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="refresh-ai-step-btn">
+              {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Refresh
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* Default rule-based Next Step */
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+            <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
+              {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-pink-500" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
+              <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
+            </div>
+            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+              <div className="flex gap-2.5">
+                {isBasic && step.type === "email" ? (
+                  <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
+                    disabled data-testid="next-step-action-btn">
+                    <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
+                  </Button>
+                ) : (
+                  <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
+                    onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
+                    {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
+                    {step.action}
+                  </Button>
+                )}
+                {program.next_action_due && (
+                  <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
+                    style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
+                    Snooze 3 days
+                  </Button>
+                )}
+              </div>
+              {isBasic && step.type === "email" && (
+                <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
+                  Upgrade to Pro to email coaches
+                </a>
+              )}
+            </div>
+          </div>
+          {/* AI Suggest button for Premium users */}
+          {isPremium && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+              <button onClick={generateAIStep} disabled={aiLoading}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors disabled:opacity-50"
+                data-testid="ai-suggest-next-step-btn">
+                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {aiLoading ? "Analyzing timeline..." : "AI Suggest"}
+              </button>
+              <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Get a personalized recommendation</span>
+            </div>
           )}
-        </div>
-      </div>
-      {insight && (() => {
-        const IcComp = INSIGHT_ICONS[insight.icon] || Zap;
-        return (
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }} data-testid="recruiting-insight-tip">
-            <IcComp className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{insight.text}</p>
-          </div>
-        );
-      })()}
+          {/* Non-premium AI teaser */}
+          {!isPremium && !isBasic && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+              <Crown className="w-3.5 h-3.5 text-amber-400/60 flex-shrink-0" />
+              <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
+                <a href="/account" className="text-purple-400 hover:underline font-medium">Upgrade to Premium</a> for AI-powered next step suggestions
+              </p>
+            </div>
+          )}
+          {insight && (() => {
+            const IcComp = INSIGHT_ICONS[insight.icon] || Zap;
+            return (
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }} data-testid="recruiting-insight-tip">
+                <IcComp className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{insight.text}</p>
+              </div>
+            );
+          })()}
+        </>
+      )}
     </div>
   );
 }
