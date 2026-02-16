@@ -184,6 +184,7 @@ async def get_program(program_id: str, request: Request):
     interactions = await db.interactions.find({"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}).sort("date_time", -1).to_list(100)
     program["coaches"] = coaches
     program["interactions"] = interactions
+    program["signals"] = await compute_interaction_signals(tenant_id, program_id)
     return program
 
 
