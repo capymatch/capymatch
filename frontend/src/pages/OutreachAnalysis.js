@@ -57,22 +57,22 @@ export default function OutreachAnalysis() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (isBasic) { setLoading(false); return; }
+    if (!isPremium) { setLoading(false); return; }
     const fetchAnalysis = async () => {
       try {
         const res = await api.get("/ai/outreach-analysis");
         setData(res.data.analysis);
       } catch (err) {
-        if (err.response?.status === 403) return; // FeatureGate handles this
+        if (err.response?.status === 403) return;
         setError("Failed to generate analysis");
       } finally {
         setLoading(false);
       }
     };
     fetchAnalysis();
-  }, [isBasic]);
+  }, [isPremium]);
 
-  if (isBasic) return <UpgradeBenefitsPage featureKey="outreach-analysis" />;
+  if (!isPremium) return <UpgradeBenefitsPage featureKey="outreach-analysis" premiumOnly={!isBasic} />;
 
   return (
       <div data-testid="outreach-analysis-page">
