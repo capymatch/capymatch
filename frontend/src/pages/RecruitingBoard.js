@@ -152,28 +152,8 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
         </div>
       </div>
 
-      {/* Right: status + journey */}
+      {/* Right: journey */}
       <div className="flex items-center gap-3 flex-shrink-0">
-        {p.board_group === "action_required" && (() => {
-          const alert = isOverdue
-            ? { text: `Overdue since ${dueDateFormatted}`, color: "text-rose-400" }
-            : p.recruiting_status === "Not Contacted"
-            ? { text: "Not contacted yet", color: "text-rose-400" }
-            : p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted"
-            ? { text: "No reply yet", color: "text-amber-400" }
-            : p.reply_status === "Awaiting Reply"
-            ? { text: "Awaiting reply", color: "text-amber-400" }
-            : { text: "Needs attention", color: "text-rose-400" };
-          return <span className={`hidden sm:block text-[11px] font-medium whitespace-nowrap ${alert.color}`}>{alert.text}</span>;
-        })()}
-        {p.board_group === "upcoming" && p.next_action_due && (
-          <span className="hidden sm:block text-[11px] font-medium text-amber-400 whitespace-nowrap">Due {dueDateFormatted}</span>
-        )}
-        {p.board_group === "in_progress" && (
-          <span className="hidden sm:block text-[11px] font-medium text-emerald-400 whitespace-nowrap">
-            {p.reply_status === "In Conversation" ? "Active conversation" : "Recently contacted"}
-          </span>
-        )}
         <button
           onClick={() => navigate(`/journey/${p.program_id}`)}
           className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
