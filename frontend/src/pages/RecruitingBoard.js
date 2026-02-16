@@ -145,7 +145,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
           className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
           data-testid={`view-journey-${p.program_id}`}
         >
-          Journey
+          <Sparkles className="w-3.5 h-3.5" />Journey
         </button>
       </div>
     </div>
