@@ -170,7 +170,6 @@ Public-facing Volleyball Recruiting CRM with:
 
 ## Upcoming Tasks
 - **P1**: Fix UI spacing on Engagement Analysis page (OutreachAnalysis.js) — recurring issue
-- **P0**: Migrate to persistent MongoDB database (currently mocked in-memory)
 
 ## Future/Backlog
 - Add more coach data to university database
@@ -178,6 +177,24 @@ Public-facing Volleyball Recruiting CRM with:
 - Email templates & bulk outreach
 - App naming (blocked on user decision — "Vollura" was taken)
 - Family Collaboration (read-only parent/viewer role)
+
+## AI Next Step Suggestions (Feb 2026)
+- **Premium-only** AI feature integrated into the existing Next Step Hero card on the Journey page
+- Uses Claude Sonnet 4.5 to analyze athlete's timeline, communication history, and engagement signals
+- Returns a single, actionable "Next Step" recommendation personalized by:
+  - NCAA division (D1/D2/D3 with division-specific recruiting advice)
+  - Journey stage (Targeting → Contacted → Engaged → Evaluating → Visit → Offer → Closed)
+  - Communication history (last contact date, method, coach response status)
+  - Engagement signals (upcoming camps, coach watch alerts, tournaments)
+  - Timeline constraints (NCAA contact windows)
+- Response includes: next_step text, reasoning, urgency level (high/medium/low), action_type
+- **UI**: Purple-themed AI card overlays the default Next Step card when activated
+  - "AI Suggest" button for Premium users (Sparkles icon)
+  - Urgency badge (color-coded: red=high, amber=medium, green=low)
+  - Contextual action button (Compose Email, Log Call, etc.)
+  - Dismiss (X) to return to default view, Refresh to regenerate
+- **Pro users**: See "Upgrade to Premium" teaser instead of AI Suggest button
+- **Backend endpoint**: POST /api/ai/next-step (Premium-only, enforced via enforce_ai_limit)
 
 ## Completed (Feb 16, 2026)
 - **CSS Cleanup - RecruitingBoard.js**: Replaced inline `style` object with Tailwind `flex flex-col gap-5` on groups container. Replaced hardcoded `rgba(255,255,255,0.04)` border with theme variable `var(--t-border)` for consistency.
