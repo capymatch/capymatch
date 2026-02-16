@@ -893,28 +893,31 @@ export default function RecruitingJourney() {
                 <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No interactions yet</p>
                 <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>Send an email or log an interaction to get started</p>
               </div>
-            ) : (
-              <>
-                {timeline.map((event, i) => <TimelineEvent key={event.id || i} event={event} />)}
-                {/* Soft tip when no urgent next step */}
-                {program.reply_status === "In Conversation" && (
-                  <div className="flex items-center gap-2.5 px-4 py-3 mt-1 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
-                    <MessageSquare className="w-4 h-4 text-emerald-400/60 flex-shrink-0" />
-                    <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                      You're in conversation — <button onClick={openLog} className="text-emerald-400 hover:underline font-medium">log your latest interaction</button> to keep your timeline current
-                    </p>
-                  </div>
-                )}
-                {program.reply_status === "Reply Received" && program.recruiting_status !== "Not Contacted" && (
-                  <div className="flex items-center gap-2.5 px-4 py-3 mt-1 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
-                    <Activity className="w-4 h-4 text-blue-400/60 flex-shrink-0" />
-                    <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                      Track your next interaction — <button onClick={openLog} className="text-blue-400 hover:underline font-medium">log a call, email, or visit</button> to keep your timeline current
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
+            ) : timeline.map((event, i) => <TimelineEvent key={event.id || i} event={event} />)}
+            {/* Soft tip — shows when Next Step hero card is hidden */}
+            {(() => {
+              const dueDays = program.next_action_due ? Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000) : null;
+              const hasHeroStep = (dueDays !== null && dueDays <= 7)
+                || program.recruiting_status === "Not Contacted"
+                || (program.reply_status === "No Reply" && program.recruiting_status !== "Not Contacted");
+              if (hasHeroStep) return null;
+              if (program.reply_status === "In Conversation") return (
+                <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
+                  <MessageSquare className="w-4 h-4 text-emerald-400/60 flex-shrink-0" />
+                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                    You're in conversation — <button onClick={openLog} className="text-emerald-400 hover:underline font-medium">log your latest interaction</button> to keep your recruiting journey up to date
+                  </p>
+                </div>
+              );
+              return (
+                <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
+                  <Activity className="w-4 h-4 text-blue-400/60 flex-shrink-0" />
+                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                    Track your next interaction — <button onClick={openLog} className="text-blue-400 hover:underline font-medium">log a call, email, or visit</button> to keep your timeline current
+                  </p>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
