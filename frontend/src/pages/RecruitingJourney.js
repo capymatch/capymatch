@@ -459,11 +459,25 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
           )}
           {/* Non-premium AI teaser */}
           {!isPremium && !isBasic && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
-              <Crown className="w-3.5 h-3.5 text-amber-400/60 flex-shrink-0" />
-              <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
-                <a href="/account" className="text-purple-400 hover:underline font-medium">Upgrade to Premium</a> for AI-powered next step suggestions
+            <div className="mt-3 pt-3 border-t space-y-2" style={{ borderColor: "var(--t-border)" }} data-testid="ai-next-step-teaser">
+              <div className="flex items-center gap-2">
+                <Crown className="w-3.5 h-3.5 text-amber-400/60 flex-shrink-0" />
+                <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>
+                  AI-Powered Next Step Suggestions
+                </p>
+              </div>
+              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                Our AI reviews your athlete's timeline, coach communication, and division-specific recruiting patterns to recommend the single best next move — like when to follow up, what to say, or which camp to attend. It's like having a recruiting advisor available 24/7.
               </p>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400/70 flex-shrink-0" />
+                <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
+                  Safe and private — your family's data is never shared or used to train AI models
+                </p>
+              </div>
+              <a href="/account" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="ai-teaser-upgrade-link">
+                <Sparkles className="w-3 h-3" />Upgrade to Premium
+              </a>
             </div>
           )}
           {insight && (() => {
