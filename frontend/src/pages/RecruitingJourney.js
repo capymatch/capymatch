@@ -635,17 +635,32 @@ export default function RecruitingJourney() {
       )}
       {/* ─── Coach Watch Teaser for non-Premium ─── */}
       {!isPremium && (
-        <div className="rounded-xl border border-purple-500/20 p-3 flex items-center gap-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
-          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
-            <Lock className="w-4 h-4 text-purple-400" />
+        <div className="rounded-xl border border-purple-500/20 p-4" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
+              <Lock className="w-4 h-4 text-purple-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Never miss a coaching change at your target schools</p>
+            </div>
+            <a href="/account" className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
+              Upgrade
+            </a>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch — Know when coaching staff changes</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Get real-time alerts when coaches leave or new ones are hired at your schools.</p>
+          <div className="space-y-2 pl-1">
+            {[
+              { icon: Search, text: "We automatically scan school websites for coaching staff updates" },
+              { icon: AlertCircle, text: "Get instant alerts when a coach leaves, is hired, or changes roles" },
+              { icon: Mail, text: "Know exactly when to reach out to a new coach before other recruits do" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <item.icon className="w-3.5 h-3.5 mt-0.5 text-purple-400/70 flex-shrink-0" />
+                <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{item.text}</p>
+              </div>
+            ))}
           </div>
-          <a href="/account" className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
-            Upgrade
-          </a>
+        </div>
         </div>
       )}
       {/* ─── Header ─── */}
