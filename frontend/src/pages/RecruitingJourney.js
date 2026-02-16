@@ -22,10 +22,9 @@ const EVENT_ICONS = {
   meeting: { icon: Users, color: "text-indigo-400", bg: "bg-indigo-500/10" },
   note: { icon: FileText, color: "text-gray-400", bg: "bg-gray-500/10" },
   interaction: { icon: MessageSquare, color: "text-gray-400", bg: "bg-gray-500/10" },
+  coach_reply: { icon: Mail, color: "text-green-400", bg: "bg-green-500/10" },
 };
 
-const STATUS_OPTIONS = ["Not Contacted", "Contacted", "Applied", "Camp Attended", "Offer Received", "Committed", "Not Interested"];
-const REPLY_OPTIONS = ["No Reply", "Awaiting Reply", "Reply Received", "In Conversation"];
 const PRIORITY_OPTIONS = ["Low", "Medium", "High", "Very High"];
 
 // ─── Timeline Event ───
