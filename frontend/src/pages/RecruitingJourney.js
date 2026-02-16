@@ -722,6 +722,7 @@ export default function RecruitingJourney() {
   const [matchScore, setMatchScore] = useState(null);
   const [coachAlert, setCoachAlert] = useState(null);
   const [showCoachTeaser, setShowCoachTeaser] = useState(false);
+  const [showMarkReplied, setShowMarkReplied] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
