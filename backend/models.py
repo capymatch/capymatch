@@ -13,6 +13,7 @@ class ProgramCreate(BaseModel):
     recruiting_status: str = "Not Contacted"
     reply_status: str = "No Reply"
     priority: str = "Medium"
+    is_active: bool = True
     initial_contact_sent: str = ""
     last_follow_up: str = ""
     follow_up_days: int = 14
@@ -39,6 +40,7 @@ class ProgramUpdate(BaseModel):
     recruiting_status: Optional[str] = None
     reply_status: Optional[str] = None
     priority: Optional[str] = None
+    is_active: Optional[bool] = None
     initial_contact_sent: Optional[str] = None
     last_follow_up: Optional[str] = None
     follow_up_days: Optional[int] = None
@@ -52,6 +54,10 @@ class ProgramUpdate(BaseModel):
     notes: Optional[str] = None
     athlete_interest: Optional[int] = None
     school_interest: Optional[int] = None
+
+
+class MarkAsReplied(BaseModel):
+    note: str
 
 
 class CoachCreate(BaseModel):
