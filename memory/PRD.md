@@ -188,6 +188,12 @@ Public-facing Volleyball Recruiting CRM with:
   - AI Advisor sidebar button opens upgrade modal for non-premium users
   - Account page feature list updated: all AI features show COMMIT READY badges for non-premium tiers
   - Sidebar star icons shown on all 3 AI nav items (Engagement AI, Highlight AI, AI Advisor) for Starter + Pro users
+- **Journey Page AI Gating Fix**: Fixed bug where Pro users saw upgrade modal on Journey load and AI features appeared unlocked after closing:
+  - Changed recruiting-insights fetch from `!isBasic` to `isPremium` (prevents 403 trigger)
+  - AI Recruiting Insights sidebar locked for non-premium users with "Upgrade to Commit Ready" text
+  - Coach Watch teaser shown for all non-premium users (was Starter only)
+  - LockedOverlay component now supports `premiumOnly` prop for context-aware upgrade text
+  - Email, follow-up reminders, and match scores remain unlocked for Pro users (non-AI features)
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
