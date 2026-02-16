@@ -41,7 +41,7 @@ function EmailAvatar({ name, email: addr }) {
 }
 
 // ─── Compose Modal ───
-function ComposeModal({ onClose, onSent, replyTo }) {
+function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
   const [to, setTo] = useState(replyTo?.to || "");
   const [subject, setSubject] = useState(replyTo?.subject || "");
   const [body, setBody] = useState("");
