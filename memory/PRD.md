@@ -191,12 +191,19 @@ Public-facing Volleyball Recruiting CRM with:
 - **Journey Page AI Gating Fix**: Fixed bug where Pro users saw upgrade modal on Journey load and AI features appeared unlocked after closing:
   - Changed recruiting-insights fetch from `!isBasic` to `isPremium` (prevents 403 trigger)
   - AI Recruiting Insights sidebar locked for non-premium users with "Upgrade to Commit Ready" text
-  - Compose Intro Email button and Timeline Email button locked for non-premium users with contextual upgrade nudge
   - Coach Watch teaser shown for all non-premium users (was Starter only)
   - LockedOverlay component now supports `premiumOnly` prop for context-aware upgrade text
   - Log interactions, follow-up reminders, coaches, and match scores remain unlocked for Pro users (non-AI features)
+- **Email Gating Fix (Feb 16, 2026)**: Fixed bug where Pro users couldn't send manual emails (email button was incorrectly locked):
+  - Reverted the incorrect lock that blocked email buttons for Pro users
+  - EmailComposer now accepts `isPremium` prop to gate ONLY AI draft buttons
+  - Pro users: email composer opens with To/Subject/Body/Send all functional; AI draft buttons replaced by "AI email drafts require Commit Ready" locked notice
+  - Premium users: full email composer with all 4 AI draft buttons (intro, follow_up, thank_you, interest_update) visible
+  - Timeline "Email" button remains active for Pro users (only disabled for Starter)
+  - Test verification: 12/12 frontend tests passed (iteration_37.json)
 
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
+- /app/test_reports/iteration_37.json (Email gating fix - 12/12 tests passed)
 - /app/test_reports/iteration_35.json (Tier differentiation - 100% pass, 12 backend + 8 frontend)
 - /app/test_reports/iteration_36.json (Premium-only AI gating - 14/14 backend, 8/9 frontend + 1 fix applied)
