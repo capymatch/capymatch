@@ -259,7 +259,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
         ) : (
           <div className="flex items-center gap-2 w-full py-1 px-2.5 rounded-lg bg-purple-500/5 border border-purple-500/15" data-testid="ai-draft-locked">
             <Lock className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-            <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Commit Ready</a></span>
+            <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Premium</a></span>
           </div>
         )}
       </div>
@@ -371,7 +371,7 @@ function NextStepHero({ program, coaches, onSendEmail, onLogInteraction, onSnooz
           </div>
           {isBasic && step.type === "email" && (
             <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
-              Upgrade to Active Recruit to email coaches
+              Upgrade to Pro to email coaches
             </a>
           )}
         </div>
@@ -487,7 +487,7 @@ function LockedOverlay({ label, premiumOnly = false }) {
       <Lock className="w-5 h-5 text-pink-500 mb-1.5" />
       <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{label}</p>
       <a href="/account" className="text-[11px] text-pink-500 hover:underline mt-0.5">
-        {premiumOnly ? "Upgrade to Commit Ready" : "Upgrade to Active Recruit"}
+        {premiumOnly ? "Upgrade to Premium" : "Upgrade to Pro"}
       </a>
     </div>
   );
