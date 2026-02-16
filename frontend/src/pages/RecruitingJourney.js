@@ -311,6 +311,7 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
   const [aiStep, setAiStep] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [showTeaser, setShowTeaser] = useState(false);
 
   const getNextStep = () => {
     const now = new Date();
