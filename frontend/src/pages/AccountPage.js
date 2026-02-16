@@ -144,7 +144,7 @@ export default function AccountPage() {
                           {feat.label}
                         </span>
                         {!feat.included && feat.premiumOnly && (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-400">COMMIT READY</span>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-400">PREMIUM</span>
                         )}
                       </div>
                       {feat.value && feat.included && (
