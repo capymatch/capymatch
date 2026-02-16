@@ -13,7 +13,7 @@ const FEATURE_BENEFITS = {
       { icon: BarChart3, title: "Outreach Score", desc: "Get a personalized score measuring the strength of your recruiting engagement" },
       { icon: MessageSquare, title: "AI Email Drafts", desc: "Generate personalized emails to coaches with one click using AI" },
       { icon: TrendingUp, title: "Engagement Insights", desc: "See what's working in your outreach and where to improve" },
-      { icon: Shield, title: "Coach Watch Alerts", desc: "Get notified when coaching staff changes at your target schools (Premium)" },
+      { icon: Shield, title: "Coach Watch Alerts", desc: "Get notified when coaching staff changes at your target schools" },
     ],
   },
   "highlight-advisor": {
