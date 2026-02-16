@@ -71,6 +71,27 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
 
+  // Compute next step
+  const nextStep = (() => {
+    if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
+      return { text: `Follow-up is ${Math.abs(daysUntil)}d overdue`, icon: AlertCircle, color: "text-orange-400" };
+    }
+    if (p.next_action_due && daysUntil !== null && daysUntil <= 7) {
+      return { text: `Follow up in ${daysUntil}d`, icon: Clock, color: "text-amber-400" };
+    }
+    if (p.recruiting_status === "Not Contacted") {
+      return { text: "Send intro email", icon: Mail, color: "text-pink-400" };
+    }
+    if (p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted") {
+      return { text: "Send follow-up", icon: Mail, color: "text-amber-400" };
+    }
+    if (p.reply_status === "In Conversation") {
+      return { text: "Continue conversation", icon: Activity, color: "text-emerald-400" };
+    }
+    return { text: "Log next interaction", icon: CheckCircle2, color: "text-gray-400" };
+  })();
+  const StepIcon = nextStep.icon;
+
   return (
     <div
       className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
@@ -78,7 +99,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
       data-testid={`program-row-${p.program_id}`}
     >
       {/* Accent bar */}
-      <div className={`w-[3px] h-9 rounded-sm flex-shrink-0 ${accentColor}`} />
+      <div className={`w-[3px] self-stretch rounded-sm flex-shrink-0 ${accentColor}`} />
 
       {/* Division badge */}
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
@@ -115,6 +136,11 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
               )}
             </span>
           )}
+        </div>
+        {/* Next Step */}
+        <div className="flex items-center gap-1.5 mt-1" data-testid={`next-step-${p.program_id}`}>
+          <StepIcon className={`w-3 h-3 flex-shrink-0 ${nextStep.color}`} />
+          <span className={`text-[11px] font-medium ${nextStep.color}`}>Next: {nextStep.text}</span>
         </div>
       </div>
 
