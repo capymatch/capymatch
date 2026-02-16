@@ -64,7 +64,7 @@ export default function LoginPage({ onAuth }) {
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Recruiting Journey</h3>
-                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Track every step with each school — emails, notes, and next actions in one place.</p>
+                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">A guided action plan for each school — know exactly what to do next and when.</p>
               </div>
             </div>
 
