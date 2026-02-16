@@ -248,7 +248,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
       </div>
       <div className="flex gap-1.5 flex-wrap items-center">
-        {isPremium ? (
+        {canUseAIDrafts ? (
           ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
             <button key={t} onClick={() => draftAI(t)} disabled={drafting}
               className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
