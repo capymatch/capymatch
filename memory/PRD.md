@@ -179,5 +179,9 @@ Public-facing Volleyball Recruiting CRM with:
 - App naming (blocked on user decision — "Vollura" was taken)
 - Family Collaboration (read-only parent/viewer role)
 
+## Completed (Feb 16, 2026)
+- **CSS Cleanup - RecruitingBoard.js**: Replaced inline `style` object with Tailwind `flex flex-col gap-5` on groups container. Replaced hardcoded `rgba(255,255,255,0.04)` border with theme variable `var(--t-border)` for consistency.
+- **Dead Code Removal - constants.js**: Removed unused `STATUS_GROUPS` and `DIVISION_COLORS` exports (replaced by `BOARD_GROUPS` in RecruitingBoard.js and local division color maps).
+
 ## Test Reports
 - /app/test_reports/iteration_27.json (P0 bug fix verification - 100% pass)
