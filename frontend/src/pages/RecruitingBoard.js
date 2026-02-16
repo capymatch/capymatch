@@ -141,7 +141,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
       {/* Right: Next Step | Journey */}
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Next Step */}
-        <div className="hidden md:flex items-start gap-2 max-w-[280px]" data-testid={`next-step-${p.program_id}`}>
+        <div className="hidden md:flex items-start gap-2 max-w-[320px]" data-testid={`next-step-${p.program_id}`}>
           <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${nextStep.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
             {nextStep.urgent ? <AlertCircle className="w-3.5 h-3.5 text-orange-400" /> : <Zap className="w-3.5 h-3.5 text-pink-500" />}
           </div>
