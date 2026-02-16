@@ -113,7 +113,7 @@ export default function Layout({ user, onLogout }) {
     { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
-    { to: "/outreach-analysis", icon: TrendingUp, label: "Engagement AI", premium: true },
+    { to: "/outreach-analysis", icon: TrendingUp, label: "Engagement AI", premium: true, premiumOnly: true },
     { to: "/highlight-advisor", icon: Video, label: "Highlight AI", premium: true, premiumOnly: true },
   ];
 
