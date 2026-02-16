@@ -305,15 +305,57 @@ function FollowUpScheduler({ program, onSaved }) {
   );
 }
 
-// ─── Next Step Hero Card ───
-function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteraction, onSnooze, insight, isBasic, isPremium }) {
+// ─── Mark as Replied Modal ───
+function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
+
+  const save = async () => {
+    if (!note.trim()) { toast.error("Please describe what the coach said"); return; }
+    setSaving(true);
+    try {
+      await api.post(`/programs/${programId}/mark-replied`, { note: note.trim() });
+      toast.success("Coach reply logged to timeline");
+      onSaved();
+    } catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="mark-replied-modal">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+          <Mail className="w-4 h-4 text-green-400" />Mark as Replied
+        </h3>
+        <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
+      </div>
+      <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Describe what the coach said or shared. This gets logged to your timeline.</p>
+      <textarea
+        placeholder="e.g. Coach Smith replied and invited me to their summer camp..."
+        value={note} onChange={e => setNote(e.target.value)} rows={3}
+        className={`${inputCls} resize-none`}
+        style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+        data-testid="mark-replied-note"
+      />
+      <Button className="bg-green-600 hover:bg-green-700 text-white text-xs w-full" onClick={save} disabled={saving} data-testid="save-replied-btn">
+        {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <CheckCircle2 className="w-3 h-3 mr-1" />}Log Coach Reply
+      </Button>
+    </div>
+  );
+}
+
+// ─── Next Step Hero Card (Data-Driven) ───
+function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteraction, onSnooze, onMarkReplied, insight, isBasic, isPremium }) {
   const [aiStep, setAiStep] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
 
+  const signals = program.signals || {};
+
   const getNextStep = () => {
     const now = new Date();
+    // Priority 1: Overdue follow-up
     if (program.next_action_due) {
       const due = new Date(program.next_action_due);
       const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
@@ -325,11 +367,17 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
         return { urgent: diff <= 2, title: `Your follow-up to ${coachName} is due in ${diff} day${diff !== 1 ? 's' : ''}`, sub: program.next_action || "Send a follow-up email with your updated stats", action: "Send Follow-up Now", type: "email" };
       }
     }
-    if (program.recruiting_status === "Not Contacted") {
+    // Priority 2: No outreach yet (data-driven)
+    if (signals.emails_sent === 0 && signals.total_interactions === 0) {
       return { urgent: false, title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", action: "Compose Intro Email", type: "email" };
     }
-    if (program.reply_status === "No Reply" && program.recruiting_status !== "Not Contacted") {
-      return { urgent: false, title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", action: "Send Follow-up", type: "email" };
+    // Priority 3: Outreach sent but no reply — nudge to follow up or mark replied
+    if (signals.emails_sent > 0 && !signals.has_coach_reply) {
+      return { urgent: false, title: "No reply yet — follow up or mark as replied", sub: "If the coach replied outside the app, mark it. Otherwise, send a follow-up.", action: "Send Follow-up", type: "email", showMarkReplied: true };
+    }
+    // Priority 4: Has reply but it's been a while
+    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply > 7) {
+      return { urgent: false, title: `Coach replied ${signals.days_since_reply} days ago — time to follow up`, sub: "Keep the conversation going with a thoughtful response", action: "Send Follow-up", type: "email" };
     }
     return null;
   };
