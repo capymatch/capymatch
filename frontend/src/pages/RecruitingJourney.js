@@ -618,8 +618,8 @@ export default function RecruitingJourney() {
           </div>
         </div>
       )}
-      {/* ─── Coach Watch Teaser for Starter ─── */}
-      {isBasic && (
+      {/* ─── Coach Watch Teaser for non-Premium ─── */}
+      {!isPremium && (
         <div className="rounded-xl border border-purple-500/20 p-3 flex items-center gap-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
           <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center">
             <Lock className="w-4 h-4 text-purple-400" />
@@ -709,7 +709,7 @@ export default function RecruitingJourney() {
           {/* AI Insights */}
           <div className="relative">
             <AISidebarCard programId={programId} onDraftEmail={openEmail} />
-            {isBasic && <LockedOverlay label="AI Recruiting Insights" />}
+            {!isPremium && <LockedOverlay label="AI Recruiting Insights" />}
           </div>
 
           {/* Coaches */}
