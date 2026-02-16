@@ -4,7 +4,7 @@ import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   ChevronRight, Search, Plus, AlertTriangle,
-  Clock, Activity, Archive, Sparkles,
+  Clock, Activity, Archive, Sparkles, Zap,
   MapPin, Building2, User, Mail, AlertCircle, CheckCircle2
 } from "lucide-react";
 import { Input } from "../components/ui/input";
