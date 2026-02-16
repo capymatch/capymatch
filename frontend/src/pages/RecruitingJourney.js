@@ -332,10 +332,7 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
     if (program.reply_status === "No Reply" && program.recruiting_status !== "Not Contacted") {
       return { urgent: false, title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", action: "Send Follow-up", type: "email" };
     }
-    if (program.reply_status === "In Conversation") {
-      return { urgent: false, title: "Keep the conversation going", sub: "Log your latest interaction to keep your recruiting journey up to date", action: "Log Interaction", type: "log" };
-    }
-    return { urgent: false, title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", action: "Log Interaction", type: "log" };
+    return null;
   };
 
   const generateAIStep = async () => {
