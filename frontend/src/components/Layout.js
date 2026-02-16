@@ -239,8 +239,8 @@ export default function Layout({ user, onLogout }) {
             <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
             <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Advisor</span>
             {!sidebarCollapsed && (() => {
-              const isBasic = !subscription?.tier || subscription.tier === "basic";
-              return isBasic ? <Star className="ml-auto w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" /> : null;
+              const isPremium = subscription?.tier === "premium";
+              return !isPremium ? <Star className="ml-auto w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" /> : null;
             })()}
           </button>
         </nav>
