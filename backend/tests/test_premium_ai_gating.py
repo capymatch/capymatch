@@ -193,21 +193,30 @@ class TestSubscriptionTiersAPI:
     """Test /api/subscription/tiers endpoint to verify Pro tier features list"""
     
     def test_subscription_tiers_pro_no_ai_drafts_feature(self, pro_session):
-        """Verify Pro tier features list does NOT include 'AI-written email drafts'"""
+        """Verify Pro tier features list does NOT include 'AI-written email drafts' and ai_drafts_per_month=0"""
         response = pro_session.get(f"{BASE_URL}/api/subscription/tiers")
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
-        tiers = data.get("tiers", {})
+        tiers = data.get("tiers", [])  # API returns a list, not dict
         
-        # Get Pro tier features
-        pro_tier = tiers.get("pro", {})
+        # Find Pro tier from the list
+        pro_tier = None
+        for tier in tiers:
+            if tier.get("id") == "pro":
+                pro_tier = tier
+                break
+        
+        assert pro_tier is not None, "Pro tier not found in subscription tiers API"
         pro_features = pro_tier.get("features", [])
         
-        # Pro tier should NOT have AI-written email drafts
-        for feat in pro_features:
-            assert "ai" not in feat.lower() or "ai-written" not in feat.lower(), f"Pro tier should not have AI drafts feature: {feat}"
+        # Verify Pro tier has ai_drafts_per_month = 0
+        assert pro_tier.get("ai_drafts_per_month") == 0, f"Pro ai_drafts_per_month should be 0, got {pro_tier.get('ai_drafts_per_month')}"
         
-        print(f"✓ Pro tier features verified (no AI-written email drafts): {pro_features}")
+        # Pro tier should NOT have AI-written email drafts in features list
+        ai_feature_present = any("ai" in feat.lower() and ("draft" in feat.lower() or "email" in feat.lower() or "summar" in feat.lower()) for feat in pro_features)
+        assert not ai_feature_present, f"Pro tier should not have AI drafts/emails/summaries feature in list: {pro_features}"
+        
+        print(f"✓ Pro tier features verified: ai_drafts_per_month=0, no AI email features: {pro_features}")
 
 
 class TestHighlightAdvisorGating:
