@@ -754,23 +754,37 @@ export default function RecruitingJourney() {
       {/* ─── Coach Watch Teaser for non-Premium ─── */}
       {!isPremium && (
         <div className="rounded-xl border border-purple-500/20 p-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center">
-              <Crown className="w-4 h-4 text-amber-400/70" />
-            </div>
-            <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <Crown className="w-3.5 h-3.5 text-amber-400/70" />
+              </div>
               <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</p>
-              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Never miss a coaching change at your target schools</p>
+              <button onClick={() => setShowCoachTeaser(v => !v)} className="text-[10px] text-purple-400/70 hover:text-purple-400 font-medium flex items-center gap-0.5" data-testid="coach-watch-teaser-toggle">
+                {showCoachTeaser ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                {showCoachTeaser ? "Less" : "How it works"}
+              </button>
             </div>
-            <a href="/account" className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
-              Upgrade
+            <a href="/account" className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
+              <Sparkles className="w-3 h-3" />Upgrade
             </a>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5 pl-12">
-            <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Search className="w-3 h-3 text-purple-400/70" />Auto-scans school sites</span>
-            <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><AlertCircle className="w-3 h-3 text-purple-400/70" />Instant coaching alerts</span>
-            <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Mail className="w-3 h-3 text-purple-400/70" />Reach new coaches first</span>
-          </div>
+          {showCoachTeaser && (
+            <div className="mt-2.5 pl-10 space-y-2">
+              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                Coach Watch automatically monitors coaching staff changes at your target schools. If a head coach leaves or a new coach is hired, you'll be the first to know — so you can adjust your outreach before other recruits.
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Search className="w-3 h-3 text-purple-400/70" />Auto-scans school sites</span>
+                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><AlertCircle className="w-3 h-3 text-purple-400/70" />Instant coaching alerts</span>
+                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Mail className="w-3 h-3 text-purple-400/70" />Reach new coaches first</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400/70 flex-shrink-0" />
+                <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Safe and private — your data is never shared or used to train AI</p>
+              </div>
+            </div>
+          )}
         </div>
       )}
       {/* ─── Header ─── */}
