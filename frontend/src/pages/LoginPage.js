@@ -83,8 +83,8 @@ export default function LoginPage({ onAuth }) {
                 <Sparkles className="w-[18px] h-[18px] text-rose-700" />
               </div>
               <div>
-                <h3 className="text-[15px] font-semibold text-gray-900">AI Recruiting Assistant</h3>
-                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Write coach emails, analyze your engagement, and get personalized advice — AI does the heavy lifting.</p>
+                <h3 className="text-[15px] font-semibold text-gray-900">AI Journey Assistant</h3>
+                <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">Draft coach emails, suggest next steps, and surface insights based on your journey timeline.</p>
               </div>
             </div>
           </div>
