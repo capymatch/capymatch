@@ -214,40 +214,68 @@ export default function Layout({ user, onLogout }) {
               >
                 <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
                 <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                {item.premium && !sidebarCollapsed && (() => {
-                  const isBasic = !subscription?.tier || subscription.tier === "basic";
-                  const isPro = subscription?.tier === "pro";
-                  const showStar = isBasic || (item.premiumOnly && isPro);
-                  return showStar ? (
-                    <Crown className="ml-auto w-3.5 h-3.5 flex-shrink-0 text-amber-400/70" />
-                  ) : null;
-                })()}
               </NavLink>
             );
           })}
 
-          {/* AI Assistant Button */}
-          <button
-            onClick={() => {
-              const tier = subscription?.tier;
-              if (tier !== "premium") {
-                setShowUpgrade(true);
-              } else {
-                setShowAssistant(true);
-              }
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white mt-1 ${
-              sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
-            }`}
-            data-testid="nav-ai-assistant"
-          >
-            <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
-            <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Advisor</span>
-            {!sidebarCollapsed && (() => {
-              const isPremium = subscription?.tier === "premium";
-              return !isPremium ? <Crown className="ml-auto w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" /> : null;
-            })()}
-          </button>
+          {/* AI Features Accordion */}
+          <div className="pt-1">
+            <button
+              onClick={() => setAiOpen(!aiOpen)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white ${
+                sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
+              }`}
+              data-testid="nav-ai-features-toggle"
+              title={sidebarCollapsed ? "AI Features" : undefined}
+            >
+              <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
+              <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Features</span>
+              {!sidebarCollapsed && (
+                <>
+                  {(!subscription?.tier || subscription.tier !== "premium") && (
+                    <Crown className="ml-auto w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
+                  )}
+                  <ChevronRight className={`w-4 h-4 text-white/40 flex-shrink-0 transition-transform duration-200 ${aiOpen ? 'rotate-90' : ''}`} />
+                </>
+              )}
+            </button>
+            {aiOpen && !sidebarCollapsed && (
+              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+                {aiItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    data-testid={`nav-${item.label.toLowerCase().replace(/\s/g, '-')}`}
+                    className={({ isActive }) =>
+                      `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group ${
+                        isActive
+                          ? "bg-white/15 text-white font-semibold"
+                          : "text-white/60 hover:bg-white/8 hover:text-white/90"
+                      }`
+                    }
+                  >
+                    <item.icon className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+                    <span>{item.label}</span>
+                  </NavLink>
+                ))}
+                <button
+                  onClick={() => {
+                    const tier = subscription?.tier;
+                    if (tier !== "premium") {
+                      setShowUpgrade(true);
+                    } else {
+                      setShowAssistant(true);
+                    }
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group text-white/60 hover:bg-white/8 hover:text-white/90"
+                  data-testid="nav-ai-advisor"
+                >
+                  <Sparkles className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+                  <span>AI Advisor</span>
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Subscription Badge + Admin Link */}
