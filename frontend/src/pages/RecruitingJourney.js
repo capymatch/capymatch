@@ -221,7 +221,10 @@ function EmailComposer({ coaches, programId, onSent, onCancel, isPremium = false
       setBody(res.data.body || "");
       if (res.data.coach_email) setTo(res.data.coach_email);
       toast.success("AI draft ready");
-    } catch { toast.error("Failed to generate draft"); } finally { setDrafting(false); }
+    } catch (e) {
+      if (e.response?.data?.detail?.error === "subscription_limit") return;
+      toast.error("Failed to generate draft");
+    } finally { setDrafting(false); }
   };
 
   const send = async () => {
