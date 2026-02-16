@@ -29,6 +29,8 @@ export default function HighlightAdvisor() {
   };
 
   if (!isPremium) return <UpgradeBenefitsPage featureKey="highlight-advisor" premiumOnly={!isBasic} />;
+
+  return (
       <div className="space-y-5" data-testid="highlight-advisor-page">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
