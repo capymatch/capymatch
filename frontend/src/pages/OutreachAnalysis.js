@@ -204,7 +204,7 @@ export default function OutreachAnalysis() {
         )}
 
         {/* Coach Watch Section */}
-        <CoachWatch />
+        <CoachWatch isPremium={isPremium} />
       </div>
   );
 }
@@ -215,17 +215,20 @@ const SEVERITY_CONFIG = {
   green: { color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", icon: CheckCircle, label: "Stable" },
 };
 
-function CoachWatch() {
+function CoachWatch({ isPremium }) {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scannedAt, setScannedAt] = useState(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { subscription } = useSubscription();
 
   useEffect(() => {
+    if (!isPremium) return;
     api.get("/ai/coach-watch/alerts").then(res => {
       setAlerts(res.data.alerts || []);
     }).catch(() => {});
-  }, []);
+  }, [isPremium]);
 
   const runScan = async () => {
     setScanning(true);
