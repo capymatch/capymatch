@@ -443,20 +443,25 @@ async def get_program_journey(program_id: str, request: Request):
     
     for i in interactions:
         event_type = "interaction"
-        if i.get("type") == "Email":
+        itype = i.get("type", "")
+        if itype == "Email":
             event_type = "email_sent"
-        elif i.get("type") == "Phone Call":
+        elif itype == "Phone Call":
             event_type = "phone_call"
-        elif i.get("type") == "Video Call":
+        elif itype == "Video Call":
             event_type = "video_call"
+        elif itype == "coach_reply":
+            event_type = "email_received"
+        
+        title = f"{itype} logged" if itype != "coach_reply" else "Coach replied"
         
         timeline.append({
             "id": i.get("interaction_id"),
             "event_type": event_type,
-            "title": f"{i.get('type', 'Interaction')} logged",
+            "title": title,
             "date": i.get("date_time") or i.get("created_at"),
             "content": i.get("notes") or i.get("message_copy"),
-            "coach_name": "",
+            "coach_name": "" if itype != "coach_reply" else "Coach",
         })
     
     # 2. Get events linked to this program
