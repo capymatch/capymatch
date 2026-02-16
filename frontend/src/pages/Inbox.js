@@ -361,6 +361,8 @@ function ThreadView({ thread, onBack, onReply }) {
 
 // ─── Main Inbox ───
 export default function Inbox() {
+  const { subscription } = useSubscription();
+  const isPremium = subscription?.tier === "premium";
   const [gmailStatus, setGmailStatus] = useState(null); // null = loading
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
