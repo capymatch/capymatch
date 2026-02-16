@@ -248,7 +248,22 @@ function CoachWatch({ isPremium }) {
   const greenAlerts = alerts.filter(a => a.severity === "green");
 
   return (
-    <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-watch-section">
+    <div className="rounded-xl border p-5 relative" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-watch-section">
+      {!isPremium && (
+        <div className="absolute inset-0 z-10 rounded-xl flex flex-col items-center justify-center backdrop-blur-[2px]" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <Lock className="w-6 h-6 text-amber-400 mb-2" />
+          <p className="text-sm font-semibold text-white mb-1">Commit Ready Exclusive</p>
+          <p className="text-xs text-white/60 mb-3 text-center max-w-xs">Coach Watch monitors coaching staff changes at your target schools in real time.</p>
+          <button
+            onClick={() => setShowUpgrade(true)}
+            className="px-4 py-2 text-xs font-semibold rounded-lg text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 transition-all"
+            data-testid="coach-watch-upgrade-btn"
+          >
+            <Crown className="w-3 h-3 inline mr-1.5" />Upgrade to Commit Ready
+          </button>
+          <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} feature="auto_reply_detection" currentTier={subscription?.tier || "basic"} />
+        </div>
+      )}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-pink-400" />
