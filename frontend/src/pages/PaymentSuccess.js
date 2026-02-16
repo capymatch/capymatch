@@ -60,7 +60,7 @@ export default function PaymentSuccess() {
     );
   }
 
-  const TIER_LABELS = { pro: "Active Recruit", premium: "Commit Ready" };
+  const TIER_LABELS = { pro: "Pro", premium: "Premium" };
 
   return (
     <div className="flex items-center justify-center py-20" data-testid="payment-success-page">
