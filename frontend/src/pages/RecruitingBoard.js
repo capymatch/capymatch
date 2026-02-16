@@ -74,7 +74,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   return (
     <div
       className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
-      style={{ borderColor: "rgba(255,255,255,0.04)" }}
+      style={{ borderColor: "var(--t-border)" }}
       data-testid={`program-row-${p.program_id}`}
     >
       {/* Accent bar */}
@@ -270,7 +270,7 @@ export default function RecruitingBoard() {
       </div>
 
       {/* Groups */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div className="flex flex-col gap-5">
         {BOARD_GROUPS.map((group) => {
           if (activeFilter && activeFilter !== group.key) return null;
           const groupPrograms = groups[group.key] || [];
