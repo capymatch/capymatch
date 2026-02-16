@@ -205,7 +205,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
 }
 
 // ─── Inline Email Composer ───
-function EmailComposer({ coaches, programId, onSent, onCancel }) {
+function EmailComposer({ coaches, programId, onSent, onCancel, isPremium = false }) {
   const [to, setTo] = useState(coaches?.[0]?.email || "");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
