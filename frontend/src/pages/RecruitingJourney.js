@@ -929,9 +929,10 @@ export default function RecruitingJourney() {
       </div>
 
       {/* ─── Next Step Hero ─── */}
-      <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
+      <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} onMarkReplied={() => { setShowMarkReplied(true); setShowLogForm(false); setShowEmailComposer(false); }} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
 
       {/* ─── Inline Forms (expand below hero) ─── */}
+      {showMarkReplied && <div className="mt-4"><MarkAsRepliedModal programId={programId} onSaved={() => { setShowMarkReplied(false); fetchData(); }} onCancel={() => setShowMarkReplied(false)} /></div>}
       {showLogForm && <div className="mt-4"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
       {showEmailComposer && <div className="mt-4"><EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} /></div>}
 
