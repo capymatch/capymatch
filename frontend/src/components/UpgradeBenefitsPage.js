@@ -30,7 +30,7 @@ const FEATURE_BENEFITS = {
   },
 };
 
-export default function UpgradeBenefitsPage({ featureKey }) {
+export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false }) {
   const { subscription } = useSubscription();
   const [showUpgrade, setShowUpgrade] = useState(false);
   const config = FEATURE_BENEFITS[featureKey] || FEATURE_BENEFITS["outreach-analysis"];
@@ -46,10 +46,12 @@ export default function UpgradeBenefitsPage({ featureKey }) {
             <Icon className="w-8 h-8 text-pink-500" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
-            Unlock {config.title}
+            {premiumOnly ? `${config.title} is a Commit Ready Feature` : `Unlock ${config.title}`}
           </h1>
           <p className="text-sm md:text-base max-w-md mx-auto" style={{ color: "var(--t-text-muted)" }}>
-            {config.subtitle}
+            {premiumOnly
+              ? `Upgrade to Commit Ready to access ${config.title} and all premium features.`
+              : config.subtitle}
           </p>
         </div>
 
@@ -81,11 +83,11 @@ export default function UpgradeBenefitsPage({ featureKey }) {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="w-5 h-5 text-pink-500" />
             <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-              Available on Active Recruit & Commit Ready plans
+              {premiumOnly ? "Exclusive to Commit Ready plan" : "Available on Active Recruit & Commit Ready plans"}
             </span>
           </div>
           <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
-            Starting at $19/mo. Cancel anytime.
+            {premiumOnly ? "$39/mo. Cancel anytime." : "Starting at $19/mo. Cancel anytime."}
           </p>
           <button
             onClick={() => setShowUpgrade(true)}
