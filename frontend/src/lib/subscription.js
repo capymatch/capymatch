@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 const SubscriptionContext = createContext(null);
 
-const TIER_LABELS = { basic: "Starter", pro: "Active Recruit", premium: "Commit Ready" };
+const TIER_LABELS = { basic: "Starter", pro: "Pro", premium: "Premium" };
 
 export function SubscriptionProvider({ children }) {
   const [subscription, setSubscription] = useState(null);
