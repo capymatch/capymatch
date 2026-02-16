@@ -112,7 +112,7 @@ export default function Layout({ user, onLogout }) {
     { to: "/pipeline", icon: Kanban, label: "My Schools" },
     { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/inbox", icon: Inbox, label: "Inbox" },
-    { to: "/knowledge-base", icon: GraduationCap, label: "Schools" },
+    { to: "/knowledge-base", icon: GraduationCap, label: "Find Schools" },
   ];
 
   const aiItems = [
