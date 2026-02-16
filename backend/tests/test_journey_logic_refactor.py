@@ -341,6 +341,9 @@ class TestIsActiveToggleBehavior:
     
     def test_reactivating_program_removes_from_closed(self):
         """Test that setting is_active=true moves program out of closed group"""
+        # Re-authenticate for this test
+        self._authenticate()
+        
         # Create inactive test program
         test_name = f"TEST_Reactivate_{uuid.uuid4().hex[:8]}"
         create_resp = self.session.post(f"{BASE_URL}/api/programs", json={
