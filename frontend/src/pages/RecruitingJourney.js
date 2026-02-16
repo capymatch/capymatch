@@ -513,8 +513,8 @@ export default function RecruitingJourney() {
         const linked = (evtRes.data || []).filter(e => e.program_id === programId && e.start_date >= new Date().toISOString().slice(0, 10));
         setKeyDates(linked.slice(0, 5));
       } catch {}
-      // Fetch recruiting insights (non-blocking, Pro+ only)
-      if (!isBasic) {
+      // Fetch recruiting insights (non-blocking, Premium only)
+      if (isPremium) {
         try {
           const insightRes = await api.get("/recruiting-insights");
           const insights = insightRes.data?.insights || [];
