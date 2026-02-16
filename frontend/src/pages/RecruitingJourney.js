@@ -909,8 +909,21 @@ export default function RecruitingJourney() {
           </div>
         </div>
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap pl-9 sm:pl-0">
-          <StatusBadge label="Status" value={program.recruiting_status} options={STATUS_OPTIONS} onChange={v => updateProgram({ recruiting_status: v })} />
-          <StatusBadge label="Reply" value={program.reply_status} options={REPLY_OPTIONS} onChange={v => updateProgram({ reply_status: v })} />
+          {/* Active/Inactive Toggle */}
+          <button
+            onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
+            className="flex items-center gap-2 group"
+            data-testid="active-toggle"
+          >
+            <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: "var(--t-text-muted)" }}>Status</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors ${
+              program.is_active !== false
+                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                : "bg-gray-500/15 text-gray-400 border border-gray-500/30"
+            }`}>
+              {program.is_active !== false ? "Active" : "Inactive"}
+            </span>
+          </button>
           <StatusBadge label="Priority" value={program.priority} options={PRIORITY_OPTIONS} onChange={v => updateProgram({ priority: v })} />
         </div>
       </div>
