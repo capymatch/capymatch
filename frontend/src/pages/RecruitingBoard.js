@@ -71,7 +71,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
   const isOverdue = daysUntil !== null && daysUntil < 0;
 
-  // Compute next step with title + subtitle
+  // Compute next step — only for actionable states
   const nextStep = (() => {
     if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
       return { title: `Follow-up is ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`, sub: "Send your follow-up email now", urgent: true };
@@ -85,10 +85,7 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
     if (p.reply_status === "No Reply" && p.recruiting_status !== "Not Contacted") {
       return { title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", urgent: false };
     }
-    if (p.reply_status === "In Conversation") {
-      return { title: "Keep the conversation going", sub: "Log your latest interaction to keep your recruiting journey up to date", urgent: false };
-    }
-    return { title: "Track your next interaction", sub: "Log a call, email, or visit to keep your timeline current", urgent: false };
+    return null;
   })();
 
   return (
