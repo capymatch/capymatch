@@ -408,6 +408,7 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
       ) : (
         /* Default rule-based Next Step */
         <>
+          {step ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
               {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-pink-500" />}
