@@ -56,6 +56,8 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 
 ## What's Implemented (Recent — Feb 17, 2026)
 - **"Committed" Hero Card**: Celebratory card with trophy icon, confetti animation, gold shimmer, school name display. Shows at top of Journey page when journey_stage="committed". Takes priority over all other hero cards (Getting Started, Celebration). Toggleable via Progress Rail click.
+- **Collapsible Journey Details**: When committed, Timeline + At a Glance are hidden by default with "View full journey" toggle.
+- **Personal Notes Sidebar**: Collapsible right sidebar per school. Features: create, pin/unpin, edit, delete notes. Panel slides from right edge with note count badge. Stored in `notes` collection.
 
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
