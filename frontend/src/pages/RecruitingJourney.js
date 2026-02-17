@@ -641,10 +641,11 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
    ═══════════════════════════════════════════════════════════════ */
 const STAGE_LABELS = { added: "Added", outreach: "Outreach", in_conversation: "In Conversation", campus_visit: "Visit", offer: "Offer", committed: "Committed" };
 
-function StageLogModal({ stageKey, universityName, onConfirm, onCancel }) {
+function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCancel }) {
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
-  const label = STAGE_LABELS[stageKey] || stageKey;
+  const newLabel = STAGE_LABELS[stageKey] || stageKey;
+  const fromLabel = STAGE_LABELS[currentStage] || currentStage || "—";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -661,11 +662,17 @@ function StageLogModal({ stageKey, universityName, onConfirm, onCancel }) {
         style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-            Log progress: <span className="text-pink-500">{label}</span>
+            Log progress: <span className="text-pink-500">{newLabel}</span>
           </h3>
           <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/5">
             <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
           </button>
+        </div>
+        {/* Stage transition badge */}
+        <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+          <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{fromLabel}</span>
+          <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
+          <span className="text-xs font-semibold text-pink-500">{newLabel}</span>
         </div>
         <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
           What happened with {universityName}? This will be added to the timeline.
