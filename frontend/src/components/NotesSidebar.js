@@ -207,7 +207,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
         </div>
 
         {/* Notes list */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3" data-testid="notes-list">
+        <div className="flex-1 overflow-y-auto px-5 py-4" style={{ display: "flex", flexDirection: "column", gap: "8px" }} data-testid="notes-list">
           {loading && totalCount === 0 ? (
             <div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-pink-600" /></div>
           ) : totalCount === 0 ? (
