@@ -253,8 +253,8 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           </div>
         </div>
 
-        {/* Three Action Paths */}
-        <div className={`grid grid-cols-1 ${profileDone ? "md:grid-cols-3" : "md:grid-cols-2"} gap-3 px-6 pb-6 lg:px-8`}>
+        {/* Action Path Cards */}
+        <div className={`grid grid-cols-1 ${(!profileDone || !gmailConnected) ? "md:grid-cols-2" : "md:grid-cols-3"} gap-3 px-6 pb-6 lg:px-8`}>
           {!profileDone && (
             <ActionPath
               icon={Sparkles}
@@ -265,7 +265,17 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               onClick={() => navigate("/profile")}
             />
           )}
-          {profileDone && (
+          {profileDone && !gmailConnected && (
+            <ActionPath
+              icon={Mail}
+              iconBg="rgba(232,69,107,0.12)"
+              iconColor="#e8456b"
+              title="Connect Gmail"
+              description="Send and receive coach emails directly inside the app"
+              onClick={() => navigate("/settings")}
+            />
+          )}
+          {profileDone && gmailConnected && (
             <ActionPath
               icon={Sparkles}
               iconBg="rgba(168,85,247,0.12)"
@@ -283,7 +293,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             description="Filter D1, D2, D3, NAIA — find the right competitive level"
             onClick={() => navigate("/knowledge-base")}
           />
-          {profileDone && (
+          {profileDone && gmailConnected && (
             <ActionPath
               icon={MapPin}
               iconBg="rgba(6,182,212,0.12)"
