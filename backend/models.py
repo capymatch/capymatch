@@ -62,6 +62,15 @@ class MarkAsReplied(BaseModel):
     note: str
 
 
+class NoteCreate(BaseModel):
+    content: str
+
+
+class NoteUpdate(BaseModel):
+    content: Optional[str] = None
+    is_pinned: Optional[bool] = None
+
+
 class CoachCreate(BaseModel):
     program_id: str
     university_name: str = ""
