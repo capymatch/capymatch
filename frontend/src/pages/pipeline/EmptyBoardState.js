@@ -240,21 +240,24 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             </h2>
             <p className="text-sm leading-relaxed max-w-lg" style={{ color: "var(--t-text-secondary)" }}>
               {!profileDone
-                ? "Add the athlete's name, stats, and highlight video so coaches know who they're hearing from."
+                ? "Add the athlete's name, position, key details, and highlight video so coaches know exactly who they're hearing from."
                 : !gmailConnected
                 ? "Link your Gmail so you can send and receive coach emails directly inside the app — no switching tabs."
                 : "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
               }
             </p>
             {!profileDone && (
-              <button
-                className="mt-4 inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-                style={{ backgroundColor: "#e8456b", color: "white" }}
-                onClick={() => navigate("/profile")}
-                data-testid="complete-profile-btn"
-              >
-                Complete Athlete Profile <ChevronRight className="w-4 h-4" />
-              </button>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 w-fit"
+                  style={{ backgroundColor: "#e8456b", color: "white" }}
+                  onClick={() => navigate("/profile")}
+                  data-testid="complete-profile-btn"
+                >
+                  Set Up Athlete Profile <ChevronRight className="w-4 h-4" />
+                </button>
+                <span className="text-xs" style={{ color: "var(--t-text-faint)" }}>Takes about 3–5 minutes</span>
+              </div>
             )}
             {profileDone && !gmailConnected && (
               <button
