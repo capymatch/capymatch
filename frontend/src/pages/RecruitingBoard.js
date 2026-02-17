@@ -232,7 +232,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
 
   return (
     <div
-      className="group flex items-center gap-3 px-5 py-5 rounded-xl border transition-all hover:border-pink-600/20 cursor-pointer"
+      className="group flex items-center gap-3 px-4 py-4 rounded-xl border transition-all hover:border-pink-600/20 cursor-pointer"
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       onClick={() => navigate(`/journey/${p.program_id}`)}
       data-testid={`school-card-${p.program_id}`}
@@ -413,7 +413,7 @@ export default function RecruitingBoard() {
   const allCaughtUp = total > 0 && !focusProgram;
 
   return (
-    <div data-testid="recruiting-board" className="flex flex-col gap-8">
+    <div data-testid="recruiting-board" className="flex flex-col gap-5">
       {/* ─── Top: Progress Ring + Focus Card ─── */}
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Progress Ring */}
@@ -517,7 +517,7 @@ export default function RecruitingBoard() {
 
       {/* ─── Smart List ─── */}
       {filteredPrograms.length > 0 && (
-        <div className="flex flex-col gap-6" data-testid="smart-list">
+        <div className="flex flex-col gap-4" data-testid="smart-list">
           {filteredPrograms.map(p => (
             <SchoolCard key={p.program_id} p={p} navigate={navigate} matchScore={matchScores[p.program_id]} onMarkReplied={(prog) => setMarkRepliedProgram(prog)} />
           ))}
