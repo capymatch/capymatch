@@ -146,6 +146,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
       await api.delete(`/notes/${noteId}`);
       toast.success("Note deleted");
       fetchNotes();
+      if (onNoteChange) onNoteChange();
     } catch { toast.error("Failed to delete"); }
   };
 
