@@ -218,14 +218,19 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-4"
               style={{ backgroundColor: "rgba(232,69,107,0.12)", color: "#e8456b" }}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#e8456b" }} />
-              Step 2 of 4
+              Step {currentStep} of 4
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-2" style={{ color: "var(--t-text)" }}>
-              {firstName ? <>Let's build <span style={{ color: "#e8628a" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#e8628a" }}>target list</span></>}
+              {profileDone
+                ? (firstName ? <>Let's build <span style={{ color: "#e8628a" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#e8628a" }}>target list</span></>)
+                : <>First, let's set up <span style={{ color: "#e8628a" }}>the athlete profile</span></>
+              }
             </h2>
             <p className="text-sm leading-relaxed max-w-lg" style={{ color: "var(--t-text-secondary)" }}>
-              Browse programs, get AI-matched suggestions, or search by division and location.
-              You can always add or remove schools later.
+              {profileDone
+                ? "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
+                : "Add the athlete's name, stats, and highlight video so coaches know who they're hearing from."
+              }
             </p>
             <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
               <span style={{ fontSize: "13px" }}>📊</span>
