@@ -470,7 +470,7 @@ function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic, act
       <button className={`${btnBase} ${activeAction === "replied" ? btnActive : btnInactive}`}
         style={activeAction !== "replied" ? { color: "var(--t-text-secondary)" } : undefined}
         onClick={onReplied} data-testid="fab-replied">
-        <CheckCircle2 className="w-3.5 h-3.5" />Replied
+        <CheckCircle2 className="w-3.5 h-3.5" />Mark as Replied
       </button>
       <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
       <button className={`${btnBase} ${activeAction === "followup" ? btnActive : btnInactive}`}
