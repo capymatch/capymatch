@@ -517,7 +517,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
   };
 
   return (
-    <div className="rounded-2xl border p-5 space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="at-a-glance">
+    <div className="rounded-2xl border p-5 space-y-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="at-a-glance">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>At a Glance</h3>
         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${stageColors[boardGroup] || stageColors.needs_outreach}`}>{stageLabel}</span>
