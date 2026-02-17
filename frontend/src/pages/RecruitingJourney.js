@@ -17,12 +17,12 @@ import { toast } from "sonner";
    ═══════════════════════════════════════════════════════════════ */
 
 const RAIL_STAGES = [
-  { key: "added", label: "Added" },
-  { key: "outreach_sent", label: "Outreach" },
-  { key: "coach_replied", label: "In Conversation" },
-  { key: "campus_visit", label: "Visit" },
-  { key: "offer", label: "Offer" },
-  { key: "committed", label: "Committed" },
+  { key: "added", label: "Added", color: "#e8456b" },
+  { key: "outreach_sent", label: "Outreach", color: "#f97316" },
+  { key: "coach_replied", label: "In Conversation", color: "#eab308" },
+  { key: "campus_visit", label: "Visit", color: "#22c55e" },
+  { key: "offer", label: "Offer", color: "#10b981" },
+  { key: "committed", label: "Committed", color: "#fbbf24" },
 ];
 
 const PULSE_CONFIG = {
