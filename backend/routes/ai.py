@@ -185,6 +185,7 @@ Format rules:
 
     user_prompt = f"""{prompt_instruction}
 
+USE THIS EXACT ATHLETE DATA (do not change any values):
 {athlete_info}
 {school_info}
 {events_info}
