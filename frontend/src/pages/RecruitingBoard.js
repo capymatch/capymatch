@@ -349,6 +349,7 @@ export default function RecruitingBoard() {
                         navigate={navigate}
                         matchScore={matchScores[p.program_id]}
                         accentColor={group.accentBar}
+                        groupKey={group.key}
                       />
                     ))
                   )}
