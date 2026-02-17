@@ -1013,6 +1013,11 @@ export default function RecruitingJourney() {
         const filled = [p.athlete_name, p.position, p.height, p.grad_year, p.video_link].filter(Boolean);
         setProfileComplete(filled.length >= 5);
       } catch { setProfileComplete(false); }
+      // Check notes count
+      try {
+        const notesRes = await api.get(`/programs/${programId}/notes`);
+        setNotesCount((notesRes.data.pinned?.length || 0) + (notesRes.data.recent?.length || 0));
+      } catch { setNotesCount(0); }
       if (!isBasic) {
         try {
           const msRes = await api.get("/match-scores");
