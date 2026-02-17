@@ -246,10 +246,12 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 : "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
               }
             </p>
-            <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
-              <span style={{ fontSize: "13px" }}>📊</span>
-              Most families start with 8–15 schools across 2–3 divisions
-            </p>
+            {profileDone && (
+              <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
+                <span style={{ fontSize: "13px" }}>📊</span>
+                Most families start with 8–15 schools across 2–3 divisions
+              </p>
+            )}
           </div>
         </div>
 
