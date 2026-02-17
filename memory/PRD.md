@@ -43,6 +43,9 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Stage click/undo toggle behavior
 - **campus_visit, offer, committed stages are MANUAL ONLY** — not auto-detected from interactions (fixed Feb 17, 2026)
 - Stage label "Replied" renamed to "In Conversation" (Feb 17, 2026)
+- **Rule-based "What's Next?" card** — contextual follow-up suggestions based on latest activity (camp, call, email, visit, showcase). Dismissible. Hides when celebration hero or getting started checklist shows. (Feb 17, 2026)
+- **Camp milestone** in timeline with 🏋️ emoji and "[University] Camp" title (Feb 17, 2026)
+- Log interaction dropdown updated: "Camp Meeting" → "Camp" (Feb 17, 2026)
 - Coach CRUD, Interaction logging, Follow-up scheduling
 - Email composer with AI drafts (Premium)
 - Mark as Replied flow
