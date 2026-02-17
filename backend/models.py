@@ -27,6 +27,7 @@ class ProgramCreate(BaseModel):
     notes: str = ""
     athlete_interest: int = 5
     school_interest: int = 0
+    journey_stage: str = ""
 
 
 class ProgramUpdate(BaseModel):
@@ -54,6 +55,7 @@ class ProgramUpdate(BaseModel):
     notes: Optional[str] = None
     athlete_interest: Optional[int] = None
     school_interest: Optional[int] = None
+    journey_stage: Optional[str] = None
 
 
 class MarkAsReplied(BaseModel):
