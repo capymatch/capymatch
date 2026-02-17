@@ -59,24 +59,28 @@ function ProgressRail({ rail, onStageClick }) {
   const stages = rail.stages || {};
   const active = rail.active;
   const activeIdx = RAIL_STAGES.findIndex(s => s.key === active);
+  // Line vertical center = 7px from top of dot row (half of 14px dot)
+  const lineTop = 7;
 
   return (
-    <div className="relative flex items-start pt-2 pb-1" data-testid="progress-rail">
-      {/* Background line */}
-      <div className="absolute top-[18px] left-[40px] right-[40px] h-[2px]" style={{ background: "var(--t-border)" }} />
-      {/* Filled line — uses scaleX on full-width track for pixel-perfect alignment */}
-      <div className="absolute top-[18px] left-[40px] right-[40px] h-[2px] origin-left transition-all duration-500"
-        style={{ transform: `scaleX(${activeIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
+    <div className="relative flex items-start" data-testid="progress-rail">
+      {/* Background line — centered on dots */}
+      <div className="absolute left-[40px] right-[40px] h-[2px]" style={{ top: `${lineTop}px`, background: "var(--t-border)" }} />
+      {/* Filled line */}
+      {activeIdx > 0 && (
+        <div className="absolute left-[40px] right-[40px] h-[2px] origin-left transition-all duration-500"
+          style={{ top: `${lineTop}px`, transform: `scaleX(${activeIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
+      )}
       {RAIL_STAGES.map((s, i) => {
         const completed = stages[s.key];
         const isActive = s.key === active;
         return (
           <button key={s.key} className="flex-1 flex flex-col items-center relative z-10 group"
             onClick={() => onStageClick(s.key)} data-testid={`rail-stage-${s.key}`}>
-            <div className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 ${
-              isActive ? "w-[18px] h-[18px] bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)]"
-              : completed ? "bg-pink-500 border-pink-500 shadow-[0_0_8px_rgba(232,69,107,0.15)]"
-              : "border-[var(--t-border)] bg-[var(--t-surface)]"
+            <div className={`rounded-full border-2 transition-all duration-300 flex-shrink-0 ${
+              isActive ? "w-4 h-4 bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)] -mt-[1px]"
+              : completed ? "w-3.5 h-3.5 bg-pink-500 border-pink-500 shadow-[0_0_8px_rgba(232,69,107,0.15)]"
+              : "w-3.5 h-3.5 border-[var(--t-border)] bg-[var(--t-surface)]"
             }`} />
             <span className={`text-[10px] mt-1.5 font-medium transition-colors ${
               isActive ? "text-pink-500 font-semibold" : completed ? "text-[var(--t-text-secondary)]" : "text-[var(--t-text-muted)]"
