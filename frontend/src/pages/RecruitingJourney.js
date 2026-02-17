@@ -900,8 +900,16 @@ export default function RecruitingJourney() {
                 <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>Send an email or log an interaction to get started</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-2">
-                {timeline.map((event, i) => <ConversationBubble key={event.id || i} event={event} />)}
+              <div style={{ position: "relative", paddingBottom: 4 }}>
+                {/* Central vertical line */}
+                <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: "linear-gradient(to bottom, #e8456b, rgba(255,255,255,0.07) 85%, transparent)", transform: "translateX(-50%)" }} />
+                {timeline.map((event, i) => {
+                  const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
+                  const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
+                  // Alternate: coach replies on left, everything else alternates right/left
+                  const side = cfg.side === "left" ? "left" : (i % 2 === 0 ? "right" : "left");
+                  return <TimelineEntry key={event.id || i} event={event} side={side} />;
+                })}
               </div>
             )}
           </div>
