@@ -654,6 +654,9 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
+  const [attachments, setAttachments] = useState([]); // { file_id, filename, size }
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
   const draftAI = async (type) => {
     if (!canUseAIDrafts) return;
@@ -668,11 +671,30 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       toast.error("Failed to generate draft");
     } finally { setDrafting(false); }
   };
+  const handleFileSelect = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      for (const file of files) {
+        if (file.size > 10 * 1024 * 1024) { toast.error(`${file.name} is too large (max 10MB)`); continue; }
+        const form = new FormData();
+        form.append("file", file);
+        const res = await api.post("/gmail/upload-attachment", form, { headers: { "Content-Type": "multipart/form-data" } });
+        setAttachments(prev => [...prev, res.data]);
+      }
+    } catch (err) { toast.error("Failed to upload file"); }
+    finally { setUploading(false); if (fileInputRef.current) fileInputRef.current.value = ""; }
+  };
+  const removeAttachment = (fileId) => setAttachments(prev => prev.filter(a => a.file_id !== fileId));
+  const formatFileSize = (bytes) => bytes < 1024 ? `${bytes}B` : bytes < 1048576 ? `${(bytes / 1024).toFixed(1)}KB` : `${(bytes / 1048576).toFixed(1)}MB`;
   const send = async () => {
     if (!to || !subject || !body) { toast.error("Fill all fields"); return; }
     setSending(true);
-    try { await api.post("/gmail/send", { to, subject, body }); toast.success("Email sent!"); onSent(); }
-    catch (e) { toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?"); }
+    try {
+      await api.post("/gmail/send", { to, subject, body, attachment_ids: attachments.map(a => a.file_id) });
+      toast.success("Email sent!"); onSent();
+    } catch (e) { toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?"); }
     finally { setSending(false); }
   };
   return (
@@ -705,8 +727,32 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />}
       <input placeholder="Subject" value={subject} onChange={e => setSubject(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-subject-input" />
       <textarea placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} rows={6} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-body-input" />
+      {/* Attachments */}
+      <div>
+        <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple className="hidden" data-testid="file-input" />
+        <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors hover:bg-[var(--t-surface-alt)]"
+          style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="attach-file-btn">
+          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
+          {uploading ? "Uploading..." : "Attach Files"}
+        </button>
+        {attachments.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {attachments.map(att => (
+              <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
+                style={{ backgroundColor: "rgba(232,69,107,0.06)", borderColor: "rgba(232,69,107,0.15)", color: "var(--t-text-secondary)" }}
+                data-testid={`attachment-${att.file_id}`}>
+                <Paperclip className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                <span className="truncate max-w-[150px]">{att.filename}</span>
+                <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>({formatFileSize(att.size)})</span>
+                <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3" /></button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={send} disabled={sending} data-testid="send-email-btn">
-        {sending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Send className="w-3 h-3 mr-1" />}Send Email
+        {sending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Send className="w-3 h-3 mr-1" />}Send Email{attachments.length > 0 ? ` (${attachments.length} file${attachments.length > 1 ? "s" : ""})` : ""}
       </Button>
     </div>
   );
