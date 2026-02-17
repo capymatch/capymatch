@@ -153,13 +153,14 @@ async def list_programs(
     
     if grouped:
         groups = {
-            "action_required": [],
-            "upcoming": [],
-            "in_progress": [],
-            "closed": []
+            "overdue": [],
+            "needs_outreach": [],
+            "waiting_on_reply": [],
+            "in_conversation": [],
+            "archived": []
         }
         for p in programs:
-            group = p.get("board_group", "action_required")
+            group = p.get("board_group", "needs_outreach")
             if group in groups:
                 groups[group].append(p)
         return {
