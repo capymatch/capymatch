@@ -50,7 +50,7 @@ function StatBox({ label, value, icon: Icon, color }) {
 
 export default function OutreachAnalysis() {
   const { subscription } = useSubscription();
-  const isBasic = !subscription?.tier || subscription.tier === "basic";
+  const isBasic = false; // Starter now has all Pro features
   const isPremium = subscription?.tier === "premium";
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
