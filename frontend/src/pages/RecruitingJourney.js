@@ -1140,7 +1140,7 @@ export default function RecruitingJourney() {
 
       {/* Stage Log Modal */}
       {pendingStage && (
-        <StageLogModal stageKey={pendingStage} universityName={program.university_name}
+        <StageLogModal stageKey={pendingStage} currentStage={rail?.active || ""} universityName={program.university_name}
           onConfirm={confirmStageChange} onCancel={() => setPendingStage(null)} />
       )}
 
