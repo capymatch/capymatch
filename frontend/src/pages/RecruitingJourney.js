@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import NotesSidebar from "../components/NotesSidebar";
 
 /* ═══════════════════════════════════════════════════════════════
    CONSTANTS
