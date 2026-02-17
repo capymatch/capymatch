@@ -447,6 +447,29 @@ async def create_interaction(data: InteractionCreate, request: Request):
     doc["created_at"] = datetime.now(timezone.utc).isoformat()
     await db.interactions.insert_one(doc)
     doc.pop("_id", None)
+
+    # Auto-set follow-up based on interaction type
+    event_type = (data.type or "").lower().replace(" ", "_")
+    follow_up_days_map = {
+        "camp": 3, "camp_meeting": 3,
+        "campus_visit": 2,
+        "phone_call": 7, "video_call": 7,
+        "email_sent": 14,
+        "showcase": 5,
+        "text_message": 7,
+    }
+    days = follow_up_days_map.get(event_type)
+    if days:
+        follow_up_date = (datetime.now(timezone.utc) + timedelta(days=days)).strftime("%Y-%m-%d")
+        await db.programs.update_one(
+            {"program_id": data.program_id, "tenant_id": tenant_id},
+            {"$set": {
+                "next_action_due": follow_up_date,
+                "last_interaction_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }}
+        )
+
     return doc
 
 
