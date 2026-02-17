@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline Mockup — Recruiting Journey</title>
+<style>
+  :root {
+    --bg: #0f1219;
+    --surface: #161b25;
+    --border: rgba(255,255,255,0.07);
+    --text: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text-muted: #718096;
+    --pink: #e8456b;
+    --pink-glow: rgba(232,69,107,0.15);
+    --green: #34d399;
+    --green-glow: rgba(52,211,153,0.12);
+    --blue: #60a5fa;
+    --blue-glow: rgba(96,165,250,0.12);
+    --amber: #fbbf24;
+    --amber-glow: rgba(251,191,36,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px 20px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin-bottom: 28px;
+  }
+
+  /* ── Timeline Container ── */
+  .timeline {
+    position: relative;
+    padding: 0;
+  }
+
+  /* Central vertical line */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--pink), var(--border) 85%, transparent);
+    transform: translateX(-50%);
+  }
+
+  /* ── Each timeline entry ── */
+  .tl-entry {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .tl-entry:last-child { margin-bottom: 0; }
+
+  /* Left side entries (coach) — card on the left */
+  .tl-entry.left .tl-content {
+    width: calc(50% - 28px);
+    text-align: right;
+    padding-right: 0;
+  }
+  .tl-entry.left .tl-spacer {
+    width: calc(50% - 28px);
+  }
+
+  /* Right side entries (you) — card on the right */
+  .tl-entry.right .tl-content {
+    width: calc(50% - 28px);
+    text-align: left;
+  }
+  .tl-entry.right .tl-spacer {
+    width: calc(50% - 28px);
+  }
+
+  /* ── Node (dot on the line) ── */
+  .tl-node {
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tl-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    position: relative;
+  }
+
+  .tl-dot.coach {
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+  }
+
+  .tl-dot.you {
+    background: var(--pink);
+    border-color: var(--pink);
+    box-shadow: 0 0 10px var(--pink-glow);
+  }
+
+  .tl-dot.system {
+    background: var(--blue);
+    border-color: var(--blue);
+    box-shadow: 0 0 10px var(--blue-glow);
+  }
+
+  /* ── Content card ── */
+  .tl-content {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .tl-content:hover {
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .tl-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .tl-label.coach { color: var(--green); }
+  .tl-label.you { color: var(--pink); }
+  .tl-label.system { color: var(--blue); }
+
+  .tl-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .tl-type.coach { background: var(--green-glow); color: var(--green); }
+  .tl-type.you { background: var(--pink-glow); color: var(--pink); }
+  .tl-type.system { background: var(--blue-glow); color: var(--blue); }
+
+  .tl-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .tl-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  .tl-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  /* ── Alternating layout ── */
+  .tl-entry.left { flex-direction: row; }
+  .tl-entry.right { flex-direction: row-reverse; }
+
+  /* ── Connector arm from dot to card ── */
+  .tl-entry.left .tl-content::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: -12px;
+    width: 12px;
+    height: 2px;
+    background: var(--border);
+  }
+  .tl-entry.left .tl-content {
+    position: relative;
+  }
+
+  .tl-entry.right .tl-content::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: -12px;
+    width: 12px;
+    height: 2px;
+    background: var(--border);
+  }
+  .tl-entry.right .tl-content {
+    position: relative;
+  }
+
+  /* ── Responsive: stack on small screens ── */
+  @media (max-width: 600px) {
+    .timeline::before { left: 20px; }
+    .tl-node { left: 20px; }
+    .tl-entry.left, .tl-entry.right { flex-direction: row; }
+    .tl-entry .tl-spacer { display: none; }
+    .tl-entry .tl-content {
+      width: calc(100% - 52px) !important;
+      text-align: left !important;
+      margin-left: 52px;
+    }
+    .tl-entry.left .tl-content::after { display: none; }
+    .tl-entry.right .tl-content::before { display: none; }
+  }
+
+  .note {
+    margin-top: 40px;
+    padding: 16px;
+    background: rgba(232,69,107,0.05);
+    border: 1px solid rgba(232,69,107,0.15);
+    border-radius: 10px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .note h3 { font-size: 13px; color: var(--pink); margin-bottom: 8px; }
+  .note ul { font-size: 12px; color: var(--text-secondary); padding-left: 16px; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Timeline</h2>
+
+  <div class="timeline">
+
+    <!-- Entry 1: Coach Reply (LEFT) — most recent at top -->
+    <div class="tl-entry left">
+      <div class="tl-content">
+        <div class="tl-label coach">COACH</div>
+        <span class="tl-type coach">&#9993; Email received</span>
+        <p class="tl-text">Coach Smith replied and invited me to their summer camp. Very encouraging conversation!</p>
+        <div class="tl-date">Feb 17, 2026</div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-node"><div class="tl-dot coach"></div></div>
+    </div>
+
+    <!-- Entry 2: Your Action (RIGHT) -->
+    <div class="tl-entry right">
+      <div class="tl-content">
+        <div class="tl-label you">YOU</div>
+        <span class="tl-type you">&#9742; Phone call</span>
+        <p class="tl-text">Called coach to introduce myself and express interest in the program.</p>
+        <div class="tl-date">Feb 16, 2026</div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-node"><div class="tl-dot you"></div></div>
+    </div>
+
+    <!-- Entry 3: Your Action (LEFT) -->
+    <div class="tl-entry left">
+      <div class="tl-content">
+        <div class="tl-label you">YOU</div>
+        <span class="tl-type you">&#9993; Email sent</span>
+        <p class="tl-text">Sent initial outreach email with highlight reel and academic transcript.</p>
+        <div class="tl-date">Feb 14, 2026</div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-node"><div class="tl-dot you"></div></div>
+    </div>
+
+    <!-- Entry 4: Your Action (RIGHT) -->
+    <div class="tl-entry right">
+      <div class="tl-content">
+        <div class="tl-label you">YOU</div>
+        <span class="tl-type you">&#127915; Camp</span>
+        <p class="tl-text">Attended prospect camp. Had a good showing in front of coaching staff.</p>
+        <div class="tl-date">Feb 10, 2026</div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-node"><div class="tl-dot you"></div></div>
+    </div>
+
+    <!-- Entry 5: System (LEFT) -->
+    <div class="tl-entry left">
+      <div class="tl-content">
+        <div class="tl-label system">SYSTEM</div>
+        <span class="tl-type system">&#43; School added</span>
+        <p class="tl-text">Added UCLA to recruiting board.</p>
+        <div class="tl-date">Feb 8, 2026</div>
+      </div>
+      <div class="tl-spacer"></div>
+      <div class="tl-node"><div class="tl-dot system"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="note">
+  <h3>Design Notes</h3>
+  <ul>
+    <li><strong>Alternating layout</strong> — Coach replies on the left, your actions on the right (zigzag pattern)</li>
+    <li><strong>Color-coded dots</strong> — Green = coach, Pink = you, Blue = system events</li>
+    <li><strong>Central vertical line</strong> with gradient fade from pink to muted at the bottom</li>
+    <li><strong>Connector arms</strong> from the center line to each card</li>
+    <li><strong>Type badges</strong> — Email, Phone, Camp, etc. with matching colors</li>
+    <li><strong>Mobile responsive</strong> — Stacks to single column on small screens</li>
+    <li>Newest events at the top, oldest at the bottom</li>
+  </ul>
+</div>
+
+</body>
+</html>
