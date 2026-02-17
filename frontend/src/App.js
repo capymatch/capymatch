@@ -39,18 +39,53 @@ import "./App.css";
 function OAuthCallback({ onAuth }) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [status, setStatus] = useState("loading");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
-    if (!sessionId) { navigate("/login", { replace: true }); return; }
+    console.log("[OAuth] Callback fired, session_id:", sessionId ? sessionId.substring(0, 8) + "..." : "MISSING");
+    console.log("[OAuth] Full URL search:", window.location.search);
+
+    if (!sessionId) {
+      console.log("[OAuth] No session_id found, redirecting to login");
+      setStatus("error");
+      setErrorMsg("No session ID received from Google. Please try again.");
+      setTimeout(() => navigate("/login", { replace: true }), 2000);
+      return;
+    }
+
+    setStatus("loading");
     api.post("/auth/session", { session_id: sessionId })
-      .then(res => { onAuth(res.data); navigate("/board", { replace: true }); })
-      .catch(() => navigate("/login", { replace: true }));
+      .then(res => {
+        console.log("[OAuth] Session exchange successful for:", res.data?.email);
+        onAuth(res.data);
+        navigate("/board", { replace: true });
+      })
+      .catch(err => {
+        const detail = err?.response?.data?.detail || err?.message || "Authentication failed";
+        console.error("[OAuth] Session exchange failed:", detail, err?.response?.status);
+        setStatus("error");
+        setErrorMsg(detail);
+        setTimeout(() => navigate("/login", { replace: true }), 3000);
+      });
   }, [searchParams, navigate, onAuth]);
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
-      <div className="text-white/60 text-sm">Signing you in...</div>
+      {status === "loading" && (
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-pink-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="text-white/60 text-sm">Signing you in...</div>
+        </div>
+      )}
+      {status === "error" && (
+        <div className="text-center max-w-sm px-4">
+          <div className="text-red-400 text-sm font-medium mb-2">Sign-in failed</div>
+          <div className="text-white/50 text-xs">{errorMsg}</div>
+          <div className="text-white/30 text-xs mt-2">Redirecting to login...</div>
+        </div>
+      )}
     </div>
   );
 }
