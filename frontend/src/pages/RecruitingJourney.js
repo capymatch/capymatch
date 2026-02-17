@@ -531,7 +531,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-type-select">
-          {["Phone Call", "Video Call", "Text Message", "Camp Meeting", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
+          {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
         </select>
         <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-outcome-select">
           {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o}>{o}</option>)}
