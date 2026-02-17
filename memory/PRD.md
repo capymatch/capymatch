@@ -228,6 +228,19 @@ Public-facing Volleyball Recruiting CRM with:
 - /app/test_reports/iteration_36.json (Premium-only AI gating - 14/14 backend, 8/9 frontend + 1 fix applied)
 - /app/test_reports/iteration_40.json (Journey data-driven refactor - 14/14 backend, all frontend passed)
 
+## Completed (Feb 17, 2026) — Apple-Inspired Pipeline Redesign
+- Complete rewrite of RecruitingBoard.js with new components:
+  - **Progress Ring**: SVG donut chart showing school distribution by stage
+  - **Focus Card**: Highlights #1 most urgent school with action buttons (priority: overdue > waiting > needs outreach)
+  - **Filter Chips**: Horizontal pills replacing accordion tabs, only shows non-zero stages
+  - **Smart List**: Flat sorted cards with stage pill tags, contextual subtitles, inline quick actions
+  - **Inline Mark Replied**: Coach reply form without leaving the board
+  - **All Caught Up**: Celebration state when no urgent schools remain
+- Removed accordion groups, empty state messages, old funnel bar
+- Data migration: Auto-created coach_reply interactions from legacy reply_status data (13 schools migrated)
+- Fixed outreach counting to include ALL interaction types (not just whitelisted ones)
+- Testing: 9/9 backend, 100% frontend verified (iteration_43.json)
+
 ## Completed (Feb 17, 2026) — 5-Stage Pipeline Funnel
 - Replaced 4-stage system (Action Required/Upcoming/In Progress/Closed) with clear 5-stage recruiting funnel:
   1. **Overdue** — Follow-up date passed (handle first)
