@@ -216,7 +216,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
           <ProgressStep num={3} label="Add Schools" done={false} current={profileDone && gmailConnected} />
           <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
-          <ProgressStep num={4} label="Email Coaches" done={false} current={false} />
+          <ProgressStep num={4} label="Start Your Journey" done={false} current={false} />
         </div>
 
         {/* Hero Content */}
