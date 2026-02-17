@@ -246,6 +246,26 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 : "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
               }
             </p>
+            {!profileDone && (
+              <button
+                className="mt-4 inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
+                style={{ backgroundColor: "#e8456b", color: "white" }}
+                onClick={() => navigate("/profile")}
+                data-testid="complete-profile-btn"
+              >
+                Complete Athlete Profile <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+            {profileDone && !gmailConnected && (
+              <button
+                className="mt-4 inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
+                style={{ backgroundColor: "#e8456b", color: "white" }}
+                onClick={() => navigate("/settings")}
+                data-testid="connect-gmail-btn"
+              >
+                Connect Gmail <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
             {profileDone && (
               <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
                 <span style={{ fontSize: "13px" }}>📊</span>
