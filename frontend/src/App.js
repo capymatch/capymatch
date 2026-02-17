@@ -88,6 +88,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="board" element={<Dashboard />} />
         <Route path="pipeline" element={<RecruitingBoard />} />
         <Route path="journey/:programId" element={<RecruitingJourney />} />
+        <Route path="compare" element={<ComparePage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
         <Route path="programs/:programId" element={<ProgramDetail />} />
