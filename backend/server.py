@@ -51,6 +51,7 @@ app.include_router(subscription_router)
 app.include_router(stripe_router)
 app.include_router(admin_integrations_router)
 app.include_router(team_router)
+app.include_router(notes_router)
 
 
 # ─── Stripe Webhook (must be outside router prefix) ───
