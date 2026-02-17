@@ -828,7 +828,7 @@ export default function RecruitingJourney() {
       )}
 
       {/* ─── Main Grid: Conversation + At a Glance ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Conversation Timeline */}
         <div className="lg:col-span-2">
           <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
