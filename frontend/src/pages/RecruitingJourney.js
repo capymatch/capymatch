@@ -726,24 +726,16 @@ export default function RecruitingJourney() {
   };
 
   const handleStageClick = async (stageKey) => {
-    const rail = program.journey_rail;
-    const currentStages = rail?.stages || {};
-    const currentManual = program.journey_stage;
+    const currentManual = program.journey_stage || "";
     
-    // If this stage is currently completed and user clicks it, they want to undo
-    // If manual stage matches, clear it. Otherwise toggle normally.
-    let newStage;
-    if (currentStages[stageKey] && currentManual === stageKey) {
-      newStage = ""; // clear manual override
-    } else if (currentStages[stageKey]) {
-      // Stage is auto-detected (not manual) — can't undo auto-detected stages via click
-      toast.info("This stage was detected from your timeline data");
-      return;
+    if (currentManual === stageKey) {
+      // Undo: user clicks the same stage they manually set → clear override
+      await updateProgram({ journey_stage: "" });
     } else {
-      newStage = stageKey; // advance to this stage
+      // Set this stage (backend cascade fills all prior stages)
+      await updateProgram({ journey_stage: stageKey });
     }
     
-    await updateProgram({ journey_stage: newStage });
     const res = await api.get(`/programs/${programId}`);
     setProgram(res.data);
   };
