@@ -121,6 +121,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
       setContent("");
       toast.success("Note saved");
       fetchNotes();
+      if (onNoteChange) onNoteChange();
     } catch { toast.error("Failed to save note"); }
     finally { setSaving(false); }
   };
