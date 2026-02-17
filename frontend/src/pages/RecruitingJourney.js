@@ -401,7 +401,10 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
       <div className="flex items-start gap-3">
-        <span className="text-2xl mt-0.5">{rule.emoji}</span>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+          style={{ backgroundColor: rule.iconBg }}>
+          <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#e8456b" }}>What's Next</p>
           <h3 className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>{rule.title}</h3>
