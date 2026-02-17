@@ -1059,6 +1059,14 @@ export default function RecruitingJourney() {
       {isCommitted ? (
         <div className="mt-5">
           <CommittedHero program={program} />
+          {/* Toggle to reveal the full journey */}
+          <button onClick={() => setShowJourneyDetails(prev => !prev)}
+            className="mx-auto mt-5 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-medium transition-colors hover:bg-[var(--t-surface-alt)]"
+            style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }}
+            data-testid="toggle-journey-details">
+            {showJourneyDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {showJourneyDetails ? "Hide journey details" : "View full journey"}
+          </button>
         </div>
       ) : isNewSchool ? (
         <div className="mt-5">
@@ -1071,6 +1079,8 @@ export default function RecruitingJourney() {
         </div>
       ) : null}
 
+      {/* ─── Below-hero content: hidden by default when committed ─── */}
+      {(!isCommitted || showJourneyDetails) && (<>
       {/* ─── Next Step Card (rule-based) ─── */}
       {showNextStep && !activeForm && (
         <div className="mt-5">
@@ -1153,6 +1163,7 @@ export default function RecruitingJourney() {
           )}
         </div>
       </div>
+      </>)}
 
       {/* ─── Floating Action Bar ─── */}
       <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
