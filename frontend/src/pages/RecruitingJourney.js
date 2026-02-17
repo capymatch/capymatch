@@ -38,12 +38,16 @@ const CONV_CONFIG = {
   coach_reply:    { side: "left",  color: "emerald", label: "Coach replied" },
   phone_call:     { side: "right", color: "pink",   label: "Phone call" },
   video_call:     { side: "right", color: "cyan",   label: "Video call" },
+  text_message:   { side: "right", color: "pink",   label: "Text message" },
   camp:           { side: "center", color: "orange", label: "Camp" },
+  camp_meeting:   { side: "center", color: "orange", label: "Camp" },
   visit:          { side: "center", color: "pink",   label: "Campus visit" },
+  campus_visit:   { side: "center", color: "pink",   label: "Campus visit" },
   showcase:       { side: "center", color: "yellow", label: "Showcase" },
   meeting:        { side: "center", color: "indigo", label: "Meeting" },
   note:           { side: "right", color: "gray",   label: "Note" },
   interaction:    { side: "right", color: "gray",   label: "Interaction" },
+  other:          { side: "right", color: "gray",   label: "Other" },
 };
 
 const BOARD_STAGE_LABELS = {
