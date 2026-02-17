@@ -904,10 +904,8 @@ export default function RecruitingJourney() {
                 {/* Central vertical line */}
                 <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: "linear-gradient(to bottom, #e8456b, rgba(255,255,255,0.07) 85%, transparent)", transform: "translateX(-50%)" }} />
                 {timeline.map((event, i) => {
-                  const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
-                  const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
-                  // Alternate: coach replies on left, everything else alternates right/left
-                  const side = cfg.side === "left" ? "left" : (i % 2 === 0 ? "right" : "left");
+                  // Alternate left/right for the zigzag pattern
+                  const side = i % 2 === 0 ? "left" : "right";
                   return <TimelineEntry key={event.id || i} event={event} side={side} />;
                 })}
               </div>
