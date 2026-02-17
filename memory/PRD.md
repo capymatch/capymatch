@@ -41,6 +41,8 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
   7. School Comparison page (/compare)
 - Progress Rail cascade fill logic (backend)
 - Stage click/undo toggle behavior
+- **campus_visit, offer, committed stages are MANUAL ONLY** — not auto-detected from interactions (fixed Feb 17, 2026)
+- Stage label "Replied" renamed to "In Conversation" (Feb 17, 2026)
 - Coach CRUD, Interaction logging, Follow-up scheduling
 - Email composer with AI drafts (Premium)
 - Mark as Replied flow
