@@ -174,7 +174,6 @@ function GettingStartedChecklist({ program, coaches, timeline, onAddCoach, onSen
     { key: "added", label: `Add ${program.university_name} to your pipeline`, desc: `School added on ${new Date(program.created_at || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, done: true, action: null },
     { key: "coach", label: "Add the head coach's contact info", desc: "Find their name and email on the school's volleyball staff page", done: coaches.length > 0, action: onAddCoach },
     { key: "email", label: "Send your first introduction email", desc: "Make a great first impression with a personalized intro", done: timeline.length > 0, action: onSendEmail },
-    { key: "followup", label: "Set a follow-up reminder", desc: "Schedule a 7-day follow-up so you don't forget", done: !!program.next_action_due, action: onSetFollowup },
   ];
   const doneCount = steps.filter(s => s.done).length;
 
