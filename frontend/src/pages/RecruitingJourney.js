@@ -58,37 +58,54 @@ function ProgressRail({ rail, onStageClick }) {
   if (!rail) return null;
   const stages = rail.stages || {};
   const active = rail.active;
-  // line_fill = last consecutively completed stage (no gaps)
   const lineFill = rail.line_fill || active;
   const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === lineFill);
-  const lineTop = 7;
 
   return (
-    <div className="relative flex items-start" data-testid="progress-rail">
-      {/* Background line */}
-      <div className="absolute left-[40px] right-[40px] h-[2px]" style={{ top: `${lineTop}px`, background: "var(--t-border)" }} />
-      {/* Filled line — only through consecutive stages */}
-      {lineFillIdx > 0 && (
-        <div className="absolute left-[40px] right-[40px] h-[2px] origin-left transition-all duration-500"
-          style={{ top: `${lineTop}px`, transform: `scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
-      )}
-      {RAIL_STAGES.map((s) => {
-        const completed = stages[s.key];
-        const isActive = s.key === active;
-        return (
-          <button key={s.key} className="flex-1 flex flex-col items-center relative z-10 group"
-            onClick={() => onStageClick(s.key)} data-testid={`rail-stage-${s.key}`}>
-            <div className={`rounded-full border-2 transition-all duration-300 flex-shrink-0 ${
-              isActive ? "w-4 h-4 bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)] -mt-[1px]"
-              : completed ? "w-3.5 h-3.5 bg-pink-500 border-pink-500 shadow-[0_0_8px_rgba(232,69,107,0.15)]"
-              : "w-3.5 h-3.5 border-[var(--t-border)] bg-[var(--t-surface)]"
-            }`} />
-            <span className={`text-[10px] mt-1.5 font-medium transition-colors ${
-              isActive ? "text-pink-500 font-semibold" : completed ? "text-[var(--t-text-secondary)]" : "text-[var(--t-text-muted)]"
-            }`}>{s.label}</span>
-          </button>
-        );
-      })}
+    <div data-testid="progress-rail">
+      {/* Dot + Line row — fixed height, everything centered */}
+      <div className="relative flex items-center" style={{ height: "20px" }}>
+        {/* Background line — vertically centered via top:50% translate */}
+        <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px]" style={{ background: "var(--t-border)" }} />
+        {/* Filled line — consecutive stages only */}
+        {lineFillIdx > 0 && (
+          <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] origin-left transition-all duration-500"
+            style={{ transform: `scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
+        )}
+        {/* Dots */}
+        {RAIL_STAGES.map((s) => {
+          const completed = stages[s.key];
+          const isActive = s.key === active;
+          return (
+            <button key={s.key} className="flex-1 flex justify-center relative z-10"
+              onClick={() => onStageClick(s.key)} data-testid={`rail-stage-${s.key}`}>
+              {/* Pulse ring for active dot */}
+              {isActive && (
+                <span className="absolute w-6 h-6 rounded-full border-2 border-pink-500 opacity-30 animate-ping" />
+              )}
+              <div className={`rounded-full border-2 transition-all duration-300 ${
+                isActive ? "w-4 h-4 bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)]"
+                : completed ? "w-3 h-3 bg-pink-500 border-pink-500"
+                : "w-3 h-3 border-[var(--t-border)] bg-[var(--t-surface)]"
+              }`} />
+            </button>
+          );
+        })}
+      </div>
+      {/* Labels row */}
+      <div className="flex mt-1">
+        {RAIL_STAGES.map((s) => {
+          const completed = stages[s.key];
+          const isActive = s.key === active;
+          return (
+            <div key={s.key} className="flex-1 text-center">
+              <span className={`text-[10px] font-medium ${
+                isActive ? "text-pink-500 font-semibold" : completed ? "text-[var(--t-text-secondary)]" : "text-[var(--t-text-muted)]"
+              }`}>{s.label}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
