@@ -418,7 +418,7 @@ export default function RecruitingBoard() {
       <div className="flex flex-col lg:flex-row lg:items-stretch gap-5">
         {/* Progress Ring */}
         {total > 0 && (
-          <div className="rounded-2xl border p-5 flex-shrink-0" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
+          <div className="rounded-2xl border p-5 flex-shrink-0 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
         )}
