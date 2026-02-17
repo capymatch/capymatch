@@ -1026,19 +1026,38 @@ export default function RecruitingJourney() {
     } catch { toast.error("Failed to delete"); }
   };
 
+  const [pendingStage, setPendingStage] = useState(null);
+
   const handleStageClick = async (stageKey) => {
     const currentManual = program.journey_stage || "";
-    
     if (currentManual === stageKey) {
       // Undo: user clicks the same stage they manually set → clear override
       await updateProgram({ journey_stage: "" });
+      const res = await api.get(`/programs/${programId}`);
+      setProgram(res.data);
     } else {
-      // Set this stage (backend cascade fills all prior stages)
-      await updateProgram({ journey_stage: stageKey });
+      // Show modal to require a note
+      setPendingStage(stageKey);
     }
-    
-    const res = await api.get(`/programs/${programId}`);
-    setProgram(res.data);
+  };
+
+  const confirmStageChange = async (note) => {
+    if (!pendingStage) return;
+    try {
+      // Update stage
+      await updateProgram({ journey_stage: pendingStage });
+      // Log a timeline entry
+      await api.post("/interactions", {
+        program_id: programId,
+        event_type: "stage_update",
+        content: note,
+        outcome: `Moved to ${STAGE_LABELS[pendingStage] || pendingStage}`,
+      });
+      const res = await api.get(`/programs/${programId}`);
+      setProgram(res.data);
+      fetchData();
+    } catch { toast.error("Failed to update stage"); }
+    setPendingStage(null);
   };
 
   // Next Step card dismiss state (must be before early returns)
