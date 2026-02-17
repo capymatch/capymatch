@@ -973,7 +973,7 @@ export default function RecruitingJourney() {
   const { programId } = useParams();
   const navigate = useNavigate();
   const { subscription } = useSubscription();
-  const isBasic = !subscription?.tier || subscription.tier === "basic";
+  const isBasic = false; // Starter now has all Pro features
   const isPremium = subscription?.tier === "premium";
 
   const [program, setProgram] = useState(null);
