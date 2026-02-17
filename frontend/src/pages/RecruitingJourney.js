@@ -873,7 +873,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
         )}
       </div>
       {canUseAIDrafts && (
-        <p className="text-[10px] flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+        <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "var(--t-text-muted)" }}>
           <AlertCircle className="w-3 h-3 flex-shrink-0" />
           AI uses your <a href="/profile" className="text-pink-500 hover:underline">athlete profile</a> to generate emails — keep it updated for best results.
         </p>
