@@ -762,7 +762,11 @@ export default function RecruitingJourney() {
   const rail = program.journey_rail;
   const boardGroup = program.board_group;
   const isNewSchool = timeline.length === 0 && coaches.length === 0 && !program.next_action_due;
-  const isInConversation = boardGroup === "in_conversation";
+  // Only show celebration if the most recent timeline event is a coach reply
+  const latestIsCoachReply = timeline.length > 0 && ["email_received", "coach_reply"].includes(
+    (timeline[0]?.event_type || timeline[0]?.type || "").toLowerCase().replace(/\s+/g, "_")
+  );
+  const isInConversation = boardGroup === "in_conversation" && latestIsCoachReply;
 
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
