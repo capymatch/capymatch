@@ -549,7 +549,13 @@ async def get_program_journey(program_id: str, request: Request):
         }
         event_type = type_map.get(itype_lower, "interaction")
         
-        title = "Coach replied" if itype_lower == "coach_reply" else f"{itype} logged"
+        uni_name = i.get("university_name") or ""
+        if itype_lower == "coach_reply":
+            title = "Coach replied"
+        elif itype_lower in ("camp", "camp_meeting", "campus_visit", "showcase"):
+            title = f"{uni_name} {itype}".strip() if uni_name else itype
+        else:
+            title = f"{itype} logged"
         
         timeline.append({
             "id": i.get("interaction_id"),
