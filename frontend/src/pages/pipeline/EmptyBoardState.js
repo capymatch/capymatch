@@ -350,7 +350,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
       )}
 
       {/* ═══ Ghost Board Preview ═══ */}
-      {profileDone && (
+      {profileDone && gmailConnected && (
       <div className="rounded-xl border overflow-hidden relative" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ghost-board">
         <div className="p-6">
           <div className="grid grid-cols-3 lg:grid-cols-5 gap-3" style={{ opacity: 0.25 }}>
