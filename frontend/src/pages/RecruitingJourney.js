@@ -1131,6 +1131,12 @@ export default function RecruitingJourney() {
         <ProgressRail rail={rail} onStageClick={handleStageClick} />
       </div>
 
+      {/* Stage Log Modal */}
+      {pendingStage && (
+        <StageLogModal stageKey={pendingStage} universityName={program.university_name}
+          onConfirm={confirmStageChange} onCancel={() => setPendingStage(null)} />
+      )}
+
       {/* ─── Contextual Hero: Committed / Checklist / Celebration / Nothing ─── */}
       {isCommitted ? (
         <div className="mt-5">
