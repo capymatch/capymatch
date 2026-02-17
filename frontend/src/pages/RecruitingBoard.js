@@ -146,6 +146,12 @@ function ProgramRow({ p, navigate, matchScore, accentColor, groupKey }) {
               )}
             </span>
           )}
+          {/* Inline follow-up date badge (for non-overdue stages) */}
+          {dueDateFormatted && groupKey !== "overdue" && (
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${daysUntil <= 3 ? "bg-amber-500/15 text-amber-400" : "bg-slate-500/15 text-slate-400"}`} data-testid={`due-badge-${p.program_id}`}>
+              <Clock className="w-2.5 h-2.5" />Due {dueDateFormatted}
+            </span>
+          )}
         </div>
       </div>
 
