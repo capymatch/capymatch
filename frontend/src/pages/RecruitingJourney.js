@@ -71,6 +71,15 @@ function ProgressRail({ rail, onStageClick }) {
   const halfStep = 100 / (TOTAL * 2); // ~8.33%
   const fillScale = lineFillIdx > 0 ? lineFillIdx / (TOTAL - 1) : 0;
 
+  // Build gradient stops for the fill line from completed stage colors
+  const fillStops = RAIL_STAGES.slice(0, lineFillIdx + 1).map((s, i) => {
+    const pct = TOTAL === 1 ? 50 : (i / (TOTAL - 1)) * 100;
+    return `${s.color} ${pct}%`;
+  });
+  const fillGradient = fillStops.length > 1
+    ? `linear-gradient(90deg, ${fillStops.join(", ")})`
+    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#e8456b";
+
   return (
     <div data-testid="progress-rail">
       <style>{`
@@ -81,36 +90,34 @@ function ProgressRail({ rail, onStageClick }) {
       `}</style>
       {/* Rail track row */}
       <div style={{ position: "relative", height: DOT_ACTIVE + 8, display: "flex", alignItems: "center" }}>
-        {/* Background track — spans from first dot center to last dot center */}
+        {/* Background track */}
         <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: "translateY(-50%)", height: 2, background: "var(--t-border)", zIndex: 0 }} />
-        {/* Filled track — scales from left to active stage position */}
+        {/* Filled track — gradient across completed stages */}
         {fillScale > 0 && (
-          <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: "#e8456b", zIndex: 0, transition: "transform 0.5s ease" }} />
+          <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: fillGradient, zIndex: 0, transition: "transform 0.5s ease" }} />
         )}
         {/* Dots */}
         {RAIL_STAGES.map((s) => {
           const completed = stages[s.key];
           const isActive = s.key === active;
           const size = isActive ? DOT_ACTIVE : DOT;
+          const stageColor = s.color;
           return (
             <button key={s.key} onClick={() => onStageClick(s.key)}
               data-testid={`rail-stage-${s.key}`}
               style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0, position: "relative", zIndex: 1 }}>
-              {/* Wrapper for dot + pulse ring */}
               <div style={{ position: "relative", width: size, height: size }}>
-                {/* Main dot circle */}
                 <div style={{
                   width: size, height: size, borderRadius: "50%",
-                  border: `2px solid ${completed || isActive ? "#e8456b" : "var(--t-border)"}`,
-                  background: completed || isActive ? "#e8456b" : "var(--t-surface)",
-                  boxShadow: isActive ? "0 0 12px rgba(232,69,107,0.4)" : completed ? "0 0 8px rgba(232,69,107,0.15)" : "none",
+                  border: `2px solid ${completed || isActive ? stageColor : "var(--t-border)"}`,
+                  background: completed || isActive ? stageColor : "var(--t-surface)",
+                  boxShadow: isActive ? `0 0 12px ${stageColor}66` : completed ? `0 0 8px ${stageColor}26` : "none",
                   transition: "all 0.3s",
                 }} />
-                {/* Pulse ring — expands outward from the dot */}
                 {isActive && (
                   <div style={{
                     position: "absolute", top: -4, left: -4, right: -4, bottom: -4,
-                    borderRadius: "50%", border: "2px solid #e8456b",
+                    borderRadius: "50%", border: `2px solid ${stageColor}`,
                     animation: "railPulseRing 2s ease-out infinite",
                     pointerEvents: "none",
                   }} />
@@ -129,7 +136,7 @@ function ProgressRail({ rail, onStageClick }) {
             <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
               <span style={{
                 fontSize: 10, fontWeight: isActive ? 700 : completed ? 600 : 500,
-                color: isActive ? "#e8456b" : completed ? "var(--t-text-secondary)" : "var(--t-text-muted)",
+                color: isActive ? s.color : completed ? "var(--t-text-secondary)" : "var(--t-text-muted)",
               }}>{s.label}</span>
             </div>
           );
