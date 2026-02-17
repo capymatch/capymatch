@@ -92,11 +92,9 @@ def categorize_program(program: dict) -> str:
 
     is_overdue = due_date is not None and due_date < today
     has_recent_reply = signals.get("has_coach_reply", False) and (signals.get("days_since_reply") or 999) <= 14
-    days_since_activity = signals.get("days_since_activity")
-    is_recently_active = days_since_activity is not None and days_since_activity <= 7
 
-    # 2. IN PROGRESS: Recent coach reply (within 14 days) OR recent activity (within 7 days), not overdue
-    if (has_recent_reply or is_recently_active) and not is_overdue:
+    # 2. IN PROGRESS: Active conversation — coach replied within 14 days, not overdue
+    if has_recent_reply and not is_overdue:
         return "in_progress"
 
     # 3. UPCOMING: Follow-up due within 14 days, not overdue
