@@ -106,6 +106,65 @@ def categorize_program(program: dict) -> str:
     return "needs_outreach"
 
 
+def compute_journey_rail(program: dict) -> dict:
+    """
+    Compute the 6-stage journey rail for a program.
+    Stages: added, outreach_sent, coach_replied, campus_visit, offer, committed
+    Auto-detects first 3 from signals; last 3 from manual journey_stage field.
+    Returns dict with each stage as key and bool as value + active stage.
+    """
+    signals = program.get("signals", {})
+    manual_stage = program.get("journey_stage", "")
+    
+    RAIL_STAGES = ["added", "outreach_sent", "coach_replied", "campus_visit", "offer", "committed"]
+    
+    # Auto-detect stages from data
+    stages = {
+        "added": True,  # always true — the school was added
+        "outreach_sent": signals.get("outreach_count", 0) > 0,
+        "coach_replied": signals.get("has_coach_reply", False),
+        "campus_visit": False,
+        "offer": False,
+        "committed": False,
+    }
+    
+    # Check interactions for campus visit
+    interactions = program.get("interactions", [])
+    for ix in interactions:
+        ix_type = (ix.get("type") or "").lower()
+        if ix_type in ("visit", "campus visit", "campus_visit"):
+            stages["campus_visit"] = True
+    
+    # Manual override: if journey_stage is set, mark that stage + all prior as completed
+    if manual_stage and manual_stage in RAIL_STAGES:
+        idx = RAIL_STAGES.index(manual_stage)
+        for i in range(idx + 1):
+            stages[RAIL_STAGES[i]] = True
+    
+    # Find the active (current) stage — the last completed one
+    active = "added"
+    for s in RAIL_STAGES:
+        if stages[s]:
+            active = s
+    
+    # Compute pulse — relationship health
+    days = signals.get("days_since_activity")
+    if days is None:
+        pulse = "neutral"
+    elif days <= 7:
+        pulse = "active"
+    elif days <= 14:
+        pulse = "cooling"
+    else:
+        pulse = "cold"
+    
+    return {
+        "stages": stages,
+        "active": active,
+        "pulse": pulse,
+    }
+
+
 # ─── Programs CRUD ───
 
 @router.get("/programs")
