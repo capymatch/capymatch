@@ -66,8 +66,8 @@ function getQuickAction(stage) {
 
 /* ── Progress Ring (SVG donut) ── */
 function ProgressRing({ counts, total }) {
-  const size = 120;
-  const stroke = 14;
+  const size = 130;
+  const stroke = 16;
   const radius = (size - stroke) / 2;
   const circ = 2 * Math.PI * radius;
 
