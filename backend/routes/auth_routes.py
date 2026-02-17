@@ -6,6 +6,9 @@ from email_service import send_welcome_email
 import uuid
 import httpx
 import bcrypt
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api")
 
