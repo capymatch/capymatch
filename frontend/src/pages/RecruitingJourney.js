@@ -837,17 +837,7 @@ export default function RecruitingJourney() {
         <div className="lg:col-span-2">
           <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Conversation</h2>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openLog}
-                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-log-btn">
-                  <MessageSquare className="w-3 h-3 mr-1.5" />Log
-                </Button>
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openEmail}
-                  disabled={isBasic} style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: isBasic ? 0.4 : 1 }} data-testid="timeline-email-btn">
-                  <Mail className="w-3 h-3 mr-1.5" />{isBasic ? <><Lock className="w-3 h-3 mr-1" />Email</> : "Email"}
-                </Button>
-              </div>
+              <h2 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Timeline</h2>
             </div>
 
             {timeline.length === 0 ? (
