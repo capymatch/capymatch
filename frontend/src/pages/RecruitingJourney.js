@@ -868,6 +868,12 @@ export default function RecruitingJourney() {
   );
   const isInConversation = boardGroup === "in_conversation" && latestIsCoachReply;
 
+  // Next Step card: show when there's activity, not a new school, not showing celebration
+  const [nextStepDismissed, setNextStepDismissed] = useState(null); // stores dismissed event id
+  const latestEvent = timeline[0] || null;
+  const showNextStep = !isNewSchool && !isInConversation && latestEvent
+    && nextStepDismissed !== (latestEvent.id || latestEvent.date);
+
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
       {/* ─── Header with Progress Rail ─── */}
