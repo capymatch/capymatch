@@ -256,7 +256,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         </div>
 
         {/* Action Path Cards */}
-        <div className={`grid grid-cols-1 ${(!profileDone || !gmailConnected) ? "md:grid-cols-2" : "md:grid-cols-3"} gap-3 px-6 pb-6 lg:px-8`}>
+        <div className={`grid grid-cols-1 ${(profileDone && gmailConnected) ? "md:grid-cols-3" : ""} gap-3 px-6 pb-6 lg:px-8`}>
           {!profileDone && (
             <ActionPath
               icon={Sparkles}
@@ -278,32 +278,32 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             />
           )}
           {profileDone && gmailConnected && (
-            <ActionPath
-              icon={Sparkles}
-              iconBg="rgba(168,85,247,0.12)"
-              iconColor="#a855f7"
-              title="AI Recommendations"
-              description={firstName ? `Schools matched to ${firstName}'s profile and preferences` : "See schools matched to your athlete's profile"}
-              onClick={() => navigate("/knowledge-base?tab=recommended")}
-            />
-          )}
-          <ActionPath
-            icon={GraduationCap}
-            iconBg="rgba(59,130,246,0.12)"
-            iconColor="#3b82f6"
-            title="Browse by Division"
-            description="Filter D1, D2, D3, NAIA — find the right competitive level"
-            onClick={() => navigate("/knowledge-base")}
-          />
-          {profileDone && gmailConnected && (
-            <ActionPath
-              icon={MapPin}
-              iconBg="rgba(6,182,212,0.12)"
-              iconColor="#06b6d4"
-              title="Search by Location"
-              description="Find programs near home or across the country"
-              onClick={() => navigate("/knowledge-base?tab=location")}
-            />
+            <>
+              <ActionPath
+                icon={Sparkles}
+                iconBg="rgba(168,85,247,0.12)"
+                iconColor="#a855f7"
+                title="AI Recommendations"
+                description={firstName ? `Schools matched to ${firstName}'s profile and preferences` : "See schools matched to your athlete's profile"}
+                onClick={() => navigate("/knowledge-base?tab=recommended")}
+              />
+              <ActionPath
+                icon={GraduationCap}
+                iconBg="rgba(59,130,246,0.12)"
+                iconColor="#3b82f6"
+                title="Browse by Division"
+                description="Filter D1, D2, D3, NAIA — find the right competitive level"
+                onClick={() => navigate("/knowledge-base")}
+              />
+              <ActionPath
+                icon={MapPin}
+                iconBg="rgba(6,182,212,0.12)"
+                iconColor="#06b6d4"
+                title="Search by Location"
+                description="Find programs near home or across the country"
+                onClick={() => navigate("/knowledge-base?tab=location")}
+              />
+            </>
           )}
         </div>
       </div>
