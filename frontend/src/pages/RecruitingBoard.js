@@ -74,20 +74,29 @@ function ProgramRow({ p, navigate, matchScore, accentColor }) {
   // Compute next step from data-driven signals
   const signals = p.signals || {};
   const nextStep = (() => {
+    // Priority 1: Overdue follow-up
     if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
       return { title: `Follow-up is ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`, sub: "Send your follow-up email now", urgent: true };
     }
+    // Priority 2: Upcoming follow-up
     if (p.next_action_due && daysUntil !== null && daysUntil <= 7) {
       return { title: `Follow-up due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}`, sub: p.next_action || "Send a follow-up email with your updated stats", urgent: daysUntil <= 2 };
     }
-    if (signals.emails_sent === 0 && signals.total_interactions === 0) {
-      return { title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", urgent: false };
+    // Priority 3: No outreach yet
+    if (signals.outreach_count === 0 && signals.total_interactions === 0) {
+      return { title: "Send your first email", sub: "Introduce yourself with a personalized email", urgent: false };
     }
-    if (signals.emails_sent > 0 && !signals.has_coach_reply) {
-      return { title: "No reply yet — consider sending a follow-up", sub: "Coaches get hundreds of emails. A polite follow-up shows genuine interest", urgent: false };
-    }
+    // Priority 4: Coach replied but stale
     if (signals.has_coach_reply && signals.days_since_reply > 7) {
-      return { title: `Coach replied ${signals.days_since_reply} days ago`, sub: "Keep the conversation going with a follow-up", urgent: false };
+      return { title: `Coach replied ${signals.days_since_reply} days ago`, sub: "Keep the conversation going with a follow-up", urgent: signals.days_since_reply > 14 };
+    }
+    // Priority 5: Outreach sent, no reply
+    if (signals.outreach_count > 0 && !signals.has_coach_reply) {
+      return { title: "No reply yet — send a follow-up", sub: "A polite follow-up shows genuine interest", urgent: false };
+    }
+    // Priority 6: Has interactions but no specific action
+    if (signals.total_interactions > 0 && !p.next_action_due) {
+      return { title: "Set a follow-up date", sub: "Schedule your next action to stay on track", urgent: false };
     }
     return null;
   })();
