@@ -232,7 +232,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
 
   return (
     <div
-      className="group flex items-center gap-3 px-4 py-4 rounded-xl border transition-all hover:border-pink-600/20 cursor-pointer"
+      className="group flex items-center gap-3 px-5 py-5 rounded-xl border transition-all hover:border-pink-600/20 cursor-pointer"
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       onClick={() => navigate(`/journey/${p.program_id}`)}
       data-testid={`school-card-${p.program_id}`}
