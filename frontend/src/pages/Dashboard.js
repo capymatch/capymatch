@@ -318,10 +318,10 @@ export default function Dashboard() {
     if (t.includes("coach_reply") || t.includes("reply")) return { text: "Coach replied — ", highlight: school };
     if (t.includes("email") || t.includes("intro")) return { text: "Sent email to ", highlight: school };
     if (t.includes("follow")) return { text: "Sent follow-up to ", highlight: school };
-    if (t.includes("camp")) return { text: "Attended camp at ", highlight: school };
     if (t.includes("visit")) return { text: "Campus visit at ", highlight: school };
-    if (t.includes("call") || t.includes("phone")) return { text: "Phone call with ", highlight: school };
     if (t.includes("showcase")) return { text: "Showcase for ", highlight: school };
+    if (t.includes("camp")) return { text: "Attended camp at ", highlight: school };
+    if (t.includes("call") || t.includes("phone")) return { text: "Phone call with ", highlight: school };
     return { text: `${ix.type || "Activity"} — `, highlight: school };
   };
 
