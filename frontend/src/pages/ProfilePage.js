@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { User, Loader2, Copy, ExternalLink, Camera, Check } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
