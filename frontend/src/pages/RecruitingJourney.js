@@ -761,7 +761,7 @@ export default function RecruitingJourney() {
   const isInConversation = boardGroup === "in_conversation";
 
   return (
-    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-6 pb-24">
+    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-8 pb-24">
       {/* ─── Header with Progress Rail ─── */}
       <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="journey-header">
         <div className="flex items-start gap-3 mb-4">
