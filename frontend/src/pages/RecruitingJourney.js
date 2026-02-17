@@ -58,29 +58,32 @@ function ProgressRail({ rail, onStageClick }) {
   if (!rail) return null;
   const stages = rail.stages || {};
   const active = rail.active;
-  const lineFill = rail.line_fill || active;
-  const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === lineFill);
-  const DOT = 12;      // normal dot px
-  const DOT_ACTIVE = 16; // active dot px
+  const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === (rail.line_fill || active));
+  const TOTAL = RAIL_STAGES.length;
+  const DOT = 14;
+  const DOT_ACTIVE = 18;
+  // Track runs from center of first dot to center of last dot
+  // With flex:1, each item center is at (i+0.5)/TOTAL of container width
+  const halfStep = 100 / (TOTAL * 2); // ~8.33%
+  const fillScale = lineFillIdx > 0 ? lineFillIdx / (TOTAL - 1) : 0;
 
   return (
     <div data-testid="progress-rail">
-      {/* Inline keyframes for pulse */}
       <style>{`
-        @keyframes railPulse {
-          0% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
-          100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+        @keyframes railPulseRing {
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(2); opacity: 0; }
         }
       `}</style>
       {/* Rail track row */}
-      <div style={{ position: "relative", height: `${DOT_ACTIVE + 4}px`, display: "flex", alignItems: "center" }}>
-        {/* Background track */}
-        <div style={{ position: "absolute", left: 40, right: 40, top: "50%", transform: "translateY(-50%)", height: 2, background: "var(--t-border)" }} />
-        {/* Filled track */}
-        {lineFillIdx > 0 && (
-          <div style={{ position: "absolute", left: 40, right: 40, top: "50%", transform: `translateY(-50%) scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, transformOrigin: "left", height: 2, background: "#e8456b", transition: "transform 0.5s" }} />
+      <div style={{ position: "relative", height: DOT_ACTIVE + 8, display: "flex", alignItems: "center" }}>
+        {/* Background track — spans from first dot center to last dot center */}
+        <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: "translateY(-50%)", height: 2, background: "var(--t-border)", zIndex: 0 }} />
+        {/* Filled track — scales from left to active stage position */}
+        {fillScale > 0 && (
+          <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: "#e8456b", zIndex: 0, transition: "transform 0.5s ease" }} />
         )}
-        {/* Dot buttons */}
+        {/* Dots */}
         {RAIL_STAGES.map((s) => {
           const completed = stages[s.key];
           const isActive = s.key === active;
@@ -88,34 +91,40 @@ function ProgressRail({ rail, onStageClick }) {
           return (
             <button key={s.key} onClick={() => onStageClick(s.key)}
               data-testid={`rail-stage-${s.key}`}
-              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-              {/* Pulse ring — only on active */}
-              {isActive && (
-                <span style={{ position: "absolute", top: "50%", left: "50%", width: size, height: size, borderRadius: "50%", border: "2px solid #e8456b", animation: "railPulse 2s ease-out infinite", pointerEvents: "none" }} />
-              )}
-              {/* Dot */}
-              <span style={{
-                display: "block",
-                width: size, height: size, borderRadius: "50%",
-                border: `2px solid ${completed || isActive ? "#e8456b" : "var(--t-border)"}`,
-                background: completed || isActive ? "#e8456b" : "var(--t-surface)",
-                boxShadow: isActive ? "0 0 12px rgba(232,69,107,0.4)" : "none",
-                transition: "all 0.3s",
-                flexShrink: 0,
-              }} />
+              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0, position: "relative", zIndex: 1 }}>
+              {/* Wrapper for dot + pulse ring */}
+              <div style={{ position: "relative", width: size, height: size }}>
+                {/* Main dot circle */}
+                <div style={{
+                  width: size, height: size, borderRadius: "50%",
+                  border: `2px solid ${completed || isActive ? "#e8456b" : "var(--t-border)"}`,
+                  background: completed || isActive ? "#e8456b" : "var(--t-surface)",
+                  boxShadow: isActive ? "0 0 12px rgba(232,69,107,0.4)" : completed ? "0 0 8px rgba(232,69,107,0.15)" : "none",
+                  transition: "all 0.3s",
+                }} />
+                {/* Pulse ring — expands outward from the dot */}
+                {isActive && (
+                  <div style={{
+                    position: "absolute", top: -4, left: -4, right: -4, bottom: -4,
+                    borderRadius: "50%", border: "2px solid #e8456b",
+                    animation: "railPulseRing 2s ease-out infinite",
+                    pointerEvents: "none",
+                  }} />
+                )}
+              </div>
             </button>
           );
         })}
       </div>
       {/* Labels */}
-      <div style={{ display: "flex", marginTop: 4 }}>
+      <div style={{ display: "flex", marginTop: 6 }}>
         {RAIL_STAGES.map((s) => {
           const completed = stages[s.key];
           const isActive = s.key === active;
           return (
             <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
               <span style={{
-                fontSize: 10, fontWeight: isActive ? 600 : 500,
+                fontSize: 10, fontWeight: isActive ? 700 : completed ? 600 : 500,
                 color: isActive ? "#e8456b" : completed ? "var(--t-text-secondary)" : "var(--t-text-muted)",
               }}>{s.label}</span>
             </div>
