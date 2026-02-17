@@ -1054,8 +1054,12 @@ export default function RecruitingJourney() {
         <ProgressRail rail={rail} onStageClick={handleStageClick} />
       </div>
 
-      {/* ─── Contextual Hero: Checklist / Celebration / Nothing ─── */}
-      {isNewSchool ? (
+      {/* ─── Contextual Hero: Committed / Checklist / Celebration / Nothing ─── */}
+      {isCommitted ? (
+        <div className="mt-5">
+          <CommittedHero program={program} />
+        </div>
+      ) : isNewSchool ? (
         <div className="mt-5">
         <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
           onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} onSetFollowup={openFollowup} />
