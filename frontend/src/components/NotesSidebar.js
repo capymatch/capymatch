@@ -77,7 +77,7 @@ function NoteItem({ note, onPin, onEdit, onDelete }) {
   );
 }
 
-export default function NotesSidebar({ programId, universityName, externalOpen, onExternalClose }) {
+export default function NotesSidebar({ programId, universityName, externalOpen, onExternalClose, onNoteChange }) {
   const [open, setOpen] = useState(false);
 
   // Allow parent to open the sidebar
