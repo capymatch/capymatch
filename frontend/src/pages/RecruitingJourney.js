@@ -184,7 +184,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
     <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="getting-started-checklist">
       <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>Start your {program.university_name} journey</h3>
       <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
         {steps.map(s => (
           <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-pink-500/30 hover:bg-[var(--t-surface-alt)]"}`}
             style={{ borderColor: "var(--t-border)" }}
