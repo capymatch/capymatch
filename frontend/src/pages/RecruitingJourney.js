@@ -851,6 +851,9 @@ export default function RecruitingJourney() {
     setProgram(res.data);
   };
 
+  // Next Step card dismiss state (must be before early returns)
+  const [nextStepDismissed, setNextStepDismissed] = useState(null);
+
   if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-pink-600" /></div>;
   if (!program) return (
     <div className="text-center py-24">
