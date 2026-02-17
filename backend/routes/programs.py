@@ -530,18 +530,26 @@ async def get_program_journey(program_id: str, request: Request):
     ).to_list(100)
     
     for i in interactions:
-        event_type = "interaction"
-        itype = i.get("type", "")
-        if itype == "Email":
-            event_type = "email_sent"
-        elif itype == "Phone Call":
-            event_type = "phone_call"
-        elif itype == "Video Call":
-            event_type = "video_call"
-        elif itype == "coach_reply":
-            event_type = "email_received"
+        itype = (i.get("type") or "").strip()
+        itype_lower = itype.lower().replace(" ", "_")
         
-        title = f"{itype} logged" if itype != "coach_reply" else "Coach replied"
+        # Map stored type to timeline event_type
+        type_map = {
+            "email": "email_sent",
+            "phone_call": "phone_call",
+            "video_call": "video_call",
+            "text_message": "text_message",
+            "coach_reply": "email_received",
+            "camp": "camp",
+            "camp_meeting": "camp",
+            "campus_visit": "campus_visit",
+            "showcase": "showcase",
+            "meeting": "meeting",
+            "note": "note",
+        }
+        event_type = type_map.get(itype_lower, "interaction")
+        
+        title = "Coach replied" if itype_lower == "coach_reply" else f"{itype} logged"
         
         timeline.append({
             "id": i.get("interaction_id"),
@@ -549,7 +557,7 @@ async def get_program_journey(program_id: str, request: Request):
             "title": title,
             "date": i.get("date_time") or i.get("created_at"),
             "content": i.get("notes") or i.get("message_copy"),
-            "coach_name": "" if itype != "coach_reply" else "Coach",
+            "coach_name": "" if itype_lower != "coach_reply" else "Coach",
         })
     
     # 2. Get events linked to this program
