@@ -373,6 +373,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
