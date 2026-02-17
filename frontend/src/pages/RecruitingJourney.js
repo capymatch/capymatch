@@ -1050,15 +1050,17 @@ export default function RecruitingJourney() {
 
   const confirmStageChange = async (note) => {
     if (!pendingStage) return;
+    const fromLabel = STAGE_LABELS[rail?.active] || rail?.active || "—";
+    const toLabel = STAGE_LABELS[pendingStage] || pendingStage;
     try {
       // Update stage
       await updateProgram({ journey_stage: pendingStage });
-      // Log a timeline entry
+      // Log a timeline entry with transition info
       await api.post("/interactions", {
         program_id: programId,
         type: "Stage Update",
         notes: note,
-        outcome: `Moved to ${STAGE_LABELS[pendingStage] || pendingStage}`,
+        outcome: `${fromLabel} → ${toLabel}`,
       });
       const res = await api.get(`/programs/${programId}`);
       setProgram(res.data);
