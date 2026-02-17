@@ -91,7 +91,9 @@ def categorize_program(program: dict) -> str:
             pass
 
     is_overdue = due_date is not None and due_date < today
-    has_recent_reply = signals.get("has_coach_reply", False) and (signals.get("days_since_reply") or 999) <= 14
+    days_since_reply = signals.get("days_since_reply")
+    # Use 999 only when days_since_reply is None (not when it's 0)
+    has_recent_reply = signals.get("has_coach_reply", False) and (days_since_reply if days_since_reply is not None else 999) <= 14
 
     # 2. IN PROGRESS: Active conversation — coach replied within 14 days, not overdue
     if has_recent_reply and not is_overdue:
