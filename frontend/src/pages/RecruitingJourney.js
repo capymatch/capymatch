@@ -332,49 +332,49 @@ function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
    ═══════════════════════════════════════════════════════════════ */
 const NEXT_STEP_RULES = {
   camp: {
-    emoji: "🏋️",
+    icon: Dumbbell, iconColor: "#f97316", iconBg: "rgba(249,115,22,0.12)",
     title: "How did the camp go?",
     desc: "Log your experience and follow up with the coach while it's fresh.",
     actions: ["email", "log", "followup"],
   },
   camp_meeting: {
-    emoji: "🏋️",
+    icon: Dumbbell, iconColor: "#f97316", iconBg: "rgba(249,115,22,0.12)",
     title: "How did the camp go?",
     desc: "Log your experience and follow up with the coach while it's fresh.",
     actions: ["email", "log", "followup"],
   },
   campus_visit: {
-    emoji: "🏫",
+    icon: MapPin, iconColor: "#22c55e", iconBg: "rgba(34,197,94,0.12)",
     title: "Great visit! What's next?",
     desc: "Send a thank you note and express your continued interest.",
     actions: ["email", "log"],
   },
   phone_call: {
-    emoji: "📞",
+    icon: Phone, iconColor: "#3b82f6", iconBg: "rgba(59,130,246,0.12)",
     title: "Nice call! Follow up.",
     desc: "Send a thank you email to keep the conversation going.",
     actions: ["email", "followup"],
   },
   video_call: {
-    emoji: "📹",
+    icon: Video, iconColor: "#8b5cf6", iconBg: "rgba(139,92,246,0.12)",
     title: "Good chat! Keep the momentum.",
     desc: "Send a follow-up email summarizing key takeaways.",
     actions: ["email", "followup"],
   },
   email_sent: {
-    emoji: "📧",
+    icon: Send, iconColor: "#e8456b", iconBg: "rgba(232,69,107,0.12)",
     title: "Email sent! Now stay on top of it.",
     desc: "Set a follow-up reminder in case you don't hear back in a few days.",
     actions: ["followup"],
   },
   showcase: {
-    emoji: "🏐",
+    icon: Trophy, iconColor: "#fbbf24", iconBg: "rgba(251,191,36,0.12)",
     title: "How was the showcase?",
     desc: "Reach out to coaches you connected with while you're on their radar.",
     actions: ["email", "log"],
   },
   text_message: {
-    emoji: "💬",
+    icon: MessageCircle, iconColor: "#06b6d4", iconBg: "rgba(6,182,212,0.12)",
     title: "Keep the conversation going.",
     desc: "Consider scheduling a call or setting a follow-up.",
     actions: ["followup", "log"],
