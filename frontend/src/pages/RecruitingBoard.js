@@ -67,41 +67,36 @@ function getQuickAction(stage) {
 /* ── Progress Ring (SVG donut) ── */
 function ProgressRing({ counts, total }) {
   const size = 130;
-  const stroke = 16;
-  const radius = (size - stroke) / 2;
-  const circ = 2 * Math.PI * radius;
 
+  // Build conic-gradient segments
   const segments = STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({
-    key: k, count: counts[k], pct: counts[k] / Math.max(total, 1)
+    key: k, count: counts[k], pct: (counts[k] / Math.max(total, 1)) * 100, color: STAGES[k].ring
   }));
 
-  // Build cumulative offsets for each segment
-  let cumulative = 0;
-  const arcs = segments.map(seg => {
-    const dashLen = seg.pct * circ;
-    const arc = { ...seg, dashLen, startOffset: cumulative };
-    cumulative += dashLen;
-    return arc;
+  let gradientParts = [];
+  let cumPct = 0;
+  segments.forEach(seg => {
+    gradientParts.push(`${seg.color} ${cumPct}% ${cumPct + seg.pct}%`);
+    cumPct += seg.pct;
   });
+  // Fill remaining with transparent if needed
+  if (cumPct < 100) gradientParts.push(`rgba(255,255,255,0.08) ${cumPct}% 100%`);
+
+  const gradient = `conic-gradient(from 0deg, ${gradientParts.join(", ")})`;
 
   return (
     <div className="flex items-center gap-6" data-testid="progress-ring">
       <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          {/* Background track */}
-          <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--t-border)" strokeWidth={stroke} opacity={0.3} />
-          {/* Colored segments */}
-          {arcs.map(a => (
-            <circle key={a.key} cx={size/2} cy={size/2} r={radius} fill="none"
-              stroke={STAGES[a.key].ring} strokeWidth={stroke}
-              strokeDasharray={`${a.dashLen} ${circ - a.dashLen}`}
-              strokeDashoffset={circ * 0.25 - a.startOffset}
-              strokeLinecap="round"
-              className="transition-all duration-700"
-              style={{ transform: 'rotate(0deg)', transformOrigin: '50% 50%' }}
-            />
-          ))}
-        </svg>
+        {/* Donut via conic-gradient + mask */}
+        <div
+          className="rounded-full"
+          style={{
+            width: size, height: size,
+            background: gradient,
+            WebkitMask: `radial-gradient(circle, transparent ${size/2 - 18}px, black ${size/2 - 17}px)`,
+            mask: `radial-gradient(circle, transparent ${size/2 - 18}px, black ${size/2 - 17}px)`,
+          }}
+        />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
           <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
