@@ -240,6 +240,106 @@ function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   NEXT STEP CARD — rule-based suggestions after recent activity
+   ═══════════════════════════════════════════════════════════════ */
+const NEXT_STEP_RULES = {
+  camp: {
+    emoji: "🏋️",
+    title: "How did the camp go?",
+    desc: "Log your experience and follow up with the coach while it's fresh.",
+    actions: ["email", "log", "followup"],
+  },
+  camp_meeting: {
+    emoji: "🏋️",
+    title: "How did the camp go?",
+    desc: "Log your experience and follow up with the coach while it's fresh.",
+    actions: ["email", "log", "followup"],
+  },
+  campus_visit: {
+    emoji: "🏫",
+    title: "Great visit! What's next?",
+    desc: "Send a thank you note and express your continued interest.",
+    actions: ["email", "log"],
+  },
+  phone_call: {
+    emoji: "📞",
+    title: "Nice call! Follow up.",
+    desc: "Send a thank you email to keep the conversation going.",
+    actions: ["email", "followup"],
+  },
+  video_call: {
+    emoji: "📹",
+    title: "Good chat! Keep the momentum.",
+    desc: "Send a follow-up email summarizing key takeaways.",
+    actions: ["email", "followup"],
+  },
+  email_sent: {
+    emoji: "📧",
+    title: "Email sent! Now stay on top of it.",
+    desc: "Set a follow-up reminder in case you don't hear back in a few days.",
+    actions: ["followup"],
+  },
+  showcase: {
+    emoji: "🏐",
+    title: "How was the showcase?",
+    desc: "Reach out to coaches you connected with while you're on their radar.",
+    actions: ["email", "log"],
+  },
+  text_message: {
+    emoji: "💬",
+    title: "Keep the conversation going.",
+    desc: "Consider scheduling a call or setting a follow-up.",
+    actions: ["followup", "log"],
+  },
+};
+
+const ACTION_BUTTONS = {
+  email:    { label: "Email Coach",        icon: Mail,     testId: "nextstep-email" },
+  log:      { label: "Log Notes",          icon: FileText, testId: "nextstep-log" },
+  followup: { label: "Schedule Follow-up", icon: Clock,    testId: "nextstep-followup" },
+};
+
+function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup, onDismiss }) {
+  const evtType = (latestEvent?.event_type || latestEvent?.type || "").toLowerCase().replace(/\s+/g, "_");
+  const rule = NEXT_STEP_RULES[evtType];
+  if (!rule) return null;
+
+  const actionHandlers = { email: onEmail, log: onLog, followup: onFollowup };
+
+  return (
+    <div className="rounded-2xl border p-5 relative overflow-hidden"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(232,69,107,0.15)", background: "linear-gradient(135deg, rgba(232,69,107,0.04), var(--t-surface) 60%)" }}
+      data-testid="next-step-card">
+      <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
+        data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
+      <div className="flex items-start gap-3">
+        <span className="text-2xl mt-0.5">{rule.emoji}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#e8456b" }}>What's Next</p>
+          <h3 className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>{rule.title}</h3>
+          <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>{rule.desc}</p>
+          <div className="flex gap-2 flex-wrap">
+            {rule.actions.map(key => {
+              const btn = ACTION_BUTTONS[key];
+              const Icon = btn.icon;
+              return (
+                <Button key={key} size="sm" variant={key === rule.actions[0] ? "default" : "outline"}
+                  className={`text-xs h-8 px-3 ${key === rule.actions[0] ? "bg-pink-700 hover:bg-pink-800 text-white shadow-md" : ""}`}
+                  style={key !== rule.actions[0] ? { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" } : undefined}
+                  onClick={actionHandlers[key]} data-testid={btn.testId}>
+                  <Icon className="w-3.5 h-3.5 mr-1.5" />{btn.label}
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
    CONVERSATION TIMELINE
    ═══════════════════════════════════════════════════════════════ */
 function ConversationBubble({ event }) {
