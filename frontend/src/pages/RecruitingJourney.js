@@ -1105,6 +1105,12 @@ export default function RecruitingJourney() {
   const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
     && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
+  // Overdue follow-up detection
+  const nextDue = program.next_action_due || "";
+  const today = new Date().toISOString().split("T")[0];
+  const isFollowUpOverdue = !isCommitted && nextDue && nextDue <= today;
+  const daysOverdue = isFollowUpOverdue ? Math.floor((new Date() - new Date(nextDue)) / 86400000) : 0;
+
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
       {/* ─── Header with Progress Rail ─── */}
