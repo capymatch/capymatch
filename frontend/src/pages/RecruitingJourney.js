@@ -930,6 +930,16 @@ export default function RecruitingJourney() {
         </div>
       ) : null}
 
+      {/* ─── Next Step Card (rule-based) ─── */}
+      {showNextStep && !activeForm && (
+        <div className="mt-5">
+          <NextStepCard latestEvent={latestEvent} universityName={program.university_name}
+            onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
+            onLog={openLog} onFollowup={openFollowup}
+            onDismiss={() => setNextStepDismissed(latestEvent.id || latestEvent.date)} />
+        </div>
+      )}
+
       {/* ─── Inline Forms ─── */}
       {activeForm === "replied" && <div className="mt-5"><MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
       {activeForm === "log" && <div className="mt-5"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
