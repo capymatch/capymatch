@@ -231,15 +231,19 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               Step {currentStep} of 4
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-2" style={{ color: "var(--t-text)" }}>
-              {profileDone
-                ? (firstName ? <>Let's build <span style={{ color: "#e8628a" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#e8628a" }}>target list</span></>)
-                : <>First, let's set up <span style={{ color: "#e8628a" }}>the athlete profile</span></>
+              {!profileDone
+                ? <>First, let's set up <span style={{ color: "#e8628a" }}>the athlete profile</span></>
+                : !gmailConnected
+                ? <>Connect <span style={{ color: "#e8628a" }}>Gmail</span> to email coaches</>
+                : (firstName ? <>Let's build <span style={{ color: "#e8628a" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#e8628a" }}>target list</span></>)
               }
             </h2>
             <p className="text-sm leading-relaxed max-w-lg" style={{ color: "var(--t-text-secondary)" }}>
-              {profileDone
-                ? "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
-                : "Add the athlete's name, stats, and highlight video so coaches know who they're hearing from."
+              {!profileDone
+                ? "Add the athlete's name, stats, and highlight video so coaches know who they're hearing from."
+                : !gmailConnected
+                ? "Link your Gmail so you can send and receive coach emails directly inside the app — no switching tabs."
+                : "Browse programs, get AI-matched suggestions, or search by division and location. You can always add or remove schools later."
               }
             </p>
             <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
