@@ -1,185 +1,315 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  ChevronRight, Search, Plus, AlertTriangle,
-  Clock, MessageSquare, Archive, Sparkles, Zap,
-  MapPin, Building2, User, Mail, AlertCircle, CheckCircle2, Send
+  Search, Plus, AlertTriangle, Clock, MessageSquare, Archive, Sparkles,
+  Mail, AlertCircle, CheckCircle2, Send, ChevronRight, X, Loader2,
+  ArrowRight, Filter
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
-/* ── Board Groups Config (5-stage funnel) ── */
-const BOARD_GROUPS = [
-  { key: "overdue", label: "Overdue", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Follow-up date has passed — handle these first" },
-  { key: "needs_outreach", label: "Needs Outreach", icon: Send, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Haven't contacted yet" },
-  { key: "waiting_on_reply", label: "Waiting on Reply", icon: Clock, dot: "bg-blue-500", countBg: "bg-blue-500/15", countText: "text-blue-400", accentBar: "bg-blue-500", description: "Reached out, waiting to hear back" },
-  { key: "in_conversation", label: "In Conversation", icon: MessageSquare, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Coach has responded" },
-  { key: "archived", label: "Archived", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Not pursuing" },
-];
+/* ── Stage Config ── */
+const STAGES = {
+  overdue:          { label: "Overdue",          icon: AlertTriangle,  color: "rose",    ring: "#f43f5e" },
+  needs_outreach:   { label: "Needs Outreach",   icon: Send,           color: "amber",   ring: "#f59e0b" },
+  waiting_on_reply: { label: "Waiting on Reply",  icon: Clock,          color: "blue",    ring: "#3b82f6" },
+  in_conversation:  { label: "In Conversation",  icon: MessageSquare,  color: "emerald", ring: "#10b981" },
+  archived:         { label: "Archived",         icon: Archive,        color: "gray",    ring: "#6b7280" },
+};
 
-/* ── Group Funnel ── */
-function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
-  const { counts = {}, total = 0 } = groupedData;
+const STAGE_ORDER = ["overdue", "needs_outreach", "waiting_on_reply", "in_conversation", "archived"];
+
+const pillClass = (color) => ({
+  rose:    "bg-rose-500/15 text-rose-400 border-rose-500/25",
+  amber:   "bg-amber-500/15 text-amber-400 border-amber-500/25",
+  blue:    "bg-blue-500/15 text-blue-400 border-blue-500/25",
+  emerald: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
+  gray:    "bg-gray-500/15 text-gray-400 border-gray-500/25",
+}[color]);
+
+/* ── Contextual subtitle for each program ── */
+function getSubtitle(p) {
+  const s = p.signals || {};
+  const stage = p.board_group;
+  if (stage === "overdue" && p.next_action_due) {
+    const days = Math.abs(Math.ceil((new Date(p.next_action_due) - new Date()) / 86400000));
+    return `Follow-up was due ${days} day${days !== 1 ? "s" : ""} ago`;
+  }
+  if (stage === "needs_outreach") return "Send your first email to introduce yourself";
+  if (stage === "waiting_on_reply") {
+    if (s.days_since_outreach !== null && s.days_since_outreach !== undefined)
+      return `Reached out ${s.days_since_outreach} day${s.days_since_outreach !== 1 ? "s" : ""} ago — no reply yet`;
+    return "Waiting to hear back from coach";
+  }
+  if (stage === "in_conversation") {
+    if (s.days_since_reply !== null && s.days_since_reply !== undefined) {
+      if (s.days_since_reply === 0) return "Coach replied today";
+      return `Coach replied ${s.days_since_reply} day${s.days_since_reply !== 1 ? "s" : ""} ago`;
+    }
+    return "In active conversation with coach";
+  }
+  if (stage === "archived") return "Not pursuing";
+  return "";
+}
+
+/* ── Quick action label for each stage ── */
+function getQuickAction(stage) {
+  if (stage === "overdue") return { label: "Follow Up", icon: Send };
+  if (stage === "needs_outreach") return { label: "Start Outreach", icon: Send };
+  if (stage === "waiting_on_reply") return { label: "Follow Up", icon: Send };
+  return null;
+}
+
+/* ── Progress Ring (SVG donut) ── */
+function ProgressRing({ counts, total }) {
+  const size = 120;
+  const stroke = 14;
+  const radius = (size - stroke) / 2;
+  const circ = 2 * Math.PI * radius;
+
+  const segments = STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({
+    key: k, count: counts[k], pct: (counts[k] / Math.max(total, 1))
+  }));
+
+  let offset = 0;
+  const arcs = segments.map(seg => {
+    const dash = seg.pct * circ;
+    const gap = circ - dash;
+    const o = offset;
+    offset += dash;
+    return { ...seg, dash, gap, offset: o };
+  });
+
   return (
-    <div className="flex items-center gap-1 p-1 rounded-[10px] border overflow-x-auto" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="group-funnel">
-      <div
-        onClick={() => onFocusGroup(null)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg justify-center cursor-pointer transition-all flex-shrink-0 ${!activeFilter ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
-        data-testid="funnel-all"
-      >
-        <span className={`text-xs font-medium ${!activeFilter ? "text-pink-500" : ""}`} style={activeFilter ? { color: "var(--t-text-secondary)" } : {}}>All</span>
-        <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
+    <div className="flex items-center gap-6" data-testid="progress-ring">
+      <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90">
+          <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--t-border)" strokeWidth={stroke} opacity={0.3} />
+          {arcs.map(a => (
+            <circle key={a.key} cx={size/2} cy={size/2} r={radius} fill="none"
+              stroke={STAGES[a.key].ring} strokeWidth={stroke} strokeLinecap="round"
+              strokeDasharray={`${a.dash} ${a.gap}`} strokeDashoffset={-a.offset}
+              className="transition-all duration-700"
+            />
+          ))}
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-2xl font-bold" style={{ color: "var(--t-text)" }}>{total}</span>
+          <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
+        </div>
       </div>
-      {BOARD_GROUPS.map((group) => {
-        const count = counts[group.key] || 0;
-        const isActive = activeFilter === group.key;
-        return (
-          <div
-            key={group.key}
-            onClick={() => onFocusGroup(group.key)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg flex-1 min-w-fit justify-center cursor-pointer transition-all flex-shrink-0 ${isActive ? "ring-1 ring-pink-600 bg-pink-600/10" : "hover:bg-[var(--t-surface-alt)]"}`}
-            data-testid={`funnel-${group.key}`}
-          >
-            <span className={`text-xs font-medium hidden sm:inline ${group.countText}`}>{group.label}</span>
-            <span className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{count}</span>
+      <div className="flex flex-col gap-1.5">
+        {STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => (
+          <div key={k} className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
+            <span className="text-xs font-medium" style={{ color: "var(--t-text)" }}>{counts[k]}</span>
+            <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{STAGES[k].label}</span>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 }
 
-/* ── Program Row ── */
-function ProgramRow({ p, navigate, matchScore, accentColor, groupKey }) {
-  const divColor = {
-    D1: "bg-emerald-500/20 text-emerald-400",
-    D2: "bg-blue-500/20 text-blue-400",
-    D3: "bg-violet-500/20 text-violet-400",
-    NAIA: "bg-orange-500/20 text-orange-400",
-    JUCO: "bg-yellow-500/20 text-yellow-400",
-  }[p.division] || "bg-gray-500/20 text-gray-400";
-  const divFull = p.division === "D1" ? "NCAA I" : p.division === "D2" ? "NCAA II" : p.division === "D3" ? "NCAA III" : p.division;
-
-  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
-    : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
-    : "text-gray-400 bg-gray-500/15 border-gray-500/30";
-
-  const dueDateFormatted = p.next_action_due ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
-  const daysUntil = p.next_action_due ? Math.ceil((new Date(p.next_action_due) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-  const isOverdue = daysUntil !== null && daysUntil < 0;
-
-  // Compute next step from data-driven signals
-  const signals = p.signals || {};
-  const nextStep = (() => {
-    // Priority 1: Overdue follow-up
-    if (p.next_action_due && daysUntil !== null && daysUntil < 0) {
-      return { title: `Follow-up is ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`, sub: "Send your follow-up email now", urgent: true };
-    }
-    // Priority 2: Upcoming follow-up
-    if (p.next_action_due && daysUntil !== null && daysUntil <= 7) {
-      return { title: `Follow-up due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}`, sub: p.next_action || "Send a follow-up email with your updated stats", urgent: daysUntil <= 2 };
-    }
-    // Priority 3: No outreach yet
-    if (signals.outreach_count === 0 && signals.total_interactions === 0) {
-      return { title: "Send your first email", sub: "Introduce yourself with a personalized email", urgent: false };
-    }
-    // Priority 4: Coach replied but stale
-    if (signals.has_coach_reply && signals.days_since_reply > 7) {
-      return { title: `Coach replied ${signals.days_since_reply} days ago`, sub: "Keep the conversation going with a follow-up", urgent: signals.days_since_reply > 14 };
-    }
-    // Priority 5: Outreach sent, no reply
-    if (signals.outreach_count > 0 && !signals.has_coach_reply) {
-      return { title: "No reply yet — send a follow-up", sub: "A polite follow-up shows genuine interest", urgent: false };
-    }
-    // Priority 6: Has interactions but no specific action
-    if (signals.total_interactions > 0 && !p.next_action_due) {
-      return { title: "Set a follow-up date", sub: "Schedule your next action to stay on track", urgent: false };
-    }
-    return null;
-  })();
+/* ── Focus Card ── */
+function FocusCard({ program, onAction, onSnooze, onDismiss }) {
+  if (!program) return null;
+  const stage = program.board_group;
+  const cfg = STAGES[stage];
+  const subtitle = getSubtitle(program);
+  const action = getQuickAction(stage);
+  const isUrgent = stage === "overdue";
 
   return (
     <div
-      className="flex items-center gap-3 lg:gap-3.5 px-3 lg:px-4 py-2.5 lg:py-3 border-b transition-colors hover:bg-white/[0.02]"
-      style={{ borderColor: "var(--t-border)" }}
-      data-testid={`program-row-${p.program_id}`}
+      className={`relative rounded-2xl border p-5 transition-all ${isUrgent ? "border-rose-500/30 bg-rose-500/[0.04]" : "border-pink-600/20 bg-pink-600/[0.03]"}`}
+      style={{ borderColor: isUrgent ? undefined : "var(--t-border)" }}
+      data-testid="focus-card"
     >
-      {/* Accent bar */}
-      <div className={`w-[3px] h-9 rounded-sm flex-shrink-0 ${accentColor}`} />
+      <div className="flex items-start gap-4">
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isUrgent ? "bg-rose-500/15" : "bg-pink-600/10"}`}>
+          {isUrgent ? <AlertTriangle className="w-5 h-5 text-rose-400" /> : <cfg.icon className="w-5 h-5 text-pink-500" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`text-[10px] uppercase tracking-wider font-bold ${isUrgent ? "text-rose-400" : "text-pink-500"}`}>
+              {isUrgent ? "Needs Attention" : "Up Next"}
+            </span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${pillClass(cfg.color)}`}>
+              {cfg.label}
+            </span>
+          </div>
+          <p className="text-base font-semibold mb-0.5" style={{ color: "var(--t-text)" }}>{program.university_name}</p>
+          <p className="text-xs mb-3" style={{ color: "var(--t-text-muted)" }}>{subtitle}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {action && (
+              <Button
+                className={`text-xs h-8 px-4 ${isUrgent ? "bg-rose-600 hover:bg-rose-700" : "bg-pink-700 hover:bg-pink-800"} text-white shadow-md`}
+                onClick={() => onAction(program)}
+                data-testid="focus-card-action"
+              >
+                <action.icon className="w-3.5 h-3.5 mr-1.5" />{action.label}
+              </Button>
+            )}
+            {stage === "overdue" && (
+              <Button size="sm" variant="outline" className="text-xs h-8"
+                style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }}
+                onClick={() => onSnooze(program)}
+                data-testid="focus-card-snooze"
+              >
+                Snooze 3 days
+              </Button>
+            )}
+            {stage === "waiting_on_reply" && (
+              <Button size="sm" variant="outline" className="text-xs h-8 border-emerald-600/30 text-emerald-400 hover:bg-emerald-600/10"
+                onClick={() => onDismiss(program)}
+                data-testid="focus-card-mark-replied"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />Mark as Replied
+              </Button>
+            )}
+          </div>
+        </div>
+        <button onClick={() => onAction(program)} className="text-pink-500 hover:text-pink-400 p-1 flex-shrink-0" data-testid="focus-card-go">
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
+/* ── Mark Replied Inline Modal ── */
+function InlineMarkReplied({ program, onSaved, onCancel }) {
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const save = async () => {
+    if (!note.trim()) { toast.error("Describe what the coach said"); return; }
+    setSaving(true);
+    try {
+      await api.post(`/programs/${program.program_id}/mark-replied`, { note: note.trim() });
+      toast.success(`${program.university_name} moved to In Conversation`);
+      onSaved();
+    } catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
+  };
+  return (
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="inline-mark-replied">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />Mark {program.university_name} as Replied
+        </p>
+        <button onClick={onCancel} className="p-1 rounded hover:bg-white/5"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
+      </div>
+      <textarea placeholder="What did the coach say?" value={note} onChange={e => setNote(e.target.value)} rows={2}
+        className="w-full px-3 py-2 rounded-lg border text-xs resize-none outline-none focus:ring-1 focus:ring-emerald-600"
+        style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+        data-testid="inline-replied-note" />
+      <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs w-full h-8" onClick={save} disabled={saving} data-testid="inline-replied-save">
+        {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <CheckCircle2 className="w-3 h-3 mr-1" />}Log Coach Reply
+      </Button>
+    </div>
+  );
+}
+
+/* ── School Card (Smart List) ── */
+function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
+  const stage = p.board_group || "needs_outreach";
+  const cfg = STAGES[stage];
+  const Icon = cfg.icon;
+  const subtitle = getSubtitle(p);
+  const divLabel = { D1: "D1", D2: "D2", D3: "D3", NAIA: "NAIA", JUCO: "JUCO" }[p.division] || "—";
+  const divColor = { D1: "bg-emerald-500/20 text-emerald-400", D2: "bg-blue-500/20 text-blue-400", D3: "bg-violet-500/20 text-violet-400", NAIA: "bg-orange-500/20 text-orange-400", JUCO: "bg-yellow-500/20 text-yellow-400" }[p.division] || "bg-gray-500/20 text-gray-400";
+  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/10" : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/10" : "text-gray-400 bg-gray-500/10";
+
+  const dueDateFormatted = p.next_action_due && stage !== "overdue"
+    ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    : null;
+
+  const quickAction = getQuickAction(stage);
+
+  return (
+    <div
+      className="group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all hover:border-pink-600/20 cursor-pointer"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      onClick={() => navigate(`/journey/${p.program_id}`)}
+      data-testid={`school-card-${p.program_id}`}
+    >
       {/* Division badge */}
-      <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
-        {p.division || "—"}
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
+        {divLabel}
       </div>
 
-      {/* Info */}
+      {/* Main info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <button
-            onClick={() => navigate(`/programs/${p.program_id}`)}
-            data-testid={`program-link-${p.program_id}`}
-            className="font-semibold text-[13px] leading-tight truncate transition-colors hover:text-pink-400"
-            style={{ color: "var(--t-text)" }}
-          >
-            {p.university_name}
-          </button>
-          {matchScore && (
-            <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border flex-shrink-0 ${scoreColor}`} data-testid={`match-score-${p.program_id}`}>
-              {matchScore.match_score}%
-            </span>
-          )}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-semibold text-sm truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
+          {matchScore && <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${scoreColor}`}>{matchScore.match_score}%</span>}
+          <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold border ${pillClass(cfg.color)}`}>
+            <Icon className="w-2.5 h-2.5 inline mr-1" />{cfg.label}
+          </span>
         </div>
-        <div className="flex items-center gap-2.5 mt-0.5 text-[11px] flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-          {p.region && <span>{p.region}</span>}
-          {p.conference && <span><span className="hidden sm:inline">{divFull} | </span>{p.conference}</span>}
-          {p.primary_coach && (
-            <span className="flex items-center gap-1">
-              {p.primary_coach}
-              {p.coach_email && (
-                <a href={`mailto:${p.coach_email}`} className="text-pink-500 hover:text-pink-400" title={p.coach_email}>
-                  <Mail className="w-3 h-3" />
-                </a>
-              )}
-            </span>
-          )}
-          {/* Inline follow-up date badge (for non-overdue stages) */}
-          {dueDateFormatted && groupKey !== "overdue" && (
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${daysUntil <= 3 ? "bg-amber-500/15 text-amber-400" : "bg-slate-500/15 text-slate-400"}`} data-testid={`due-badge-${p.program_id}`}>
+        <div className="flex items-center gap-2 mt-0.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+          <span>{subtitle}</span>
+          {dueDateFormatted && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-medium">
               <Clock className="w-2.5 h-2.5" />Due {dueDateFormatted}
             </span>
           )}
         </div>
       </div>
 
-      {/* Next Step - show for overdue, needs_outreach, waiting_on_reply */}
-      {nextStep && (groupKey === "overdue" || groupKey === "needs_outreach" || groupKey === "waiting_on_reply") && (
-      <div className="hidden md:flex items-start gap-2 flex-shrink-0 w-[320px]" data-testid={`next-step-${p.program_id}`}>
-        <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${nextStep.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
-          {nextStep.urgent ? <AlertCircle className="w-3.5 h-3.5 text-orange-400" /> : <Zap className="w-3.5 h-3.5 text-pink-500" />}
-        </div>
-        <div className="min-w-0">
-          <p className={`text-[9px] uppercase tracking-wider font-semibold ${nextStep.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
-          <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--t-text)" }}>{nextStep.title}</p>
-          <p className="text-[10px] leading-snug" style={{ color: "var(--t-text-muted)" }}>{nextStep.sub}</p>
-        </div>
+      {/* Quick action + navigate */}
+      <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
+        {stage === "waiting_on_reply" && (
+          <button
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
+            onClick={() => onMarkReplied(p)}
+            data-testid={`quick-mark-replied-${p.program_id}`}
+          >
+            <CheckCircle2 className="w-3 h-3" />Replied
+          </button>
+        )}
+        {quickAction && (
+          <button
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/20 transition-colors"
+            onClick={() => navigate(`/journey/${p.program_id}`)}
+            data-testid={`quick-action-${p.program_id}`}
+          >
+            <quickAction.icon className="w-3 h-3" />{quickAction.label}
+          </button>
+        )}
+        <ChevronRight className="w-4 h-4 opacity-30 group-hover:opacity-100 group-hover:text-pink-500 transition-all" style={{ color: "var(--t-text-muted)" }} />
       </div>
-      )}
+    </div>
+  );
+}
 
-      {/* Divider + Journey */}
-      <div className="flex items-center gap-3 flex-shrink-0">
-        {nextStep && <div className="hidden md:block w-px h-10 bg-[var(--t-border)]" />}
-        <button
-          onClick={() => navigate(`/journey/${p.program_id}`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/25 rounded-md transition-colors"
-          data-testid={`view-journey-${p.program_id}`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />Journey
-        </button>
-      </div>
+/* ── Filter Chips ── */
+function FilterChips({ counts, total, active, onFilter }) {
+  const chips = [
+    { key: null, label: "All", count: total, color: "pink" },
+    ...STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({ key: k, label: STAGES[k].label, count: counts[k], color: STAGES[k].color })),
+  ];
+  return (
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-1" data-testid="filter-chips">
+      {chips.map(c => {
+        const isActive = active === c.key;
+        return (
+          <button key={c.key || "all"} onClick={() => onFilter(isActive ? null : c.key)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex-shrink-0 border ${
+              isActive ? "ring-1 ring-pink-600 bg-pink-600/10 border-pink-600/30" : "hover:bg-white/[0.03] border-transparent"
+            }`}
+            style={!isActive ? { color: "var(--t-text-secondary)" } : {}}
+            data-testid={`chip-${c.key || "all"}`}
+          >
+            <span className={isActive ? "text-pink-400" : ""}>{c.label}</span>
+            <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? "bg-pink-600/20 text-pink-400" : `bg-${c.color}-500/10 text-${c.color}-400`}`}>{c.count}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -191,9 +321,10 @@ export default function RecruitingBoard() {
   const [search, setSearch] = useState("");
   const [filterDivision, setFilterDivision] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
-  const [collapsed, setCollapsed] = useState({ closed: true });
   const [activeFilter, setActiveFilter] = useState(null);
   const [matchScores, setMatchScores] = useState({});
+  const [markRepliedProgram, setMarkRepliedProgram] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -207,24 +338,7 @@ export default function RecruitingBoard() {
     }).catch(() => {});
   }, []);
 
-  const focusGroup = (key) => {
-    if (key === null || activeFilter === key) {
-      setActiveFilter(null);
-      setCollapsed({ closed: true });
-    } else {
-      setActiveFilter(key);
-      setCollapsed({});
-    }
-  };
-
-  useEffect(() => {
-    if (!loading && location.hash) {
-      const groupId = location.hash.replace("#", "");
-      focusGroup(groupId);
-    }
-  }, [loading, location.hash]);
-
-  const fetchPrograms = async () => {
+  const fetchPrograms = useCallback(async () => {
     try {
       const params = { grouped: true };
       if (search) params.search = search;
@@ -237,11 +351,50 @@ export default function RecruitingBoard() {
     } finally {
       setLoading(false);
     }
+  }, [search, filterDivision, filterRegion]);
+
+  useEffect(() => { fetchPrograms(); }, [fetchPrograms]);
+
+  useEffect(() => {
+    if (!loading && location.hash) {
+      setActiveFilter(location.hash.replace("#", ""));
+    }
+  }, [loading, location.hash]);
+
+  // Build sorted flat list
+  const allPrograms = [];
+  for (const stage of STAGE_ORDER) {
+    const progs = (groupedData.groups || {})[stage] || [];
+    // Sort within stage: most stale first (longest days_since_outreach or days_since_activity)
+    const sorted = [...progs].sort((a, b) => {
+      const aD = a.signals?.days_since_activity ?? -1;
+      const bD = b.signals?.days_since_activity ?? -1;
+      return bD - aD;
+    });
+    allPrograms.push(...sorted);
+  }
+
+  const filteredPrograms = activeFilter
+    ? allPrograms.filter(p => p.board_group === activeFilter)
+    : allPrograms;
+
+  // Focus card: first actionable program (overdue > waiting > needs_outreach)
+  const focusProgram = allPrograms.find(p =>
+    ["overdue", "needs_outreach", "waiting_on_reply"].includes(p.board_group)
+  );
+
+  const handleFocusAction = (p) => navigate(`/journey/${p.program_id}`);
+  const handleSnooze = async (p) => {
+    const newDate = new Date();
+    newDate.setDate(newDate.getDate() + 3);
+    try {
+      await api.put(`/programs/${p.program_id}`, { next_action_due: newDate.toISOString().split("T")[0] });
+      toast.success("Snoozed for 3 days");
+      fetchPrograms();
+    } catch { toast.error("Failed to snooze"); }
   };
 
-  useEffect(() => { fetchPrograms(); }, [search, filterDivision, filterRegion]);
-
-  const toggleSection = (key) => setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  const { counts = {}, total = 0 } = groupedData;
 
   if (loading) {
     return (
@@ -254,118 +407,127 @@ export default function RecruitingBoard() {
     );
   }
 
-  const { groups = {} } = groupedData;
+  // All caught up state
+  const allCaughtUp = total > 0 && !focusProgram;
 
   return (
-    <div data-testid="recruiting-board" className="space-y-4">
-      {/* Group Funnel */}
-      <GroupFunnel groupedData={groupedData} onFocusGroup={focusGroup} activeFilter={activeFilter} />
+    <div data-testid="recruiting-board" className="space-y-5">
+      {/* ─── Top: Progress Ring + Focus Card ─── */}
+      <div className="flex flex-col lg:flex-row gap-5">
+        {/* Progress Ring */}
+        {total > 0 && (
+          <div className="rounded-2xl border p-5 flex-shrink-0" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
+            <ProgressRing counts={counts} total={total} />
+          </div>
+        )}
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 lg:gap-3" data-testid="board-filters">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-          <Input
-            data-testid="board-search"
-            placeholder="Search universities..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 border rounded-lg text-sm"
-            style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
-          />
-        </div>
-        <Select value={filterDivision} onValueChange={setFilterDivision}>
-          <SelectTrigger data-testid="filter-division" className="w-28 lg:w-36 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-            <SelectValue placeholder="Division" />
-          </SelectTrigger>
-          <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-            <SelectItem value="all">All Divisions</SelectItem>
-            {DIVISIONS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={filterRegion} onValueChange={setFilterRegion}>
-          <SelectTrigger data-testid="filter-region" className="w-28 lg:w-40 rounded-lg text-xs lg:text-sm" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-            <SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-            <SelectItem value="all">All Regions</SelectItem>
-            {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Button
-          data-testid="add-school-btn"
-          onClick={() => navigate("/knowledge-base")}
-          className="bg-slate-700 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all ml-auto"
-        >
-          <Plus className="w-4 h-4 mr-2" strokeWidth={1.5} /> Add School
-        </Button>
-      </div>
-
-      {/* Groups */}
-      <div className="flex flex-col gap-5">
-        {BOARD_GROUPS.map((group) => {
-          if (activeFilter && activeFilter !== group.key) return null;
-          const groupPrograms = groups[group.key] || [];
-          const isCollapsed = collapsed[group.key];
-          const isEmpty = groupPrograms.length === 0;
-
-          return (
-            <div key={group.key} id={`group-${group.key}`} data-testid={`section-${group.key}`} className="pb-2">
-              {/* Accordion header */}
-              <button
-                onClick={() => toggleSection(group.key)}
-                data-testid={`toggle-${group.key}`}
-                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 border transition-all duration-200 ${
-                  !isCollapsed && !isEmpty
-                    ? "rounded-t-[10px] border-b-0"
-                    : "rounded-[10px]"
-                }`}
-                style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
-              >
-                <ChevronRight
-                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 flex-shrink-0 ${!isCollapsed ? "rotate-90" : ""}`}
-                  strokeWidth={1.5}
-                />
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${group.dot}`} />
-                <span className="font-semibold text-[13px]" style={{ color: isEmpty ? "var(--t-text-muted)" : "var(--t-text)" }}>
-                  {group.label}
-                </span>
-                <span className="text-[11px] hidden sm:inline" style={{ color: "var(--t-text-muted)" }}>
-                  {group.description}
-                </span>
-                <span className={`ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${isEmpty ? "bg-gray-500/15 text-gray-500" : `${group.countBg} ${group.countText}`}`}>
-                  {groupPrograms.length}
-                </span>
-              </button>
-
-              {/* Connected cards container */}
-              {!isCollapsed && (
-                <div
-                  className="border border-t-0 rounded-b-[10px] overflow-hidden"
-                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
-                >
-                  {isEmpty ? (
-                    <div className="py-5 text-center text-xs" style={{ color: "var(--t-text-muted)" }}>
-                      No programs in this group
-                    </div>
-                  ) : (
-                    groupPrograms.map((p) => (
-                      <ProgramRow
-                        key={p.program_id}
-                        p={p}
-                        navigate={navigate}
-                        matchScore={matchScores[p.program_id]}
-                        accentColor={group.accentBar}
-                        groupKey={group.key}
-                      />
-                    ))
-                  )}
-                </div>
-              )}
+        {/* Focus Card or All Caught Up */}
+        <div className="flex-1 min-w-0">
+          {focusProgram && !markRepliedProgram && (
+            <FocusCard
+              program={focusProgram}
+              onAction={handleFocusAction}
+              onSnooze={handleSnooze}
+              onDismiss={(p) => setMarkRepliedProgram(p)}
+            />
+          )}
+          {markRepliedProgram && (
+            <InlineMarkReplied
+              program={markRepliedProgram}
+              onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }}
+              onCancel={() => setMarkRepliedProgram(null)}
+            />
+          )}
+          {allCaughtUp && !markRepliedProgram && (
+            <div className="rounded-2xl border p-6 text-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="all-caught-up">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+              </div>
+              <p className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>You're on top of your recruiting!</p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>All schools are in conversation or archived. Time to add more?</p>
+              <Button className="mt-3 bg-pink-700 hover:bg-pink-800 text-white text-xs h-8" onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
+                <Plus className="w-3.5 h-3.5 mr-1.5" />Add School
+              </Button>
             </div>
-          );
-        })}
+          )}
+          {total === 0 && (
+            <div className="rounded-2xl border p-8 text-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="empty-board">
+              <p className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>No schools on your board yet</p>
+              <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>Start by finding schools that match your profile</p>
+              <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs" onClick={() => navigate("/knowledge-base")} data-testid="find-schools-btn">
+                <Search className="w-3.5 h-3.5 mr-1.5" />Find Schools
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* ─── Filter Chips + Search ─── */}
+      {total > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <FilterChips counts={counts} total={total} active={activeFilter} onFilter={setActiveFilter} />
+            <button onClick={() => setShowFilters(!showFilters)}
+              className="p-2 rounded-lg border transition-colors hover:bg-white/[0.03] flex-shrink-0 ml-auto"
+              style={{ borderColor: "var(--t-border)" }}
+              data-testid="toggle-filters"
+            >
+              <Filter className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+            </button>
+            <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
+              className="bg-slate-700 hover:bg-slate-800 text-white text-xs shadow-md flex-shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1.5" />Add School
+            </Button>
+          </div>
+
+          {/* Expandable filters */}
+          {showFilters && (
+            <div className="flex flex-wrap items-center gap-2" data-testid="board-filters">
+              <div className="relative flex-1 min-w-[180px]">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
+                <Input data-testid="board-search" placeholder="Search universities..." value={search} onChange={e => setSearch(e.target.value)}
+                  className="pl-9 border rounded-lg text-xs h-9"
+                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
+              </div>
+              <Select value={filterDivision} onValueChange={setFilterDivision}>
+                <SelectTrigger data-testid="filter-division" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+                  <SelectValue placeholder="Division" />
+                </SelectTrigger>
+                <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+                  <SelectItem value="all">All Divisions</SelectItem>
+                  {DIVISIONS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={filterRegion} onValueChange={setFilterRegion}>
+                <SelectTrigger data-testid="filter-region" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+                  <SelectValue placeholder="Region" />
+                </SelectTrigger>
+                <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+                  <SelectItem value="all">All Regions</SelectItem>
+                  {REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── Smart List ─── */}
+      {filteredPrograms.length > 0 && (
+        <div className="space-y-2" data-testid="smart-list">
+          {filteredPrograms.map(p => (
+            <SchoolCard key={p.program_id} p={p} navigate={navigate} matchScore={matchScores[p.program_id]} onMarkReplied={(prog) => setMarkRepliedProgram(prog)} />
+          ))}
+        </div>
+      )}
+
+      {/* Filtered empty state */}
+      {activeFilter && filteredPrograms.length === 0 && (
+        <div className="text-center py-8 text-xs" style={{ color: "var(--t-text-muted)" }} data-testid="filtered-empty">
+          No schools in {STAGES[activeFilter]?.label || activeFilter}
+        </div>
+      )}
     </div>
   );
 }
