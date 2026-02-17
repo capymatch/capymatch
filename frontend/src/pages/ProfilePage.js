@@ -9,6 +9,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [shareLink, setShareLink] = useState("");
+  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const photoRef = useRef(null);
 
