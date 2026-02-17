@@ -309,7 +309,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
       </div>
 
       {/* ═══ AI Suggested Schools ═══ */}
-      {suggestions.length > 0 && (
+      {profileDone && suggestions.length > 0 && (
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-suggestions">
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-center gap-2.5">
