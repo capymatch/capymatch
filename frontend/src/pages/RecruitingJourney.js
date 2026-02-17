@@ -976,11 +976,11 @@ export default function RecruitingJourney() {
   const [editCoach, setEditCoach] = useState(null);
 
   const closeForm = () => { setActiveForm(null); setEditCoach(null); };
-  const openEmail = () => { setActiveForm("email"); };
-  const openLog = () => { setActiveForm("log"); };
-  const openReplied = () => { setActiveForm("replied"); };
+  const openEmail = () => { setActiveForm(prev => prev === "email" ? null : "email"); };
+  const openLog = () => { setActiveForm(prev => prev === "log" ? null : "log"); };
+  const openReplied = () => { setActiveForm(prev => prev === "replied" ? null : "replied"); };
   const openCoach = () => { setActiveForm("coach"); };
-  const openFollowup = () => { setActiveForm("followup"); };
+  const openFollowup = () => { setActiveForm(prev => prev === "followup" ? null : "followup"); };
 
   const fetchData = useCallback(async () => {
     try {
