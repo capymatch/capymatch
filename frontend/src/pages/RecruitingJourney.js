@@ -1001,6 +1001,13 @@ export default function RecruitingJourney() {
       setProgram(progRes.data);
       setTimeline(journeyRes.data.timeline || []);
       setCoaches(coachRes.data || []);
+      // Check athlete profile completeness
+      try {
+        const profRes = await api.get("/athlete-profile");
+        const p = profRes.data;
+        const filled = [p.athlete_name, p.position, p.height, p.grad_year, p.video_link].filter(Boolean);
+        setProfileComplete(filled.length >= 5);
+      } catch { setProfileComplete(false); }
       if (!isBasic) {
         try {
           const msRes = await api.get("/match-scores");
