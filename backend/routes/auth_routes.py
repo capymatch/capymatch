@@ -87,6 +87,7 @@ async def login(request: Request, response: Response):
 async def exchange_session(request: Request, response: Response):
     body = await request.json()
     session_id = body.get("session_id")
+    logger.info(f"[OAuth] Session exchange attempt, session_id present: {bool(session_id)}")
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
     async with httpx.AsyncClient() as hc:
@@ -94,13 +95,16 @@ async def exchange_session(request: Request, response: Response):
             "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
             headers={"X-Session-ID": session_id}
         )
+    logger.info(f"[OAuth] Emergent auth response status: {resp.status_code}")
     if resp.status_code != 200:
+        logger.error(f"[OAuth] Emergent auth failed: {resp.text}")
         raise HTTPException(status_code=401, detail="Invalid session_id")
     data = resp.json()
     email = data.get("email")
     name = data.get("name", "")
     picture = data.get("picture", "")
     ext_session_token = data.get("session_token", "")
+    logger.info(f"[OAuth] User authenticated: {email}")
     user = await db.users.find_one({"email": email}, {"_id": 0})
     if user:
         user_id = user["user_id"]
