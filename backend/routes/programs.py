@@ -186,6 +186,7 @@ async def get_program(program_id: str, request: Request):
     program["coaches"] = coaches
     program["interactions"] = interactions
     program["signals"] = await compute_interaction_signals(tenant_id, program_id)
+    program["board_group"] = categorize_program(program)
     return program
 
 
