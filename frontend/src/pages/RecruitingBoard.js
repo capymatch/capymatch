@@ -269,7 +269,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
             onClick={() => onMarkReplied(p)}
             data-testid={`quick-mark-replied-${p.program_id}`}
           >
-            <CheckCircle2 className="w-3 h-3" />Replied
+            <CheckCircle2 className="w-3 h-3" />Mark as Replied
           </button>
         )}
         {quickAction && (
