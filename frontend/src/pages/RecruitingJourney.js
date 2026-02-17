@@ -1327,7 +1327,8 @@ export default function RecruitingJourney() {
         onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} activeAction={activeForm} />
 
       {/* ─── Personal Notes Sidebar ─── */}
-      <NotesSidebar programId={programId} universityName={program.university_name} />
+      <NotesSidebar programId={programId} universityName={program.university_name}
+        externalOpen={notesOpen} onExternalClose={() => setNotesOpen(false)} />
     </div>
   );
 }
