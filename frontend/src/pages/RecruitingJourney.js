@@ -368,16 +368,24 @@ function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteracti
       }
     }
     // Priority 2: No outreach yet (data-driven)
-    if (signals.emails_sent === 0 && signals.total_interactions === 0) {
+    if (signals.outreach_count === 0 && signals.total_interactions === 0) {
       return { urgent: false, title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", action: "Compose Intro Email", type: "email" };
     }
-    // Priority 3: Outreach sent but no reply — nudge to follow up or mark replied
-    if (signals.emails_sent > 0 && !signals.has_coach_reply) {
+    // Priority 3: Has coach reply but stale (> 7 days) — follow up on the conversation
+    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply > 7) {
+      return { urgent: signals.days_since_reply > 14, title: `Coach replied ${signals.days_since_reply} days ago — time to follow up`, sub: "Keep the conversation going with a thoughtful response", action: "Send Follow-up", type: "email" };
+    }
+    // Priority 4: Outreach sent but no coach reply — nudge to follow up or mark replied
+    if (signals.outreach_count > 0 && !signals.has_coach_reply) {
       return { urgent: false, title: "No reply yet — follow up or mark as replied", sub: "If the coach replied outside the app, mark it. Otherwise, send a follow-up.", action: "Send Follow-up", type: "email", showMarkReplied: true };
     }
-    // Priority 4: Has reply but it's been a while
-    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply > 7) {
-      return { urgent: false, title: `Coach replied ${signals.days_since_reply} days ago — time to follow up`, sub: "Keep the conversation going with a thoughtful response", action: "Send Follow-up", type: "email" };
+    // Priority 5: Has recent reply — keep momentum
+    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply <= 7) {
+      return { urgent: false, title: "Coach replied recently — keep the momentum going", sub: "Log your latest interaction or send a response", action: "Log Interaction", type: "log" };
+    }
+    // Priority 6: Has activity but nothing else specific
+    if (signals.total_interactions > 0) {
+      return { urgent: false, title: "Set a follow-up date to stay on track", sub: "Schedule your next action to keep this school moving forward", action: "Schedule Follow-up", type: "log" };
     }
     return null;
   };
