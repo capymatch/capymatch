@@ -806,23 +806,23 @@ export default function RecruitingJourney() {
 
       {/* ─── Contextual Hero: Checklist / Celebration / Nothing ─── */}
       {isNewSchool ? (
-        <div className="mt-8">
+        <div className="mt-5">
         <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
           onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} onSetFollowup={openFollowup} />
         </div>
       ) : isInConversation ? (
-        <div className="mt-8">
+        <div className="mt-5">
         <CelebrationHero program={program} coaches={coaches} onEmail={isBasic ? null : openEmail} onLog={openLog} onCall={openLog} />
         </div>
       ) : null}
 
       {/* ─── Inline Forms ─── */}
-      {activeForm === "replied" && <div className="mt-8"><MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "log" && <div className="mt-8"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "email" && <div className="mt-8"><EmailComposer coaches={coaches} programId={programId} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "coach" && <div className="mt-8"><CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} /></div>}
+      {activeForm === "replied" && <div className="mt-5"><MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
+      {activeForm === "log" && <div className="mt-5"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
+      {activeForm === "email" && <div className="mt-5"><EmailComposer coaches={coaches} programId={programId} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
+      {activeForm === "coach" && <div className="mt-5"><CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} /></div>}
       {activeForm === "followup" && (
-        <div className="mt-8 rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="mt-5 rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schedule Follow-up</h3>
             <button onClick={closeForm} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
