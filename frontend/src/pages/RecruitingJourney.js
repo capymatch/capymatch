@@ -259,8 +259,8 @@ function ConversationBubble({ event }) {
       <div className="flex justify-center my-2" data-testid="conv-milestone">
         <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
           <div className={`w-7 h-7 rounded-lg flex items-center justify-center bg-${cfg.color}-500/10`}>
-            {evtType === "camp" ? <Calendar className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
-            : evtType === "visit" ? <MapPin className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
+            {evtType === "camp" || evtType === "camp_meeting" ? <span className="text-base">🏋️</span>
+            : evtType === "visit" || evtType === "campus_visit" ? <MapPin className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
             : <Star className={`w-3.5 h-3.5 text-${cfg.color}-400`} />}
           </div>
           <div>
