@@ -71,42 +71,39 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
 
 def categorize_program(program: dict) -> str:
     """
-    Data-driven board grouping. Uses interaction signals + due dates.
-    Priority: Closed (inactive) > In Progress > Upcoming > Action Required
+    5-stage recruiting funnel. Strict priority, no overlaps.
+    1. archived    — is_active = false
+    2. overdue     — follow-up date has passed
+    3. in_conversation — coach has replied (via mark-as-replied)
+    4. waiting_on_reply — outreach sent, no coach reply
+    5. needs_outreach  — no interactions yet (default)
     """
-    today = datetime.now(timezone.utc).date()
-
-    # 1. CLOSED: Explicitly marked inactive
+    # 1. ARCHIVED: Explicitly marked inactive (always wins)
     if not program.get("is_active", True):
-        return "closed"
+        return "archived"
 
-    signals = program.get("signals", {})
+    # 2. OVERDUE: Follow-up date has passed (urgency wins over stage)
     next_action_due = program.get("next_action_due", "")
-
-    due_date = None
     if next_action_due:
         try:
             due_date = datetime.strptime(next_action_due, "%Y-%m-%d").date()
+            if due_date < datetime.now(timezone.utc).date():
+                return "overdue"
         except ValueError:
             pass
 
-    is_overdue = due_date is not None and due_date < today
-    days_since_reply = signals.get("days_since_reply")
-    # Use 999 only when days_since_reply is None (not when it's 0)
-    has_recent_reply = signals.get("has_coach_reply", False) and (days_since_reply if days_since_reply is not None else 999) <= 14
+    signals = program.get("signals", {})
 
-    # 2. IN PROGRESS: Active conversation — coach replied within 14 days, not overdue
-    if has_recent_reply and not is_overdue:
-        return "in_progress"
+    # 3. IN CONVERSATION: Coach has replied (dialogue established)
+    if signals.get("has_coach_reply", False):
+        return "in_conversation"
 
-    # 3. UPCOMING: Follow-up due within 14 days, not overdue
-    if due_date is not None:
-        days_until_due = (due_date - today).days
-        if 0 <= days_until_due <= 14:
-            return "upcoming"
+    # 4. WAITING ON REPLY: Outreach sent but no coach reply
+    if signals.get("outreach_count", 0) > 0:
+        return "waiting_on_reply"
 
-    # 4. ACTION REQUIRED: Default (overdue, stale, no activity)
-    return "action_required"
+    # 5. NEEDS OUTREACH: Default — no interactions yet
+    return "needs_outreach"
 
 
 # ─── Programs CRUD ───
