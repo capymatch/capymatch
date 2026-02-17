@@ -978,6 +978,7 @@ export default function RecruitingJourney() {
   const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [matchScore, setMatchScore] = useState(null);
+  const [profileComplete, setProfileComplete] = useState(true);
 
   // Form visibility
   const [activeForm, setActiveForm] = useState(null); // 'email' | 'log' | 'replied' | 'coach' | 'followup'
