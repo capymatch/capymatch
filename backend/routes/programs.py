@@ -40,9 +40,8 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
         if dt and (last_activity_date is None or dt > last_activity_date):
             last_activity_date = dt
 
-        # Count outreach (any contact initiated by athlete)
-        if ix_type in ("email", "follow up", "phone call", "video call", "text message",
-                        "camp meeting", "campus visit", "showcase", "other"):
+        # Count outreach — everything except coach_reply is athlete outreach
+        if ix_type != "coach_reply":
             outreach_count += 1
             if dt and (last_outreach_date is None or dt > last_outreach_date):
                 last_outreach_date = dt
