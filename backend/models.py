@@ -129,6 +129,7 @@ class ComposeEmail(BaseModel):
     body: str
     cc: Optional[str] = ""
     bcc: Optional[str] = ""
+    attachment_ids: Optional[list] = []
 
 
 class ReplyEmail(BaseModel):
