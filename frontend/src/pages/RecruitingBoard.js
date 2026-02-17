@@ -4,20 +4,21 @@ import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   ChevronRight, Search, Plus, AlertTriangle,
-  Clock, Activity, Archive, Sparkles, Zap,
-  MapPin, Building2, User, Mail, AlertCircle, CheckCircle2
+  Clock, MessageSquare, Archive, Sparkles, Zap,
+  MapPin, Building2, User, Mail, AlertCircle, CheckCircle2, Send
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
-/* ── Board Groups Config ── */
+/* ── Board Groups Config (5-stage funnel) ── */
 const BOARD_GROUPS = [
-  { key: "action_required", label: "Action Required", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Overdue, needs response, or stale" },
-  { key: "upcoming", label: "Upcoming", icon: Clock, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Follow-up due within 14 days" },
-  { key: "in_progress", label: "In Progress", icon: Activity, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Recently contacted or active conversation" },
-  { key: "closed", label: "Closed", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Inactive or archived schools" },
+  { key: "overdue", label: "Overdue", icon: AlertTriangle, dot: "bg-rose-500", countBg: "bg-rose-500/15", countText: "text-rose-400", accentBar: "bg-rose-500", description: "Follow-up date has passed — handle these first" },
+  { key: "needs_outreach", label: "Needs Outreach", icon: Send, dot: "bg-amber-500", countBg: "bg-amber-500/15", countText: "text-amber-400", accentBar: "bg-amber-500", description: "Haven't contacted yet" },
+  { key: "waiting_on_reply", label: "Waiting on Reply", icon: Clock, dot: "bg-blue-500", countBg: "bg-blue-500/15", countText: "text-blue-400", accentBar: "bg-blue-500", description: "Reached out, waiting to hear back" },
+  { key: "in_conversation", label: "In Conversation", icon: MessageSquare, dot: "bg-emerald-500", countBg: "bg-emerald-500/15", countText: "text-emerald-400", accentBar: "bg-emerald-500", description: "Coach has responded" },
+  { key: "archived", label: "Archived", icon: Archive, dot: "bg-gray-500", countBg: "bg-gray-500/15", countText: "text-gray-400", accentBar: "bg-gray-500", description: "Not pursuing" },
 ];
 
 /* ── Group Funnel ── */
