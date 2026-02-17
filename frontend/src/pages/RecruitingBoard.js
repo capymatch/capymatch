@@ -415,7 +415,13 @@ export default function RecruitingBoard() {
 
   return (
     <div data-testid="recruiting-board" className="flex flex-col gap-5">
+      {/* ─── Empty Board State ─── */}
+      {total === 0 && (
+        <EmptyBoardState onSchoolAdded={fetchPrograms} />
+      )}
+
       {/* ─── Top: Progress Ring + Focus Card ─── */}
+      {total > 0 && (
       <div className="flex flex-col lg:flex-row lg:items-stretch gap-5">
         {/* Progress Ring */}
         {total > 0 && (
@@ -453,11 +459,9 @@ export default function RecruitingBoard() {
               </Button>
             </div>
           )}
-          {total === 0 && (
-            <EmptyBoardState onSchoolAdded={fetchPrograms} />
-          )}
         </div>
       </div>
+      )}
 
       {/* ─── Filter Chips + Search ─── */}
       {total > 0 && (
