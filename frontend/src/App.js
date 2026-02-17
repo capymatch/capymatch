@@ -36,19 +36,26 @@ import api from "./lib/api";
 import "./App.css";
 
 /* Google OAuth callback handler */
+// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 function OAuthCallback({ onAuth }) {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [status, setStatus] = useState("loading");
   const [errorMsg, setErrorMsg] = useState("");
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-    console.log("[OAuth] Callback fired, session_id:", sessionId ? sessionId.substring(0, 8) + "..." : "MISSING");
-    console.log("[OAuth] Full URL search:", window.location.search);
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+
+    // session_id comes in the URL hash fragment: #session_id=xxx
+    const hash = window.location.hash || "";
+    const match = hash.match(/session_id=([^&]+)/);
+    const sessionId = match ? match[1] : null;
+
+    console.log("[OAuth] Callback fired, hash:", hash);
+    console.log("[OAuth] session_id:", sessionId ? sessionId.substring(0, 8) + "..." : "MISSING");
 
     if (!sessionId) {
-      console.log("[OAuth] No session_id found, redirecting to login");
       setStatus("error");
       setErrorMsg("No session ID received from Google. Please try again.");
       setTimeout(() => navigate("/login", { replace: true }), 2000);
@@ -64,12 +71,12 @@ function OAuthCallback({ onAuth }) {
       })
       .catch(err => {
         const detail = err?.response?.data?.detail || err?.message || "Authentication failed";
-        console.error("[OAuth] Session exchange failed:", detail, err?.response?.status);
+        console.error("[OAuth] Session exchange failed:", detail);
         setStatus("error");
         setErrorMsg(detail);
         setTimeout(() => navigate("/login", { replace: true }), 3000);
       });
-  }, [searchParams, navigate, onAuth]);
+  }, [navigate, onAuth]);
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
