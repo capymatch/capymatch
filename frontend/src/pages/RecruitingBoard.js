@@ -454,13 +454,7 @@ export default function RecruitingBoard() {
             </div>
           )}
           {total === 0 && (
-            <div className="rounded-2xl border p-8 text-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="empty-board">
-              <p className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>No schools on your board yet</p>
-              <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>Start by finding schools that match your profile</p>
-              <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs" onClick={() => navigate("/knowledge-base")} data-testid="find-schools-btn">
-                <Search className="w-3.5 h-3.5 mr-1.5" />Find Schools
-              </Button>
-            </div>
+            <EmptyBoardState onSchoolAdded={fetchPrograms} />
           )}
         </div>
       </div>
