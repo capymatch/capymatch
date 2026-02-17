@@ -413,7 +413,7 @@ export default function RecruitingBoard() {
   const allCaughtUp = total > 0 && !focusProgram;
 
   return (
-    <div data-testid="recruiting-board" className="space-y-5">
+    <div data-testid="recruiting-board" className="space-y-8">
       {/* ─── Top: Progress Ring + Focus Card ─── */}
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Progress Ring */}
