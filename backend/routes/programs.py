@@ -297,6 +297,34 @@ async def delete_program(program_id: str, request: Request):
     return {"ok": True}
 
 
+# ─── Compare Programs ───
+
+@router.post("/programs/compare")
+async def compare_programs(request: Request):
+    """Get comparison data for multiple programs."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    body = await request.json()
+    program_ids = body.get("program_ids", [])
+    if not program_ids:
+        return []
+    
+    results = []
+    for pid in program_ids[:10]:  # Max 10
+        program = await db.programs.find_one({"program_id": pid, "tenant_id": tenant_id}, {"_id": 0})
+        if not program:
+            continue
+        coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": pid}, {"_id": 0}).to_list(50)
+        program["signals"] = await compute_interaction_signals(tenant_id, pid)
+        program["board_group"] = categorize_program(program)
+        program["journey_rail"] = compute_journey_rail(program)
+        program["coach_count"] = len(coaches)
+        program["primary_coach"] = next((c.get("coach_name", "") for c in coaches if c.get("role") == "Head Coach"), coaches[0].get("coach_name", "") if coaches else "")
+        results.append(program)
+    
+    return results
+
+
 # ─── Mark as Replied ───
 
 @router.post("/programs/{program_id}/mark-replied")
