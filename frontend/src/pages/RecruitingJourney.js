@@ -936,8 +936,10 @@ export default function RecruitingJourney() {
         </div>
       </div>
 
-      {/* ─── Next Step Hero ─── */}
-      <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} onMarkReplied={() => { setShowMarkReplied(true); setShowLogForm(false); setShowEmailComposer(false); }} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
+      {/* ─── Next Step Hero (only for Action Required schools) ─── */}
+      {program.board_group === "action_required" && (
+        <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} onMarkReplied={() => { setShowMarkReplied(true); setShowLogForm(false); setShowEmailComposer(false); }} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
+      )}
 
       {/* ─── Inline Forms (expand below hero) ─── */}
       {showMarkReplied && <div className="mt-4"><MarkAsRepliedModal programId={programId} onSaved={() => { setShowMarkReplied(false); fetchData(); }} onCancel={() => setShowMarkReplied(false)} /></div>}
