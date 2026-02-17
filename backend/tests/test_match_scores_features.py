@@ -8,7 +8,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://pipeline-focus.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://journey-flow-8.preview.emergentagent.com").rstrip("/")
 
 
 class TestMatchScoresAPI:
