@@ -145,8 +145,14 @@ export default function EmptyBoardState({ onSchoolAdded }) {
       api.get("/athlete-profile").catch(() => ({ data: {} })),
       api.get("/suggested-schools").catch(() => ({ data: { suggestions: [] } })),
       api.get("/gmail/status").catch(() => ({ data: { connected: false } })),
-    ]).then(([profRes, sugRes, gmailRes]) => {
-      setProfile(profRes.data);
+      api.get("/dashboard").catch(() => ({ data: {} })),
+    ]).then(([profRes, sugRes, gmailRes, dashRes]) => {
+      const profileData = profRes.data || {};
+      // athlete_name comes from the tenant (via dashboard), not from athlete_profiles
+      if (dashRes.data?.athlete_name) {
+        profileData.athlete_name = dashRes.data.athlete_name;
+      }
+      setProfile(profileData);
       setSuggestions(sugRes.data?.suggestions || []);
       setGmailConnected(gmailRes.data?.connected || false);
     }).finally(() => setLoading(false));
