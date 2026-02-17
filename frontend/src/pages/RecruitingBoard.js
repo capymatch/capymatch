@@ -72,28 +72,33 @@ function ProgressRing({ counts, total }) {
   const circ = 2 * Math.PI * radius;
 
   const segments = STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({
-    key: k, count: counts[k], pct: (counts[k] / Math.max(total, 1))
+    key: k, count: counts[k], pct: counts[k] / Math.max(total, 1)
   }));
 
-  let offset = 0;
+  // Build cumulative offsets for each segment
+  let cumulative = 0;
   const arcs = segments.map(seg => {
-    const dash = seg.pct * circ;
-    const gap = circ - dash;
-    const o = offset;
-    offset += dash;
-    return { ...seg, dash, gap, offset: o };
+    const dashLen = seg.pct * circ;
+    const arc = { ...seg, dashLen, startOffset: cumulative };
+    cumulative += dashLen;
+    return arc;
   });
 
   return (
     <div className="flex items-center gap-6" data-testid="progress-ring">
       <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {/* Background track */}
           <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--t-border)" strokeWidth={stroke} opacity={0.3} />
+          {/* Colored segments */}
           {arcs.map(a => (
             <circle key={a.key} cx={size/2} cy={size/2} r={radius} fill="none"
-              stroke={STAGES[a.key].ring} strokeWidth={stroke} strokeLinecap="round"
-              strokeDasharray={`${a.dash} ${a.gap}`} strokeDashoffset={-a.offset}
+              stroke={STAGES[a.key].ring} strokeWidth={stroke}
+              strokeDasharray={`${a.dashLen} ${circ - a.dashLen}`}
+              strokeDashoffset={circ * 0.25 - a.startOffset}
+              strokeLinecap="round"
               className="transition-all duration-700"
+              style={{ transform: 'rotate(0deg)', transformOrigin: '50% 50%' }}
             />
           ))}
         </svg>
