@@ -1194,7 +1194,8 @@ export default function RecruitingJourney() {
       ) : isNewSchool ? (
         <div className="mt-5">
         <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
-          profileComplete={profileComplete} onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} />
+          profileComplete={profileComplete} notesCount={notesCount} onAddCoach={openCoach}
+          onSendEmail={isBasic ? null : openEmail} onOpenNotes={() => setNotesOpen(true)} />
         </div>
       ) : isInConversation ? (
         <div className="mt-5">
