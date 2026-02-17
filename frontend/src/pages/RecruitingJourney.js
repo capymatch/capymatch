@@ -1196,7 +1196,7 @@ export default function RecruitingJourney() {
         <div className="mt-5">
         <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
           profileComplete={profileComplete} notesCount={notesCount} onAddCoach={openCoach}
-          onSendEmail={isBasic ? null : openEmail} onOpenNotes={() => setNotesOpen(true)} />
+          onSendEmail={isBasic ? () => toast.info("Email integration is available on Pro and Premium plans", { action: { label: "Upgrade", onClick: () => navigate("/settings") } }) : openEmail} onOpenNotes={() => setNotesOpen(true)} />
         </div>
       ) : isInConversation ? (
         <div className="mt-5">
