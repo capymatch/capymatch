@@ -1186,7 +1186,7 @@ export default function RecruitingJourney() {
       ) : isNewSchool ? (
         <div className="mt-5">
         <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
-          onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} onSetFollowup={openFollowup} />
+          profileComplete={profileComplete} onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} />
         </div>
       ) : isInConversation ? (
         <div className="mt-5">
