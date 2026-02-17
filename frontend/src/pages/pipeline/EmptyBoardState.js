@@ -187,7 +187,17 @@ export default function EmptyBoardState({ onSchoolAdded }) {
 
   const athleteName = profile?.athlete_name || profile?.name || "";
   const firstName = athleteName.split(" ")[0] || "";
-  const profileDone = !!(profile?.athlete_name && profile?.position);
+  // Profile is "done" when the essential fields coaches need are filled
+  const essentialFields = [
+    profile?.athlete_name,
+    profile?.grad_year,
+    profile?.position,
+    profile?.height,
+    profile?.city || profile?.state_loc,
+    profile?.club_team || profile?.high_school,
+  ];
+  const filledCount = essentialFields.filter(Boolean).length;
+  const profileDone = filledCount >= 5; // 5 of 6 essential fields
   const currentStep = profileDone ? 2 : 1;
   const divPref = profile?.division || "";
   const regionPref = (profile?.regions || []).join(", ") || "";
