@@ -123,17 +123,10 @@ def compute_journey_rail(program: dict) -> dict:
         "added": True,
         "outreach_sent": signals.get("outreach_count", 0) > 0,
         "coach_replied": signals.get("has_coach_reply", False),
-        "campus_visit": False,
-        "offer": False,
-        "committed": False,
+        "campus_visit": False,  # Only set via manual override
+        "offer": False,         # Only set via manual override
+        "committed": False,     # Only set via manual override
     }
-    
-    # Check interactions for campus visit — only explicit "campus_visit" type
-    interactions = program.get("interactions", [])
-    for ix in interactions:
-        ix_type = (ix.get("type") or "").lower().replace(" ", "_")
-        if ix_type == "campus_visit":
-            stages["campus_visit"] = True
     
     # Manual override: CASCADE — fill all stages up to and including the manual stage
     # This prevents visual gaps (e.g., Visit without Replied)

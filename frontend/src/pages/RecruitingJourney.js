@@ -19,7 +19,7 @@ import { toast } from "sonner";
 const RAIL_STAGES = [
   { key: "added", label: "Added" },
   { key: "outreach_sent", label: "Outreach" },
-  { key: "coach_replied", label: "Replied" },
+  { key: "coach_replied", label: "In Conversation" },
   { key: "campus_visit", label: "Visit" },
   { key: "offer", label: "Offer" },
   { key: "committed", label: "Committed" },
