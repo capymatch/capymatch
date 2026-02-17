@@ -4,12 +4,13 @@ import "@/index.css";
 import App from "@/App";
 
 // Suppress benign ResizeObserver error in dev overlay
-const SUPPRESSED = "ResizeObserver loop";
+const SUPPRESSED = ["ResizeObserver loop", "ResizeObserver loop completed"];
 window.addEventListener("error", (e) => {
-  if (e.message?.includes(SUPPRESSED)) {
+  if (SUPPRESSED.some(s => e.message?.includes(s))) {
     e.stopImmediatePropagation();
     e.stopPropagation();
     e.preventDefault();
+    return false;
   }
 });
 window.addEventListener("unhandledrejection", (e) => {
