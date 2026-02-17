@@ -209,14 +209,14 @@ export default function EmptyBoardState({ onSchoolAdded }) {
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="welcome-hero">
 
         {/* Progress Strip */}
-        <div className="flex items-center gap-5 px-5 py-3 border-b overflow-x-auto" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt, var(--t-surface))" }}>
+        <div className="flex items-center gap-4 px-5 py-3 border-b overflow-x-auto" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt, var(--t-surface))" }}>
           <ProgressStep num={1} label="Create Profile" done={profileDone} current={!profileDone} />
-          <div className="w-6 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
-          <ProgressStep num={2} label="Add Schools" done={false} current={profileDone} />
-          <div className="w-6 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
-          <ProgressStep num={3} label="Email Coaches" done={false} current={false} />
-          <div className="w-6 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
-          <ProgressStep num={4} label="Track Replies" done={false} current={false} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <ProgressStep num={2} label="Connect Gmail" done={gmailConnected} current={profileDone && !gmailConnected} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <ProgressStep num={3} label="Add Schools" done={false} current={profileDone && gmailConnected} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <ProgressStep num={4} label="Email Coaches" done={false} current={false} />
         </div>
 
         {/* Hero Content */}
