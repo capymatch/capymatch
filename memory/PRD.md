@@ -54,6 +54,9 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - NCAA Timeline, Analytics, Calendar pages
 - Coach Watch (web scraping), Highlight Advisor
 
+## What's Implemented (Recent — Feb 17, 2026)
+- **"Committed" Hero Card**: Celebratory card with trophy icon, confetti animation, gold shimmer, school name display. Shows at top of Journey page when journey_stage="committed". Takes priority over all other hero cards (Getting Started, Celebration). Toggleable via Progress Rail click.
+
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
 
