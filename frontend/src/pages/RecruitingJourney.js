@@ -64,9 +64,9 @@ function ProgressRail({ rail, onStageClick }) {
     <div className="relative flex items-start pt-2 pb-1" data-testid="progress-rail">
       {/* Background line */}
       <div className="absolute top-[18px] left-[40px] right-[40px] h-[2px]" style={{ background: "var(--t-border)" }} />
-      {/* Filled line */}
-      <div className="absolute top-[18px] left-[40px] h-[2px] transition-all duration-500"
-        style={{ width: `${Math.max(0, activeIdx) * (100 / (RAIL_STAGES.length - 1))}%`, maxWidth: "calc(100% - 80px)", background: "var(--accent-pink, #e8456b)" }} />
+      {/* Filled line — uses scaleX on full-width track for pixel-perfect alignment */}
+      <div className="absolute top-[18px] left-[40px] right-[40px] h-[2px] origin-left transition-all duration-500"
+        style={{ transform: `scaleX(${activeIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
       {RAIL_STAGES.map((s, i) => {
         const completed = stages[s.key];
         const isActive = s.key === active;
