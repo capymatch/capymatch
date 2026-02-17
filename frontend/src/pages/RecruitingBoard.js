@@ -517,7 +517,7 @@ export default function RecruitingBoard() {
 
       {/* ─── Smart List ─── */}
       {filteredPrograms.length > 0 && (
-        <div className="space-y-4" data-testid="smart-list">
+        <div className="space-y-5" data-testid="smart-list">
           {filteredPrograms.map(p => (
             <SchoolCard key={p.program_id} p={p} navigate={navigate} matchScore={matchScores[p.program_id]} onMarkReplied={(prog) => setMarkRepliedProgram(prog)} />
           ))}
