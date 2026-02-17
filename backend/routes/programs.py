@@ -141,6 +141,15 @@ def compute_journey_rail(program: dict) -> dict:
         for i in range(idx + 1):
             stages[RAIL_STAGES[i]] = True
     
+    # Cascade fill: if a later stage is completed, all prior stages must be too
+    # (e.g., can't have campus_visit without outreach_sent and coach_replied)
+    highest_completed = 0
+    for i, s in enumerate(RAIL_STAGES):
+        if stages[s]:
+            highest_completed = i
+    for i in range(highest_completed + 1):
+        stages[RAIL_STAGES[i]] = True
+    
     # Find the active (current) stage — the last completed one
     active = "added"
     for s in RAIL_STAGES:
