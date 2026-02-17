@@ -872,6 +872,12 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
           </div>
         )}
       </div>
+      {canUseAIDrafts && (
+        <p className="text-[10px] flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+          <AlertCircle className="w-3 h-3 flex-shrink-0" />
+          AI uses your <a href="/profile" className="text-pink-500 hover:underline">athlete profile</a> to generate emails — keep it updated for best results.
+        </p>
+      )}
       {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-600" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
       <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-to-select">
         <option value="">Select recipient...</option>
