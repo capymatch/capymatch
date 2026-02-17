@@ -415,7 +415,7 @@ export default function RecruitingBoard() {
   return (
     <div data-testid="recruiting-board" className="flex flex-col gap-5">
       {/* ─── Top: Progress Ring + Focus Card ─── */}
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="flex flex-col lg:flex-row lg:items-stretch gap-5">
         {/* Progress Ring */}
         {total > 0 && (
           <div className="rounded-2xl border p-5 flex-shrink-0" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
