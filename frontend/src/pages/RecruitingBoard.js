@@ -294,7 +294,7 @@ function FilterChips({ counts, total, active, onFilter }) {
     ...STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({ key: k, label: STAGES[k].label, count: counts[k], color: STAGES[k].color })),
   ];
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto pb-1" data-testid="filter-chips">
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 px-1 pt-1" data-testid="filter-chips">
       {chips.map(c => {
         const isActive = active === c.key;
         return (
