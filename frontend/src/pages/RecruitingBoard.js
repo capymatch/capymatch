@@ -149,8 +149,8 @@ function ProgramRow({ p, navigate, matchScore, accentColor, groupKey }) {
         </div>
       </div>
 
-      {/* Next Step - only in Action Required group */}
-      {nextStep && groupKey === "action_required" && (
+      {/* Next Step - show for overdue, needs_outreach, waiting_on_reply */}
+      {nextStep && (groupKey === "overdue" || groupKey === "needs_outreach" || groupKey === "waiting_on_reply") && (
       <div className="hidden md:flex items-start gap-2 flex-shrink-0 w-[320px]" data-testid={`next-step-${p.program_id}`}>
         <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${nextStep.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
           {nextStep.urgent ? <AlertCircle className="w-3.5 h-3.5 text-orange-400" /> : <Zap className="w-3.5 h-3.5 text-pink-500" />}
