@@ -362,9 +362,9 @@ const NEXT_STEP_RULES = {
   },
   email_sent: {
     icon: Send, iconColor: "#e8456b", iconBg: "rgba(232,69,107,0.12)",
-    title: "Email sent! Now stay on top of it.",
-    desc: "Set a follow-up reminder in case you don't hear back in a few days.",
-    actions: ["followup"],
+    title: "Email sent! A 14-day follow-up has been set.",
+    desc: "We'll remind you if you don't hear back. In the meantime, keep logging your activities.",
+    actions: ["log"],
   },
   showcase: {
     icon: Trophy, iconColor: "#fbbf24", iconBg: "rgba(251,191,36,0.12)",
