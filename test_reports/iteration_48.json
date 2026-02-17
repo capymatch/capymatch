@@ -1,0 +1,87 @@
+{
+  "summary": "CommittedHero Feature Testing - Complete. All backend (8/8) and frontend tests passed. When journey_stage='committed', the CommittedHero card displays with trophy icon, 'COMMITTED' text, university name (UCLA), congratulatory messages, confetti animation, and gold/green theme. Backend correctly cascades fill all prior stages. What's Next card correctly hides when committed hero is showing.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: PUT /api/programs/{id} with journey_stage='committed' succeeds",
+    "Backend: Journey rail cascade fills all 6 stages when committed (added, outreach_sent, coach_replied, campus_visit, offer, committed)",
+    "Backend: Journey rail 'active' and 'line_fill' set to 'committed'",
+    "Backend: Clearing journey_stage reverts rail to data-driven state",
+    "Backend: GET /api/programs/{id} includes journey_rail with stages, active, line_fill, pulse",
+    "Backend: Setting campus_visit stage only fills up to campus_visit (not offer/committed)",
+    "Backend: Toggle committed on/off works correctly",
+    "Backend: Setting offer stage fills up to offer but not committed",
+    "Frontend: CommittedHero card visible with data-testid='committed-hero'",
+    "Frontend: Trophy icon (🏆) displayed prominently",
+    "Frontend: 'COMMITTED' text displayed in gold/amber shimmer animation",
+    "Frontend: University name (UCLA) prominently displayed",
+    "Frontend: Congratulatory message shown ('The hard work paid off. Congratulations!')",
+    "Frontend: Celebration message shown ('This is a moment to celebrate with your family.')",
+    "Frontend: Confetti animation visible with colored falling particles",
+    "Frontend: Gold/green gradient theme on hero card",
+    "Frontend: Gold accent line at bottom of hero",
+    "Frontend: Progress rail shows all 6 stages filled with connecting line",
+    "Frontend: Committed stage has pulsing ring animation (18px dot vs 14px others)",
+    "Frontend: What's Next card correctly NOT showing when committed",
+    "Frontend: Getting Started checklist NOT showing when committed",
+    "Frontend: Clicking committed stage toggles it off, hiding CommittedHero",
+    "Frontend: After un-commit, What's Next card reappears with appropriate content"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_committed_hero.py",
+    "/app/test_reports/pytest/committed_hero_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_committed_hero.py (new - 8 test cases)"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "100% (all CommittedHero UI features verified)"
+  },
+  "test_credentials": "pro@test.com / password",
+  "seed_data_creation": "prog_pro_test1 (UCLA) set to journey_stage='committed' for testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "CommittedHero feature fully tested. Key behaviors: (1) When program.journey_stage='committed', frontend shows CommittedHero component at /journey/{programId}, (2) Backend compute_journey_rail() cascades fill all prior stages when committed, (3) Frontend checks rail?.stages?.committed === true (line 1000 of RecruitingJourney.js), (4) CommittedHero takes priority over GettingStartedChecklist and CelebrationHero (line 1057-1071), (5) Clicking committed rail stage toggles it off. Test program: prog_pro_test1 (UCLA) currently has journey_stage='committed'.",
+  "feature_verification": {
+    "committed_hero_card": {
+      "data_testid": "committed-hero",
+      "trophy_icon": "✅ 🏆 displayed",
+      "committed_text": "✅ 'COMMITTED' in gold shimmer animation",
+      "university_name": "✅ Program's university_name displayed prominently",
+      "congrats_message": "✅ 'The hard work paid off. Congratulations!'",
+      "celebrate_message": "✅ 'This is a moment to celebrate with your family.'",
+      "confetti_animation": "✅ Colored particles with confettiFall CSS animation",
+      "theme": "✅ Gold/green gradient background"
+    },
+    "progress_rail_cascade": {
+      "all_stages_filled": "✅ added, outreach_sent, coach_replied, campus_visit, offer, committed all TRUE",
+      "active_stage": "✅ Set to 'committed'",
+      "line_fill": "✅ Set to 'committed' (fills entire track)",
+      "committed_dot": "✅ 18px with pulse ring animation vs 14px for others"
+    },
+    "hero_priority": {
+      "takes_priority": "✅ CommittedHero shown instead of GettingStartedChecklist or CelebrationHero",
+      "whats_next_hidden": "✅ Next Step card not shown when committed"
+    },
+    "toggle_behavior": {
+      "click_to_toggle": "✅ Clicking committed rail stage clears journey_stage",
+      "hero_hides": "✅ CommittedHero disappears after toggle",
+      "whats_next_returns": "✅ What's Next card reappears after un-commit"
+    }
+  },
+  "ui_screenshots": [
+    ".screenshots/committed_hero_clean.png - CommittedHero with all elements visible",
+    ".screenshots/after_uncommit.png - Page after toggling off committed stage",
+    ".screenshots/final_committed_hero_test.png - Final verification screenshot"
+  ]
+}
