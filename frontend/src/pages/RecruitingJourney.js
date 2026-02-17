@@ -1049,8 +1049,8 @@ export default function RecruitingJourney() {
       // Log a timeline entry
       await api.post("/interactions", {
         program_id: programId,
-        event_type: "stage_update",
-        content: note,
+        type: "Stage Update",
+        notes: note,
         outcome: `Moved to ${STAGE_LABELS[pendingStage] || pendingStage}`,
       });
       const res = await api.get(`/programs/${programId}`);
