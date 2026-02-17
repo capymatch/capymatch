@@ -228,6 +228,18 @@ Public-facing Volleyball Recruiting CRM with:
 - /app/test_reports/iteration_36.json (Premium-only AI gating - 14/14 backend, 8/9 frontend + 1 fix applied)
 - /app/test_reports/iteration_40.json (Journey data-driven refactor - 14/14 backend, all frontend passed)
 
+## Completed (Feb 17, 2026) — 5-Stage Pipeline Funnel
+- Replaced 4-stage system (Action Required/Upcoming/In Progress/Closed) with clear 5-stage recruiting funnel:
+  1. **Overdue** — Follow-up date passed (handle first)
+  2. **Needs Outreach** — No interactions yet (send first email)
+  3. **Waiting on Reply** — Outreach sent, no coach reply
+  4. **In Conversation** — Coach has replied
+  5. **Archived** — Not pursuing (inactive)
+- Priority order: Archived > Overdue > In Conversation > Waiting on Reply > Needs Outreach
+- Next Step cards only show for Overdue, Needs Outreach, Waiting on Reply (on both Board + Journey)
+- Inline follow-up date badges on school cards in non-overdue stages
+- Testing: 14/14 backend, all frontend scenarios verified (iteration_42.json)
+
 ## Completed (Feb 17, 2026) — Journey Data-Driven Refactor
 - **Data-Driven Journey Logic**: Replaced manual `recruiting_status`/`reply_status` dropdowns with automatic signal computation from timeline interactions
   - Backend `compute_interaction_signals()`: derives `emails_sent`, `has_coach_reply`, `last_outreach_date`, `days_since_outreach`, `total_interactions`
