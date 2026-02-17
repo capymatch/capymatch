@@ -77,8 +77,16 @@ function NoteItem({ note, onPin, onEdit, onDelete }) {
   );
 }
 
-export default function NotesSidebar({ programId, universityName }) {
+export default function NotesSidebar({ programId, universityName, externalOpen, onExternalClose }) {
   const [open, setOpen] = useState(false);
+
+  // Allow parent to open the sidebar
+  useEffect(() => {
+    if (externalOpen) {
+      setOpen(true);
+      if (onExternalClose) onExternalClose();
+    }
+  }, [externalOpen, onExternalClose]);
   const [notes, setNotes] = useState({ pinned: [], recent: [] });
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
