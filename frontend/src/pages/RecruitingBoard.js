@@ -53,7 +53,7 @@ function GroupFunnel({ groupedData, onFocusGroup, activeFilter }) {
 }
 
 /* ── Program Row ── */
-function ProgramRow({ p, navigate, matchScore, accentColor }) {
+function ProgramRow({ p, navigate, matchScore, accentColor, groupKey }) {
   const divColor = {
     D1: "bg-emerald-500/20 text-emerald-400",
     D2: "bg-blue-500/20 text-blue-400",
