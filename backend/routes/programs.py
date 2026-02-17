@@ -71,7 +71,7 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
 
 def categorize_program(program: dict) -> str:
     """
-    Data-driven board grouping based on interaction signals and active status.
+    Data-driven board grouping. Uses interaction signals + due dates.
     Priority: Closed (inactive) > In Progress > Upcoming > Action Required
     """
     today = datetime.now(timezone.utc).date()
@@ -91,12 +91,12 @@ def categorize_program(program: dict) -> str:
             pass
 
     is_overdue = due_date is not None and due_date < today
-    has_reply = signals.get("has_coach_reply", False)
-    days_since_outreach = signals.get("days_since_outreach")
-    is_recently_contacted = days_since_outreach is not None and days_since_outreach <= 7
+    has_recent_reply = signals.get("has_coach_reply", False) and (signals.get("days_since_reply") or 999) <= 14
+    days_since_activity = signals.get("days_since_activity")
+    is_recently_active = days_since_activity is not None and days_since_activity <= 7
 
-    # 2. IN PROGRESS: Has coach reply OR recently contacted, and not overdue
-    if (has_reply or is_recently_contacted) and not is_overdue:
+    # 2. IN PROGRESS: Recent coach reply (within 14 days) OR recent activity (within 7 days), not overdue
+    if (has_recent_reply or is_recently_active) and not is_overdue:
         return "in_progress"
 
     # 3. UPCOMING: Follow-up due within 14 days, not overdue
