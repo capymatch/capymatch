@@ -128,31 +128,30 @@ def compute_journey_rail(program: dict) -> dict:
         "committed": False,
     }
     
-    # Check interactions for campus visit — only explicit "campus_visit" type, not "Camp Meeting" etc.
+    # Check interactions for campus visit — only explicit "campus_visit" type
     interactions = program.get("interactions", [])
     for ix in interactions:
         ix_type = (ix.get("type") or "").lower().replace(" ", "_")
         if ix_type == "campus_visit":
             stages["campus_visit"] = True
     
-    # Manual override: only mark that specific stage as true (no cascade)
+    # Manual override: CASCADE — fill all stages up to and including the manual stage
+    # This prevents visual gaps (e.g., Visit without Replied)
     if manual_stage and manual_stage in RAIL_STAGES:
-        stages[manual_stage] = True
+        manual_idx = RAIL_STAGES.index(manual_stage)
+        for i in range(manual_idx + 1):
+            stages[RAIL_STAGES[i]] = True
     
-    # Active = the last (rightmost) completed stage
+    # Active = last CONSECUTIVELY completed stage (always gap-free now)
     active = "added"
     for s in RAIL_STAGES:
         if stages[s]:
             active = s
-    
-    # Line fill = last CONSECUTIVELY completed stage from the left
-    # Line only fills through unbroken chain (Added->Outreach->Replied...)
-    line_fill = "added"
-    for s in RAIL_STAGES:
-        if stages[s]:
-            line_fill = s
         else:
-            break  # stop at first gap
+            break
+    
+    # Line fill = same as active (consecutive chain)
+    line_fill = active
     
     # Compute pulse — relationship health
     days = signals.get("days_since_activity")
