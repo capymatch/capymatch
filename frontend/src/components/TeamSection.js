@@ -210,7 +210,7 @@ export default function TeamSection() {
   const canInvite = isOwner && (maxMembers === -1 || (currentCount + team.pending_invitations.length) < maxMembers);
   const atLimit = isOwner && maxMembers !== -1 && currentCount >= maxMembers && team.pending_invitations.length === 0;
   const tierLabel = subscription?.label || "Basic";
-  const isBasic = (subscription?.tier || "basic") === "basic";
+  const isBasic = false; // Starter now has all Pro features
 
   return (
     <div className="rounded-xl p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="team-section">
