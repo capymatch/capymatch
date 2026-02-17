@@ -157,7 +157,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
     gmail_integration: "Connect your Gmail to send and receive emails directly from your recruiting dashboard.",
     recruiting_insights: "Get data-driven insights about your recruiting outreach effectiveness.",
     analytics: "Unlock detailed analytics about your recruiting pipeline and performance.",
-    max_schools: "Track more schools on your recruiting board to maximize your opportunities.",
+    max_schools: "You've hit your school limit. Upgrade to track more schools on your recruiting board.",
     public_profile: "Create a public athlete profile that coaches can view anytime.",
     follow_up_reminders: "Never miss a follow-up with smart automated reminders.",
     auto_reply_detection: "Automatically detect when coaches reply to your emails.",
