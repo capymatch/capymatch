@@ -162,11 +162,20 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<LoginPage onAuth={onAuth} />} />
-      {/* Handle OAuth callback at root with session_id */}
-      <Route path="/" element={<OAuthCallback onAuth={onAuth} />} />
+      {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
+      <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />
+      <Route path="/board" element={<OAuthCallbackGate onAuth={onAuth} />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
+}
+
+/* Detect session_id in hash synchronously during render (not in useEffect) */
+function OAuthCallbackGate({ onAuth }) {
+  if (window.location.hash?.includes("session_id=")) {
+    return <OAuthCallback onAuth={onAuth} />;
+  }
+  return <Navigate to="/login" replace />;
 }
 
 function SubscriptionGuard({ children }) {
