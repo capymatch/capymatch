@@ -27,7 +27,7 @@ export default function UniversityKnowledgeBase() {
   const [regions, setRegions] = useState(REGIONS);
   const [page, setPage] = useState(1);
   const { subscription } = useSubscription();
-  const isBasic = subscription?.tier === "basic";
+  const isBasic = false; // Starter now has all Pro features
 
   // Fetch dynamic filters
   useEffect(() => {
