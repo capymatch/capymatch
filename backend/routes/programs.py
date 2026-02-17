@@ -19,10 +19,11 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
     ).sort("date_time", -1).to_list(200)
 
     now = datetime.now(timezone.utc)
-    emails_sent = 0
+    outreach_count = 0
     has_coach_reply = False
     last_outreach_date = None
     last_reply_date = None
+    last_activity_date = None
     total_interactions = len(interactions)
 
     for ix in interactions:
@@ -35,35 +36,35 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
         except Exception:
             dt = None
 
-        # Count emails sent (any outreach from athlete)
-        if ix_type in ("email", "follow up", "phone call", "video call", "text message"):
-            emails_sent += 1
+        # Track most recent activity of any kind
+        if dt and (last_activity_date is None or dt > last_activity_date):
+            last_activity_date = dt
+
+        # Count outreach (any contact initiated by athlete)
+        if ix_type in ("email", "follow up", "phone call", "video call", "text message",
+                        "camp meeting", "campus visit", "showcase", "other"):
+            outreach_count += 1
             if dt and (last_outreach_date is None or dt > last_outreach_date):
                 last_outreach_date = dt
 
-        # Check for coach replies
+        # Only explicit coach_reply interactions count as actual coach replies
         if ix_type == "coach_reply":
-            has_coach_reply = True
-            if dt and (last_reply_date is None or dt > last_reply_date):
-                last_reply_date = dt
-
-        # Also detect positive outcomes as implicit replies
-        outcome = (ix.get("outcome") or "").lower()
-        if outcome in ("positive", "positive response", "reply received"):
             has_coach_reply = True
             if dt and (last_reply_date is None or dt > last_reply_date):
                 last_reply_date = dt
 
     days_since_outreach = (now - last_outreach_date).days if last_outreach_date else None
     days_since_reply = (now - last_reply_date).days if last_reply_date else None
+    days_since_activity = (now - last_activity_date).days if last_activity_date else None
 
     return {
-        "emails_sent": emails_sent,
+        "outreach_count": outreach_count,
         "has_coach_reply": has_coach_reply,
         "last_outreach_date": last_outreach_date.isoformat() if last_outreach_date else None,
         "last_reply_date": last_reply_date.isoformat() if last_reply_date else None,
         "days_since_outreach": days_since_outreach,
         "days_since_reply": days_since_reply,
+        "days_since_activity": days_since_activity,
         "total_interactions": total_interactions,
     }
 
