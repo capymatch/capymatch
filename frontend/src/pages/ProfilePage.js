@@ -31,6 +31,11 @@ export default function ProfilePage() {
       const res = await api.put("/athlete-profile", profile);
       setProfile(res.data);
       toast.success("Profile saved");
+      // Check if coming from the intro flow — redirect to My Schools
+      const progs = await api.get("/programs").catch(() => ({ data: [] }));
+      if (!progs.data || progs.data.length === 0) {
+        navigate("/pipeline");
+      }
     } catch {
       toast.error("Failed to save profile");
     } finally {
