@@ -32,7 +32,7 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ## What's Implemented (Completed)
 - Full recruiting board with 5-stage funnel (overdue, needs_outreach, waiting_on_reply, in_conversation, archived)
 - Journey Page complete redesign with 7 features:
-  1. Visual Progress Rail with pulse indicator (FIXED Feb 17, 2026)
+  1. Visual Progress Rail with pulse indicator
   2. Getting Started Checklist
   3. Conversation-style Timeline
   4. At a Glance contextual sidebar
@@ -41,11 +41,10 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
   7. School Comparison page (/compare)
 - Progress Rail cascade fill logic (backend)
 - Stage click/undo toggle behavior
-- **campus_visit, offer, committed stages are MANUAL ONLY** — not auto-detected from interactions (fixed Feb 17, 2026)
-- Stage label "Replied" renamed to "In Conversation" (Feb 17, 2026)
-- **Rule-based "What's Next?" card** — contextual follow-up suggestions based on latest activity (camp, call, email, visit, showcase). Dismissible. Hides when celebration hero or getting started checklist shows. (Feb 17, 2026)
-- **Camp milestone** in timeline with 🏋️ emoji and "[University] Camp" title (Feb 17, 2026)
-- Log interaction dropdown updated: "Camp Meeting" → "Camp" (Feb 17, 2026)
+- campus_visit, offer, committed stages are MANUAL ONLY
+- Stage label "Replied" renamed to "In Conversation"
+- Rule-based "What's Next?" card
+- Camp milestone in timeline
 - Coach CRUD, Interaction logging, Follow-up scheduling
 - Email composer with AI drafts (Premium)
 - Mark as Replied flow
@@ -53,14 +52,23 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Subscription engine with feature gating
 - NCAA Timeline, Analytics, Calendar pages
 - Coach Watch (web scraping), Highlight Advisor
+- "Committed" Hero Card with confetti animation
+- Collapsible Journey Details when committed
+- Personal Notes Sidebar per school
+- Font Upgrade to Plus Jakarta Sans
+- Stage Log Modal for progress rail
+- Automated Follow-up System (2-14 day reminders)
+- Enhanced Getting Started Checklist with dynamic steps
 
 ## What's Implemented (Recent — Feb 17, 2026)
-- **"Committed" Hero Card**: Celebratory card with trophy icon, confetti animation, gold shimmer, school name display. Shows at top of Journey page when journey_stage="committed". Takes priority over all other hero cards (Getting Started, Celebration). Toggleable via Progress Rail click.
-- **Collapsible Journey Details**: When committed, Timeline + At a Glance are hidden by default with "View full journey" toggle.
-- **Personal Notes Sidebar**: Collapsible right sidebar per school. Features: create, pin/unpin, edit, delete notes. Panel slides from right edge with note count badge. Stored in `notes` collection.
-- **Font Upgrade**: Switched from Lora serif + DM Sans to Plus Jakarta Sans across the entire app.
-- **At a Glance Spacing**: Tuned section gaps in the sidebar to 14px for balanced readability.
-- **Stage Log Modal**: Clicking a progress rail stage now opens a modal requiring users to log what happened. Entry is saved to the timeline.
+- **Dashboard Redesign (Complete)**: Full redesign with 6 new sections:
+  1. **Greeting + Quick Pulse**: Personalized welcome + 4 contextual stats (Schools Tracked, Response Rate, Replies This Week, Awaiting Reply)
+  2. **Today's Actions**: Split view — Follow-ups Due (left) + Needs First Outreach (right)
+  3. **School Spotlight**: Horizontal scroll cards with next-step nudges + Browse Schools card
+  4. **Pipeline Snapshot**: Vertical bar chart with division legend
+  5. **Recent Activity**: Timeline feed with color-coded dots and time-ago format
+  6. **Upcoming Events**: Compact date-box layout with event type badges
+  - Removed: Donut chart, Engagement Summary, fake trend arrows, Profile Views stat
 
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
@@ -75,7 +83,8 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Family Collaboration Roles (read-only Parent/Viewer role)
 
 ## Key Architecture Decisions
-- Progress Rail uses percentage-based track positioning (halfStep = 100/(2*TOTAL)) for precise dot-line alignment
+- Progress Rail uses percentage-based track positioning
 - Backend cascade fill: manual journey_stage fills all stages up to that point
 - Active stage = last consecutively completed stage (always gap-free)
 - Journey_stage stored as single string in programs collection
+- Dashboard fetches from /api/programs, /api/events, /api/interactions, /api/athlete-profile, /api/gmail/status
