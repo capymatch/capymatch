@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journey Page Redesign — Apple-Inspired Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #0f1219;
+    --surface: #161b25;
+    --surface-alt: #1c2230;
+    --border: rgba(255,255,255,0.07);
+    --text: #f1f1f4;
+    --text-secondary: #c0c4cc;
+    --text-muted: #6b7280;
+    --pink: #e8456b;
+    --pink-glow: rgba(232,69,107,0.15);
+    --emerald: #10b981;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ── Layout ── */
+  .mockup-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,18,25,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mockup-header h1 { font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+  .mockup-header .badge { background: var(--pink-glow); color: var(--pink); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px 120px; }
+
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 12px;
+    background: var(--pink-glow); padding: 5px 14px; border-radius: 20px;
+  }
+  .section-label .num { background: var(--pink); color: white; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+
+  .section-title {
+    font-size: 22px; font-weight: 700; margin-bottom: 6px; color: var(--text);
+  }
+  .section-desc {
+    font-size: 13px; color: var(--text-muted); max-width: 600px; margin-bottom: 28px; line-height: 1.7;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 52px 0; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── Suggestion 1: Progress Rail ── */
+  .school-hero {
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .school-hero::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,69,107,0.06) 0%, transparent 70%);
+  }
+  .school-hero .back { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 6px; margin-bottom: 16px; cursor: pointer; }
+  .school-hero .back:hover { color: var(--text); }
+
+  .school-info-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .school-name { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; }
+  .school-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .school-meta .tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; }
+  .tag-division { background: var(--pink-glow); color: var(--pink); }
+  .tag-match { background: rgba(16,185,129,0.12); color: var(--emerald); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-conference { color: var(--text-muted); font-size: 12px; }
+
+  /* Pulse indicator */
+  .pulse-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; position: relative; }
+  .pulse-dot.green { background: var(--emerald); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+  .pulse-dot.yellow { background: var(--amber); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+  .pulse-dot.red { background: var(--rose); box-shadow: 0 0 8px rgba(244,63,94,0.5); }
+  .pulse-dot::after {
+    content: ''; position: absolute; inset: -3px; border-radius: 50%;
+    border: 2px solid currentColor; opacity: 0.3;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+  .pulse-dot.green::after { border-color: var(--emerald); }
+  .pulse-dot.yellow::after { border-color: var(--amber); }
+  .pulse-dot.red::after { border-color: var(--rose); }
+  @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.8); opacity: 0; } }
+
+  .pulse-label { font-size: 11px; font-weight: 600; }
+  .pulse-label.green { color: var(--emerald); }
+  .pulse-label.yellow { color: var(--amber); }
+  .pulse-label.red { color: var(--rose); }
+
+  /* Progress rail */
+  .progress-rail { display: flex; align-items: center; gap: 0; position: relative; padding: 0 4px; }
+  .rail-step { flex: 1; text-align: center; position: relative; z-index: 1; }
+  .rail-step .dot {
+    width: 14px; height: 14px; border-radius: 50%; margin: 0 auto 6px;
+    border: 2px solid var(--border); background: var(--surface);
+    transition: all 0.3s;
+  }
+  .rail-step.completed .dot { background: var(--pink); border-color: var(--pink); box-shadow: 0 0 10px var(--pink-glow); }
+  .rail-step.active .dot { background: var(--pink); border-color: var(--pink); box-shadow: 0 0 12px rgba(232,69,107,0.4); width: 18px; height: 18px; }
+  .rail-step.active .dot::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid var(--pink); opacity: 0.3;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+  .rail-step .label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .rail-step.completed .label, .rail-step.active .label { color: var(--text-secondary); font-weight: 600; }
+  .rail-step.active .label { color: var(--pink); }
+
+  .rail-line {
+    position: absolute; top: 7px; left: 40px; right: 40px; height: 2px;
+    background: var(--border); z-index: 0;
+  }
+  .rail-line-fill {
+    position: absolute; top: 7px; left: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--pink), var(--pink));
+    z-index: 0; transition: width 0.5s ease;
+    border-radius: 1px;
+  }
+
+  /* ── Suggestion 2: Getting Started Checklist ── */
+  .checklist { padding: 24px 28px; }
+  .checklist-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .checklist-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .checklist-item {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+    border-radius: 12px; margin-bottom: 8px; cursor: pointer;
+    transition: all 0.2s; border: 1px solid transparent;
+  }
+  .checklist-item:hover { background: var(--surface-alt); border-color: var(--border); }
+  .checklist-item.done { opacity: 0.5; }
+  .check-circle {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .checklist-item:hover .check-circle { border-color: var(--pink); }
+  .checklist-item.done .check-circle { background: var(--emerald); border-color: var(--emerald); }
+  .check-icon { display: none; color: white; font-size: 12px; font-weight: 700; }
+  .checklist-item.done .check-icon { display: block; }
+  .checklist-item .info .title { font-size: 13px; font-weight: 600; }
+  .checklist-item .info .desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .checklist-progress { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .checklist-progress .bar { flex: 1; height: 4px; background: var(--surface-alt); border-radius: 2px; overflow: hidden; }
+  .checklist-progress .bar .fill { height: 100%; background: var(--pink); border-radius: 2px; transition: width 0.5s; }
+  .checklist-progress .pct { font-size: 11px; font-weight: 600; color: var(--pink); }
+
+  /* ── Suggestion 3: Conversation Timeline ── */
+  .conversation { padding: 24px 28px; }
+  .conversation-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .conversation-header h3 { font-size: 15px; font-weight: 700; }
+  .conv-actions { display: flex; gap: 8px; }
+  .conv-actions button {
+    font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: transparent; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+  }
+  .conv-actions button:hover { background: var(--surface-alt); border-color: var(--pink); color: var(--pink); }
+
+  .conv-flow { display: flex; flex-direction: column; gap: 16px; }
+
+  .conv-bubble { max-width: 75%; padding: 12px 16px; border-radius: 16px; position: relative; }
+  .conv-right { align-self: flex-end; background: rgba(232,69,107,0.08); border: 1px solid rgba(232,69,107,0.15); border-bottom-right-radius: 4px; }
+  .conv-left { align-self: flex-start; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15); border-bottom-left-radius: 4px; }
+
+  .conv-bubble .sender { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .conv-right .sender { color: var(--pink); }
+  .conv-left .sender { color: var(--emerald); }
+  .conv-bubble .msg { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .conv-bubble .time { font-size: 10px; color: var(--text-muted); margin-top: 6px; }
+
+  .conv-milestone {
+    align-self: center; text-align: center; padding: 10px 20px;
+    background: var(--surface-alt); border: 1px solid var(--border); border-radius: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .conv-milestone .icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .conv-milestone .icon.orange { background: rgba(249,115,22,0.12); }
+  .conv-milestone .icon.purple { background: rgba(168,85,247,0.12); }
+  .conv-milestone .text { font-size: 12px; font-weight: 600; }
+  .conv-milestone .date { font-size: 10px; color: var(--text-muted); }
+
+  /* ── Suggestion 4: At a Glance Card ── */
+  .at-a-glance { padding: 24px 28px; }
+  .at-a-glance-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .at-a-glance-header h3 { font-size: 15px; font-weight: 700; }
+  .at-a-glance-header .stage-pill { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stage-waiting { background: rgba(59,130,246,0.12); color: var(--blue); }
+  .stage-conversation { background: rgba(16,185,129,0.12); color: var(--emerald); }
+
+  .glance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .glance-stat {
+    padding: 14px 16px; border-radius: 12px; background: var(--surface-alt);
+    border: 1px solid var(--border);
+  }
+  .glance-stat .label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .glance-stat .value { font-size: 18px; font-weight: 800; }
+  .glance-stat .value.blue { color: var(--blue); }
+  .glance-stat .value.emerald { color: var(--emerald); }
+  .glance-stat .value.amber { color: var(--amber); }
+  .glance-stat .sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .glance-coach {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+    border-radius: 12px; background: var(--surface-alt); border: 1px solid var(--border); margin-bottom: 12px;
+  }
+  .coach-avatar { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--pink-glow), rgba(168,85,247,0.15)); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--pink); flex-shrink: 0; }
+  .coach-info .name { font-size: 13px; font-weight: 600; }
+  .coach-info .role { font-size: 11px; color: var(--text-muted); }
+  .coach-info .email { font-size: 11px; color: var(--pink); margin-top: 2px; }
+
+  .glance-suggestion {
+    padding: 14px 16px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(232,69,107,0.06));
+    border: 1px solid rgba(168,85,247,0.15);
+  }
+  .glance-suggestion .label { font-size: 10px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .glance-suggestion .text { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ── Suggestion 5: Celebration State ── */
+  .celebration {
+    padding: 32px 28px; text-align: center;
+    background: linear-gradient(135deg, rgba(16,185,129,0.04), rgba(232,69,107,0.04));
+    position: relative; overflow: hidden;
+  }
+  .celebration::before {
+    content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%);
+  }
+  .celebration .emoji { font-size: 40px; margin-bottom: 12px; position: relative; }
+  .celebration .headline { font-size: 18px; font-weight: 700; margin-bottom: 6px; position: relative; }
+  .celebration .sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; position: relative; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .celebration .actions { display: flex; gap: 10px; justify-content: center; position: relative; flex-wrap: wrap; }
+
+  /* ── Suggestion 6: Floating Action Bar ── */
+  .floating-bar {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+    background: rgba(22,27,37,0.92); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03);
+    z-index: 200;
+  }
+  .fab-btn {
+    display: flex; align-items: center; gap: 7px; padding: 10px 18px;
+    border-radius: 10px; font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.15s;
+    background: transparent; color: var(--text-secondary);
+  }
+  .fab-btn:hover { background: var(--surface-alt); color: var(--text); }
+  .fab-btn.primary { background: var(--pink); color: white; }
+  .fab-btn.primary:hover { background: #d13d5f; }
+  .fab-sep { width: 1px; height: 24px; background: var(--border); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px; border-radius: 10px; font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-pink { background: var(--pink); color: white; }
+  .btn-pink:hover { background: #d13d5f; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+  .btn-outline:hover { border-color: var(--pink); color: var(--pink); }
+  .btn-emerald { background: rgba(16,185,129,0.12); color: var(--emerald); border: 1px solid rgba(16,185,129,0.2); }
+  .btn-emerald:hover { background: rgba(16,185,129,0.2); }
+
+  /* ── Comparison Row ── */
+  .compare-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .compare-card { padding: 20px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); text-align: center; position: relative; }
+  .compare-card.current { border-color: var(--pink); box-shadow: 0 0 20px rgba(232,69,107,0.1); }
+  .compare-card .school { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .compare-card .division { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+  .compare-card .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--border); }
+  .compare-card .stat-row .k { font-size: 11px; color: var(--text-muted); }
+  .compare-card .stat-row .v { font-size: 12px; font-weight: 600; }
+  .compare-card .current-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; padding: 3px 12px; border-radius: 10px; background: var(--pink); color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Tab navigation for the two mockup examples ── */
+  .mockup-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface-alt); padding: 4px; border-radius: 12px; width: fit-content; }
+  .mockup-tab {
+    padding: 8px 20px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); cursor: pointer; transition: all 0.15s; border: none; background: transparent;
+  }
+  .mockup-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+  /* ── Annotations ── */
+  .annotation {
+    display: flex; gap: 12px; padding: 12px 16px; border-radius: 10px;
+    background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.12);
+    margin-bottom: 20px; align-items: flex-start;
+  }
+  .annotation .icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px; background: rgba(168,85,247,0.15); display: flex; align-items: center; justify-content: center; color: var(--purple); font-size: 11px; font-weight: 700; }
+  .annotation .text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .annotation .text strong { color: var(--text-secondary); }
+
+  /* Before/After Labels */
+  .ba-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
+  .ba-before { background: rgba(107,114,128,0.15); color: var(--text-muted); }
+  .ba-after { background: rgba(16,185,129,0.12); color: var(--emerald); }
+</style>
+</head>
+<body>
+
+<!-- ── Sticky Header ── -->
+<div class="mockup-header">
+  <h1>Journey Page Redesign Mockup</h1>
+  <span class="badge">7 Suggestions</span>
+</div>
+
+<div class="container">
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 1: Visual Progress Rail + Pulse Indicator    -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">1</span> Visual Progress Rail + Relationship Pulse</div>
+  <div class="section-title">Parents see WHERE they are instantly</div>
+  <div class="section-desc">Replace the flat header with a progress rail that maps the recruiting journey. Add a pulsing dot to show relationship health at a glance.</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Why it matters:</strong> Parents' #1 question is "How far along are we?" The current page shows raw status badges (Active, High). This rail answers that question visually — like Apple's setup wizard dots.</div>
+  </div>
+
+  <div class="card">
+    <div class="school-hero">
+      <div class="back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to My Schools
+      </div>
+
+      <div class="school-info-row">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="school-name">Stanford University</span>
+            <span class="pulse-dot green"></span>
+            <span class="pulse-label green">Active</span>
+          </div>
+          <div class="school-meta">
+            <span class="tag tag-division">D1</span>
+            <span class="tag tag-match">93% Match</span>
+            <span class="tag-conference">Pac-12 · West · 4 events</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Rail -->
+      <div style="position:relative;margin-top:8px;">
+        <div class="rail-line"></div>
+        <div class="rail-line-fill" style="width: 28%;"></div>
+        <div class="progress-rail">
+          <div class="rail-step completed">
+            <div class="dot"></div>
+            <div class="label">Added</div>
+          </div>
+          <div class="rail-step completed">
+            <div class="dot"></div>
+            <div class="label">Outreach Sent</div>
+          </div>
+          <div class="rail-step active">
+            <div class="dot" style="position:relative;"></div>
+            <div class="label">Coach Replied</div>
+          </div>
+          <div class="rail-step">
+            <div class="dot"></div>
+            <div class="label">Campus Visit</div>
+          </div>
+          <div class="rail-step">
+            <div class="dot"></div>
+            <div class="label">Offer</div>
+          </div>
+          <div class="rail-step">
+            <div class="dot"></div>
+            <div class="label">Committed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pulse Variants -->
+  <div style="display:flex;gap:24px;margin-top:20px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border);">
+      <span class="pulse-dot green"></span>
+      <span style="font-size:12px;font-weight:600;color:var(--emerald);">Active</span>
+      <span style="font-size:10px;color:var(--text-muted);">— Coach replied recently</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border);">
+      <span class="pulse-dot yellow"></span>
+      <span style="font-size:12px;font-weight:600;color:var(--amber);">Cooling</span>
+      <span style="font-size:10px;color:var(--text-muted);">— 7+ days since contact</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border);">
+      <span class="pulse-dot red"></span>
+      <span style="font-size:12px;font-weight:600;color:var(--rose);">Going Cold</span>
+      <span style="font-size:10px;color:var(--text-muted);">— 14+ days, needs action</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 2: Getting Started Checklist                 -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">2</span> Getting Started Checklist</div>
+  <div class="section-title">Empty state becomes a guided onboarding</div>
+  <div class="section-desc">When a school has no interactions, show a friendly checklist instead of empty boxes. Each step opens the relevant form inline.</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Before:</strong> "No interactions yet", "No coaches added", "No upcoming dates" — 4 empty widgets. <strong>After:</strong> A clear 1-2-3 guide that turns emptiness into excitement.</div>
+  </div>
+
+  <div class="card">
+    <div class="checklist">
+      <div class="checklist-title">Start your UCLA journey</div>
+      <div class="checklist-sub">Complete these steps to kickstart your recruiting relationship</div>
+
+      <div class="checklist-item done">
+        <div class="check-circle"><span class="check-icon">&#10003;</span></div>
+        <div class="info">
+          <div class="title">Add UCLA to your pipeline</div>
+          <div class="desc">School added on Feb 14, 2026</div>
+        </div>
+      </div>
+
+      <div class="checklist-item" onclick="this.classList.toggle('done')">
+        <div class="check-circle"><span class="check-icon">&#10003;</span></div>
+        <div class="info">
+          <div class="title">Add the head coach's contact info</div>
+          <div class="desc">Find their name and email on the UCLA volleyball staff page</div>
+        </div>
+      </div>
+
+      <div class="checklist-item" onclick="this.classList.toggle('done')">
+        <div class="check-circle"><span class="check-icon">&#10003;</span></div>
+        <div class="info">
+          <div class="title">Send your first introduction email</div>
+          <div class="desc">Make a great first impression with a personalized intro</div>
+        </div>
+      </div>
+
+      <div class="checklist-item" onclick="this.classList.toggle('done')">
+        <div class="check-circle"><span class="check-icon">&#10003;</span></div>
+        <div class="info">
+          <div class="title">Set a follow-up reminder</div>
+          <div class="desc">Schedule a 7-day follow-up so you don't forget</div>
+        </div>
+      </div>
+
+      <div class="checklist-progress">
+        <div class="bar"><div class="fill" style="width:25%;"></div></div>
+        <span class="pct">1 of 4</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 3: Conversation-Style Timeline               -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">3</span> Conversation-Style Timeline</div>
+  <div class="section-title">Recruiting history as a living conversation</div>
+  <div class="section-desc">Your outreach appears on the right (like sent messages). Coach replies on the left (like received). Events appear as milestone cards in between.</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Why:</strong> Parents think in conversations, not CRM event logs. An iMessage-style layout is immediately intuitive and makes recruiting feel like a relationship.</div>
+  </div>
+
+  <div class="card">
+    <div class="conversation">
+      <div class="conversation-header">
+        <h3>Conversation</h3>
+        <div class="conv-actions">
+          <button>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Email
+          </button>
+          <button>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Log
+          </button>
+        </div>
+      </div>
+
+      <div class="conv-flow">
+        <!-- Your email -->
+        <div class="conv-bubble conv-right">
+          <div class="sender">You</div>
+          <div class="msg">Hi Coach Johnson, my name is Sarah and I'm a class of 2027 OH/RS from Dallas, TX. I wanted to introduce myself and express my interest in the Stanford volleyball program...</div>
+          <div class="time">Feb 10, 2026 · Email sent</div>
+        </div>
+
+        <!-- Milestone -->
+        <div class="conv-milestone">
+          <div class="icon orange">&#127947;</div>
+          <div>
+            <div class="text">Attended Stanford Winter Camp</div>
+            <div class="date">Feb 12, 2026</div>
+          </div>
+        </div>
+
+        <!-- Coach reply -->
+        <div class="conv-bubble conv-left">
+          <div class="sender">Coach Johnson</div>
+          <div class="msg">Coach Johnson replied and said he would love to see my highlights. He mentioned they're looking for right-side hitters in the 2027 class.</div>
+          <div class="time">Feb 16, 2026 · Coach replied</div>
+        </div>
+
+        <!-- Your follow-up -->
+        <div class="conv-bubble conv-right">
+          <div class="sender">You</div>
+          <div class="msg">Thank you so much Coach Johnson! I've attached my highlight reel. I'd love to schedule a call to learn more about the program.</div>
+          <div class="time">Feb 17, 2026 · Email sent</div>
+        </div>
+
+        <!-- Upcoming milestone -->
+        <div class="conv-milestone" style="border-style:dashed;opacity:0.6;">
+          <div class="icon purple">&#128197;</div>
+          <div>
+            <div class="text">Follow-up scheduled</div>
+            <div class="date">Feb 24, 2026 · in 7 days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 4: "At a Glance" Contextual Card            -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">4</span> "At a Glance" Contextual Sidebar</div>
+  <div class="section-title">Show what matters NOW, not everything at once</div>
+  <div class="section-desc">One smart card replaces 5 sidebar widgets. It adapts based on the school's stage — showing only the most relevant information.</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Before:</strong> AI Insights + Coaches + Key Dates + Follow-up + Interest Gauges stacked. <strong>After:</strong> One card showing stage-specific info. The rest hides behind "Show More."</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <!-- Waiting on Reply state -->
+    <div class="card">
+      <div class="at-a-glance">
+        <div class="at-a-glance-header">
+          <h3>At a Glance</h3>
+          <span class="at-a-glance-header stage-pill stage-waiting">Waiting on Reply</span>
+        </div>
+        <div class="glance-grid">
+          <div class="glance-stat">
+            <div class="label">Days waiting</div>
+            <div class="value blue">5</div>
+            <div class="sub">Avg reply: 7 days</div>
+          </div>
+          <div class="glance-stat">
+            <div class="label">Emails sent</div>
+            <div class="value" style="color:var(--text)">2</div>
+            <div class="sub">Last: Feb 12</div>
+          </div>
+        </div>
+        <div class="glance-coach">
+          <div class="coach-avatar">CJ</div>
+          <div class="coach-info">
+            <div class="name">Coach Johnson</div>
+            <div class="role">Head Coach</div>
+            <div class="email">cjohnson@stanford.edu</div>
+          </div>
+        </div>
+        <div class="glance-suggestion">
+          <div class="label">&#10024; AI Tip</div>
+          <div class="text">Most D1 coaches reply within 7-10 days. If no reply by Feb 19, send a brief follow-up referencing the camp.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Conversation state -->
+    <div class="card">
+      <div class="at-a-glance">
+        <div class="at-a-glance-header">
+          <h3>At a Glance</h3>
+          <span class="at-a-glance-header stage-pill stage-conversation">In Conversation</span>
+        </div>
+        <div class="glance-grid">
+          <div class="glance-stat">
+            <div class="label">Replied</div>
+            <div class="value emerald">1 day ago</div>
+            <div class="sub">Keep momentum</div>
+          </div>
+          <div class="glance-stat">
+            <div class="label">Total interactions</div>
+            <div class="value" style="color:var(--text)">4</div>
+            <div class="sub">2 emails, 1 camp, 1 reply</div>
+          </div>
+        </div>
+        <div class="glance-coach">
+          <div class="coach-avatar">CJ</div>
+          <div class="coach-info">
+            <div class="name">Coach Johnson</div>
+            <div class="role">Head Coach</div>
+            <div class="email">cjohnson@stanford.edu</div>
+          </div>
+        </div>
+        <div class="glance-suggestion">
+          <div class="label">&#10024; Suggested next move</div>
+          <div class="text">Send your highlight reel within 48 hours while the conversation is fresh. Coaches who ask for highlights are showing strong interest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 5: Celebration State (In Conversation)       -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">5</span> Celebration State for Coach Replies</div>
+  <div class="section-title">"In Conversation" should feel like a win</div>
+  <div class="section-desc">When a coach replies, show a hero moment with encouragement and clear next actions. Currently this stage shows no hero at all.</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Current:</strong> Stanford (In Conversation) shows NO hero card — just the timeline. The most exciting recruiting moment gets zero celebration. <strong>Proposed:</strong> A warm, encouraging hero.</div>
+  </div>
+
+  <div class="card">
+    <div class="celebration">
+      <div class="emoji">&#127881;</div>
+      <div class="headline">Coach Johnson is interested!</div>
+      <div class="sub">They replied on Feb 16 and want to see your highlights. Here's what top recruits do next:</div>
+      <div class="actions">
+        <button class="btn btn-pink">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Send Thank You
+        </button>
+        <button class="btn btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Schedule Call
+        </button>
+        <button class="btn btn-emerald">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Log a Note
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 6: Floating Action Bar                       -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">6</span> Floating Action Bar</div>
+  <div class="section-title">Every action is one tap away, always visible</div>
+  <div class="section-desc">A persistent dock at the bottom of the screen — like Apple's Dock. Parents never need to search for "how do I log a call?"</div>
+
+  <div class="annotation">
+    <div class="icon">i</div>
+    <div class="text"><strong>Current:</strong> "Log" is in the timeline header. "Email" is somewhere else. "Mark Replied" appears conditionally. "Set Follow-up" is in the sidebar. <strong>Proposed:</strong> All actions in one persistent bar.</div>
+  </div>
+
+  <div style="display:flex;justify-content:center;padding:40px 0;">
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(22,27,37,0.95);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+      <button class="fab-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Email
+      </button>
+      <div class="fab-sep"></div>
+      <button class="fab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Log
+      </button>
+      <div class="fab-sep"></div>
+      <button class="fab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Replied
+      </button>
+      <div class="fab-sep"></div>
+      <button class="fab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Follow-up
+      </button>
+      <div class="fab-sep"></div>
+      <button class="fab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        More
+      </button>
+    </div>
+  </div>
+
+  <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:-20px;">On mobile, this becomes a thumb-friendly bottom navigation bar</p>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- SUGGESTION 7: School Comparison View                    -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">7</span> Quick School Comparison</div>
+  <div class="section-title">Compare schools side by side without leaving the page</div>
+  <div class="section-desc">Parents often weigh multiple schools. A lightweight "Compare" button on any Journey page lets them see key metrics side-by-side.</div>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="school">UCLA</div>
+      <div class="division">D1 · Big Ten · West</div>
+      <div class="stat-row"><span class="k">Match Score</span><span class="v" style="color:var(--emerald)">93%</span></div>
+      <div class="stat-row"><span class="k">Stage</span><span class="v" style="color:var(--amber)">Needs Outreach</span></div>
+      <div class="stat-row"><span class="k">Interactions</span><span class="v">0</span></div>
+      <div class="stat-row"><span class="k">Coach Reply</span><span class="v" style="color:var(--text-muted)">—</span></div>
+      <div class="stat-row"><span class="k">Last Contact</span><span class="v" style="color:var(--text-muted)">Never</span></div>
+    </div>
+
+    <div class="compare-card current">
+      <div class="current-badge">Viewing Now</div>
+      <div class="school">Stanford</div>
+      <div class="division">D1 · Pac-12 · West</div>
+      <div class="stat-row"><span class="k">Match Score</span><span class="v" style="color:var(--emerald)">93%</span></div>
+      <div class="stat-row"><span class="k">Stage</span><span class="v" style="color:var(--emerald)">In Conversation</span></div>
+      <div class="stat-row"><span class="k">Interactions</span><span class="v">4</span></div>
+      <div class="stat-row"><span class="k">Coach Reply</span><span class="v" style="color:var(--emerald)">Yes (1 day ago)</span></div>
+      <div class="stat-row"><span class="k">Last Contact</span><span class="v">Feb 17</span></div>
+    </div>
+
+    <div class="compare-card">
+      <div class="school">USC</div>
+      <div class="division">D1 · Big Ten · West</div>
+      <div class="stat-row"><span class="k">Match Score</span><span class="v" style="color:var(--amber)">78%</span></div>
+      <div class="stat-row"><span class="k">Stage</span><span class="v" style="color:var(--blue)">Waiting on Reply</span></div>
+      <div class="stat-row"><span class="k">Interactions</span><span class="v">2</span></div>
+      <div class="stat-row"><span class="k">Coach Reply</span><span class="v" style="color:var(--text-muted)">—</span></div>
+      <div class="stat-row"><span class="k">Last Contact</span><span class="v">Feb 10</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- FULL PAGE MOCKUP — Putting it all together              -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div style="margin-top:20px;">
+    <div class="section-label" style="background:linear-gradient(135deg,var(--pink-glow),rgba(168,85,247,0.15));">&#11088; Full Page Mockup — All Suggestions Combined</div>
+    <div class="section-title">The complete redesigned Journey page</div>
+    <div class="section-desc">Here's how all 7 suggestions come together as one cohesive experience.</div>
+  </div>
+
+  <!-- Full page: Stanford (In Conversation) -->
+  <div class="card" style="overflow:visible;">
+    <!-- Hero with Progress Rail -->
+    <div class="school-hero" style="padding-bottom:20px;">
+      <div class="back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        My Schools
+      </div>
+      <div class="school-info-row">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="school-name">Stanford University</span>
+            <span class="pulse-dot green"></span>
+            <span class="pulse-label green">Active</span>
+          </div>
+          <div class="school-meta">
+            <span class="tag tag-division">D1</span>
+            <span class="tag tag-match">93% Match</span>
+            <span class="tag-conference">Pac-12 · West · 4 events</span>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="font-size:11px;padding:7px 14px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Compare
+        </button>
+      </div>
+      <div style="position:relative;">
+        <div class="rail-line"></div>
+        <div class="rail-line-fill" style="width: 28%;"></div>
+        <div class="progress-rail">
+          <div class="rail-step completed"><div class="dot"></div><div class="label">Added</div></div>
+          <div class="rail-step completed"><div class="dot"></div><div class="label">Outreach</div></div>
+          <div class="rail-step active"><div class="dot" style="position:relative"></div><div class="label">Replied</div></div>
+          <div class="rail-step"><div class="dot"></div><div class="label">Visit</div></div>
+          <div class="rail-step"><div class="dot"></div><div class="label">Offer</div></div>
+          <div class="rail-step"><div class="dot"></div><div class="label">Committed</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Celebration Hero -->
+    <div style="border-top:1px solid var(--border);">
+      <div class="celebration" style="padding:24px 28px;">
+        <div class="emoji" style="font-size:32px;">&#127881;</div>
+        <div class="headline" style="font-size:16px;">Coach Johnson is interested!</div>
+        <div class="sub" style="font-size:12px;margin-bottom:16px;">Replied Feb 16 — wants to see your highlights. Keep the momentum going:</div>
+        <div class="actions">
+          <button class="btn btn-pink" style="font-size:11px;padding:8px 16px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Send Thank You
+          </button>
+          <button class="btn btn-outline" style="font-size:11px;padding:8px 16px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Schedule Call
+          </button>
+          <button class="btn btn-emerald" style="font-size:11px;padding:8px 16px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Log Note
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main grid: Conversation + At a Glance -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;border-top:1px solid var(--border);">
+      <!-- Conversation Timeline -->
+      <div style="padding:24px 28px;border-right:1px solid var(--border);">
+        <div class="conversation-header" style="margin-bottom:20px;">
+          <h3 style="font-size:14px;font-weight:700;">Conversation</h3>
+        </div>
+        <div class="conv-flow">
+          <div class="conv-bubble conv-right">
+            <div class="sender">You</div>
+            <div class="msg">Hi Coach Johnson, I'm Sarah — a class of 2027 OH/RS from Dallas. I wanted to introduce myself...</div>
+            <div class="time">Feb 10 · Email</div>
+          </div>
+          <div class="conv-milestone">
+            <div class="icon orange">&#127947;</div>
+            <div><div class="text">Stanford Winter Camp</div><div class="date">Feb 12</div></div>
+          </div>
+          <div class="conv-bubble conv-left">
+            <div class="sender">Coach Johnson</div>
+            <div class="msg">Would love to see your highlights. Looking for right-side hitters in the 2027 class.</div>
+            <div class="time">Feb 16 · Reply</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- At a Glance sidebar -->
+      <div style="padding:24px 20px;">
+        <h3 style="font-size:13px;font-weight:700;margin-bottom:16px;">At a Glance</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+          <div class="glance-stat" style="padding:10px 12px;">
+            <div class="label" style="font-size:9px;">Replied</div>
+            <div class="value emerald" style="font-size:15px;">1 day ago</div>
+          </div>
+          <div class="glance-stat" style="padding:10px 12px;">
+            <div class="label" style="font-size:9px;">Events</div>
+            <div class="value" style="font-size:15px;color:var(--text);">4</div>
+          </div>
+        </div>
+        <div class="glance-coach" style="padding:10px 12px;margin-bottom:10px;">
+          <div class="coach-avatar" style="width:32px;height:32px;font-size:12px;border-radius:8px;">CJ</div>
+          <div class="coach-info">
+            <div class="name" style="font-size:12px;">Coach Johnson</div>
+            <div class="email" style="font-size:10px;">cjohnson@stanford.edu</div>
+          </div>
+        </div>
+        <div class="glance-suggestion" style="padding:10px 12px;">
+          <div class="label" style="font-size:9px;">&#10024; Next move</div>
+          <div class="text" style="font-size:11px;">Send highlights within 48 hours. Coaches who ask for film are showing strong interest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom spacer for floating bar -->
+  <div style="height:60px;"></div>
+
+</div>
+
+<!-- Floating Action Bar (always visible) -->
+<div class="floating-bar">
+  <button class="fab-btn primary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+    Email
+  </button>
+  <div class="fab-sep"></div>
+  <button class="fab-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Log
+  </button>
+  <div class="fab-sep"></div>
+  <button class="fab-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    Replied
+  </button>
+  <div class="fab-sep"></div>
+  <button class="fab-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Follow-up
+  </button>
+</div>
+
+</body>
+</html>
