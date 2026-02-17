@@ -187,7 +187,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
 
   const athleteName = profile?.athlete_name || profile?.name || "";
   const firstName = athleteName.split(" ")[0] || "";
-  const profileDone = !!(profile?.athlete_name && profile?.position);
+  const profileDone = !!(profile?.questionnaire_completed || (profile?.athlete_name && profile?.position));
   const divPref = profile?.division || "";
   const regionPref = (profile?.regions || []).join(", ") || "";
 
