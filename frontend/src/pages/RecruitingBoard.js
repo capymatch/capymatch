@@ -126,7 +126,7 @@ function FocusCard({ program, onAction, onSnooze, onDismiss }) {
 
   return (
     <div
-      className={`relative rounded-2xl border p-5 transition-all ${isUrgent ? "border-rose-500/30 bg-rose-500/[0.04]" : "border-pink-600/20 bg-pink-600/[0.03]"}`}
+      className={`relative rounded-2xl border p-5 transition-all h-full ${isUrgent ? "border-rose-500/30 bg-rose-500/[0.04]" : "border-pink-600/20 bg-pink-600/[0.03]"}`}
       style={{ borderColor: isUrgent ? undefined : "var(--t-border)" }}
       data-testid="focus-card"
     >
@@ -424,7 +424,7 @@ export default function RecruitingBoard() {
         )}
 
         {/* Focus Card or All Caught Up */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col">
           {focusProgram && !markRepliedProgram && (
             <FocusCard
               program={focusProgram}
