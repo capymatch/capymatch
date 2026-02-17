@@ -33,19 +33,17 @@ const PULSE_CONFIG = {
 };
 
 const CONV_CONFIG = {
-  email_sent:     { side: "right", color: "pink",    label: "Email sent" },
+  email_sent:     { side: "right", color: "pink",   label: "Email sent" },
   email_received: { side: "left",  color: "emerald", label: "Email received" },
   coach_reply:    { side: "left",  color: "emerald", label: "Coach replied" },
-  phone_call:     { side: "right", color: "pink",    label: "Phone call" },
-  video_call:     { side: "right", color: "cyan",    label: "Video call" },
-  camp:           { side: "right", color: "amber",   label: "Camp" },
-  campus_visit:   { side: "right", color: "purple",  label: "Campus visit" },
-  visit:          { side: "right", color: "purple",  label: "Campus visit" },
-  showcase:       { side: "right", color: "amber",   label: "Showcase" },
-  meeting:        { side: "right", color: "blue",    label: "Meeting" },
-  note:           { side: "right", color: "gray",    label: "Note" },
-  interaction:    { side: "right", color: "gray",    label: "Interaction" },
-  school_added:   { side: "system", color: "blue",   label: "School added" },
+  phone_call:     { side: "right", color: "pink",   label: "Phone call" },
+  video_call:     { side: "right", color: "cyan",   label: "Video call" },
+  camp:           { side: "center", color: "orange", label: "Camp" },
+  visit:          { side: "center", color: "pink",   label: "Campus visit" },
+  showcase:       { side: "center", color: "yellow", label: "Showcase" },
+  meeting:        { side: "center", color: "indigo", label: "Meeting" },
+  note:           { side: "right", color: "gray",   label: "Note" },
+  interaction:    { side: "right", color: "gray",   label: "Interaction" },
 };
 
 const BOARD_STAGE_LABELS = {
