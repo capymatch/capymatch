@@ -466,7 +466,7 @@ export default function RecruitingBoard() {
 
       {/* ─── Filter Chips + Search ─── */}
       {total > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="flex items-center gap-3">
             <FilterChips counts={counts} total={total} active={activeFilter} onFilter={setActiveFilter} />
             <button onClick={() => setShowFilters(!showFilters)}
