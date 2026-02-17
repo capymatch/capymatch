@@ -169,9 +169,11 @@ function PulseIndicator({ pulse }) {
 /* ═══════════════════════════════════════════════════════════════
    GETTING STARTED CHECKLIST
    ═══════════════════════════════════════════════════════════════ */
-function GettingStartedChecklist({ program, coaches, timeline, onAddCoach, onSendEmail, onSetFollowup }) {
+function GettingStartedChecklist({ program, coaches, timeline, profileComplete, onAddCoach, onSendEmail }) {
+  const navigate = useNavigate();
   const steps = [
     { key: "added", label: `Add ${program.university_name} to your pipeline`, desc: `School added on ${new Date(program.created_at || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, done: true, action: null },
+    { key: "profile", label: "Complete your athlete profile", desc: "Name, position, height, grad year, and video link — AI uses this for emails", done: profileComplete, action: () => navigate("/profile") },
     { key: "coach", label: "Add the head coach's contact info", desc: "Find their name and email on the school's volleyball staff page", done: coaches.length > 0, action: onAddCoach },
     { key: "email", label: "Send your first introduction email", desc: "Make a great first impression with a personalized intro", done: timeline.length > 0, action: onSendEmail },
   ];
