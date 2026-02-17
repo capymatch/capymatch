@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — Empty State Redesign Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #0f1219;
+    --surface: #161b25;
+    --surface-alt: #1c2230;
+    --surface-hover: #1e2530;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.12);
+    --text: #f1f1f4;
+    --text-secondary: #c0c4cc;
+    --text-muted: #6b7280;
+    --text-faint: #4a5568;
+    --pink: #e8456b;
+    --pink-glow: rgba(232,69,107,0.12);
+    --pink-soft: rgba(232,69,107,0.06);
+    --emerald: #10b981;
+    --emerald-glow: rgba(16,185,129,0.12);
+    --amber: #f59e0b;
+    --amber-glow: rgba(245,158,11,0.12);
+    --blue: #3b82f6;
+    --blue-glow: rgba(59,130,246,0.12);
+    --purple: #a855f7;
+    --purple-glow: rgba(168,85,247,0.12);
+    --cyan: #06b6d4;
+    --cyan-glow: rgba(6,182,212,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .mockup-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,18,25,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mockup-header h1 { font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+  .mockup-header .badge { background: var(--pink-glow); color: var(--pink); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px 120px; }
+
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 12px;
+    background: var(--pink-glow); padding: 5px 14px; border-radius: 20px;
+  }
+  .section-label .num {
+    background: var(--pink); color: white;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 10px;
+  }
+
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .section-desc {
+    font-size: 13px; color: var(--text-muted);
+    max-width: 640px; margin-bottom: 28px; line-height: 1.7;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 52px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── 1. Welcome Hero ── */
+  .welcome-hero {
+    position: relative;
+    padding: 40px 40px 36px;
+    overflow: hidden;
+  }
+  .welcome-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(232,69,107,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .welcome-hero-content { position: relative; z-index: 1; }
+  .welcome-step {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--pink); margin-bottom: 16px;
+    background: var(--pink-glow); padding: 4px 12px; border-radius: 20px;
+  }
+  .welcome-step .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+  .welcome-hero h2 {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .welcome-hero h2 span { color: var(--pink); }
+  .welcome-hero p {
+    font-size: 14px; color: var(--text-secondary);
+    max-width: 520px; line-height: 1.6;
+  }
+  .welcome-hero .avg-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-muted); margin-top: 12px;
+  }
+  .welcome-hero .avg-note .icon { font-size: 14px; }
+
+  /* ── 2. Three Action Paths ── */
+  .action-paths {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    padding: 0 40px 36px;
+    position: relative; z-index: 1;
+  }
+  .action-path {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .action-path:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    background: var(--surface-hover);
+  }
+  .action-path-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+  }
+  .action-path h4 {
+    font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text);
+  }
+  .action-path p {
+    font-size: 12px; color: var(--text-muted); line-height: 1.5;
+  }
+  .action-path .arrow {
+    position: absolute; top: 24px; right: 20px;
+    color: var(--text-faint); font-size: 16px;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .action-path:hover .arrow { transform: translateX(3px); color: var(--text-muted); }
+
+  /* ── 3. AI Suggested Schools ── */
+  .suggestions-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .suggestions-header-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .suggestions-header-icon {
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .suggestions-header h3 { font-size: 14px; font-weight: 700; }
+  .suggestions-header .subtitle { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .suggestions-header-link {
+    font-size: 12px; font-weight: 600; color: var(--pink);
+    cursor: pointer; text-decoration: none;
+  }
+
+  .suggestion-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .suggestion-card:last-child { border-bottom: none; }
+  .suggestion-card:hover { background: var(--surface-hover); }
+
+  .suggestion-avatar {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .suggestion-info { flex: 1; min-width: 0; }
+  .suggestion-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .suggestion-meta {
+    font-size: 11px; color: var(--text-muted); margin-top: 3px;
+  }
+  .suggestion-reason {
+    font-size: 11px; color: var(--text-secondary); margin-top: 5px;
+    line-height: 1.4;
+    display: flex; align-items: flex-start; gap: 5px;
+  }
+  .suggestion-reason .spark { color: var(--amber); flex-shrink: 0; font-size: 12px; }
+
+  .suggestion-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    flex-shrink: 0;
+  }
+  .match-badge {
+    font-size: 12px; font-weight: 800; letter-spacing: -0.5px;
+    padding: 4px 10px; border-radius: 8px;
+    min-width: 56px; text-align: center;
+  }
+  .add-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700;
+    padding: 6px 14px; border-radius: 8px;
+    border: 1px solid var(--pink);
+    color: var(--pink); background: transparent;
+    cursor: pointer; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--pink); color: white; }
+
+  /* ── 4. Ghost Board Preview ── */
+  .ghost-preview {
+    position: relative; padding: 28px;
+    overflow: hidden;
+  }
+  .ghost-preview-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(15,18,25,0) 0%, rgba(15,18,25,0.95) 80%);
+    z-index: 2;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 32px;
+  }
+  .ghost-preview-text {
+    text-align: center;
+  }
+  .ghost-preview-text p {
+    font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;
+  }
+  .ghost-preview-text span {
+    font-size: 11px; color: var(--text-faint);
+  }
+  .ghost-columns {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    opacity: 0.3;
+  }
+  .ghost-col-header {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--text-muted);
+    padding: 8px 12px; text-align: center;
+    background: var(--surface-alt); border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .ghost-card {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+  .ghost-line {
+    height: 8px; border-radius: 4px;
+    background: var(--text-faint); opacity: 0.3;
+    margin-bottom: 6px;
+  }
+  .ghost-line.short { width: 60%; }
+  .ghost-line.medium { width: 80%; }
+  .ghost-line.tiny { width: 40%; height: 6px; margin-top: 8px; }
+
+  /* ── 5. Social Proof ── */
+  .social-proof {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 20px;
+    font-size: 12px; color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+  .social-proof .icon { font-size: 14px; color: var(--emerald); }
+
+  /* ── 6. Progress Strip ── */
+  .progress-strip {
+    display: flex; align-items: center; gap: 24px;
+    padding: 16px 28px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-alt);
+  }
+  .progress-step {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px;
+  }
+  .progress-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .progress-circle.done { background: var(--emerald-glow); color: var(--emerald); }
+  .progress-circle.current { background: var(--pink-glow); color: var(--pink); border: 1.5px solid var(--pink); }
+  .progress-circle.upcoming { background: var(--surface); color: var(--text-faint); border: 1px solid var(--border-strong); }
+  .progress-label { color: var(--text-muted); }
+  .progress-label.current { color: var(--text); font-weight: 600; }
+  .progress-connector {
+    width: 28px; height: 1px;
+    background: var(--border-strong);
+  }
+
+  @media (max-width: 768px) {
+    .container { padding: 24px 16px 80px; }
+    .action-paths { grid-template-columns: 1fr; }
+    .welcome-hero { padding: 28px 24px 24px; }
+    .action-paths { padding: 0 24px 28px; }
+    .ghost-columns { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-header">
+  <h1>"My Schools" Empty State Redesign</h1>
+  <span class="badge">VISUAL ONLY — NOT FUNCTIONAL</span>
+</div>
+
+<div class="container">
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- FEATURE 1: Welcome Hero + Onboarding Context    -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">1</span> WELCOME HERO</div>
+  <div class="section-title">Personalized Welcome + Motivation</div>
+  <div class="section-desc">
+    Replace the sad "No schools yet" message with an <strong>inviting, personalized hero</strong> that uses the athlete's name 
+    and tells parents exactly what to do. Sets expectations ("most families start with 8–15 schools") to normalize 
+    the behavior we want. The progress strip at the bottom shows them <strong>where they are in the setup journey</strong>.
+  </div>
+
+  <div class="card">
+    <!-- Progress Strip -->
+    <div class="progress-strip">
+      <div class="progress-step">
+        <div class="progress-circle done">✓</div>
+        <span class="progress-label">Create Profile</span>
+      </div>
+      <div class="progress-connector"></div>
+      <div class="progress-step">
+        <div class="progress-circle current">2</div>
+        <span class="progress-label current">Add Schools</span>
+      </div>
+      <div class="progress-connector"></div>
+      <div class="progress-step">
+        <div class="progress-circle upcoming">3</div>
+        <span class="progress-label">Email Coaches</span>
+      </div>
+      <div class="progress-connector"></div>
+      <div class="progress-step">
+        <div class="progress-circle upcoming">4</div>
+        <span class="progress-label">Track Replies</span>
+      </div>
+    </div>
+
+    <!-- Welcome Content -->
+    <div class="welcome-hero">
+      <div class="welcome-hero-content">
+        <div class="welcome-step"><span class="dot"></span> STEP 2 OF 4</div>
+        <h2>Let's build <span>Emma's</span> target list</h2>
+        <p>
+          Browse programs, get AI-matched suggestions, or search by division and location. 
+          You can always add or remove schools later — this is just your starting point.
+        </p>
+        <div class="avg-note">
+          <span class="icon">📊</span>
+          Most families start with 8–15 schools across 2–3 divisions
+        </div>
+      </div>
+    </div>
+
+    <!-- Three Action Paths -->
+    <div class="action-paths">
+      <div class="action-path">
+        <div class="action-path-icon" style="background: var(--purple-glow);">
+          <span style="color: var(--purple);">✨</span>
+        </div>
+        <span class="arrow">›</span>
+        <h4>AI Recommendations</h4>
+        <p>See schools matched to Emma's position, grades, and preferences</p>
+      </div>
+      <div class="action-path">
+        <div class="action-path-icon" style="background: var(--blue-glow);">
+          <span style="color: var(--blue);">🏫</span>
+        </div>
+        <span class="arrow">›</span>
+        <h4>Browse by Division</h4>
+        <p>Filter D1, D2, D3, NAIA — find the right competitive level</p>
+      </div>
+      <div class="action-path">
+        <div class="action-path-icon" style="background: var(--cyan-glow);">
+          <span style="color: var(--cyan);">📍</span>
+        </div>
+        <span class="arrow">›</span>
+        <h4>Search by Location</h4>
+        <p>Find programs near home or across the country</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- FEATURE 2: AI-Suggested Schools                 -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">2</span> AI SUGGESTIONS</div>
+  <div class="section-title">Personalized School Suggestions</div>
+  <div class="section-desc">
+    Based on questionnaire answers (position, division pref, location, GPA), show <strong>5 pre-matched school cards</strong> 
+    with a match score and a one-line reason. The parent's first reaction: <em>"Wow, it already knows what I need."</em>
+    Each school has an <strong>"+ Add to Board"</strong> button. Page is never truly empty.
+  </div>
+
+  <div class="card">
+    <div class="suggestions-header">
+      <div class="suggestions-header-left">
+        <div class="suggestions-header-icon" style="background: var(--purple-glow);">
+          <span style="color: var(--purple);">✨</span>
+        </div>
+        <div>
+          <h3>Matched for Emma</h3>
+          <div class="subtitle">Based on your profile: Outside Hitter · D1/D2 · West Coast · 3.8 GPA</div>
+        </div>
+      </div>
+      <span class="suggestions-header-link">View all matches →</span>
+    </div>
+
+    <!-- School 1 -->
+    <div class="suggestion-card">
+      <div class="suggestion-avatar" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">S</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">Stanford University</div>
+        <div class="suggestion-meta">D1 · Pac-12 · Palo Alto, CA</div>
+        <div class="suggestion-reason">
+          <span class="spark">✦</span>
+          Top-ranked D1 program, 45 min from home. Academic match with 3.8 GPA minimum.
+        </div>
+      </div>
+      <div class="suggestion-right">
+        <div class="match-badge" style="background: var(--emerald-glow); color: var(--emerald);">94%</div>
+        <button class="add-btn">+ Add to Board</button>
+      </div>
+    </div>
+
+    <!-- School 2 -->
+    <div class="suggestion-card">
+      <div class="suggestion-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">U</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">UCLA</div>
+        <div class="suggestion-meta">D1 · Pac-12 · Los Angeles, CA</div>
+        <div class="suggestion-reason">
+          <span class="spark">✦</span>
+          Strong outside hitter program. Active recruiting for class of 2026.
+        </div>
+      </div>
+      <div class="suggestion-right">
+        <div class="match-badge" style="background: var(--emerald-glow); color: var(--emerald);">91%</div>
+        <button class="add-btn">+ Add to Board</button>
+      </div>
+    </div>
+
+    <!-- School 3 -->
+    <div class="suggestion-card">
+      <div class="suggestion-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">U</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">USC</div>
+        <div class="suggestion-meta">D1 · Pac-12 · Los Angeles, CA</div>
+        <div class="suggestion-reason">
+          <span class="spark">✦</span>
+          Historically strong for OH/RS. 2 hours from home. Coach actively recruits from NorCal.
+        </div>
+      </div>
+      <div class="suggestion-right">
+        <div class="match-badge" style="background: var(--emerald-glow); color: var(--emerald);">88%</div>
+        <button class="add-btn">+ Add to Board</button>
+      </div>
+    </div>
+
+    <!-- School 4 -->
+    <div class="suggestion-card">
+      <div class="suggestion-avatar" style="background: linear-gradient(135deg, #a855f7, #7c3aed);">C</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">Cal Poly SLO</div>
+        <div class="suggestion-meta">D1 · Big West · San Luis Obispo, CA</div>
+        <div class="suggestion-reason">
+          <span class="spark">✦</span>
+          Great mid-major D1 option. Known for player development. Beautiful campus.
+        </div>
+      </div>
+      <div class="suggestion-right">
+        <div class="match-badge" style="background: var(--amber-glow); color: var(--amber);">82%</div>
+        <button class="add-btn">+ Add to Board</button>
+      </div>
+    </div>
+
+    <!-- School 5 -->
+    <div class="suggestion-card">
+      <div class="suggestion-avatar" style="background: linear-gradient(135deg, #ec4899, #db2777);">S</div>
+      <div class="suggestion-info">
+        <div class="suggestion-name">San Diego State</div>
+        <div class="suggestion-meta">D1 · Mountain West · San Diego, CA</div>
+        <div class="suggestion-reason">
+          <span class="spark">✦</span>
+          Growing volleyball program. Competitive conference. Excellent campus life.
+        </div>
+      </div>
+      <div class="suggestion-right">
+        <div class="match-badge" style="background: var(--amber-glow); color: var(--amber);">79%</div>
+        <button class="add-btn">+ Add to Board</button>
+      </div>
+    </div>
+
+    <!-- Social Proof -->
+    <div class="social-proof">
+      <span class="icon">✓</span>
+      Families using Recruiting HQ track an average of 12 schools and send their first coach email within 48 hours.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- FEATURE 3: Ghost Board Preview                  -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section-label"><span class="num">3</span> GHOST BOARD PREVIEW</div>
+  <div class="section-title">See What's Coming</div>
+  <div class="section-desc">
+    Show a <strong>faded preview of the recruiting board</strong> — the pipeline columns, the cards, the status badges.
+    This reduces anxiety ("what does this app even do?") and creates anticipation ("I want to see MY board filled").
+    The overlay message reinforces the value prop.
+  </div>
+
+  <div class="card" style="overflow: hidden;">
+    <div class="ghost-preview">
+      <div class="ghost-preview-overlay">
+        <div class="ghost-preview-text">
+          <p>This is where you'll track every school — from first contact to offer</p>
+          <span>Add schools above to start building your board</span>
+        </div>
+      </div>
+      <div class="ghost-columns">
+        <!-- Column 1 -->
+        <div>
+          <div class="ghost-col-header">Needs Outreach</div>
+          <div class="ghost-card">
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line short"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+          <div class="ghost-card">
+            <div class="ghost-line short"></div>
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+        </div>
+        <!-- Column 2 -->
+        <div>
+          <div class="ghost-col-header">Contacted</div>
+          <div class="ghost-card">
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line short"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+          <div class="ghost-card">
+            <div class="ghost-line short"></div>
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+          <div class="ghost-card">
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line short"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+        </div>
+        <!-- Column 3 -->
+        <div>
+          <div class="ghost-col-header">Waiting on Reply</div>
+          <div class="ghost-card">
+            <div class="ghost-line short"></div>
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+        </div>
+        <!-- Column 4 -->
+        <div>
+          <div class="ghost-col-header">In Conversation</div>
+          <div class="ghost-card">
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line short"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+        </div>
+        <!-- Column 5 -->
+        <div>
+          <div class="ghost-col-header">Offer / Commit</div>
+          <div class="ghost-card">
+            <div class="ghost-line short"></div>
+            <div class="ghost-line medium"></div>
+            <div class="ghost-line tiny"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══ Design Notes ══ -->
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px;">
+    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--pink);">Design Notes</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 12px; color: var(--text-secondary); line-height: 1.7;">
+      <div>
+        <strong style="color: var(--text); display: block; margin-bottom: 4px;">What This Replaces</strong>
+        <ul style="padding-left: 16px; color: var(--text-muted);">
+          <li>A single dark card saying "No schools on your board yet"</li>
+          <li>One lonely "Find Schools" button</li>
+          <li>A vast, empty dark page below</li>
+        </ul>
+        <strong style="color: var(--text); display: block; margin-bottom: 4px; margin-top: 12px;">What This Adds</strong>
+        <ul style="padding-left: 16px; color: var(--text-muted);">
+          <li><strong>Progress strip</strong> — shows where they are in the setup journey</li>
+          <li><strong>Personalized hero</strong> — uses athlete's name, sets expectations</li>
+          <li><strong>Three action paths</strong> — AI match, browse by division, search by location</li>
+          <li><strong>AI-suggested schools</strong> — page is never truly empty</li>
+          <li><strong>Ghost board preview</strong> — shows what the filled board looks like</li>
+          <li><strong>Social proof strip</strong> — normalizes behavior we want</li>
+        </ul>
+      </div>
+      <div>
+        <strong style="color: var(--text); display: block; margin-bottom: 4px;">Key Principles</strong>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          A new parent should never feel lost. The page should never feel empty.
+          Every pixel should either <strong style="color: var(--text);">motivate</strong>, 
+          <strong style="color: var(--text);">educate</strong>, or 
+          <strong style="color: var(--text);">move them forward</strong>.
+        </p>
+        <strong style="color: var(--text); display: block; margin-bottom: 4px;">Emotional Journey</strong>
+        <ul style="padding-left: 16px; color: var(--text-muted);">
+          <li><strong>Before:</strong> "This is empty. What do I do?" → feels like a dead end</li>
+          <li><strong>After:</strong> "It already has suggestions for me!" → feels like a head start</li>
+        </ul>
+        <strong style="color: var(--text); display: block; margin-bottom: 4px; margin-top: 12px;">Technical Notes</strong>
+        <ul style="padding-left: 16px; color: var(--text-muted);">
+          <li>AI suggestions use existing <code>/api/recruiting-profile/suggestions</code> endpoint</li>
+          <li>Match scores come from the existing recommendation engine</li>
+          <li>"+ Add to Board" uses existing <code>/api/programs</code> POST</li>
+          <li>Ghost board is pure CSS, no data needed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
