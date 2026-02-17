@@ -13,12 +13,12 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 7. Stripe integration for payments
 8. AI-powered "Next Step" suggestions
 9. Separate data for Girls and Boys volleyball
-10. Complete UX/UI overhaul of Recruiting Journey page (7-point mockup)
+10. Complete UX/UI overhaul of Recruiting Journey page
 
 ## Tech Stack
 - Frontend: React, Tailwind CSS, Shadcn/UI, Lucide React
 - Backend: FastAPI, Pydantic, MongoDB
-- Auth: Cookie-based sessions (session_token)
+- Auth: Cookie-based sessions + Emergent Google OAuth
 - 3rd Party: Gmail API, Anthropic Claude (Emergent LLM Key), react-joyride, Stripe, Resend
 
 ## User Personas
@@ -28,21 +28,13 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ## Test Accounts
 - Pro User: pro@test.com / password
 - Premium User: premium@test.com / password
+- Empty Board User: emptytest@test.com / password
 
-## What's Implemented (Completed)
-- Full recruiting board with 5-stage funnel (overdue, needs_outreach, waiting_on_reply, in_conversation, archived)
-- Journey Page complete redesign with 7 features:
-  1. Visual Progress Rail with pulse indicator
-  2. Getting Started Checklist
-  3. Conversation-style Timeline
-  4. At a Glance contextual sidebar
-  5. Celebration state for coach replies
-  6. Floating Action Bar
-  7. School Comparison page (/compare)
-- Progress Rail cascade fill logic (backend)
+## What's Implemented (Complete)
+- Full recruiting board with 5-stage funnel
+- Journey Page complete redesign with 7 features
+- Progress Rail cascade fill logic
 - Stage click/undo toggle behavior
-- campus_visit, offer, committed stages are MANUAL ONLY
-- Stage label "Replied" renamed to "In Conversation"
 - Rule-based "What's Next?" card
 - Camp milestone in timeline
 - Coach CRUD, Interaction logging, Follow-up scheduling
@@ -53,7 +45,6 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - NCAA Timeline, Analytics, Calendar pages
 - Coach Watch (web scraping), Highlight Advisor
 - "Committed" Hero Card with confetti animation
-- Collapsible Journey Details when committed
 - Personal Notes Sidebar per school
 - Font Upgrade to Plus Jakarta Sans
 - Stage Log Modal for progress rail
@@ -62,13 +53,35 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 
 ## What's Implemented (Recent — Feb 17, 2026)
 - **Dashboard Redesign (Complete)**: Full redesign with 6 new sections:
-  1. **Greeting + Quick Pulse**: Personalized welcome + 4 contextual stats (Schools Tracked, Response Rate, Replies This Week, Awaiting Reply)
-  2. **Today's Actions**: Split view — Follow-ups Due (left) + Needs First Outreach (right)
-  3. **School Spotlight**: Horizontal scroll cards with next-step nudges + Browse Schools card
-  4. **Pipeline Snapshot**: Vertical bar chart with division legend
-  5. **Recent Activity**: Timeline feed with color-coded dots and time-ago format
-  6. **Upcoming Events**: Compact date-box layout with event type badges
-  - Removed: Donut chart, Engagement Summary, fake trend arrows, Profile Views stat
+  1. Greeting + Quick Pulse (4 contextual stats)
+  2. Today's Actions (split: Follow-ups Due + Needs First Outreach)
+  3. School Spotlight (horizontal scroll cards with next-step nudges)
+  4. Pipeline Snapshot (vertical bar chart with division legend)
+  5. Recent Activity (timeline feed)
+  6. Upcoming Events (date-box layout)
+
+- **My Schools Empty State Redesign (Complete)**: Rich empty state replacing the old "No schools" card:
+  1. Progress strip (Create Profile → Add Schools → Email Coaches → Track Replies)
+  2. Personalized welcome hero with athlete name
+  3. Three action path cards (AI Recommendations, Browse by Division, Search by Location)
+  4. AI-suggested school cards with match scores and "Add to Board" buttons
+  5. Ghost board preview showing future pipeline columns
+  6. Social proof strip
+
+- **Google OAuth Fix (Complete)**: Fixed session_id reading from URL hash fragment (was incorrectly reading from query params). Added proper error handling and logging.
+
+## Code Architecture
+```
+/app/frontend/src/pages/
+├── Dashboard.js                    # Redesigned dashboard
+├── RecruitingBoard.js              # My Schools board (imports EmptyBoardState)
+├── pipeline/
+│   └── EmptyBoardState.js          # NEW: Rich empty state component
+└── RecruitingJourney/              # Journey page (complex, needs refactor)
+
+/app/frontend/src/App.js            # OAuth callback fixed (hash fragment)
+/app/frontend/src/pages/LoginPage.js # Google redirect URL updated
+```
 
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
@@ -76,15 +89,9 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ## P1 Backlog
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
+- RecruitingJourney.js refactor (component too complex)
 
 ## P2 Backlog (Future)
 - App Naming
 - Multi-sport capability
 - Family Collaboration Roles (read-only Parent/Viewer role)
-
-## Key Architecture Decisions
-- Progress Rail uses percentage-based track positioning
-- Backend cascade fill: manual journey_stage fills all stages up to that point
-- Active stage = last consecutively completed stage (always gap-free)
-- Journey_stage stored as single string in programs collection
-- Dashboard fetches from /api/programs, /api/events, /api/interactions, /api/athlete-profile, /api/gmail/status
