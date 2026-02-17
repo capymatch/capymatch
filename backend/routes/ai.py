@@ -87,40 +87,96 @@ Current Status: {program.get('recruiting_status', '')}
             events_info += f"- {evt.get('title', '')} ({evt.get('event_type', '')}) on {evt.get('start_date', '')} at {evt.get('location', '')}\n"
 
     email_prompts = {
-        "intro": "Write an initial outreach/introduction email from the athlete to the college volleyball coach. This is the first contact. Be enthusiastic but professional. Include the athlete's key stats, position, video link, and express genuine interest in the program.",
-        "follow_up": "Write a polite follow-up email. Reference that the athlete previously reached out and hasn't heard back. Restate interest and offer to provide any additional information. Keep it concise and respectful of the coach's time.",
-        "thank_you": "Write a thank-you email after attending a camp, clinic, or campus visit. Express gratitude for the opportunity, mention something specific about the experience, and reaffirm interest in the program.",
-        "interest_update": "Write an update email sharing new achievements, stats, or upcoming events where the coach could see the athlete play. Keep it informative and brief.",
+        "intro": """Write an initial outreach email from the athlete to a college coach.
+
+Tone: confident, enthusiastic, and respectful — not formal.
+Length: short and easy to scan.
+
+Include:
+- A brief self-introduction (name, grad year, position)
+- One or two key athletic details or stats
+- A natural mention of a highlight video link
+- A clear reason for interest in THIS program (1 specific detail)
+- A polite closing that invites next steps
+
+Do not use greetings like "Dear Coach."
+Avoid clichés and generic praise.""",
+
+        "follow_up": """Write a concise follow-up email from the athlete to a coach.
+
+Context:
+- The athlete previously sent an introduction
+- No response yet
+
+Tone:
+- Polite, confident, and respectful
+- No guilt, no pressure, no apologies
+
+Include:
+- A brief reference to the earlier message
+- A short restatement of interest in the program
+- One small new detail (training update, season progress, or upcoming event)
+- A simple, professional closing
+
+Keep it short and direct.
+Do not sound frustrated or overly eager.""",
+
+        "thank_you": """Write a thank-you email from the athlete after attending a camp, clinic, or campus visit.
+
+Tone:
+- Appreciative and genuine
+- Confident, not overly formal
+
+Include:
+- Thanks for the opportunity
+- One specific detail from the experience (drill, coaching moment, facility, or interaction)
+- A short sentence reaffirming interest in the program
+- A clean, respectful closing
+
+Avoid generic phrases like "great experience" without detail.
+Keep the message under 120 words.""",
+
+        "interest_update": """Write an interest update email from the athlete to a coach.
+
+Purpose:
+- Share new achievements, progress, or upcoming events
+
+Include:
+- One or two meaningful updates (stats, awards, role change, or schedule)
+- Why this update matters to the athlete's development
+- A natural reference to where the coach can watch (video or event)
+- A short restatement of interest in the program
+
+Keep it focused and readable.
+Do not list too many stats.""",
     }
 
     prompt_instruction = email_prompts.get(data.email_type, email_prompts["intro"])
 
-    system_message = """You are ghostwriting recruiting emails for a high school volleyball player. Your #1 job is to sound EXACTLY like a real teenager wrote this — not an AI, not a college counselor, not a parent.
+    system_message = """You are ghostwriting on behalf of a high school athlete.
 
-How real teens write:
-- Short, simple sentences. No fancy vocabulary or SAT words.
-- Slightly casual but still respectful. Think texting a teacher you like.
-- They don't use phrases like "I am writing to express my interest" or "I would like to take this opportunity" — nobody talks like that.
-- They say things like "I've been following your program" not "I have been closely monitoring your program's trajectory"
-- They use contractions (I'm, I've, don't, can't) — always.
-- They might start a sentence with "Also" or "And" — that's fine.
-- No clichés like "passion for the game", "take my skills to the next level", "dream school", or "since I was young"
-- Stats are mentioned casually, not listed like a resume.
-- The sign-off is simple: "Thanks, [Name]" — not "Warm regards" or "Respectfully yours"
+Writing style:
+- Short, clear sentences
+- Casual but respectful
+- Use contractions
+- Sound like a real teenager, not a marketing email
+- No clichés, no corporate language
 
-Absolute DON'Ts:
-- Do NOT sound polished, templated, or corporate
-- Do NOT use bullet points or numbered lists in the email body
-- Do NOT start with "Dear Coach" — use "Hi Coach [LastName]," or "Coach [LastName],"
-- Do NOT use words like "furthermore", "additionally", "thus", "hence", "endeavor", "utilize"
-- Do NOT write more than 150 words. Coaches read hundreds of these — shorter is better.
-- Do NOT use any subject line prefix like "Subject:" — just provide the email body
+Rules:
+- Do not start with "Dear Coach"
+- Keep emails under 150 words
+- Mention one specific detail about the school or program
+- Include the video link naturally (not as a callout)
+- Do not exaggerate or oversell
+- Tone should be confident, not desperate
+
+The email should feel personal, simple, and authentic.
+
+If the athlete is underclassman, keep language exploratory.
+If upperclassman, make intent clearer but still respectful.
 
 Format rules:
 - Write in first person as the athlete
-- Always include the video link if available (drop it naturally, not formally)
-- Mention ONE specific thing about the school/program — shows you did your homework
-- End with a simple ask (would love to talk, happy to send more info, etc.)
 - Return response as JSON with "subject" and "body" fields only
 - Subject line should be direct and simple, like a real person would write it"""
 
