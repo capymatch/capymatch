@@ -441,7 +441,7 @@ export default function RecruitingBoard() {
             />
           )}
           {allCaughtUp && !markRepliedProgram && (
-            <div className="rounded-2xl border p-6 text-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="all-caught-up">
+            <div className="rounded-2xl border p-6 text-center h-full" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="all-caught-up">
               <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
                 <CheckCircle2 className="w-6 h-6 text-emerald-400" />
               </div>
