@@ -975,9 +975,10 @@ export default function RecruitingJourney() {
               const signals = program.signals || {};
               const dueDays = program.next_action_due ? Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000) : null;
               const hasHeroStep = (dueDays !== null && dueDays <= 7)
-                || (signals.emails_sent === 0 && signals.total_interactions === 0)
-                || (signals.emails_sent > 0 && !signals.has_coach_reply)
-                || (signals.has_coach_reply && signals.days_since_reply > 7);
+                || (signals.outreach_count === 0 && signals.total_interactions === 0)
+                || (signals.outreach_count > 0 && !signals.has_coach_reply)
+                || (signals.has_coach_reply && signals.days_since_reply > 7)
+                || (signals.total_interactions > 0);
               if (hasHeroStep) return null;
               if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply <= 7) return (
                 <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
