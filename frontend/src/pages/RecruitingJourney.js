@@ -6,143 +6,432 @@ import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
   MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
   Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
-  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap, Lock, Search, Crown
+  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap, Lock, Crown,
+  GitCompare, ChevronRight
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
-const EVENT_ICONS = {
-  email_sent: { icon: Send, color: "text-blue-400", bg: "bg-blue-500/10" },
-  email_received: { icon: Mail, color: "text-green-400", bg: "bg-green-500/10" },
-  phone_call: { icon: Phone, color: "text-pink-500", bg: "bg-pink-600/10" },
-  video_call: { icon: Video, color: "text-cyan-400", bg: "bg-cyan-500/10" },
-  camp: { icon: Calendar, color: "text-orange-400", bg: "bg-orange-500/10" },
-  visit: { icon: MapPin, color: "text-pink-400", bg: "bg-pink-500/10" },
-  showcase: { icon: Star, color: "text-yellow-400", bg: "bg-yellow-500/10" },
-  meeting: { icon: Users, color: "text-indigo-400", bg: "bg-indigo-500/10" },
-  note: { icon: FileText, color: "text-gray-400", bg: "bg-gray-500/10" },
-  interaction: { icon: MessageSquare, color: "text-gray-400", bg: "bg-gray-500/10" },
-  coach_reply: { icon: Mail, color: "text-green-400", bg: "bg-green-500/10" },
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS
+   ═══════════════════════════════════════════════════════════════ */
+
+const RAIL_STAGES = [
+  { key: "added", label: "Added" },
+  { key: "outreach_sent", label: "Outreach" },
+  { key: "coach_replied", label: "Replied" },
+  { key: "campus_visit", label: "Visit" },
+  { key: "offer", label: "Offer" },
+  { key: "committed", label: "Committed" },
+];
+
+const PULSE_CONFIG = {
+  active:  { color: "emerald", label: "Active",     desc: "Recent activity" },
+  cooling: { color: "amber",   label: "Cooling",    desc: "7+ days since contact" },
+  cold:    { color: "rose",    label: "Going Cold",  desc: "14+ days, needs action" },
+  neutral: { color: "gray",    label: "New",         desc: "No activity yet" },
 };
 
-const PRIORITY_OPTIONS = ["Low", "Medium", "High", "Very High"];
+const CONV_CONFIG = {
+  email_sent:     { side: "right", color: "pink",   label: "Email sent" },
+  email_received: { side: "left",  color: "emerald", label: "Email received" },
+  coach_reply:    { side: "left",  color: "emerald", label: "Coach replied" },
+  phone_call:     { side: "right", color: "pink",   label: "Phone call" },
+  video_call:     { side: "right", color: "cyan",   label: "Video call" },
+  camp:           { side: "center", color: "orange", label: "Camp" },
+  visit:          { side: "center", color: "pink",   label: "Campus visit" },
+  showcase:       { side: "center", color: "yellow", label: "Showcase" },
+  meeting:        { side: "center", color: "indigo", label: "Meeting" },
+  note:           { side: "right", color: "gray",   label: "Note" },
+  interaction:    { side: "right", color: "gray",   label: "Interaction" },
+};
 
-// ─── Timeline Event ───
-function TimelineEvent({ event }) {
-  const [expanded, setExpanded] = useState(false);
-  const config = EVENT_ICONS[event.event_type] || EVENT_ICONS.interaction;
-  const Icon = config.icon;
-  const formatDate = (d) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  const hasLong = event.content && event.content.length > 120;
+const BOARD_STAGE_LABELS = {
+  overdue: "Overdue", needs_outreach: "Needs Outreach",
+  waiting_on_reply: "Waiting on Reply", in_conversation: "In Conversation", archived: "Archived",
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS RAIL
+   ═══════════════════════════════════════════════════════════════ */
+function ProgressRail({ rail, onStageClick }) {
+  if (!rail) return null;
+  const stages = rail.stages || {};
+  const active = rail.active;
+  const activeIdx = RAIL_STAGES.findIndex(s => s.key === active);
 
   return (
-    <div className="relative flex gap-3 pb-6 last:pb-0 group">
-      <div className="absolute left-[18px] top-10 bottom-0 w-px bg-[var(--t-border)]" />
-      <div className={`relative z-10 flex-shrink-0 w-9 h-9 rounded-lg ${config.bg} flex items-center justify-center`}>
-        <Icon className={`w-4 h-4 ${config.color}`} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{event.title}</p>
-          {event.coach_name && (
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500">{event.coach_name}</span>
-          )}
-        </div>
-        <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)}</p>
-        {event.content && (
-          <div className="mt-1.5 p-2.5 rounded-lg border text-xs leading-relaxed" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-            {hasLong && !expanded ? (
-              <><p className="line-clamp-2">{event.content}</p><button onClick={() => setExpanded(true)} className="text-pink-500 hover:text-pink-400 text-[10px] mt-1 font-medium">Show more</button></>
-            ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{event.content}</p><button onClick={() => setExpanded(false)} className="text-pink-500 hover:text-pink-400 text-[10px] mt-1 font-medium">Show less</button></>
-            ) : <p>{event.content}</p>}
-          </div>
-        )}
-      </div>
+    <div className="relative flex items-start pt-2 pb-1" data-testid="progress-rail">
+      {/* Background line */}
+      <div className="absolute top-[18px] left-[40px] right-[40px] h-[2px]" style={{ background: "var(--t-border)" }} />
+      {/* Filled line */}
+      <div className="absolute top-[18px] left-[40px] h-[2px] transition-all duration-500"
+        style={{ width: `${Math.max(0, activeIdx) * (100 / (RAIL_STAGES.length - 1))}%`, maxWidth: "calc(100% - 80px)", background: "var(--accent-pink, #e8456b)" }} />
+      {RAIL_STAGES.map((s, i) => {
+        const completed = stages[s.key];
+        const isActive = s.key === active;
+        return (
+          <button key={s.key} className="flex-1 flex flex-col items-center relative z-10 group"
+            onClick={() => onStageClick(s.key)} data-testid={`rail-stage-${s.key}`}>
+            <div className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 ${
+              isActive ? "w-[18px] h-[18px] bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)]"
+              : completed ? "bg-pink-500 border-pink-500 shadow-[0_0_8px_rgba(232,69,107,0.15)]"
+              : "border-[var(--t-border)] bg-[var(--t-surface)]"
+            }`} />
+            <span className={`text-[10px] mt-1.5 font-medium transition-colors ${
+              isActive ? "text-pink-500 font-semibold" : completed ? "text-[var(--t-text-secondary)]" : "text-[var(--t-text-muted)]"
+            }`}>{s.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-// ─── Status Badge ───
-function StatusBadge({ label, value, options, onChange }) {
-  const [open, setOpen] = useState(false);
-  const colors = {
-    "Not Contacted": "bg-gray-500/10 text-gray-400", "Contacted": "bg-blue-500/10 text-blue-400",
-    "Applied": "bg-indigo-500/10 text-indigo-400", "Camp Attended": "bg-orange-500/10 text-orange-400",
-    "Offer Received": "bg-green-500/10 text-green-400", "Committed": "bg-emerald-500/10 text-emerald-300",
-    "Not Interested": "bg-red-500/10 text-red-400", "No Reply": "bg-gray-500/10 text-gray-400",
-    "Awaiting Reply": "bg-yellow-500/10 text-yellow-400", "Reply Received": "bg-green-500/10 text-green-400",
-    "In Conversation": "bg-pink-600/10 text-pink-500", "Low": "bg-gray-500/10 text-gray-400",
-    "Medium": "bg-blue-500/10 text-blue-400", "High": "bg-orange-500/10 text-orange-400",
-    "Very High": "bg-red-500/10 text-red-400",
-  };
+/* ═══════════════════════════════════════════════════════════════
+   PULSE INDICATOR
+   ═══════════════════════════════════════════════════════════════ */
+function PulseIndicator({ pulse }) {
+  const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
+  const dotColor = { emerald: "bg-emerald-500", amber: "bg-amber-500", rose: "bg-rose-500", gray: "bg-gray-500" }[cfg.color];
+  const ringColor = { emerald: "border-emerald-500", amber: "border-amber-500", rose: "border-rose-500", gray: "border-gray-500" }[cfg.color];
+  const textColor = { emerald: "text-emerald-400", amber: "text-amber-400", rose: "text-rose-400", gray: "text-gray-400" }[cfg.color];
   return (
-    <div className="relative">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5" data-testid={`status-badge-${label.toLowerCase().replace(/\s/g, '-')}`}>
-        <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: "var(--t-text-muted)" }}>{label}</span>
-        <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${colors[value] || "bg-gray-500/10 text-gray-400"}`}>{value}</span>
-        <ChevronDown className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 mt-1 z-50 w-44 rounded-lg border shadow-xl py-1" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-          {options.map(o => (
-            <button key={o} onClick={() => { onChange(o); setOpen(false); }}
-              className={`w-full text-left px-3 py-1.5 text-xs transition-colors hover:bg-[var(--t-surface-hover)] ${o === value ? "font-semibold" : ""}`}
-              style={{ color: "var(--t-text-secondary)" }}>{o}</button>
-          ))}
-        </div>
-      )}
+    <div className="flex items-center gap-2" data-testid="pulse-indicator">
+      <span className="relative flex h-2.5 w-2.5">
+        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-40 ${dotColor}`} />
+        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor}`} />
+      </span>
+      <span className={`text-[11px] font-semibold ${textColor}`}>{cfg.label}</span>
     </div>
   );
 }
 
-// ─── Interest Meter ───
-function InterestMeter({ label, value, onChange, icon: Icon, color }) {
+/* ═══════════════════════════════════════════════════════════════
+   GETTING STARTED CHECKLIST
+   ═══════════════════════════════════════════════════════════════ */
+function GettingStartedChecklist({ program, coaches, timeline, onAddCoach, onSendEmail, onSetFollowup }) {
+  const steps = [
+    { key: "added", label: `Add ${program.university_name} to your pipeline`, desc: `School added on ${new Date(program.created_at || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, done: true, action: null },
+    { key: "coach", label: "Add the head coach's contact info", desc: "Find their name and email on the school's volleyball staff page", done: coaches.length > 0, action: onAddCoach },
+    { key: "email", label: "Send your first introduction email", desc: "Make a great first impression with a personalized intro", done: timeline.length > 0, action: onSendEmail },
+    { key: "followup", label: "Set a follow-up reminder", desc: "Schedule a 7-day follow-up so you don't forget", done: !!program.next_action_due, action: onSetFollowup },
+  ];
+  const doneCount = steps.filter(s => s.done).length;
+
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <Icon className={`w-3.5 h-3.5 ${color}`} />
-          <span className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>{label}</span>
-        </div>
-        <span className="text-xs font-bold" style={{ color: "var(--t-text)" }}>{value}/10</span>
-      </div>
-      <div className="flex gap-0.5">
-        {[...Array(10)].map((_, i) => (
-          <button key={i} onClick={() => onChange(i + 1)}
-            className={`flex-1 h-2 rounded-sm transition-all ${i < value ? (color === "text-red-400" ? "bg-red-500" : "bg-pink-600") : "bg-[var(--t-border)]"}`}
-            data-testid={`interest-${label.toLowerCase().replace(/\s/g, '-')}-${i + 1}`} />
+    <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="getting-started-checklist">
+      <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>Start your {program.university_name} journey</h3>
+      <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
+      <div className="space-y-2">
+        {steps.map(s => (
+          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-pink-500/30 hover:bg-[var(--t-surface-alt)]"}`}
+            style={{ borderColor: "var(--t-border)" }}
+            onClick={() => !s.done && s.action && s.action()} disabled={s.done}
+            data-testid={`checklist-step-${s.key}`}>
+            <div className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${s.done ? "bg-emerald-500 border-emerald-500" : "border-[var(--t-border)]"}`}>
+              {s.done && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+            </div>
+            <div className="min-w-0">
+              <p className={`text-sm font-medium ${s.done ? "line-through" : ""}`} style={{ color: "var(--t-text)" }}>{s.label}</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{s.desc}</p>
+            </div>
+            {!s.done && s.action && <ChevronRight className="w-4 h-4 ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />}
+          </button>
         ))}
       </div>
+      <div className="flex items-center gap-3 mt-4 pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
+        <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--t-surface-alt)" }}>
+          <div className="h-full rounded-full bg-pink-500 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
+        </div>
+        <span className="text-[11px] font-semibold text-pink-500">{doneCount} of {steps.length}</span>
+      </div>
     </div>
   );
 }
 
-// ─── Coach Card ───
-function CoachCard({ coach, onEdit, onDelete }) {
+/* ═══════════════════════════════════════════════════════════════
+   CELEBRATION HERO (In Conversation)
+   ═══════════════════════════════════════════════════════════════ */
+function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
+  const coachName = coaches?.[0]?.coach_name || "The coach";
+  const signals = program.signals || {};
+  const daysAgo = signals.days_since_reply;
+  const timeText = daysAgo === 0 ? "today" : daysAgo === 1 ? "yesterday" : `${daysAgo} days ago`;
+
   return (
-    <div className="p-2.5 rounded-lg border group" style={{ borderColor: "var(--t-border)" }}>
-      <div className="flex items-start justify-between">
-        <div className="min-w-0">
-          <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{coach.coach_name}</p>
-          <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{coach.role}</p>
-        </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={onEdit} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><Edit2 className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} /></button>
-          <button onClick={onDelete} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
+    <div className="rounded-2xl border p-5 sm:p-6 text-center relative overflow-hidden"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(16,185,129,0.2)", background: "linear-gradient(135deg, rgba(16,185,129,0.04), var(--t-surface) 60%)" }}
+      data-testid="celebration-hero">
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%)" }} />
+      <div className="relative">
+        <div className="text-3xl mb-2">&#127881;</div>
+        <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>{coachName} is interested!</h3>
+        <p className="text-xs mb-4 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
+          Replied {timeText} — keep the momentum going:
+        </p>
+        <div className="flex gap-2.5 justify-center flex-wrap">
+          <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-8 px-4 shadow-md" onClick={onEmail} data-testid="celebration-email-btn">
+            <Mail className="w-3.5 h-3.5 mr-1.5" />Send Thank You
+          </Button>
+          <Button variant="outline" className="text-xs h-8 px-4" onClick={onCall}
+            style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="celebration-call-btn">
+            <Phone className="w-3.5 h-3.5 mr-1.5" />Schedule Call
+          </Button>
+          <Button variant="outline" className="text-xs h-8 px-4 border-emerald-600/30 text-emerald-400 hover:bg-emerald-600/10"
+            onClick={onLog} data-testid="celebration-log-btn">
+            <FileText className="w-3.5 h-3.5 mr-1.5" />Log a Note
+          </Button>
         </div>
       </div>
-      {coach.email && (
-        <a href={`mailto:${coach.email}`} className="text-[11px] text-pink-500 hover:text-pink-400 flex items-center gap-1 mt-1 truncate">
-          <Mail className="w-3 h-3 flex-shrink-0" />{coach.email}
-        </a>
-      )}
-      {coach.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{coach.phone}</p>}
     </div>
   );
 }
 
-// ─── Inline Coach Form ───
+/* ═══════════════════════════════════════════════════════════════
+   CONVERSATION TIMELINE
+   ═══════════════════════════════════════════════════════════════ */
+function ConversationBubble({ event }) {
+  const [expanded, setExpanded] = useState(false);
+  const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
+  const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
+  const formatDate = (d) => {
+    try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
+    catch { return d; }
+  };
+  const content = event.content || event.notes || "";
+  const hasLong = content.length > 150;
+
+  // Milestone (center)
+  if (cfg.side === "center") {
+    return (
+      <div className="flex justify-center my-2" data-testid="conv-milestone">
+        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center bg-${cfg.color}-500/10`}>
+            {evtType === "camp" ? <Calendar className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
+            : evtType === "visit" ? <MapPin className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
+            : <Star className={`w-3.5 h-3.5 text-${cfg.color}-400`} />}
+          </div>
+          <div>
+            <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{event.title || cfg.label}</p>
+            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Chat bubble — left (coach) or right (you)
+  const isRight = cfg.side === "right";
+  return (
+    <div className={`flex ${isRight ? "justify-end" : "justify-start"} my-1`} data-testid={`conv-bubble-${isRight ? "right" : "left"}`}>
+      <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
+        isRight
+          ? "rounded-br-md bg-pink-600/[0.06] border-pink-600/15"
+          : "rounded-bl-md bg-emerald-500/[0.06] border-emerald-500/15"
+      }`}>
+        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-pink-500" : "text-emerald-400"}`}>
+          {isRight ? "You" : (event.coach_name || "Coach")}
+        </p>
+        {content && (
+          <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
+            {hasLong && !expanded ? (
+              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-pink-500 text-[10px] mt-1 font-medium">Show more</button></>
+            ) : hasLong && expanded ? (
+              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-pink-500 text-[10px] mt-1 font-medium">Show less</button></>
+            ) : <p>{content}</p>}
+          </div>
+        )}
+        {!content && <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{event.title || cfg.label}</p>}
+        <p className="text-[10px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)} &middot; {cfg.label}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AT A GLANCE SIDEBAR
+   ═══════════════════════════════════════════════════════════════ */
+function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraftEmail, onAddCoach, onScheduleFollowup }) {
+  const signals = program.signals || {};
+  const boardGroup = program.board_group;
+  const stageLabel = BOARD_STAGE_LABELS[boardGroup] || boardGroup;
+  const stageColors = {
+    overdue: "bg-rose-500/12 text-rose-400", needs_outreach: "bg-amber-500/12 text-amber-400",
+    waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-emerald-500/12 text-emerald-400",
+    archived: "bg-gray-500/12 text-gray-400",
+  };
+
+  // AI summary
+  const [aiSummary, setAiSummary] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+
+  const generateAI = async () => {
+    if (!isPremium) return;
+    setAiLoading(true);
+    try {
+      const res = await api.post("/ai/journey-summary", { program_id: programId });
+      setAiSummary(res.data);
+    } catch { toast.error("Failed to generate insights"); }
+    finally { setAiLoading(false); }
+  };
+
+  return (
+    <div className="rounded-2xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="at-a-glance">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>At a Glance</h3>
+        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${stageColors[boardGroup] || stageColors.needs_outreach}`}>{stageLabel}</span>
+      </div>
+
+      {/* Key stats */}
+      <div className="grid grid-cols-2 gap-2">
+        {signals.has_coach_reply ? (
+          <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Replied</p>
+            <p className="text-sm font-bold text-emerald-400">{signals.days_since_reply === 0 ? "Today" : `${signals.days_since_reply}d ago`}</p>
+          </div>
+        ) : (
+          <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Outreach</p>
+            <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{signals.outreach_count || 0} sent</p>
+          </div>
+        )}
+        <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Events</p>
+          <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{signals.total_interactions || 0}</p>
+        </div>
+      </div>
+
+      {/* Primary Coach */}
+      {coaches.length > 0 ? (
+        <div className="flex items-center gap-3 p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+          <div className="w-8 h-8 rounded-lg bg-pink-600/10 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-bold text-pink-500">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold truncate" style={{ color: "var(--t-text)" }}>{coaches[0].coach_name}</p>
+            {coaches[0].email && <p className="text-[10px] text-pink-500 truncate">{coaches[0].email}</p>}
+            {!coaches[0].email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{coaches[0].role}</p>}
+          </div>
+          {coaches.length > 1 && <span className="text-[10px] ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>+{coaches.length - 1}</span>}
+        </div>
+      ) : (
+        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-pink-500/30"
+          style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }} data-testid="glance-add-coach">
+          <Plus className="w-3.5 h-3.5" /> Add coach contact
+        </button>
+      )}
+
+      {/* Follow-up */}
+      {program.next_action_due && (
+        <div className="p-2.5 rounded-lg bg-orange-500/8 border border-orange-500/15">
+          <div className="flex items-center gap-1.5">
+            <AlertCircle className="w-3 h-3 text-orange-400" />
+            <span className="text-[11px] font-medium text-orange-300">Follow-up: {new Date(program.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+          </div>
+          {program.next_action && <p className="text-[10px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{program.next_action}</p>}
+        </div>
+      )}
+
+      {/* AI Suggestion or Tip */}
+      {isPremium ? (
+        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(232,69,107,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
+          {aiSummary ? (
+            <div className="space-y-1.5">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1"><Sparkles className="w-3 h-3" />Next move</p>
+              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{aiSummary.suggested_action}</p>
+              <button onClick={generateAI} disabled={aiLoading} className="text-[10px] text-purple-400 font-medium flex items-center gap-1 disabled:opacity-50">
+                {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Refresh
+              </button>
+            </div>
+          ) : (
+            <button onClick={generateAI} disabled={aiLoading} className="w-full flex items-center gap-2 text-left disabled:opacity-50" data-testid="glance-ai-generate">
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+              <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                {aiLoading ? "Analyzing..." : "Get AI-powered next step"}
+              </span>
+              {aiLoading && <Loader2 className="w-3 h-3 animate-spin text-purple-400 ml-auto" />}
+            </button>
+          )}
+        </div>
+      ) : !isBasic ? (
+        <div className="rounded-lg p-2.5 border" style={{ borderColor: "rgba(168,85,247,0.12)" }}>
+          <div className="flex items-center gap-2">
+            <Crown className="w-3 h-3 text-amber-400/70 flex-shrink-0" />
+            <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>AI insights</span>
+            <a href="/account" className="ml-auto text-[10px] font-semibold text-purple-400 hover:text-purple-300">Upgrade</a>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Show more: coaches list, key dates, schedule followup */}
+      <button onClick={() => setShowMore(!showMore)} className="w-full text-[10px] font-medium flex items-center justify-center gap-1 pt-1"
+        style={{ color: "var(--t-text-muted)" }} data-testid="glance-show-more">
+        {showMore ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+        {showMore ? "Show less" : "More details"}
+      </button>
+
+      {showMore && (
+        <div className="space-y-3 pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
+          {/* All Coaches */}
+          {coaches.length > 1 && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>All Coaches</p>
+              {coaches.map(c => (
+                <div key={c.coach_id} className="flex items-center gap-2 py-1.5">
+                  <Users className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                  <span className="text-[11px]" style={{ color: "var(--t-text-secondary)" }}>{c.coach_name} — {c.role}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Schedule Follow-up */}
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Schedule Follow-up</p>
+            <FollowUpScheduler program={program} onSaved={onScheduleFollowup} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING ACTION BAR
+   ═══════════════════════════════════════════════════════════════ */
+function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic }) {
+  return (
+    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-1.5 rounded-2xl border shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+      style={{ background: "rgba(22,27,37,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderColor: "var(--t-border)" }}
+      data-testid="floating-action-bar">
+      <button className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-pink-600 text-white hover:bg-pink-700 transition-colors"
+        onClick={onEmail} disabled={isBasic} data-testid="fab-email">
+        <Mail className="w-3.5 h-3.5" />Email
+      </button>
+      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
+      <button className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors hover:bg-[var(--t-surface-alt)]"
+        style={{ color: "var(--t-text-secondary)" }} onClick={onLog} data-testid="fab-log">
+        <FileText className="w-3.5 h-3.5" />Log
+      </button>
+      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
+      <button className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors hover:bg-[var(--t-surface-alt)]"
+        style={{ color: "var(--t-text-secondary)" }} onClick={onReplied} data-testid="fab-replied">
+        <CheckCircle2 className="w-3.5 h-3.5" />Replied
+      </button>
+      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
+      <button className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors hover:bg-[var(--t-surface-alt)]"
+        style={{ color: "var(--t-text-secondary)" }} onClick={onFollowup} data-testid="fab-followup">
+        <Clock className="w-3.5 h-3.5" />Follow-up
+      </button>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXISTING FORM COMPONENTS (kept from original)
+   ═══════════════════════════════════════════════════════════════ */
+
 function CoachForm({ initial, programId, onSave, onCancel }) {
   const [form, setForm] = useState(initial || { coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" });
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
@@ -163,23 +452,19 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
   );
 }
 
-// ─── Log Interaction Form ───
 function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   const [form, setForm] = useState({ type: "Phone Call", notes: "", outcome: "Positive", date_time: new Date().toISOString().slice(0, 16) });
   const [saving, setSaving] = useState(false);
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
-
   const save = async () => {
     if (!form.notes.trim()) { toast.error("Add a note"); return; }
     setSaving(true);
     try {
       await api.post("/interactions", { program_id: programId, university_name: universityName, type: form.type, notes: form.notes, outcome: form.outcome, date_time: form.date_time });
-      toast.success("Interaction logged");
-      onSaved();
+      toast.success("Interaction logged"); onSaved();
     } catch { toast.error("Failed to log interaction"); } finally { setSaving(false); }
   };
-
   return (
     <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="log-interaction-form">
       <div className="flex items-center justify-between">
@@ -203,7 +488,6 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   );
 }
 
-// ─── Inline Email Composer ───
 function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const { subscription } = useSubscription();
   const canUseAIDrafts = subscription?.tier === "premium";
@@ -213,14 +497,12 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
-
   const draftAI = async (type) => {
     if (!canUseAIDrafts) return;
     setDrafting(true);
     try {
       const res = await api.post("/ai/draft-email", { program_id: programId, email_type: type });
-      setSubject(res.data.subject || "");
-      setBody(res.data.body || "");
+      setSubject(res.data.subject || ""); setBody(res.data.body || "");
       if (res.data.coach_email) setTo(res.data.coach_email);
       toast.success("AI draft ready");
     } catch (e) {
@@ -228,19 +510,13 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       toast.error("Failed to generate draft");
     } finally { setDrafting(false); }
   };
-
   const send = async () => {
     if (!to || !subject || !body) { toast.error("Fill all fields"); return; }
     setSending(true);
-    try {
-      await api.post("/gmail/send", { to, subject, body });
-      toast.success("Email sent!");
-      onSent();
-    } catch (e) {
-      toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?");
-    } finally { setSending(false); }
+    try { await api.post("/gmail/send", { to, subject, body }); toast.success("Email sent!"); onSent(); }
+    catch (e) { toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?"); }
+    finally { setSending(false); }
   };
-
   return (
     <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="email-composer">
       <div className="flex items-center justify-between">
@@ -278,22 +554,16 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   );
 }
 
-// ─── Follow-up Scheduler ───
 function FollowUpScheduler({ program, onSaved }) {
   const [date, setDate] = useState(program.next_action_due || "");
   const [action, setAction] = useState(program.next_action || "");
   const [saving, setSaving] = useState(false);
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
-
   const save = async () => {
     setSaving(true);
-    try {
-      await api.put(`/programs/${program.program_id}`, { next_action_due: date, next_action: action });
-      toast.success("Follow-up scheduled");
-      onSaved();
-    } catch { toast.error("Failed to save"); } finally { setSaving(false); }
+    try { await api.put(`/programs/${program.program_id}`, { next_action_due: date, next_action: action }); toast.success("Follow-up scheduled"); onSaved(); }
+    catch { toast.error("Failed to save"); } finally { setSaving(false); }
   };
-
   return (
     <div className="space-y-2" data-testid="followup-scheduler">
       <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="followup-date-input" />
@@ -305,38 +575,24 @@ function FollowUpScheduler({ program, onSaved }) {
   );
 }
 
-// ─── Mark as Replied Modal ───
 function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
-
   const save = async () => {
     if (!note.trim()) { toast.error("Please describe what the coach said"); return; }
     setSaving(true);
-    try {
-      await api.post(`/programs/${programId}/mark-replied`, { note: note.trim() });
-      toast.success("Coach reply logged to timeline");
-      onSaved();
-    } catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
+    try { await api.post(`/programs/${programId}/mark-replied`, { note: note.trim() }); toast.success("Coach reply logged to timeline"); onSaved(); }
+    catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
   };
-
   return (
     <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="mark-replied-modal">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <Mail className="w-4 h-4 text-green-400" />Mark as Replied
-        </h3>
+        <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}><Mail className="w-4 h-4 text-green-400" />Mark as Replied</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
       </div>
       <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Describe what the coach said or shared. This gets logged to your timeline.</p>
-      <textarea
-        placeholder="e.g. Coach Smith replied and invited me to their summer camp..."
-        value={note} onChange={e => setNote(e.target.value)} rows={3}
-        className={`${inputCls} resize-none`}
-        style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
-        data-testid="mark-replied-note"
-      />
+      <textarea placeholder="e.g. Coach Smith replied and invited me to their summer camp..." value={note} onChange={e => setNote(e.target.value)} rows={3} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="mark-replied-note" />
       <Button className="bg-green-600 hover:bg-green-700 text-white text-xs w-full" onClick={save} disabled={saving} data-testid="save-replied-btn">
         {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <CheckCircle2 className="w-3 h-3 mr-1" />}Log Coach Reply
       </Button>
@@ -344,393 +600,32 @@ function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
   );
 }
 
-// ─── Next Step Hero Card (Data-Driven) ───
-function NextStepHero({ program, programId, coaches, onSendEmail, onLogInteraction, onSnooze, onMarkReplied, insight, isBasic, isPremium }) {
-  const [aiStep, setAiStep] = useState(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [showAI, setShowAI] = useState(false);
-  const [showTeaser, setShowTeaser] = useState(false);
-
-  const signals = program.signals || {};
-
-  const getNextStep = () => {
-    const now = new Date();
-    // Priority 1: Overdue follow-up
-    if (program.next_action_due) {
-      const due = new Date(program.next_action_due);
-      const diff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-      const coachName = coaches?.[0]?.coach_name || "the coaching staff";
-      if (diff < 0) {
-        return { urgent: true, title: `Follow-up to ${coachName} is ${Math.abs(diff)} day${Math.abs(diff) !== 1 ? 's' : ''} overdue`, sub: program.next_action || "Send your follow-up email now", action: "Send Follow-up Now", type: "email" };
-      }
-      if (diff <= 7) {
-        return { urgent: diff <= 2, title: `Your follow-up to ${coachName} is due in ${diff} day${diff !== 1 ? 's' : ''}`, sub: program.next_action || "Send a follow-up email with your updated stats", action: "Send Follow-up Now", type: "email" };
-      }
-    }
-    // Priority 2: No outreach yet (data-driven)
-    if (signals.outreach_count === 0 && signals.total_interactions === 0) {
-      return { urgent: false, title: "Send your first email to introduce yourself", sub: "Make a great first impression with a personalized intro email", action: "Compose Intro Email", type: "email" };
-    }
-    // Priority 3: Has coach reply but stale (> 7 days) — follow up on the conversation
-    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply > 7) {
-      return { urgent: signals.days_since_reply > 14, title: `Coach replied ${signals.days_since_reply} days ago — time to follow up`, sub: "Keep the conversation going with a thoughtful response", action: "Send Follow-up", type: "email" };
-    }
-    // Priority 4: Outreach sent but no coach reply — nudge to follow up or mark replied
-    if (signals.outreach_count > 0 && !signals.has_coach_reply) {
-      return { urgent: false, title: "No reply yet — follow up or mark as replied", sub: "If the coach replied outside the app, mark it. Otherwise, send a follow-up.", action: "Send Follow-up", type: "email", showMarkReplied: true };
-    }
-    // Priority 5: Has recent reply — keep momentum
-    if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply <= 7) {
-      return { urgent: false, title: "Coach replied recently — keep the momentum going", sub: "Log your latest interaction or send a response", action: "Log Interaction", type: "log" };
-    }
-    // Priority 6: Has activity but nothing else specific
-    if (signals.total_interactions > 0) {
-      return { urgent: false, title: "Set a follow-up date to stay on track", sub: "Schedule your next action to keep this school moving forward", action: "Schedule Follow-up", type: "log" };
-    }
-    return null;
-  };
-
-  const generateAIStep = async () => {
-    setAiLoading(true);
-    try {
-      const res = await api.post("/ai/next-step", { program_id: programId });
-      setAiStep(res.data);
-      setShowAI(true);
-      toast.success("AI recommendation ready");
-    } catch (e) {
-      if (e.response?.data?.detail?.error === "subscription_limit") return;
-      toast.error("Failed to generate AI suggestion");
-    } finally { setAiLoading(false); }
-  };
-
-  const INSIGHT_ICONS = { calendar: Calendar, clock: Clock, zap: Zap, target: Target, activity: Zap };
-  const ACTION_ICONS = { email: Mail, call: Phone, visit: MapPin, camp: Calendar, highlight: Video, academic: GraduationCap, wait: Clock };
-  const step = getNextStep();
-  const displayAI = showAI && aiStep;
-  const urgencyColors = { high: "text-red-400 bg-red-500/10", medium: "text-amber-400 bg-amber-500/10", low: "text-emerald-400 bg-emerald-500/10" };
-
-  if (!step && !displayAI && !isPremium) return null;
-
-  return (
-    <div className={`rounded-2xl border-l-[3px] border p-4 md:p-5 ${displayAI ? (aiStep.urgency === "high" ? "border-l-orange-500" : "border-l-purple-500") : step?.urgent ? "border-l-orange-500" : "border-l-pink-600"}`}
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-step-hero">
-
-      {/* AI-powered Next Step */}
-      {displayAI ? (
-        <div className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-5">
-            <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-[10px] uppercase tracking-wider font-semibold text-purple-400">AI Next Step</p>
-                <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${urgencyColors[aiStep.urgency] || urgencyColors.medium}`}>
-                  {aiStep.urgency}
-                </span>
-              </div>
-              <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{aiStep.next_step}</p>
-              <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>{aiStep.reasoning}</p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {(() => {
-                const AIcon = ACTION_ICONS[aiStep.action_type] || Zap;
-                const actionLabel = aiStep.action_type === "email" ? "Compose Email" : aiStep.action_type === "call" ? "Log Call" : "Log Interaction";
-                const actionHandler = aiStep.action_type === "email" ? onSendEmail : onLogInteraction;
-                return (
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 shadow-lg shadow-purple-600/20"
-                    onClick={actionHandler} data-testid="ai-next-step-action-btn">
-                    <AIcon className="w-3.5 h-3.5 mr-1.5" />{actionLabel}
-                  </Button>
-                );
-              })()}
-              <button onClick={() => setShowAI(false)} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors"
-                title="Show default suggestion" data-testid="toggle-default-step-btn">
-                <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
-            <Sparkles className="w-3 h-3 text-purple-400/60 flex-shrink-0" />
-            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
-              Personalized by AI based on your timeline, {program.division || "this school"}'s division, and recruiting signals
-            </p>
-            <button onClick={generateAIStep} disabled={aiLoading} className="ml-auto text-[10px] text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="refresh-ai-step-btn">
-              {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Refresh
-            </button>
-          </div>
-        </div>
-      ) : (
-        /* Default rule-based Next Step */
-        <>
-          {step ? (
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-            <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${step.urgent ? "bg-orange-500/10" : "bg-pink-600/10"}`}>
-              {step.urgent ? <AlertCircle className="w-5 h-5 text-orange-400" /> : <Zap className="w-5 h-5 text-pink-500" />}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className={`text-[10px] uppercase tracking-wider font-semibold mb-1 ${step.urgent ? "text-orange-400" : "text-pink-500"}`}>Next Step</p>
-              <p className="text-sm sm:text-[15px] font-semibold" style={{ color: "var(--t-text)" }}>{step.title}</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{step.sub}</p>
-            </div>
-            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-              <div className="flex gap-2.5">
-                {step.showMarkReplied && (
-                  <Button size="sm" variant="outline" className="text-xs h-9 border-green-600/30 text-green-400 hover:bg-green-600/10"
-                    onClick={onMarkReplied} data-testid="mark-replied-btn">
-                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />Mark as Replied
-                  </Button>
-                )}
-                {isBasic && step.type === "email" ? (
-                  <Button className="bg-gray-600 text-white/70 text-xs h-9 px-4 sm:px-5 flex-1 sm:flex-initial cursor-not-allowed"
-                    disabled data-testid="next-step-action-btn">
-                    <Lock className="w-3.5 h-3.5 mr-1.5" />{step.action}
-                  </Button>
-                ) : (
-                  <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-9 px-4 sm:px-5 shadow-lg shadow-pink-600/20 flex-1 sm:flex-initial"
-                    onClick={() => step.type === "email" ? onSendEmail() : onLogInteraction()} data-testid="next-step-action-btn">
-                    {step.type === "email" ? <Mail className="w-3.5 h-3.5 mr-1.5" /> : <MessageSquare className="w-3.5 h-3.5 mr-1.5" />}
-                    {step.action}
-                  </Button>
-                )}
-                {program.next_action_due && (
-                  <Button size="sm" variant="outline" className="text-xs h-9" onClick={onSnooze}
-                    style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }} data-testid="snooze-btn">
-                    Snooze 3 days
-                  </Button>
-                )}
-              </div>
-              {isBasic && step.type === "email" && (
-                <a href="/account" className="text-[11px] text-pink-500 hover:text-pink-400 hover:underline font-medium" data-testid="upgrade-nudge-link">
-                  Upgrade to Pro to email coaches
-                </a>
-              )}
-            </div>
-          </div>
-          ) : null}
-          {/* AI Suggest button for Premium users */}
-          {isPremium && (
-            <div className={`flex items-center gap-2 ${step ? "mt-3 pt-3 border-t" : ""}`} style={{ borderColor: "var(--t-border)" }}>
-              <button onClick={generateAIStep} disabled={aiLoading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors disabled:opacity-50"
-                data-testid="ai-suggest-next-step-btn">
-                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                {aiLoading ? "Analyzing timeline..." : "AI Suggest"}
-              </button>
-              <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Get a personalized recommendation</span>
-            </div>
-          )}
-          {/* Non-premium AI teaser */}
-          {!isPremium && !isBasic && (
-            <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }} data-testid="ai-next-step-teaser">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Crown className="w-3.5 h-3.5 text-amber-400/60 flex-shrink-0" />
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                    AI-Powered Next Step Suggestions
-                  </p>
-                  <button onClick={() => setShowTeaser(v => !v)} className="text-[10px] text-purple-400/70 hover:text-purple-400 font-medium flex items-center gap-0.5" data-testid="ai-teaser-toggle">
-                    {showTeaser ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                    {showTeaser ? "Less" : "How it works"}
-                  </button>
-                </div>
-                <a href="/account" className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="ai-teaser-upgrade-link">
-                  <Sparkles className="w-3 h-3" />Upgrade
-                </a>
-              </div>
-              {showTeaser && (
-                <div className="mt-2 space-y-1.5">
-                  <p className="text-[11px] leading-relaxed pl-5" style={{ color: "var(--t-text-muted)" }}>
-                    Our AI reviews your athlete's timeline, coach communication, and division-specific recruiting patterns to recommend the single best next move — like when to follow up, what to say, or which camp to attend.
-                  </p>
-                  <div className="flex items-center gap-1.5 pl-5">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400/70 flex-shrink-0" />
-                    <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>
-                      Safe and private — your family's data is never shared or used to train AI models
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          {insight && (() => {
-            const IcComp = INSIGHT_ICONS[insight.icon] || Zap;
-            return (
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--t-border)" }} data-testid="recruiting-insight-tip">
-                <IcComp className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{insight.text}</p>
-              </div>
-            );
-          })()}
-        </>
-      )}
-    </div>
-  );
-}
-
-// ─── AI Insights Sidebar Card ───
-function AISidebarCard({ programId, onDraftEmail }) {
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const generate = async () => {
-    setLoading(true);
-    try {
-      const res = await api.post("/ai/journey-summary", { program_id: programId });
-      setSummary(res.data);
-      setExpanded(true);
-    } catch { toast.error("Failed to generate insights"); } finally { setLoading(false); }
-  };
-
-  return (
-    <div className="rounded-xl border p-4 relative overflow-hidden" data-testid="ai-insights-card"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(168,85,247,0.2)", background: "linear-gradient(135deg, rgba(168,85,247,0.05) 0%, var(--t-surface) 60%)" }}>
-      <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full" style={{ background: "radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)" }} />
-      <div className="flex items-center justify-between mb-3 relative">
-        <h3 className="text-sm font-semibold flex items-center gap-1.5 text-pink-500">
-          <Sparkles className="w-4 h-4" />AI Insights
-        </h3>
-        {!summary ? (
-          <Button size="sm" onClick={generate} disabled={loading} className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7 shadow-md shadow-pink-600/20" data-testid="generate-summary-btn">
-            {loading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />}
-            Generate
-          </Button>
-        ) : (
-          <button onClick={generate} disabled={loading} className="text-[10px] text-pink-500 hover:text-pink-400 font-medium flex items-center gap-1 disabled:opacity-50" data-testid="regenerate-summary-btn">
-            {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Regenerate
-          </button>
-        )}
-      </div>
-
-      {!summary && !loading && (
-        <>
-          <p className="text-[11px] leading-relaxed mb-3" style={{ color: "var(--t-text-muted)" }}>
-            Get AI-powered analysis of your recruiting relationship, key highlights, and personalized recommendations.
-          </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {["Relationship Summary", "Draft Email", "Tips"].map(tag => (
-              <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-pink-600/8 text-pink-500/70 border border-pink-600/15">{tag}</span>
-            ))}
-          </div>
-        </>
-      )}
-
-      {loading && !summary && (
-        <div className="flex items-center gap-2 py-4 justify-center">
-          <Loader2 className="w-4 h-4 animate-spin text-pink-600" />
-          <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Analyzing your journey...</span>
-        </div>
-      )}
-
-      {summary && (
-        <div className="space-y-2.5">
-          <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{summary.relationship_summary}</p>
-
-          {expanded && summary.key_highlights?.length > 0 && (
-            <ul className="space-y-1">
-              {summary.key_highlights.map((h, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-secondary)" }}>
-                  <CheckCircle2 className="w-3 h-3 text-pink-500 flex-shrink-0 mt-0.5" />{h}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {expanded && (
-            <>
-              <div className="p-2.5 rounded-lg bg-pink-600/10 border border-pink-600/20">
-                <p className="text-[11px] font-medium text-pink-400">{summary.suggested_action}</p>
-              </div>
-              {summary.action_type === "email" && (
-                <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full h-7 mt-1" onClick={onDraftEmail} data-testid="ai-draft-email-btn">
-                  <Mail className="w-3 h-3 mr-1" />Draft Email
-                </Button>
-              )}
-            </>
-          )}
-
-          <button onClick={() => setExpanded(!expanded)} className="text-[10px] text-pink-500 hover:text-pink-400 font-medium flex items-center gap-1">
-            {expanded ? <><ChevronUp className="w-3 h-3" />Show less</> : <><ChevronDown className="w-3 h-3" />Show more</>}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── AI Insights Sidebar Teaser (non-Premium) ───
-function AISidebarTeaser() {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="rounded-xl border p-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(168,85,247,0.2)" }} data-testid="ai-insights-teaser">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 text-pink-500 flex-shrink-0" />
-          <p className="text-xs font-semibold text-pink-500">AI Insights</p>
-          <button onClick={() => setExpanded(v => !v)} className="text-[10px] text-purple-400/70 hover:text-purple-400 font-medium flex items-center gap-0.5" data-testid="ai-insights-teaser-toggle">
-            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            {expanded ? "Less" : "How it works"}
-          </button>
-        </div>
-        <a href="/account" className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="ai-insights-upgrade-link">
-          <Crown className="w-3 h-3" />Upgrade
-        </a>
-      </div>
-      {expanded && (
-        <div className="mt-2 space-y-1.5">
-          <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
-            AI Insights analyzes your full recruiting relationship with each school — summarizing key moments, highlighting what's working, and suggesting your next best move.
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {["Relationship Summary", "Draft Email", "Tips"].map(tag => (
-              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-md bg-pink-600/8 text-pink-500/70 border border-pink-600/15">{tag}</span>
-            ))}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400/70 flex-shrink-0" />
-            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Safe and private — your data is never shared or used to train AI</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Locked Feature Overlay ───
-function LockedOverlay({ label, premiumOnly = false }) {
-  return (
-    <div className="absolute inset-0 z-10 rounded-xl flex flex-col items-center justify-center backdrop-blur-[2px]" style={{ backgroundColor: "var(--t-surface)", opacity: 0.92 }}>
-      <Crown className="w-5 h-5 text-amber-400/70 mb-1.5" />
-      <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{label}</p>
-      <a href="/account" className="text-[11px] text-pink-500 hover:underline mt-0.5">
-        {premiumOnly ? "Upgrade to Premium" : "Upgrade to Pro"}
-      </a>
-    </div>
-  );
-}
-
-// ─── Main Journey Page ───
+/* ═══════════════════════════════════════════════════════════════
+   MAIN JOURNEY PAGE
+   ═══════════════════════════════════════════════════════════════ */
 export default function RecruitingJourney() {
   const { programId } = useParams();
   const navigate = useNavigate();
   const { subscription } = useSubscription();
   const isBasic = !subscription?.tier || subscription.tier === "basic";
   const isPremium = subscription?.tier === "premium";
+
   const [program, setProgram] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [coaches, setCoaches] = useState([]);
-  const [keyDates, setKeyDates] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showLogForm, setShowLogForm] = useState(false);
-  const [showEmailComposer, setShowEmailComposer] = useState(false);
-  const [showCoachForm, setShowCoachForm] = useState(false);
-  const [editCoach, setEditCoach] = useState(null);
-  const [currentInsight, setCurrentInsight] = useState(null);
   const [matchScore, setMatchScore] = useState(null);
-  const [coachAlert, setCoachAlert] = useState(null);
-  const [showCoachTeaser, setShowCoachTeaser] = useState(false);
-  const [showMarkReplied, setShowMarkReplied] = useState(false);
+
+  // Form visibility
+  const [activeForm, setActiveForm] = useState(null); // 'email' | 'log' | 'replied' | 'coach' | 'followup'
+  const [editCoach, setEditCoach] = useState(null);
+
+  const closeForm = () => { setActiveForm(null); setEditCoach(null); };
+  const openEmail = () => { setActiveForm("email"); };
+  const openLog = () => { setActiveForm("log"); };
+  const openReplied = () => { setActiveForm("replied"); };
+  const openCoach = () => { setActiveForm("coach"); };
+  const openFollowup = () => { setActiveForm("followup"); };
 
   const fetchData = useCallback(async () => {
     try {
@@ -742,22 +637,6 @@ export default function RecruitingJourney() {
       setProgram(progRes.data);
       setTimeline(journeyRes.data.timeline || []);
       setCoaches(coachRes.data || []);
-      try {
-        const evtRes = await api.get("/events");
-        const linked = (evtRes.data || []).filter(e => e.program_id === programId && e.start_date >= new Date().toISOString().slice(0, 10));
-        setKeyDates(linked.slice(0, 5));
-      } catch {}
-      // Fetch recruiting insights (non-blocking, Premium only)
-      if (isPremium) {
-        try {
-          const insightRes = await api.get("/recruiting-insights");
-          const insights = insightRes.data?.insights || [];
-          if (insights.length > 0) {
-            setCurrentInsight(insights[Math.floor(Math.random() * insights.length)]);
-          }
-        } catch {}
-      }
-      // Fetch match score for this program (non-blocking, Pro+ only)
       if (!isBasic) {
         try {
           const msRes = await api.get("/match-scores");
@@ -765,26 +644,17 @@ export default function RecruitingJourney() {
           if (found) setMatchScore(found);
         } catch {}
       }
-      // Fetch coach watch alert for this school (non-blocking, Premium only)
-      if (isPremium) {
-        try {
-          if (progRes.data?.university_name) {
-            const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
-            if (cwRes.data?.alert) setCoachAlert(cwRes.data.alert);
-          }
-        } catch {}
-      }
     } catch {
       toast.error("Failed to load journey data");
     } finally { setLoading(false); }
-  }, [programId, isBasic, isPremium]);
+  }, [programId, isBasic]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
   const updateProgram = async (updates) => {
     try {
       const res = await api.put(`/programs/${programId}`, updates);
-      setProgram(res.data);
+      setProgram(prev => ({ ...prev, ...res.data }));
       toast.success("Updated");
     } catch { toast.error("Failed to update"); }
   };
@@ -794,8 +664,7 @@ export default function RecruitingJourney() {
       if (editCoach) await api.put(`/coaches/${editCoach.coach_id}`, data);
       else await api.post("/coaches", { ...data, university_name: program.university_name });
       toast.success(editCoach ? "Coach updated" : "Coach added");
-      setShowCoachForm(false);
-      setEditCoach(null);
+      closeForm();
       const res = await api.get(`/coaches?program_id=${programId}`);
       setCoaches(res.data || []);
     } catch { toast.error("Failed to save coach"); }
@@ -809,15 +678,12 @@ export default function RecruitingJourney() {
     } catch { toast.error("Failed to delete"); }
   };
 
-  const handleSnooze = async () => {
-    if (!program.next_action_due) return;
-    const snoozed = new Date(program.next_action_due);
-    snoozed.setDate(snoozed.getDate() + 3);
-    await updateProgram({ next_action_due: snoozed.toISOString().slice(0, 10) });
+  const handleStageClick = async (stageKey) => {
+    await updateProgram({ journey_stage: stageKey });
+    // Refetch to get updated rail
+    const res = await api.get(`/programs/${programId}`);
+    setProgram(res.data);
   };
-
-  const openEmail = () => { setShowEmailComposer(true); setShowLogForm(false); };
-  const openLog = () => { setShowLogForm(true); setShowEmailComposer(false); };
 
   if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-pink-600" /></div>;
   if (!program) return (
@@ -827,79 +693,28 @@ export default function RecruitingJourney() {
     </div>
   );
 
-  const formatDate = (d) => { try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); } catch { return d; } };
+  const rail = program.journey_rail;
+  const boardGroup = program.board_group;
+  const isNewSchool = timeline.length === 0 && coaches.length === 0 && !program.next_action_due;
+  const isInConversation = boardGroup === "in_conversation";
 
   return (
-    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5">
-      {/* ─── Coach Watch Alert Banner ─── */}
-      {coachAlert && (coachAlert.severity === "red" || coachAlert.severity === "yellow") && (
-        <div
-          className={`rounded-xl border p-3 flex items-start gap-3 ${coachAlert.severity === "red" ? "border-red-500/40 bg-red-500/5" : "border-amber-500/40 bg-amber-500/5"}`}
-          data-testid="coach-watch-banner"
-        >
-          <AlertCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${coachAlert.severity === "red" ? "text-red-400" : "text-amber-400"}`} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className={`text-xs font-bold ${coachAlert.severity === "red" ? "text-red-400" : "text-amber-400"}`}>
-                {coachAlert.severity === "red" ? "Coaching Change Alert" : "Coach Watch"}
-              </span>
-            </div>
-            <p className="text-xs font-medium" style={{ color: "var(--t-text)" }}>{coachAlert.headline}</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{coachAlert.summary}</p>
-            {coachAlert.recommendation && (
-              <p className="text-[11px] mt-1.5 font-medium" style={{ color: "var(--t-text-secondary)" }}>{coachAlert.recommendation}</p>
-            )}
-          </div>
-        </div>
-      )}
-      {/* ─── Coach Watch Teaser for non-Premium ─── */}
-      {!isPremium && (
-        <div className="rounded-xl border border-purple-500/20 p-3" style={{ backgroundColor: "var(--t-surface)" }} data-testid="coach-watch-teaser">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                <Crown className="w-3.5 h-3.5 text-amber-400/70" />
-              </div>
-              <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</p>
-              <button onClick={() => setShowCoachTeaser(v => !v)} className="text-[10px] text-purple-400/70 hover:text-purple-400 font-medium flex items-center gap-0.5" data-testid="coach-watch-teaser-toggle">
-                {showCoachTeaser ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                {showCoachTeaser ? "Less" : "How it works"}
-              </button>
-            </div>
-            <a href="/account" className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors" data-testid="coach-watch-upgrade-link">
-              <Sparkles className="w-3 h-3" />Upgrade
-            </a>
-          </div>
-          {showCoachTeaser && (
-            <div className="mt-2.5 pl-10 space-y-2">
-              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
-                Coach Watch automatically monitors coaching staff changes at your target schools. If a head coach leaves or a new coach is hired, you'll be the first to know — so you can adjust your outreach before other recruits.
-              </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1">
-                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Search className="w-3 h-3 text-purple-400/70" />Auto-scans school sites</span>
-                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><AlertCircle className="w-3 h-3 text-purple-400/70" />Instant coaching alerts</span>
-                <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}><Mail className="w-3 h-3 text-purple-400/70" />Reach new coaches first</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3 h-3 text-emerald-400/70 flex-shrink-0" />
-                <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Safe and private — your data is never shared or used to train AI</p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-      {/* ─── Header ─── */}
-      <div className="space-y-3">
-        <div className="flex items-start gap-3">
+    <div data-testid="recruiting-journey" className="max-w-6xl mx-auto space-y-5 pb-24">
+      {/* ─── Header with Progress Rail ─── */}
+      <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="journey-header">
+        <div className="flex items-start gap-3 mb-4">
           <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors mt-0.5" style={{ color: "var(--t-text-muted)" }} data-testid="back-btn">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <h1 className="text-lg sm:text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
+              {rail && <PulseIndicator pulse={rail.pulse} />}
+            </div>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-pink-600/10 text-pink-500">{program.division}</span>}
               {matchScore && (
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border ${
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                   matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
                   : matchScore.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
                   : "text-gray-400 bg-gray-500/15 border-gray-500/30"
@@ -907,154 +722,120 @@ export default function RecruitingJourney() {
                   <Target className="w-3 h-3" /> {matchScore.match_score}% Match
                 </span>
               )}
-              {program.website && (
-                <a href={program.website} target="_blank" rel="noreferrer" className="p-1 rounded hover:bg-[var(--t-surface-alt)]" data-testid="school-website-link">
-                  <ExternalLink className="w-3.5 h-3.5 text-pink-500" />
-                </a>
-              )}
+              <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
             </div>
-            <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{program.conference}{program.region ? ` • ${program.region}` : ""} • {timeline.length} events</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" className="text-[11px] h-8 hidden sm:flex" onClick={() => navigate(`/compare?selected=${programId}`)}
+              style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="compare-btn">
+              <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
+            </Button>
+            <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
+              className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-colors ${
+                program.is_active !== false ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-gray-500/15 text-gray-400 border-gray-500/30"
+              }`} data-testid="active-toggle">
+              {program.is_active !== false ? "Active" : "Inactive"}
+            </button>
           </div>
         </div>
-        <div className="flex items-center gap-3 sm:gap-4 flex-wrap pl-9 sm:pl-0">
-          {/* Active/Inactive Toggle */}
-          <button
-            onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
-            className="flex items-center gap-2 group"
-            data-testid="active-toggle"
-          >
-            <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: "var(--t-text-muted)" }}>Status</span>
-            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors ${
-              program.is_active !== false
-                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                : "bg-gray-500/15 text-gray-400 border border-gray-500/30"
-            }`}>
-              {program.is_active !== false ? "Active" : "Inactive"}
-            </span>
-          </button>
-          <StatusBadge label="Priority" value={program.priority} options={PRIORITY_OPTIONS} onChange={v => updateProgram({ priority: v })} />
-        </div>
+        {/* Progress Rail */}
+        <ProgressRail rail={rail} onStageClick={handleStageClick} />
       </div>
 
-      {/* ─── Next Step Hero (for overdue, needs_outreach, waiting_on_reply) ─── */}
-      {(program.board_group === "overdue" || program.board_group === "needs_outreach" || program.board_group === "waiting_on_reply") && (
-        <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} onMarkReplied={() => { setShowMarkReplied(true); setShowLogForm(false); setShowEmailComposer(false); }} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
+      {/* ─── Contextual Hero: Checklist / Celebration / Nothing ─── */}
+      {isNewSchool ? (
+        <GettingStartedChecklist program={program} coaches={coaches} timeline={timeline}
+          onAddCoach={openCoach} onSendEmail={isBasic ? null : openEmail} onSetFollowup={openFollowup} />
+      ) : isInConversation ? (
+        <CelebrationHero program={program} coaches={coaches} onEmail={isBasic ? null : openEmail} onLog={openLog} onCall={openLog} />
+      ) : null}
+
+      {/* ─── Inline Forms ─── */}
+      {activeForm === "replied" && <MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "log" && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "email" && <EmailComposer coaches={coaches} programId={programId} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "coach" && <CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} />}
+      {activeForm === "followup" && (
+        <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schedule Follow-up</h3>
+            <button onClick={closeForm} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
+          </div>
+          <FollowUpScheduler program={program} onSaved={() => { closeForm(); fetchData(); }} />
+        </div>
       )}
 
-      {/* ─── Inline Forms (expand below hero) ─── */}
-      {showMarkReplied && <div className="mt-4"><MarkAsRepliedModal programId={programId} onSaved={() => { setShowMarkReplied(false); fetchData(); }} onCancel={() => setShowMarkReplied(false)} /></div>}
-      {showLogForm && <div className="mt-4"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { setShowLogForm(false); fetchData(); }} onCancel={() => setShowLogForm(false)} /></div>}
-      {showEmailComposer && <div className="mt-4"><EmailComposer coaches={coaches} programId={programId} onSent={() => { setShowEmailComposer(false); fetchData(); }} onCancel={() => setShowEmailComposer(false)} /></div>}
-
-      {/* ─── Main Grid ─── */}
+      {/* ─── Main Grid: Conversation + At a Glance ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Timeline (left 2 cols) */}
+        {/* Conversation Timeline */}
         <div className="lg:col-span-2">
-          <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-              <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Timeline</h2>
+          <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Conversation</h2>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openLog}
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openLog}
                   style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="timeline-log-btn">
                   <MessageSquare className="w-3 h-3 mr-1.5" />Log
                 </Button>
-                <Button size="sm" variant="outline" className="text-xs h-7 flex-1 sm:flex-initial" onClick={openEmail}
-                  disabled={isBasic}
-                  style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: isBasic ? 0.4 : 1 }} data-testid="timeline-email-btn">
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={openEmail}
+                  disabled={isBasic} style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)", opacity: isBasic ? 0.4 : 1 }} data-testid="timeline-email-btn">
                   <Mail className="w-3 h-3 mr-1.5" />{isBasic ? <><Lock className="w-3 h-3 mr-1" />Email</> : "Email"}
                 </Button>
               </div>
             </div>
+
             {timeline.length === 0 ? (
               <div className="text-center py-10">
                 <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: "var(--t-text-muted)" }} />
                 <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No interactions yet</p>
                 <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>Send an email or log an interaction to get started</p>
               </div>
-            ) : timeline.map((event, i) => <TimelineEvent key={event.id || i} event={event} />)}
-            {/* Soft tip — shows when Next Step hero card is hidden */}
-            {(() => {
-              const signals = program.signals || {};
-              const dueDays = program.next_action_due ? Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000) : null;
-              const hasHeroStep = (dueDays !== null && dueDays <= 7)
-                || (signals.outreach_count === 0 && signals.total_interactions === 0)
-                || (signals.outreach_count > 0 && !signals.has_coach_reply)
-                || (signals.has_coach_reply && signals.days_since_reply > 7)
-                || (signals.total_interactions > 0);
-              if (hasHeroStep) return null;
-              if (signals.has_coach_reply && signals.days_since_reply !== null && signals.days_since_reply <= 7) return (
-                <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
-                  <MessageSquare className="w-4 h-4 text-emerald-400/60 flex-shrink-0" />
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                    You're in conversation — <button onClick={openLog} className="text-emerald-400 hover:underline font-medium">log your latest interaction</button> to keep your recruiting journey up to date
-                  </p>
-                </div>
-              );
-              return (
-                <div className="flex items-center gap-2.5 px-4 py-3 mt-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid="timeline-soft-tip">
-                  <Zap className="w-4 h-4 text-blue-400/60 flex-shrink-0" />
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                    Track your next interaction — <button onClick={openLog} className="text-blue-400 hover:underline font-medium">log a call, email, or visit</button> to keep your timeline current
-                  </p>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-
-        {/* Sidebar (right col) */}
-        <div className="lg:col-span-1 space-y-2.5">
-          {/* AI Insights */}
-          {isPremium ? (
-            <AISidebarCard programId={programId} onDraftEmail={openEmail} />
-          ) : (
-            <AISidebarTeaser />
-          )}
-
-          {/* Coaches */}
-          <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
-              <button onClick={() => { setShowCoachForm(true); setEditCoach(null); }} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn" title="Add coach"><Plus className="w-4 h-4 text-pink-500" /></button>
-            </div>
-            <div className="space-y-2">
-              {coaches.length === 0 && !showCoachForm && <p className="text-xs text-center py-2" style={{ color: "var(--t-text-muted)" }}>No coaches added yet</p>}
-              {coaches.map(c => <CoachCard key={c.coach_id} coach={c} onEdit={() => { setEditCoach(c); setShowCoachForm(true); }} onDelete={() => deleteCoach(c.coach_id)} />)}
-              {showCoachForm && <CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={() => { setShowCoachForm(false); setEditCoach(null); }} />}
-            </div>
-          </div>
-
-          {/* Key Dates */}
-          <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-dates-panel">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Calendar className="w-4 h-4 text-pink-500" />Key Dates</h3>
-            {program.next_action_due && (
-              <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 mb-2">
-                <div className="flex items-center gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5 text-orange-400" />
-                  <span className="text-xs font-medium text-orange-300">Follow-up due {formatDate(program.next_action_due)}</span>
-                </div>
-                {program.next_action && <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>{program.next_action}</p>}
+            ) : (
+              <div className="flex flex-col gap-2">
+                {timeline.map((event, i) => <ConversationBubble key={event.id || i} event={event} />)}
               </div>
             )}
-            {keyDates.length > 0 ? keyDates.map(e => (
-              <div key={e.event_id} className="flex items-center gap-2 py-1.5 border-b last:border-0" style={{ borderColor: "var(--t-border)" }}>
-                <Calendar className="w-3 h-3 text-pink-500 flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium truncate" style={{ color: "var(--t-text)" }}>{e.title}</p>
-                  <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{formatDate(e.start_date)}{e.location ? ` • ${e.location}` : ""}</p>
-                </div>
-              </div>
-            )) : !program.next_action_due && <p className="text-xs text-center py-2" style={{ color: "var(--t-text-muted)" }}>No upcoming dates</p>}
-          </div>
-
-          {/* Schedule Follow-up */}
-          <div className="relative rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="followup-section">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Clock className="w-4 h-4 text-pink-500" />Schedule Follow-up</h3>
-            <FollowUpScheduler program={program} onSaved={fetchData} />
-            {isBasic && <LockedOverlay label="Smart Follow-up Reminders" />}
           </div>
         </div>
+
+        {/* At a Glance Sidebar */}
+        <div className="lg:col-span-1">
+          <AtAGlanceCard program={program} coaches={coaches} isPremium={isPremium} isBasic={isBasic}
+            programId={programId} onDraftEmail={openEmail} onAddCoach={openCoach} onScheduleFollowup={() => fetchData()} />
+
+          {/* Coach management (below At a Glance) */}
+          {coaches.length > 0 && (
+            <div className="rounded-2xl border p-4 mt-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
+                <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
+              </div>
+              <div className="space-y-2">
+                {coaches.map(c => (
+                  <div key={c.coach_id} className="p-2.5 rounded-lg border group" style={{ borderColor: "var(--t-border)" }}>
+                    <div className="flex items-start justify-between">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{c.coach_name}</p>
+                        <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{c.role}</p>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => { setEditCoach(c); setActiveForm("coach"); }} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><Edit2 className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} /></button>
+                        <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
+                      </div>
+                    </div>
+                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-pink-500 hover:text-pink-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
+                    {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* ─── Floating Action Bar ─── */}
+      <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
+        onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} />
     </div>
   );
 }
