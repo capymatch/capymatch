@@ -936,8 +936,8 @@ export default function RecruitingJourney() {
         </div>
       </div>
 
-      {/* ─── Next Step Hero (only for Action Required schools) ─── */}
-      {program.board_group === "action_required" && (
+      {/* ─── Next Step Hero (for overdue, needs_outreach, waiting_on_reply) ─── */}
+      {(program.board_group === "overdue" || program.board_group === "needs_outreach" || program.board_group === "waiting_on_reply") && (
         <NextStepHero program={program} programId={programId} coaches={coaches} onSendEmail={isBasic ? null : openEmail} onLogInteraction={openLog} onSnooze={handleSnooze} onMarkReplied={() => { setShowMarkReplied(true); setShowLogForm(false); setShowEmailComposer(false); }} insight={currentInsight} isBasic={isBasic} isPremium={isPremium} />
       )}
 
