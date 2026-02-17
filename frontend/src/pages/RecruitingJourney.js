@@ -637,6 +637,62 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   STAGE LOG MODAL — requires note when manually advancing stages
+   ═══════════════════════════════════════════════════════════════ */
+const STAGE_LABELS = { added: "Added", outreach: "Outreach", in_conversation: "In Conversation", campus_visit: "Visit", offer: "Offer", committed: "Committed" };
+
+function StageLogModal({ stageKey, universityName, onConfirm, onCancel }) {
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const label = STAGE_LABELS[stageKey] || stageKey;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!note.trim()) return;
+    setSaving(true);
+    await onConfirm(note.trim());
+    setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="stage-log-modal">
+      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
+      <div className="relative w-full max-w-md mx-4 rounded-2xl border p-6"
+        style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
+            Log progress: <span className="text-pink-500">{label}</span>
+          </h3>
+          <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/5">
+            <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+          </button>
+        </div>
+        <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
+          What happened with {universityName}? This will be added to the timeline.
+        </p>
+        <form onSubmit={handleSubmit}>
+          <textarea value={note} onChange={e => setNote(e.target.value)}
+            placeholder={`e.g. "Had a great campus visit, met Coach Williams..."`}
+            className="w-full bg-[var(--t-bg)] border rounded-xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-600 resize-none leading-relaxed"
+            style={{ borderColor: "var(--t-border)", color: "var(--t-text)" }} rows={3} autoFocus
+            data-testid="stage-log-textarea" />
+          <div className="flex justify-end gap-2 mt-4">
+            <Button type="button" variant="ghost" size="sm" onClick={onCancel}
+              className="text-xs h-8 px-4" style={{ color: "var(--t-text-muted)" }}>Cancel</Button>
+            <Button type="submit" size="sm" disabled={saving || !note.trim()}
+              className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-8 px-4"
+              data-testid="stage-log-submit">
+              {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
+              Save &amp; Update
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    FLOATING ACTION BAR
    ═══════════════════════════════════════════════════════════════ */
 function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic, activeAction }) {
