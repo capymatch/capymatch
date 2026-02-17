@@ -1,0 +1,66 @@
+{
+  "summary": "Board Grouping Scenarios testing complete. Fixed critical bug in categorize_program() where days_since_reply=0 was incorrectly evaluated. All 8 scenarios now pass. Backend (13/13 tests), Frontend UI verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [],
+    "fixed": [
+      {
+        "file": "/app/backend/routes/programs.py",
+        "line": "94",
+        "issue": "days_since_reply=0 was incorrectly evaluated as falsy, causing fresh coach replies to remain in action_required instead of moving to in_progress",
+        "fix": "Changed `(signals.get('days_since_reply') or 999)` to `(days_since_reply if days_since_reply is not None else 999)` to handle 0 correctly"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "SCENARIO 1: New school with NO interactions -> action_required",
+    "SCENARIO 2: School with outreach logged but NO coach reply -> action_required",
+    "SCENARIO 3: School with coach_reply logged today -> in_progress (FIXED)",
+    "SCENARIO 4: School with next_action_due in 5 days -> upcoming",
+    "SCENARIO 5: School with next_action_due yesterday (overdue) -> action_required",
+    "SCENARIO 6: School marked as inactive (is_active=false) -> closed",
+    "SCENARIO 7: School with recent coach_reply -> in_progress (verified logic handles stale >14 days)",
+    "SCENARIO 8: School with coach_reply AND overdue -> action_required (overdue priority)",
+    "Backend: POST /api/programs/{id}/mark-replied requires non-empty note",
+    "Backend: mark-replied returns updated program with signals and has_coach_reply=true",
+    "Backend: GET /api/programs?grouped=true returns correct 4 groups structure",
+    "Backend: GET /api/programs/{id} returns board_group field",
+    "Backend: PUT /api/programs/{id} with is_active=false -> board_group='closed'",
+    "Frontend Board: Next Step cards ONLY visible in action_required group (UCLA has Next Step)",
+    "Frontend Board: NO Next Step in In Progress group (Stanford shows only Journey button)",
+    "Frontend Board: NO Next Step in Upcoming group",
+    "Frontend Board: NO Next Step in Closed group",
+    "Frontend Journey: NextStepHero visible for Action Required school (UCLA)",
+    "Frontend Journey: NO NextStepHero for In Progress school (Stanford) - only Timeline shown"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_board_grouping_scenarios.py",
+    "/app/test_reports/pytest/board_grouping_scenarios_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/routes/programs.py (line 93-95: fixed days_since_reply falsy bug)",
+    "/app/backend/tests/test_board_grouping_scenarios.py (new test file)"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "100% (all UI scenarios verified)"
+  },
+  "test_credentials": "premium@test.com / password",
+  "seed_data_creation": "Test programs created and cleaned up during pytest execution",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Board grouping logic is now working correctly. Key fix: days_since_reply=0 (fresh coach reply) was being evaluated as falsy, keeping schools in action_required instead of in_progress. The categorize_program() function now correctly handles this case. All 8 scenarios from the feature spec pass. Frontend correctly shows Next Step only for action_required schools on both Board and Journey pages.",
+  "bug_fix_details": {
+    "root_cause": "Python's `or` operator treats 0 as falsy. Line 94 had `(signals.get('days_since_reply') or 999)` which evaluated to 999 when days_since_reply was 0 (fresh reply), incorrectly categorizing fresh replies as stale.",
+    "impact": "Schools with fresh coach replies (same day) were stuck in action_required instead of moving to in_progress",
+    "fix_applied": "Changed to explicit None check: `(days_since_reply if days_since_reply is not None else 999)`",
+    "verification": "Tested via API - fresh coach reply now correctly results in board_group='in_progress'"
+  }
+}
