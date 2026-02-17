@@ -110,17 +110,17 @@ def compute_journey_rail(program: dict) -> dict:
     """
     Compute the 6-stage journey rail for a program.
     Stages: added, outreach_sent, coach_replied, campus_visit, offer, committed
-    Auto-detects first 3 from signals; last 3 from manual journey_stage field.
-    Returns dict with each stage as key and bool as value + active stage.
+    Auto-detects stages from signals/interactions. Manual override only marks that single stage.
+    Returns stages (each independently T/F), active (last completed), line_fill (last consecutive from left).
     """
     signals = program.get("signals", {})
     manual_stage = program.get("journey_stage", "")
     
     RAIL_STAGES = ["added", "outreach_sent", "coach_replied", "campus_visit", "offer", "committed"]
     
-    # Auto-detect stages from data
+    # Auto-detect stages independently from data
     stages = {
-        "added": True,  # always true — the school was added
+        "added": True,
         "outreach_sent": signals.get("outreach_count", 0) > 0,
         "coach_replied": signals.get("has_coach_reply", False),
         "campus_visit": False,
@@ -135,26 +135,24 @@ def compute_journey_rail(program: dict) -> dict:
         if ix_type in ("visit", "campus visit", "campus_visit"):
             stages["campus_visit"] = True
     
-    # Manual override: if journey_stage is set, mark that stage + all prior as completed
+    # Manual override: only mark that specific stage as true (no cascade)
     if manual_stage and manual_stage in RAIL_STAGES:
-        idx = RAIL_STAGES.index(manual_stage)
-        for i in range(idx + 1):
-            stages[RAIL_STAGES[i]] = True
+        stages[manual_stage] = True
     
-    # Cascade fill: if a later stage is completed, all prior stages must be too
-    # (e.g., can't have campus_visit without outreach_sent and coach_replied)
-    highest_completed = 0
-    for i, s in enumerate(RAIL_STAGES):
-        if stages[s]:
-            highest_completed = i
-    for i in range(highest_completed + 1):
-        stages[RAIL_STAGES[i]] = True
-    
-    # Find the active (current) stage — the last completed one
+    # Active = the last (rightmost) completed stage
     active = "added"
     for s in RAIL_STAGES:
         if stages[s]:
             active = s
+    
+    # Line fill = last CONSECUTIVELY completed stage from the left
+    # Line only fills through unbroken chain (Added->Outreach->Replied...)
+    line_fill = "added"
+    for s in RAIL_STAGES:
+        if stages[s]:
+            line_fill = s
+        else:
+            break  # stop at first gap
     
     # Compute pulse — relationship health
     days = signals.get("days_since_activity")
@@ -170,6 +168,7 @@ def compute_journey_rail(program: dict) -> dict:
     return {
         "stages": stages,
         "active": active,
+        "line_fill": line_fill,
         "pulse": pulse,
     }
 
