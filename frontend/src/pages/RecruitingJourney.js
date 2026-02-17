@@ -1329,7 +1329,12 @@ export default function RecruitingJourney() {
 
       {/* ─── Personal Notes Sidebar ─── */}
       <NotesSidebar programId={programId} universityName={program.university_name}
-        externalOpen={notesOpen} onExternalClose={() => setNotesOpen(false)} />
+        externalOpen={notesOpen} onExternalClose={() => setNotesOpen(false)}
+        onNoteChange={() => {
+          api.get(`/programs/${programId}/notes`).then(r => {
+            setNotesCount((r.data.pinned?.length || 0) + (r.data.recent?.length || 0));
+          }).catch(() => {});
+        }} />
     </div>
   );
 }
