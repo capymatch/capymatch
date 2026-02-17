@@ -380,7 +380,7 @@ export default function RecruitingBoard() {
 
   // Focus card: first actionable program (overdue > waiting > needs_outreach)
   const focusProgram = allPrograms.find(p =>
-    ["overdue", "needs_outreach", "waiting_on_reply"].includes(p.board_group)
+    ["overdue", "waiting_on_reply", "needs_outreach"].includes(p.board_group)
   );
 
   const handleFocusAction = (p) => navigate(`/journey/${p.program_id}`);
