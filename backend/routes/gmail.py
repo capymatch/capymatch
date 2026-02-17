@@ -409,6 +409,22 @@ async def send_email(data: ComposeEmail, request: Request):
         msg_body = email.mime.text.MIMEText(data.body, "html")
         message.attach(msg_body)
 
+        # Attach uploaded files
+        if data.attachment_ids:
+            for att_id in data.attachment_ids:
+                att = await db.temp_attachments.find_one({"file_id": att_id, "user_id": user["user_id"]}, {"_id": 0})
+                if att:
+                    file_data = base64.b64decode(att["data"])
+                    maintype, subtype = att["content_type"].split("/", 1) if "/" in att["content_type"] else ("application", "octet-stream")
+                    mime_att = email.mime.base.MIMEBase(maintype, subtype)
+                    mime_att.set_payload(file_data)
+                    import email.encoders
+                    email.encoders.encode_base64(mime_att)
+                    mime_att.add_header("Content-Disposition", "attachment", filename=att["filename"])
+                    message.attach(mime_att)
+            # Clean up temp attachments
+            await db.temp_attachments.delete_many({"file_id": {"$in": data.attachment_ids}, "user_id": user["user_id"]})
+
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
         sent = service.users().messages().send(userId="me", body={"raw": raw}).execute()
 
