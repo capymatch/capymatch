@@ -351,6 +351,39 @@ async def get_thread(thread_id: str, request: Request):
         raise HTTPException(status_code=500, detail="Failed to fetch thread")
 
 
+@router.post("/upload-attachment")
+async def upload_attachment(request: Request):
+    """Upload a file to be attached to an email. Returns a temp file ID."""
+    from fastapi import UploadFile, File, Form
+    import mimetypes
+
+    user = await get_current_user(request)
+    form = await request.form()
+    file = form.get("file")
+    if not file:
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    content = await file.read()
+    max_size = 10 * 1024 * 1024  # 10MB
+    if len(content) > max_size:
+        raise HTTPException(status_code=400, detail="File too large. Max 10MB.")
+
+    file_id = f"att_{uuid.uuid4().hex[:12]}"
+    mime_type = file.content_type or mimetypes.guess_type(file.filename)[0] or "application/octet-stream"
+
+    await db.temp_attachments.insert_one({
+        "file_id": file_id,
+        "filename": file.filename,
+        "content_type": mime_type,
+        "data": base64.b64encode(content).decode(),
+        "size": len(content),
+        "user_id": user["user_id"],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    return {"file_id": file_id, "filename": file.filename, "size": len(content), "content_type": mime_type}
+
+
 @router.post("/send")
 async def send_email(data: ComposeEmail, request: Request):
     user = await get_current_user(request)
