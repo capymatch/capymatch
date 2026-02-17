@@ -262,7 +262,13 @@ Public-facing Volleyball Recruiting CRM with:
 - **Board Grouping (data-driven)**: action_required (stale/overdue), upcoming (due 14 days), in_progress (has reply/recent), closed (inactive)
 - **Next Step Priority**: Due date overdue > Due soon > No outreach > Outreach no reply > Coach replied stale > AI
 
+## Completed (Feb 17, 2026) — Pipeline Card Alignment Fix
+- Fixed vertical alignment of Progress Ring and Focus Card on /pipeline page
+- Added `h-full` to FocusCard and AllCaughtUp components, `flex flex-col` to wrapper
+- Both top cards now stretch to equal height with aligned bottoms
+
 ## Upcoming Tasks
+- **P0**: Separate Girls/Boys Volleyball data and features
 - **P1**: Camp/Tournament ROI tracker
 - **P1**: Email templates & bulk outreach
 
