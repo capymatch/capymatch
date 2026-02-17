@@ -997,16 +997,17 @@ export default function RecruitingJourney() {
 
   const rail = program.journey_rail;
   const boardGroup = program.board_group;
+  const isCommitted = rail?.stages?.committed === true;
   const isNewSchool = timeline.length === 0 && coaches.length === 0 && !program.next_action_due;
   // Only show celebration if the most recent timeline event is a coach reply
   const latestIsCoachReply = timeline.length > 0 && ["email_received", "coach_reply"].includes(
     (timeline[0]?.event_type || timeline[0]?.type || "").toLowerCase().replace(/\s+/g, "_")
   );
-  const isInConversation = boardGroup === "in_conversation" && latestIsCoachReply;
+  const isInConversation = !isCommitted && boardGroup === "in_conversation" && latestIsCoachReply;
 
-  // Next Step card: show when there's activity, not a new school, not showing celebration
+  // Next Step card: show when there's activity, not a new school, not showing celebration or committed
   const latestEvent = timeline[0] || null;
-  const showNextStep = !isNewSchool && !isInConversation && latestEvent
+  const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
     && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
   return (
