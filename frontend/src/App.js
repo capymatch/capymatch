@@ -13,6 +13,7 @@ import OutreachAnalysis from "./pages/OutreachAnalysis";
 import HighlightAdvisor from "./pages/HighlightAdvisor";
 import RecruitingBoard from "./pages/RecruitingBoard";
 import RecruitingJourney from "./pages/RecruitingJourney";
+import ComparePage from "./pages/ComparePage";
 import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
 // Tasks/follow-ups feature removed
