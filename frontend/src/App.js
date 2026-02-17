@@ -212,8 +212,8 @@ function App() {
 
   // Check session on mount
   useEffect(() => {
-    // If URL has session_id, let the OAuth callback handle it
-    if (window.location.search.includes("session_id")) {
+    // If URL has session_id in hash fragment, let the OAuth callback handle it
+    if (window.location.hash?.includes("session_id")) {
       setUser(null);
       return;
     }
