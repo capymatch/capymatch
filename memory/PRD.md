@@ -262,6 +262,20 @@ Public-facing Volleyball Recruiting CRM with:
 - **Board Grouping (data-driven)**: action_required (stale/overdue), upcoming (due 14 days), in_progress (has reply/recent), closed (inactive)
 - **Next Step Priority**: Due date overdue > Due soon > No outreach > Outreach no reply > Coach replied stale > AI
 
+## Completed (Feb 17, 2026) — Journey Page Apple-Inspired Redesign (7 Features)
+All 7 UX suggestions implemented and tested (100% pass rate):
+1. **Visual Progress Rail** — 6-stage horizontal rail (Added → Outreach → Replied → Visit → Offer → Committed) with auto-detection + manual override by clicking stages
+2. **Relationship Pulse** — Green/amber/red pulsing dot showing relationship health
+3. **Getting Started Checklist** — Guided onboarding for empty-state schools (4 steps with progress bar)
+4. **Celebration Hero** — "Coach is interested!" hero banner when coach replies, with action buttons
+5. **Conversation-style Timeline** — iMessage-style layout (your actions right/pink, coach replies left/green, events center)
+6. **At a Glance Sidebar** — Single contextual card replacing 5 widgets, adapts by stage
+7. **Floating Action Bar** — Persistent bottom dock with Email, Log, Replied, Follow-up
+8. **School Comparison Page** — New `/compare` page with side-by-side school cards, searchable selector (up to 5 schools)
+
+Backend: Added `journey_stage` field, `compute_journey_rail()`, POST `/api/programs/compare`
+Frontend: Complete rewrite of `RecruitingJourney.js`, new `ComparePage.js`
+
 ## Completed (Feb 17, 2026) — Pipeline Card Alignment Fix
 - Fixed vertical alignment of Progress Ring and Focus Card on /pipeline page
 - Added `h-full` to FocusCard and AllCaughtUp components, `flex flex-col` to wrapper
