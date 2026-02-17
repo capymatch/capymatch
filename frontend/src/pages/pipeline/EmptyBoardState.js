@@ -269,7 +269,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 Connect Gmail <ChevronRight className="w-4 h-4" />
               </button>
             )}
-            {profileDone && (
+            {profileDone && gmailConnected && (
               <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
                 <span style={{ fontSize: "13px" }}>📊</span>
                 Most families start with 8–15 schools across 2–3 divisions
