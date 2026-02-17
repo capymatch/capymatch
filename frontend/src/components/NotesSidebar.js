@@ -200,7 +200,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
             <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{content.length} / {MAX_CHARS}</span>
             <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7 px-4" onClick={saveNote}
               disabled={saving || !content.trim()} data-testid="notes-save-btn">
-              {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <ChevronRight className="w-3 h-3 mr-1" />}
+              {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
               Save Note
             </Button>
           </div>
