@@ -60,48 +60,64 @@ function ProgressRail({ rail, onStageClick }) {
   const active = rail.active;
   const lineFill = rail.line_fill || active;
   const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === lineFill);
+  const DOT = 12;      // normal dot px
+  const DOT_ACTIVE = 16; // active dot px
 
   return (
     <div data-testid="progress-rail">
-      {/* Dot + Line row — fixed height, everything centered */}
-      <div className="relative flex items-center" style={{ height: "20px" }}>
-        {/* Background line — vertically centered via top:50% translate */}
-        <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px]" style={{ background: "var(--t-border)" }} />
-        {/* Filled line — consecutive stages only */}
+      {/* Inline keyframes for pulse */}
+      <style>{`
+        @keyframes railPulse {
+          0% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+          100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+        }
+      `}</style>
+      {/* Rail track row */}
+      <div style={{ position: "relative", height: `${DOT_ACTIVE + 4}px`, display: "flex", alignItems: "center" }}>
+        {/* Background track */}
+        <div style={{ position: "absolute", left: 40, right: 40, top: "50%", transform: "translateY(-50%)", height: 2, background: "var(--t-border)" }} />
+        {/* Filled track */}
         {lineFillIdx > 0 && (
-          <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] origin-left transition-all duration-500"
-            style={{ transform: `scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
+          <div style={{ position: "absolute", left: 40, right: 40, top: "50%", transform: `translateY(-50%) scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, transformOrigin: "left", height: 2, background: "#e8456b", transition: "transform 0.5s" }} />
         )}
-        {/* Dots */}
+        {/* Dot buttons */}
         {RAIL_STAGES.map((s) => {
           const completed = stages[s.key];
           const isActive = s.key === active;
+          const size = isActive ? DOT_ACTIVE : DOT;
           return (
-            <button key={s.key} className="flex-1 flex justify-center relative z-10"
-              onClick={() => onStageClick(s.key)} data-testid={`rail-stage-${s.key}`}>
-              {/* Pulse ring for active dot */}
+            <button key={s.key} onClick={() => onStageClick(s.key)}
+              data-testid={`rail-stage-${s.key}`}
+              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", zIndex: 2, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              {/* Pulse ring — only on active */}
               {isActive && (
-                <span className="absolute w-6 h-6 rounded-full border-2 border-pink-500 opacity-30 animate-ping" />
+                <span style={{ position: "absolute", top: "50%", left: "50%", width: size, height: size, borderRadius: "50%", border: "2px solid #e8456b", animation: "railPulse 2s ease-out infinite", pointerEvents: "none" }} />
               )}
-              <div className={`rounded-full border-2 transition-all duration-300 ${
-                isActive ? "w-4 h-4 bg-pink-500 border-pink-500 shadow-[0_0_12px_rgba(232,69,107,0.4)]"
-                : completed ? "w-3 h-3 bg-pink-500 border-pink-500"
-                : "w-3 h-3 border-[var(--t-border)] bg-[var(--t-surface)]"
-              }`} />
+              {/* Dot */}
+              <span style={{
+                display: "block",
+                width: size, height: size, borderRadius: "50%",
+                border: `2px solid ${completed || isActive ? "#e8456b" : "var(--t-border)"}`,
+                background: completed || isActive ? "#e8456b" : "var(--t-surface)",
+                boxShadow: isActive ? "0 0 12px rgba(232,69,107,0.4)" : "none",
+                transition: "all 0.3s",
+                flexShrink: 0,
+              }} />
             </button>
           );
         })}
       </div>
-      {/* Labels row */}
-      <div className="flex mt-1">
+      {/* Labels */}
+      <div style={{ display: "flex", marginTop: 4 }}>
         {RAIL_STAGES.map((s) => {
           const completed = stages[s.key];
           const isActive = s.key === active;
           return (
-            <div key={s.key} className="flex-1 text-center">
-              <span className={`text-[10px] font-medium ${
-                isActive ? "text-pink-500 font-semibold" : completed ? "text-[var(--t-text-secondary)]" : "text-[var(--t-text-muted)]"
-              }`}>{s.label}</span>
+            <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
+              <span style={{
+                fontSize: 10, fontWeight: isActive ? 600 : 500,
+                color: isActive ? "#e8456b" : completed ? "var(--t-text-secondary)" : "var(--t-text-muted)",
+              }}>{s.label}</span>
             </div>
           );
         })}
