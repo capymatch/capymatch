@@ -837,7 +837,7 @@ export default function RecruitingJourney() {
         <div className="lg:col-span-2">
           <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Timeline</h2>
+              <h2 className="text-base font-bold tracking-wide" style={{ color: "var(--t-text)" }}>Timeline</h2>
             </div>
 
             {timeline.length === 0 ? (
