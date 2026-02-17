@@ -468,6 +468,14 @@ async def send_email(data: ComposeEmail, request: Request):
                         "new_status": "Contacted",
                         "new_reply_status": "Awaiting Reply"
                     }
+                
+                # Auto-set 14-day follow-up reminder after sending email to a coach
+                follow_up_date = (datetime.now(timezone.utc) + timedelta(days=14)).strftime("%Y-%m-%d")
+                await db.programs.update_one(
+                    {"program_id": coach["program_id"], "tenant_id": tenant_id},
+                    {"$set": {"next_action_due": follow_up_date, "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                logger.info(f"Auto-set 14-day follow-up for {coach['program_id']} → {follow_up_date}")
         
         return {
             "id": sent["id"], 
