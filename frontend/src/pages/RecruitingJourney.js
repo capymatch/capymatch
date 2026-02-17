@@ -1169,6 +1169,9 @@ export default function RecruitingJourney() {
       {/* ─── Floating Action Bar ─── */}
       <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
         onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} activeAction={activeForm} />
+
+      {/* ─── Personal Notes Sidebar ─── */}
+      <NotesSidebar programId={programId} universityName={program.university_name} />
     </div>
   );
 }
