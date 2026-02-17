@@ -128,11 +128,11 @@ def compute_journey_rail(program: dict) -> dict:
         "committed": False,
     }
     
-    # Check interactions for campus visit
+    # Check interactions for campus visit — only explicit "campus_visit" type, not "Camp Meeting" etc.
     interactions = program.get("interactions", [])
     for ix in interactions:
-        ix_type = (ix.get("type") or "").lower()
-        if ix_type in ("visit", "campus visit", "campus_visit"):
+        ix_type = (ix.get("type") or "").lower().replace(" ", "_")
+        if ix_type == "campus_visit":
             stages["campus_visit"] = True
     
     # Manual override: only mark that specific stage as true (no cascade)
