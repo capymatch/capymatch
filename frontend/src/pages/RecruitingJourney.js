@@ -683,7 +683,10 @@ export default function RecruitingJourney() {
   };
 
   const handleStageClick = async (stageKey) => {
-    await updateProgram({ journey_stage: stageKey });
+    // If clicking the current manual stage, clear it (undo)
+    const currentManual = program.journey_stage;
+    const newStage = (currentManual === stageKey) ? "" : stageKey;
+    await updateProgram({ journey_stage: newStage });
     // Refetch to get updated rail
     const res = await api.get(`/programs/${programId}`);
     setProgram(res.data);
