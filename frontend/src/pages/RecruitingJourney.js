@@ -58,20 +58,21 @@ function ProgressRail({ rail, onStageClick }) {
   if (!rail) return null;
   const stages = rail.stages || {};
   const active = rail.active;
-  const activeIdx = RAIL_STAGES.findIndex(s => s.key === active);
-  // Line vertical center = 7px from top of dot row (half of 14px dot)
+  // line_fill = last consecutively completed stage (no gaps)
+  const lineFill = rail.line_fill || active;
+  const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === lineFill);
   const lineTop = 7;
 
   return (
     <div className="relative flex items-start" data-testid="progress-rail">
-      {/* Background line — centered on dots */}
+      {/* Background line */}
       <div className="absolute left-[40px] right-[40px] h-[2px]" style={{ top: `${lineTop}px`, background: "var(--t-border)" }} />
-      {/* Filled line */}
-      {activeIdx > 0 && (
+      {/* Filled line — only through consecutive stages */}
+      {lineFillIdx > 0 && (
         <div className="absolute left-[40px] right-[40px] h-[2px] origin-left transition-all duration-500"
-          style={{ top: `${lineTop}px`, transform: `scaleX(${activeIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
+          style={{ top: `${lineTop}px`, transform: `scaleX(${lineFillIdx / (RAIL_STAGES.length - 1)})`, background: "#e8456b" }} />
       )}
-      {RAIL_STAGES.map((s, i) => {
+      {RAIL_STAGES.map((s) => {
         const completed = stages[s.key];
         const isActive = s.key === active;
         return (
