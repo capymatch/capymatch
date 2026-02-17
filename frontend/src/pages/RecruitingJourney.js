@@ -238,28 +238,7 @@ function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
 /* ═══════════════════════════════════════════════════════════════
    CONVERSATION TIMELINE
    ═══════════════════════════════════════════════════════════════ */
-
-const DOT_COLORS = {
-  emerald: { bg: "#34d399", shadow: "rgba(52,211,153,0.25)" },
-  pink:    { bg: "#e8456b", shadow: "rgba(232,69,107,0.25)" },
-  blue:    { bg: "#60a5fa", shadow: "rgba(96,165,250,0.25)" },
-  cyan:    { bg: "#22d3ee", shadow: "rgba(34,211,238,0.25)" },
-  amber:   { bg: "#fbbf24", shadow: "rgba(251,191,36,0.25)" },
-  purple:  { bg: "#a78bfa", shadow: "rgba(167,139,250,0.25)" },
-  gray:    { bg: "#94a3b8", shadow: "rgba(148,163,184,0.15)" },
-};
-
-const BADGE_COLORS = {
-  emerald: { bg: "rgba(52,211,153,0.12)", text: "#34d399" },
-  pink:    { bg: "rgba(232,69,107,0.12)", text: "#e8456b" },
-  blue:    { bg: "rgba(96,165,250,0.12)", text: "#60a5fa" },
-  cyan:    { bg: "rgba(34,211,238,0.12)", text: "#22d3ee" },
-  amber:   { bg: "rgba(251,191,36,0.12)", text: "#fbbf24" },
-  purple:  { bg: "rgba(167,139,250,0.12)", text: "#a78bfa" },
-  gray:    { bg: "rgba(148,163,184,0.08)", text: "#94a3b8" },
-};
-
-function TimelineEntry({ event, side }) {
+function ConversationBubble({ event }) {
   const [expanded, setExpanded] = useState(false);
   const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
   const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
@@ -269,79 +248,49 @@ function TimelineEntry({ event, side }) {
   };
   const content = event.content || event.notes || "";
   const hasLong = content.length > 150;
-  const isLeft = side === "left";
-  const dot = DOT_COLORS[cfg.color] || DOT_COLORS.gray;
-  const badge = BADGE_COLORS[cfg.color] || BADGE_COLORS.gray;
-  const isCoach = cfg.side === "left";
 
+  // Milestone (center)
+  if (cfg.side === "center") {
+    return (
+      <div className="flex justify-center my-2" data-testid="conv-milestone">
+        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center bg-${cfg.color}-500/10`}>
+            {evtType === "camp" ? <Calendar className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
+            : evtType === "visit" ? <MapPin className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
+            : <Star className={`w-3.5 h-3.5 text-${cfg.color}-400`} />}
+          </div>
+          <div>
+            <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{event.title || cfg.label}</p>
+            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Chat bubble — left (coach) or right (you)
+  const isRight = cfg.side === "right";
   return (
-    <div className="tl-entry" style={{ display: "flex", alignItems: "flex-start", position: "relative", marginBottom: 28 }}
-      data-testid={`tl-entry-${isCoach ? "coach" : "you"}`}>
-      {/* LEFT content area */}
-      <div style={{ width: "calc(50% - 28px)", textAlign: "right", flexShrink: 0 }}>
-        {isLeft && (
-          <div className="tl-card" style={{
-            background: "rgba(255,255,255,0.02)", border: "1px solid var(--t-border)",
-            borderRadius: 12, padding: "12px 14px", position: "relative", transition: "border-color 0.2s",
-          }}>
-            {/* Connector arm to center */}
-            <div style={{ position: "absolute", top: 14, right: -13, width: 13, height: 2, background: "var(--t-border)" }} />
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4, color: isCoach ? "#34d399" : "#e8456b" }}>
-              {isCoach ? (event.coach_name || "Coach") : "You"}
-            </p>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, padding: "2px 8px", borderRadius: 6, fontWeight: 600, marginBottom: 6, background: badge.bg, color: badge.text }}>
-              {cfg.label}
-            </span>
-            {content ? (
-              <div style={{ fontSize: 13, color: "var(--t-text-secondary)", lineHeight: 1.5, marginTop: 4 }}>
-                {hasLong && !expanded ? (
-                  <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} style={{ color: "#e8456b", fontSize: 10, marginTop: 4, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>Show more</button></>
-                ) : hasLong && expanded ? (
-                  <><p style={{ whiteSpace: "pre-wrap" }}>{content}</p><button onClick={() => setExpanded(false)} style={{ color: "#e8456b", fontSize: 10, marginTop: 4, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>Show less</button></>
-                ) : <p>{content}</p>}
-              </div>
-            ) : (
-              <p style={{ fontSize: 12, color: "var(--t-text-secondary)", marginTop: 4 }}>{event.title || cfg.label}</p>
-            )}
-            <p style={{ fontSize: 10, color: "var(--t-text-muted)", marginTop: 6 }}>{formatDate(event.date)}</p>
+    <div className={`flex ${isRight ? "justify-end" : "justify-start"} my-1`} data-testid={`conv-bubble-${isRight ? "right" : "left"}`}>
+      <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
+        isRight
+          ? "rounded-br-md bg-pink-600/[0.06] border-pink-600/15"
+          : "rounded-bl-md bg-emerald-500/[0.06] border-emerald-500/15"
+      }`}>
+        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-pink-500" : "text-emerald-400"}`}>
+          {isRight ? "You" : (event.coach_name || "Coach")}
+        </p>
+        {content && (
+          <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
+            {hasLong && !expanded ? (
+              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-pink-500 text-[10px] mt-1 font-medium">Show more</button></>
+            ) : hasLong && expanded ? (
+              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-pink-500 text-[10px] mt-1 font-medium">Show less</button></>
+            ) : <p>{content}</p>}
           </div>
         )}
-      </div>
-
-      {/* CENTER dot */}
-      <div style={{ width: 56, flexShrink: 0, display: "flex", justifyContent: "center", paddingTop: 6 }}>
-        <div style={{ width: 14, height: 14, borderRadius: "50%", background: dot.bg, border: `2px solid ${dot.bg}`, boxShadow: `0 0 10px ${dot.shadow}`, position: "relative", zIndex: 2 }} />
-      </div>
-
-      {/* RIGHT content area */}
-      <div style={{ width: "calc(50% - 28px)", textAlign: "left", flexShrink: 0 }}>
-        {!isLeft && (
-          <div className="tl-card" style={{
-            background: "rgba(255,255,255,0.02)", border: "1px solid var(--t-border)",
-            borderRadius: 12, padding: "12px 14px", position: "relative", transition: "border-color 0.2s",
-          }}>
-            {/* Connector arm from center */}
-            <div style={{ position: "absolute", top: 14, left: -13, width: 13, height: 2, background: "var(--t-border)" }} />
-            <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4, color: isCoach ? "#34d399" : "#e8456b" }}>
-              {isCoach ? (event.coach_name || "Coach") : "You"}
-            </p>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, padding: "2px 8px", borderRadius: 6, fontWeight: 600, marginBottom: 6, background: badge.bg, color: badge.text }}>
-              {cfg.label}
-            </span>
-            {content ? (
-              <div style={{ fontSize: 13, color: "var(--t-text-secondary)", lineHeight: 1.5, marginTop: 4 }}>
-                {hasLong && !expanded ? (
-                  <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} style={{ color: "#e8456b", fontSize: 10, marginTop: 4, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>Show more</button></>
-                ) : hasLong && expanded ? (
-                  <><p style={{ whiteSpace: "pre-wrap" }}>{content}</p><button onClick={() => setExpanded(false)} style={{ color: "#e8456b", fontSize: 10, marginTop: 4, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>Show less</button></>
-                ) : <p>{content}</p>}
-              </div>
-            ) : (
-              <p style={{ fontSize: 12, color: "var(--t-text-secondary)", marginTop: 4 }}>{event.title || cfg.label}</p>
-            )}
-            <p style={{ fontSize: 10, color: "var(--t-text-muted)", marginTop: 6 }}>{formatDate(event.date)}</p>
-          </div>
-        )}
+        {!content && <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{event.title || cfg.label}</p>}
+        <p className="text-[10px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)} &middot; {cfg.label}</p>
       </div>
     </div>
   );
