@@ -1,0 +1,66 @@
+{
+  "summary": "5-Stage Recruiting Funnel Testing Complete. All 8 scenarios pass. Backend (14/14 tests), Frontend UI verified.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [],
+    "fixed": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "SCENARIO 1: New school with NO interactions -> needs_outreach (UCLA verified)",
+    "SCENARIO 2: School with outreach logged but NO coach reply -> waiting_on_reply (API test)",
+    "SCENARIO 3: School with coach_reply (mark-replied) -> in_conversation (Stanford verified)",
+    "SCENARIO 4: School with overdue follow-up date (yesterday) -> overdue (API test)",
+    "SCENARIO 5: School marked inactive (is_active=false) -> archived (API test)",
+    "SCENARIO 6: School with coach_reply AND overdue -> overdue wins (API test - priority order verified)",
+    "SCENARIO 7: School with outreach AND future follow-up date -> waiting_on_reply (API test)",
+    "SCENARIO 8: School with no interactions but has future follow-up date -> needs_outreach (API test)",
+    "Backend: GET /api/programs?grouped=true returns 5 groups: overdue, needs_outreach, waiting_on_reply, in_conversation, archived",
+    "Backend: GET /api/programs/{id} returns board_group field with one of 5 values",
+    "Backend: POST /api/programs/{id}/mark-replied creates coach_reply interaction and updates signals",
+    "Backend: mark-replied requires non-empty note (returns 400 if empty)",
+    "Backend: is_active=false -> board_group='archived', is_active=true -> returns to appropriate stage",
+    "Frontend Board: GroupFunnel shows 5 tabs with correct counts (All=2, Overdue=0, Needs Outreach=1, Waiting on Reply=0, In Conversation=1, Archived=0)",
+    "Frontend Board: Next Step visible in needs_outreach rows (UCLA shows 'Send your first email')",
+    "Frontend Board: NO Next Step in in_conversation rows (Stanford shows only 'Journey' button)",
+    "Frontend Board: Inline follow-up date badge shows on non-overdue school cards (UCLA showed 'Due Feb 20' badge)",
+    "Frontend Journey: NextStepHero shows for needs_outreach school (UCLA shows 'Send your first email to introduce yourself')",
+    "Frontend Journey: NO NextStepHero for in_conversation school (Stanford shows only Timeline with 'Coach replied')"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_5_stage_funnel.py",
+    "/app/test_reports/pytest/5_stage_funnel_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_5_stage_funnel.py (new - comprehensive 5-stage funnel test)"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all UI scenarios verified)"
+  },
+  "test_credentials": "premium@test.com / password",
+  "seed_data_creation": "Test programs created and cleaned up during pytest execution. UCLA and Stanford used for UI verification.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "5-stage funnel is fully implemented and working. The NEW stages are: overdue (red), needs_outreach (amber), waiting_on_reply (blue), in_conversation (green), archived (gray). OLD stages (action_required, upcoming, in_progress, closed) are GONE. Next Step cards only appear for overdue, needs_outreach, waiting_on_reply stages on both Board and Journey pages. Inline due date badges appear on school cards in non-overdue stages when next_action_due is set. Priority order: archived > overdue > in_conversation > waiting_on_reply > needs_outreach.",
+  "feature_verification": {
+    "5_stage_funnel": {
+      "overdue": "Schools with past next_action_due date - highest priority after archived",
+      "needs_outreach": "Default stage - no interactions logged",
+      "waiting_on_reply": "Outreach sent (interaction logged) but no coach_reply",
+      "in_conversation": "Coach has replied (via mark-replied endpoint)",
+      "archived": "is_active=false - top priority, always wins"
+    },
+    "next_step_visibility": {
+      "board": "Shows for overdue, needs_outreach, waiting_on_reply ONLY",
+      "journey": "NextStepHero shows for same 3 stages ONLY"
+    },
+    "inline_due_badge": "Shows on school cards in non-overdue stages when next_action_due is set"
+  }
+}
