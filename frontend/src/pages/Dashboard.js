@@ -326,6 +326,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5" data-testid="dashboard">
+      <FirstReplyCelebration />
 
       {/* ═══ Section 1: Greeting + Quick Pulse ═══ */}
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="greeting-pulse">
