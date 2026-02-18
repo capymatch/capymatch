@@ -168,11 +168,11 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
         )
 
         logger.info(f"Gmail connected for user {user_id} ({gmail_email})")
-        return RedirectResponse(f"{frontend_url}/settings?gmail=connected")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=connected")
 
     except Exception as e:
         logger.error(f"Gmail callback error: {e}")
-        return RedirectResponse(f"{frontend_url}/settings?gmail=error&reason=token_exchange_failed")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=token_exchange_failed")
 
 
 @router.get("/status")
