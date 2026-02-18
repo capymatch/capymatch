@@ -3,7 +3,7 @@ import api from "../lib/api";
 import { toast } from "sonner";
 import {
   Mail, CreditCard, Sparkles, CheckCircle2, XCircle, AlertCircle,
-  Eye, EyeOff, RefreshCw, Trash2, Save, ExternalLink, Loader2, GraduationCap, Database
+  Eye, EyeOff, RefreshCw, Trash2, Save, ExternalLink, Loader2, GraduationCap, Database, Search
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
