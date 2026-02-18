@@ -342,7 +342,7 @@ export default function PublicSchedule() {
 
         {/* ── Club Coach ── */}
         {hasCoach && (
-          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-6">
             <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Club Coach</SectionLabel>
               <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl p-5" style={{ background: "var(--p-surface-alt)", border: "1px solid var(--p-border)" }}>
