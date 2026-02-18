@@ -375,8 +375,8 @@ export default function PublicSchedule() {
 
         {/* ── Highlights Video ── */}
         {videoId && (
-          <>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-11" data-testid="video-embed-section">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4">
+            <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }} data-testid="video-embed-section">
               <SectionLabel>Highlights</SectionLabel>
               {videoPlaying ? (
                 <div className="rounded-2xl overflow-hidden aspect-video bg-black shadow-lg" style={{ border: "1px solid var(--p-border)" }}>
