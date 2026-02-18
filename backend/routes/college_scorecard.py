@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
 from database import db
 from datetime import datetime, timezone
 import httpx
 import os
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,9 @@ SCORECARD_FIELDS = ",".join([
     "latest.cost.tuition.in_state",
     "latest.cost.tuition.out_of_state",
 ])
+
+# Track sync status in memory
+sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True}
 
 
 def get_api_key():
