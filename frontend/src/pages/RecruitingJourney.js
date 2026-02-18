@@ -1027,7 +1027,7 @@ export default function RecruitingJourney() {
         } catch {}
         // Fetch coach watch alert for this school
         try {
-          const cwRes = await api.get(`/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
+          const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
           setCoachWatchAlert(cwRes.data?.alert || null);
         } catch { setCoachWatchAlert(null); }
       }
