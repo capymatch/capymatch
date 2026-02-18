@@ -351,37 +351,13 @@ async def scrape_one(request: Request):
     if not domain:
         return {"error": "No domain for this university"}
 
-    async with httpx.AsyncClient() as client:
-        result = await scrape_coaching_page(client, domain, uni.get("website", ""))
+    async with httpx.AsyncClient() as http_client:
+        result = await scrape_coaching_page(http_client, domain, uni.get("website", ""))
 
     if not result or not result["coaches"]:
         return {"found": False, "message": f"Could not find coaching data for {name}"}
 
-    # Update DB
-    head = None
-    assistant = None
-    for c in result["coaches"]:
-        if "head" in c.get("title", "").lower():
-            head = c
-        elif not assistant and c.get("email"):
-            assistant = c
-    if not head:
-        head = result["coaches"][0]
-    if not assistant and len(result["coaches"]) > 1:
-        assistant = result["coaches"][1]
-
-    update = {"coaches_scraped": result["coaches"], "coaches_source_url": result["url"]}
-    if head:
-        if head.get("name"):
-            update["primary_coach"] = head["name"]
-        if head.get("email"):
-            update["coach_email"] = head["email"]
-    if assistant:
-        if assistant.get("name"):
-            update["recruiting_coordinator"] = assistant["name"]
-        if assistant.get("email"):
-            update["coordinator_email"] = assistant["email"]
-
+    update = _build_update(result)
     await db.university_knowledge_base.update_one(
         {"university_name": name}, {"$set": update}
     )
