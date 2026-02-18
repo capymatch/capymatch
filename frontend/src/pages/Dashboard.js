@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
+import { FirstReplyCelebration } from "../components/FirstReplyCelebration";
 import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Pulse Stat ── */
