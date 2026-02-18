@@ -62,33 +62,45 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    // Use fetch with same-origin credentials to avoid CORS violation
-    // (proxy returns access-control-allow-origin: * which conflicts with withCredentials)
     const API_BASE = process.env.REACT_APP_BACKEND_URL + "/api";
-    fetch(`${API_BASE}/auth/session`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      body: JSON.stringify({ session_id: sessionId }),
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data?.detail || `Auth failed (${res.status})`);
-        }
-        return res.json();
+
+    // Session exchange with retry (session data may take a moment to propagate)
+    const exchangeSession = (retries = 2) => {
+      fetch(`${API_BASE}/auth/session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ session_id: sessionId }),
       })
-      .then(data => {
-        console.log("[OAuth] Session exchange successful for:", data?.email);
-        onAuth(data);
-        navigate("/board", { replace: true });
-      })
-      .catch(err => {
-        console.error("[OAuth] Session exchange failed:", err?.message);
-        setStatus("error");
-        setErrorMsg(err?.message || "Authentication failed");
-        setTimeout(() => navigate("/login", { replace: true }), 3000);
-      });
+        .then(async res => {
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            const errMsg = data?.detail || `Auth failed (${res.status})`;
+            // Retry on 401/503 (session may still be propagating)
+            if (retries > 0 && (res.status === 401 || res.status === 503 || res.status >= 500)) {
+              console.log(`[OAuth] Retrying session exchange (${retries} left)...`);
+              setTimeout(() => exchangeSession(retries - 1), 1500);
+              return null;
+            }
+            throw new Error(errMsg);
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (!data) return; // retry in progress
+          console.log("[OAuth] Session exchange successful for:", data?.email);
+          onAuth(data);
+          navigate("/board", { replace: true });
+        })
+        .catch(err => {
+          console.error("[OAuth] Session exchange failed:", err?.message);
+          setStatus("error");
+          setErrorMsg(err?.message || "Authentication failed. Please try again.");
+          setTimeout(() => navigate("/login", { replace: true }), 3000);
+        });
+    };
+
+    exchangeSession();
   }, [navigate, onAuth]);
 
   return (
@@ -102,8 +114,14 @@ function OAuthCallback({ onAuth }) {
       {status === "error" && (
         <div className="text-center max-w-sm px-4">
           <div className="text-red-400 text-sm font-medium mb-2">Sign-in failed</div>
-          <div className="text-white/50 text-xs">{errorMsg}</div>
-          <div className="text-white/30 text-xs mt-2">Redirecting to login...</div>
+          <div className="text-white/50 text-xs mb-3">{errorMsg}</div>
+          <button
+            onClick={() => navigate("/login", { replace: true })}
+            className="text-pink-400 text-xs underline hover:text-pink-300"
+          >
+            Back to login
+          </button>
+          <div className="text-white/30 text-xs mt-2">Auto-redirecting in 3s...</div>
         </div>
       )}
     </div>
