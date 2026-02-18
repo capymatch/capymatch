@@ -244,7 +244,7 @@ async def scrape_one(request: Request):
         return {"error": "university_name required"}
 
     uni = await db.university_knowledge_base.find_one(
-        {"university_name": name}, {"_id": 0}
+        {"university_name": name}, {"_id": 0, "domain": 1, "website": 1}
     )
     if not uni:
         return {"error": "University not found"}
