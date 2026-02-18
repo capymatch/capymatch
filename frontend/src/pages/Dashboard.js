@@ -407,8 +407,7 @@ export default function Dashboard() {
             {followUpsDue.length > 0 ? followUpsDue.slice(0, 4).map((p, i) => (
               <ActionRow
                 key={p.program_id}
-                color={avatarGradients[i % avatarGradients.length]}
-                initial={(p.university_name || "?")[0]}
+                domain={p.domain}
                 school={p.university_name}
                 detail={p.next_action_due === today ? "Follow-up due today" : `Follow-up overdue · ${getDaysAgo(p.next_action_due)}`}
                 badge={p.next_action_due === today ? "Today" : "Overdue"}
