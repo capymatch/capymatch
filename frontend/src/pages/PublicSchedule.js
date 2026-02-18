@@ -460,8 +460,8 @@ export default function PublicSchedule() {
           {past_events.length > 0 && (
             <div className="mt-10 opacity-60">
               <SectionLabel>Past Events</SectionLabel>
-              <div className="flex flex-col gap-2.5" data-testid="past-events">
-                {past_events.map((evt) => <EventCard key={evt.event_id} event={evt} />)}
+              <div className="flex flex-col" data-testid="past-events">
+                {past_events.map((evt, i) => <EventCard key={evt.event_id} event={evt} isLast={i === past_events.length - 1} />)}
               </div>
             </div>
           )}
