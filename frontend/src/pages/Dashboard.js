@@ -4,8 +4,8 @@ import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import {
   ChevronRight, Target, MessageCircle, Mail, Clock,
-  Zap, Send, Sparkles, CheckCircle, Circle,
-  ArrowRight, X, User, GraduationCap, Calendar,
+  Zap, Send, Sparkles,
+  ArrowRight, User, GraduationCap, Calendar,
   BarChart3, Activity, ChevronDown, ChevronUp
 } from "lucide-react";
 import { toast } from "sonner";
