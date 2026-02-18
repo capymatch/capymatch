@@ -50,108 +50,77 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Stage Log Modal for progress rail
 - Automated Follow-up System (2-14 day reminders)
 - Enhanced Getting Started Checklist with dynamic steps
+- Public Athlete Profile Redesign
+- University Logos across all pages
+- Light Theme Implementation
+- Inline Gmail Connection on Intro Page
+- Split-Screen Profile Editor
+- Google OAuth Login Fix
+- Coach Watch Badge on Journey Page
+- Guided Tour Fix
+- First Reply Celebration Feature
+- Dashboard Redesign with 6 sections
+- My Schools Empty State Redesign
 
-## What's Implemented (Recent — Feb 18, 2026)
-- **Public Athlete Profile Redesign (Complete)**: Full UX/UI overhaul of the public-facing profile page (/s/:shortId):
-  - Side-by-side hero: photo left with accent line, cinematic name treatment right
-  - Typography: Barlow Condensed 800 uppercase for name, DM Sans for body
-  - Dark theme (#08080c) with pink/coral accent (#e8456b) and radial glow
-  - Icon-led Quick Facts row (Height, Weight, GPA, Dominant hand)
-  - Bento stat grid for Athletic Measurables (Approach Touch highlighted)
-  - Elevated Club Coach card with avatar, title, email/call icon buttons
-  - Custom video thumbnail with play overlay → YouTube iframe on click
-  - "Where to See Me Play" calendar-style event cards with type badges
-  - Sticky mobile CTA bar (Email, Call, Hudl) with backdrop blur
-  - Share button (clipboard copy) + "Copy link" on video
-  - Responsive: centers on mobile, side-by-side on desktop
+## What's Implemented (Recent — Feb 18, 2026 Session 3)
 
-- **University Logos (Complete)**: Added university logos across all pages using icon.horse API (high-quality Apple Touch Icons):
-  - Knowledge Base: Logos in both "Recommended for You" cards and main university card list
-  - Dashboard: Logos in Today's Actions (ActionRow) and School Spotlight cards
-  - My Schools/Recruiting Board: Logos on all school cards
-  - Onboarding (EmptyBoardState): Logos on suggested school cards
-  - Cascading fallback: icon.horse (primary, high-res) -> Google Favicon (secondary) -> gradient initials
-  - Shared component: `/app/frontend/src/components/UniversityLogo.js`
-  - Backend: `domain` field added to `/api/suggested-schools` and `/api/knowledge-base/add-to-board`
-  - Data cleanup: Fixed 200+ university domains (auto-generated gibberish -> real .edu domains)
+### Find Schools Page Complete Redesign (6 Apple-Inspired UX Features)
+Complete rewrite of the Find Schools (UniversityKnowledgeBase) page with 6 major UX improvements:
 
-- **Light Theme Implementation (Complete)**: Full Apple-inspired light theme across the entire app:
-  - Sidebar: White background with pink accent on active nav item (was hardcoded crimson gradient)
-  - Header: Glassmorphism blur effect with semi-transparent background
-  - CSS Variables: Added sidebar-specific tokens (--t-sidebar-bg, --t-sidebar-brand-text, --t-nav-text, --t-nav-text-hover, --t-card-shadow, etc.)
-  - Apple palette: Warm gray (#f5f5f7) page bg, white cards, dark charcoal text (#1d1d1f)
-  - Fixed NotesSidebar hardcoded #141820 → var(--t-surface)
-  - Dark mode fully preserved — gradient sidebar returns when switching back
-  - Theme toggle works in Settings (Dark/Light/System)
+1. **Spotlight Hero Recommendation**: Top match displayed as a large cinematic hero card (dark visual panel + details panel) with school name, 96% match score, "Why this school?" AI snippet, coach info, and prominent CTA. Below it, a horizontal scrollable carousel of remaining AI matches with mini-cards showing logos and scores.
 
-- **Inline Gmail Connection on Intro Page (Complete)**: Gmail connection now embedded directly in the EmptyBoardState onboarding flow (Step 2) instead of redirecting to Settings.
+2. **Horizontal Filter Pills**: Replaced the sidebar filter dropdowns with horizontal scrolling pill buttons. Division pills (D1/D2/D3/NAIA/JUCO) are color-coded (emerald/blue/violet/orange/yellow). Region and Conference pills follow with vertical dividers. Active filters glow with their division color. Reclaimed ~250px horizontal space.
 
-- **Note-saving Checklist (Verified Fixed)**: NotesSidebar onNoteChange callback properly updates notesCount.
+3. **Quick Look Card Expansion**: Clicking any grid card expands it inline (spans full grid width) to reveal: coaching staff with avatars, "Why This School?" AI snippet, match reason tags, and Add to Board/Website/Close buttons. No page navigation needed. Clicking X or another card collapses it.
 
-## What's Implemented (Recent — Feb 17, 2026)
-- **Dashboard Redesign (Complete)**: Full redesign with 6 new sections:
-  1. Greeting + Quick Pulse (4 contextual stats)
-  2. Today's Actions (split: Follow-ups Due + Needs First Outreach)
-  3. School Spotlight (horizontal scroll cards with next-step nudges)
-  4. Pipeline Snapshot (vertical bar chart with division legend)
-  5. Recent Activity (timeline feed)
-  6. Upcoming Events (date-box layout)
+4. **Compact Grid View with List Toggle**: Grid/List toggle button in the search bar. Grid view (default) shows 3-column logo-forward visual cards with hover-lift animation and pink accent line on hover. List view preserves the original detailed row layout with coach info.
 
-- **My Schools Empty State Redesign (Complete)**: Rich empty state replacing the old "No schools" card:
-  1. Progress strip (Create Profile → Add Schools → Email Coaches → Track Replies)
-  2. Personalized welcome hero with athlete name
-  3. Three action path cards (AI Recommendations, Browse by Division, Search by Location)
-  4. AI-suggested school cards with match scores and "Add to Board" buttons
-  5. Ghost board preview showing future pipeline columns
-  6. Social proof strip
+5. **Smart Buckets Preset Filters**: One-tap contextual quick-access buttons above results: "All Schools", "Dream Schools (D1)" with count, "Strong Match (80%+)" with count, "Close to Home", "Strong Academics" with count. Active bucket has pink background with shadow. These help parents who don't know what filters to pick.
 
-- **Google OAuth Fix (Complete)**: Fixed session_id reading from URL hash fragment (was incorrectly reading from query params). Added proper error handling and logging.
+6. **Sticky Search + Active Filter Summary**: Search bar sticks to top on scroll with glassmorphism blur effect (backdrop-filter: blur(20px)). Active filters shown as dismissible chips below the search bar with color-coding matching the filter type. "Clear all" resets everything.
+
+**Bug Fixes in this session:**
+- Fixed UCLA name mismatch between programs collection and knowledge base preventing "On Your Board" status
+- Fixed region filter regex matching partial strings (e.g., "West" was returning "Midwest" results)
+
+**New Files:**
+- `/app/frontend/src/components/FindSchools/SpotlightHero.js` — Hero recommendation + carousel
+- `/app/frontend/src/components/FindSchools/SchoolGridCard.js` — Grid card with Quick Look expansion
+- `/app/frontend/src/pages/UniversityKnowledgeBase.js` — Complete rewrite with all 6 features
+- `/app/mockups/find_schools_redesign.html` — Interactive HTML mockup (approved by user)
 
 ## Code Architecture
 ```
-/app/frontend/src/pages/
-├── Dashboard.js                    # Redesigned dashboard
-├── RecruitingBoard.js              # My Schools board (imports EmptyBoardState)
-├── pipeline/
-│   └── EmptyBoardState.js          # NEW: Rich empty state component
-└── RecruitingJourney/              # Journey page (complex, needs refactor)
+/app/frontend/src/
+├── components/
+│   ├── FindSchools/
+│   │   ├── SpotlightHero.js          # NEW: Hero recommendation + carousel
+│   │   └── SchoolGridCard.js         # NEW: Grid card with Quick Look expansion
+│   ├── Layout/
+│   │   ├── Layout.js
+│   │   └── Tour.js
+│   ├── Profile/
+│   │   └── ProfilePreview.js
+│   └── UniversityLogo.js
+├── pages/
+│   ├── Dashboard.js
+│   ├── UniversityKnowledgeBase.js    # REWRITTEN: All 6 UX features
+│   ├── RecruitingBoard.js
+│   ├── pipeline/
+│   │   └── EmptyBoardState.js
+│   ├── Auth/
+│   │   └── GoogleLoginHandler.js
+│   ├── Journey/
+│   │   └── JourneyPage.js
+│   └── Profile/
+│       └── ProfilePage.js
+└── App.js
 
-/app/frontend/src/App.js            # OAuth callback fixed (hash fragment)
-/app/frontend/src/pages/LoginPage.js # Google redirect URL updated
+/app/backend/routes/
+├── knowledge.py                      # MODIFIED: Fixed region filter regex
+├── programs.py
+└── athlete_profile.py
 ```
-
-## What's Implemented (Recent — Feb 18, 2026 Session 2)
-- **Split-Screen Profile Editor (Complete)**: Full WYSIWYG-style profile editor:
-  - Left panel: Edit form with collapsible sections, auto-save, completeness ring, photo upload, share card
-  - Right panel: Live preview matching the public profile design (PublicSchedule.js) — updates in real-time as user types
-  - Desktop: Side-by-side layout
-  - Mobile: Edit/Preview toggle buttons
-  - Both panels scroll together
-  - New component: `/app/frontend/src/components/ProfilePreview.js`
-
-- **Google OAuth Login Fix (Complete)**: Fixed "Network Error" on Google sign-in:
-  - Root cause: Proxy returns `access-control-allow-origin: *` with `access-control-allow-credentials: true` (CORS spec violation)
-  - After Google redirect, browser enforces CORS on the session exchange XHR, rejecting the response
-  - Fix: Replaced axios (withCredentials: true) with native fetch (credentials: same-origin) for session exchange
-  - Added 10s timeout on backend Emergent auth server call
-
-- **Coach Watch Badge on Journey Page (Complete)**: Added coaching staff health indicator (Option A) to the Coach Panel:
-  - Green "Staff Stable" badge when no alerts exist for the school
-  - Amber "Staff Change" badge with inline alert details when a coach change is detected  
-  - Fetches from `/api/ai/coach-watch/alert/{university_name}` endpoint
-  - Shows alert type (new coach, departure, staff change), summary, and detection date
-
-- **Guided Tour Fix (Complete)**: Fixed tour feature:
-  - Tour now triggers only after user adds their first school (not on every first visit)
-  - Fixed 4 mismatched tour step targets (nav-pipeline→nav-my schools, nav-inbox→nav-my inbox, nav-schools→nav-find schools, nav-outreach ai→nav-ai-features-toggle)
-  - Added auto-skip logic for missing DOM elements
-  - Updated Settings > Replay Tour button to work with new flag system
-  - Tour trigger added to EmptyBoardState and UniversityKnowledgeBase school addition flows
-
-- **First Reply Celebration Feature (Complete)**: End-to-end celebration for first coach reply:
-  - Backend: GET /api/first-reply-celebration (checks status), POST /api/first-reply-celebration/dismiss
-  - Frontend: `/app/frontend/src/components/FirstReplyCelebration.js` modal with animations
-  - Integrated into Dashboard.js
 
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
@@ -160,7 +129,7 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Advanced UX improvements from Apple designer review (e.g., "Today" hero card on dashboard)
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
-- RecruitingJourney.js refactor (component too complex)
+- JourneyPage.js refactor (component too complex)
 - ProfilePage.js decomposition into smaller sub-components
 - PublicSchedule.js decomposition (500+ lines)
 
