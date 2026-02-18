@@ -35,7 +35,7 @@ export default function SettingsPage() {
 
   const handleConnectGmail = async () => {
     try {
-      const res = await api.get("/gmail/connect");
+      const res = await api.get("/gmail/connect?return_to=/settings");
       window.location.href = res.data.auth_url;
     } catch {
       toast.error("Failed to start Gmail connection");
