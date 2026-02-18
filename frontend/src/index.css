@@ -39,16 +39,18 @@
     --t-surface-alt: #f3f4f6;
     --t-border: #e5e7eb;
     --t-border-strong: #d1d5db;
-    --t-text: #1f2937;
-    --t-text-secondary: #6b7280;
-    --t-text-muted: #9ca3af;
-    --t-text-faint: #d1d5db;
-    --t-accent: #475569;
-    --t-accent-hover: #334155;
+    --t-text: #1d1d1f;
+    --t-text-secondary: #6e6e73;
+    --t-text-muted: #aeaeb2;
+    --t-text-faint: #d2d2d7;
+    --t-accent: #e8456b;
+    --t-accent-hover: #d63659;
     --t-nav-bg: #ffffff;
-    --t-nav-border: #e5e7eb;
-    --t-nav-active-bg: #f1f5f9;
-    --t-nav-active-text: #475569;
+    --t-nav-border: #f0f0f2;
+    --t-nav-active-bg: rgba(232,69,107,0.08);
+    --t-nav-active-text: #e8456b;
+    --t-nav-text: #6e6e73;
+    --t-nav-text-hover: #1d1d1f;
     --t-input-bg: #ffffff;
     --t-select-bg: #ffffff;
     --t-dropdown-bg: #ffffff;
@@ -61,7 +63,15 @@
     --t-hero-from: #475569;
     --t-hero-to: #1e293b;
     --t-sidebar-bg: #ffffff;
-    --t-header-bg: #ffffff;
+    --t-sidebar-border: #f0f0f2;
+    --t-sidebar-brand-text: #1d1d1f;
+    --t-sidebar-logo-bg: rgba(232,69,107,0.1);
+    --t-sidebar-logo-icon: #e8456b;
+    --t-sidebar-divider: rgba(0,0,0,0.04);
+    --t-header-bg: rgba(245,245,247,0.85);
+    --t-card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+    --t-card-shadow-hover: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --t-panel-bg: #ffffff;
   }
 
   .dark {
