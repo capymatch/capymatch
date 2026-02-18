@@ -27,7 +27,7 @@ const THEME_CSS = `
     --p-stat-highlight-border: rgba(232,69,107,0.25);
     --p-section-bg: #ffffff;
     --p-section-border: rgba(0,0,0,0.08);
-    --p-section-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.06);
+    --p-section-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.10);
     --p-coach-avatar: linear-gradient(135deg, #6366f1, #8b5cf6);
     --p-icon-box-bg: #f4f3f9;
     --p-icon-box-border: rgba(0,0,0,0.08);
