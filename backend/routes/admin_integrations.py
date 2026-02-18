@@ -102,6 +102,14 @@ async def get_integrations_status():
                 "invitation_email": email_settings.get("invitation_email", True),
             },
         },
+        "scorecard": {
+            "connected": scorecard_connected,
+            "key_masked": scorecard_key_masked,
+            "stats": {
+                "synced_schools": synced_count,
+                "total_universities": total_universities,
+            },
+        },
     }
 
 
