@@ -145,6 +145,34 @@ export default function AdminIntegrations() {
     }
   };
 
+  const saveScorecardKey = async () => {
+    if (!scorecardKey.trim()) return;
+    setSavingScorecard(true);
+    try {
+      await api.put("/admin/integrations/scorecard/key", { api_key: scorecardKey.trim() });
+      toast.success("College Scorecard key updated");
+      setScorecardKey("");
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to update key");
+    } finally {
+      setSavingScorecard(false);
+    }
+  };
+
+  const syncScorecard = async () => {
+    setSyncingScorecard(true);
+    try {
+      const res = await api.post("/admin/integrations/scorecard/sync");
+      toast.success(`Synced ${res.data.synced} schools (${res.data.failed} failed)`);
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Sync failed");
+    } finally {
+      setSyncingScorecard(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24" data-testid="integrations-loading">
