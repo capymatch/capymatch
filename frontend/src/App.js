@@ -148,7 +148,6 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
         <Route path="programs/:programId" element={<ProgramDetail />} />
-        <Route path="inbox" element={<Inbox />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="outreach-analysis" element={<OutreachAnalysis />} />
         <Route path="highlight-advisor" element={<HighlightAdvisor />} />
