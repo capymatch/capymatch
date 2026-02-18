@@ -424,7 +424,9 @@ export default function Layout({ user, onLogout }) {
                             } else if (pid) {
                               navigate(`/journey/${pid}`);
                             } else if (notif.type === "coach_reply") {
-                              navigate("/inbox");
+                              const replyPid = notif.data?.program_id;
+                              if (replyPid) navigate(`/journey/${replyPid}`);
+                              else navigate("/pipeline");
                             } else if (notif.type === "follow_up_due") {
                               navigate("/pipeline");
                             } else if (notif.type === "profile_view_edu") {
