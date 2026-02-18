@@ -116,6 +116,13 @@ async def get_integrations_status():
                 "total_universities": total_universities,
             },
         },
+        "coach_scraper": {
+            "stats": {
+                "has_coach_email": has_coach,
+                "missing_coach_email": missing_coach,
+                "total": total_universities,
+            },
+        },
     }
 
 
