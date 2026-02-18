@@ -164,7 +164,7 @@ async def _run_scrape():
                     continue
 
                 try:
-                    result = await scrape_coaching_page(client, domain)
+                    result = await scrape_coaching_page(client, domain, uni.get("website", ""))
                     if result and result["coaches"]:
                         # Find head coach (first one, or one with "head" in title)
                         head = None
