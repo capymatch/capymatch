@@ -30,9 +30,9 @@ const PREVIEW_CSS = `
 function StatCard({ value, label }) {
   if (!value) return null;
   return (
-    <div className="rounded-2xl text-center" style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)", padding: "20px 12px" }}>
-      <div className="font-barlow font-[800] text-[28px] leading-none" style={{ color: "var(--p-text)" }}>{value}</div>
-      <div className="text-[11px] font-semibold uppercase tracking-[1px] mt-2" style={{ color: "var(--p-text-secondary)" }}>{label}</div>
+    <div className="rounded-2xl text-center" style={{ background: "var(--t-surface-alt, #f2f3f8)", border: "1px solid var(--t-border, rgba(0,0,0,0.06))", padding: "20px 12px" }}>
+      <div className="font-barlow font-[800] text-[28px] leading-none" style={{ color: "var(--t-text, #1a1a2e)" }}>{value}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[1px] mt-2" style={{ color: "var(--t-text-muted, #6b7280)" }}>{label}</div>
     </div>
   );
 }
