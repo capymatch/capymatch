@@ -70,16 +70,6 @@ function SpotlightCard({ program, onClick }) {
     "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
   const statusStyle = colorMap[program.recruiting_status] || { bg: "rgba(107,114,128,0.12)", color: "#4b5563" };
-  const avatarColors = [
-    "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-    "linear-gradient(135deg, #10b981, #059669)",
-    "linear-gradient(135deg, #f59e0b, #d97706)",
-    "linear-gradient(135deg, #ec4899, #db2777)",
-    "linear-gradient(135deg, #a855f7, #7c3aed)",
-    "linear-gradient(135deg, #06b6d4, #0891b2)",
-  ];
-  const hash = (program.university_name || "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const gradient = avatarColors[hash % avatarColors.length];
 
   const nextStep = program.next_action || "Review this school's journey and plan your next move.";
 
