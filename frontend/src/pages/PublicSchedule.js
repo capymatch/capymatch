@@ -21,9 +21,12 @@ const THEME_CSS = `
     --p-accent: #e8456b;
     --p-accent-glow: rgba(232,69,107,0.08);
     --p-accent-glow-strong: rgba(232,69,107,0.12);
-    --p-stat-bg: #ffffff;
-    --p-stat-highlight-bg: linear-gradient(135deg, rgba(232,69,107,0.06), rgba(232,69,107,0.02));
-    --p-stat-highlight-border: rgba(232,69,107,0.15);
+    --p-stat-bg: rgba(232,69,107,0.04);
+    --p-stat-highlight-bg: linear-gradient(135deg, rgba(232,69,107,0.10), rgba(232,69,107,0.05));
+    --p-stat-highlight-border: rgba(232,69,107,0.20);
+    --p-section-bg: #ffffff;
+    --p-section-border: rgba(0,0,0,0.06);
+    --p-section-shadow: 0 1px 3px rgba(0,0,0,0.04);
     --p-coach-avatar: linear-gradient(135deg, #6366f1, #8b5cf6);
     --p-icon-box-bg: rgba(0,0,0,0.03);
     --p-icon-box-border: rgba(0,0,0,0.06);
