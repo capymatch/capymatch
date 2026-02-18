@@ -259,10 +259,8 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
       onClick={() => navigate(`/journey/${p.program_id}`)}
       data-testid={`school-card-${p.program_id}`}
     >
-      {/* Division badge */}
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-[11px] font-bold`}>
-        {divLabel}
-      </div>
+      {/* University logo */}
+      <UniversityLogo domain={p.domain} name={p.university_name} size={40} />
 
       {/* Main info */}
       <div className="flex-1 min-w-0">
