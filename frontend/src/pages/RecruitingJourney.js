@@ -1303,8 +1303,42 @@ export default function RecruitingJourney() {
             <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
-                <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
+                <div className="flex items-center gap-2">
+                  {coachWatchAlert ? (
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                      style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
+                      data-testid="coach-watch-badge-change">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                      style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
+                      data-testid="coach-watch-badge-stable">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
+                    </span>
+                  )}
+                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
+                </div>
               </div>
+              {/* Coach Watch Alert Detail */}
+              {coachWatchAlert && (
+                <div className="p-2.5 rounded-lg mb-3" data-testid="coach-watch-alert-detail"
+                  style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
+                  <p className="text-[11px] font-semibold flex items-center gap-1" style={{ color: "#d97706" }}>
+                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    {coachWatchAlert.alert_type === "new_coach" ? "New coach detected" :
+                     coachWatchAlert.alert_type === "coach_departure" ? "Coach departure detected" : "Staff change detected"}
+                  </p>
+                  <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                    {coachWatchAlert.summary || coachWatchAlert.details || `A coaching staff change was detected at ${program.university_name}. Review and update your contacts.`}
+                  </p>
+                  {coachWatchAlert.created_at && (
+                    <p className="text-[9px] mt-1.5" style={{ color: "var(--t-text-faint, #b0b0c0)" }}>
+                      Detected {new Date(coachWatchAlert.created_at).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              )}
               <div className="space-y-2">
                 {coaches.map(c => (
                   <div key={c.coach_id} className="p-2.5 rounded-lg border group" style={{ borderColor: "var(--t-border)" }}>
