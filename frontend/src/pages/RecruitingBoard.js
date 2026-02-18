@@ -216,14 +216,14 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
 /* ═══ All Caught Up Hero ═══ */
 function AllCaughtUpCard({ navigate }) {
   return (
-    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "rgba(22,163,74,0.03)", border: "1px solid rgba(22,163,74,0.1)", padding: "18px 22px" }} data-testid="all-caught-up">
+    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="all-caught-up">
       <div className="flex-1 min-w-0">
-        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#16a34a" }}>All Caught Up</span>
-        <p className="text-lg font-extrabold mb-1 leading-tight" style={{ color: "var(--t-text)" }}>You're on top of recruiting!</p>
-        <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>All schools are in conversation or archived.</p>
+        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#4ade80" }}>All Caught Up</span>
+        <p className="text-lg font-extrabold text-white mb-1 leading-tight">You're on top of recruiting!</p>
+        <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
       </div>
       <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "#16a34a", color: "white", border: "none" }}
+        style={{ background: "#e8456b", color: "white", border: "none" }}
         onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
         <Plus className="w-3 h-3" />Add School
       </button>
