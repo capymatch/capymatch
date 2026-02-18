@@ -129,6 +129,12 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
   - Both panels scroll together
   - New component: `/app/frontend/src/components/ProfilePreview.js`
 
+- **Google OAuth Login Fix (Complete)**: Fixed "Network Error" on Google sign-in:
+  - Root cause: Proxy returns `access-control-allow-origin: *` with `access-control-allow-credentials: true` (CORS spec violation)
+  - After Google redirect, browser enforces CORS on the session exchange XHR, rejecting the response
+  - Fix: Replaced axios (withCredentials: true) with native fetch (credentials: same-origin) for session exchange
+  - Added 10s timeout on backend Emergent auth server call
+
 - **Coach Watch Badge on Journey Page (Complete)**: Added coaching staff health indicator (Option A) to the Coach Panel:
   - Green "Staff Stable" badge when no alerts exist for the school
   - Amber "Staff Change" badge with inline alert details when a coach change is detected  
