@@ -134,11 +134,30 @@ function GhostColumn({ label, cardCount }) {
 /* ══════════════════════════════════════════ */
 export default function EmptyBoardState({ onSchoolAdded }) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [gmailConnected, setGmailConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [addingSchool, setAddingSchool] = useState(null);
+  const [gmailConnecting, setGmailConnecting] = useState(false);
+
+  // Handle Gmail OAuth callback params
+  useEffect(() => {
+    const gmailResult = searchParams.get("gmail");
+    if (gmailResult === "connected") {
+      toast.success("Gmail connected successfully!");
+      setGmailConnected(true);
+      searchParams.delete("gmail");
+      setSearchParams(searchParams, { replace: true });
+    } else if (gmailResult === "error") {
+      const reason = searchParams.get("reason") || "unknown";
+      toast.error(`Gmail connection failed: ${reason}`);
+      searchParams.delete("gmail");
+      searchParams.delete("reason");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     Promise.all([
