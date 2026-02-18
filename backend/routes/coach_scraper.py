@@ -254,7 +254,7 @@ async def scrape_one(request: Request):
         return {"error": "No domain for this university"}
 
     async with httpx.AsyncClient() as client:
-        result = await scrape_coaching_page(client, domain)
+        result = await scrape_coaching_page(client, domain, uni.get("website", ""))
 
     if not result or not result["coaches"]:
         return {"found": False, "message": f"Could not find coaching data for {name}"}
