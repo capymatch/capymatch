@@ -45,6 +45,7 @@ export default function Layout({ user, onLogout }) {
   const [showAssistant, setShowAssistant] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { planEvent, dismissPlanEvent, subscription } = useSubscription();
+  const { theme, toggle: toggleTheme } = useTheme();
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
