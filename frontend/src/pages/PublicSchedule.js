@@ -83,20 +83,28 @@ function formatTime(t) {
   return `${hr > 12 ? hr - 12 : hr}:${m} ${hr >= 12 ? "PM" : "AM"}`;
 }
 
+const STAT_COLORS = [
+  { bg: "#e8edf8", border: "rgba(99,102,241,0.15)", accent: "#4f46e5" },   // indigo
+  { bg: "#fde8ed", border: "rgba(232,69,107,0.20)", accent: "#e8456b" },    // pink (highlight)
+  { bg: "#e6f5ee", border: "rgba(16,185,129,0.15)", accent: "#059669" },    // green
+  { bg: "#f3ebfa", border: "rgba(139,92,246,0.15)", accent: "#7c3aed" },    // purple
+];
+
 /* ── Stat Card ── */
-function StatCard({ value, label, highlight }) {
+function StatCard({ value, label, colorIndex = 0 }) {
   if (!value) return null;
+  const c = STAT_COLORS[colorIndex % STAT_COLORS.length];
   return (
     <div
       className="rounded-2xl text-center transition-all duration-200"
       style={{
-        background: highlight ? "var(--p-stat-highlight-bg)" : "var(--p-stat-bg)",
-        border: highlight ? "1px solid var(--p-stat-highlight-border)" : "1px solid var(--p-stat-border)",
+        background: c.bg,
+        border: `1px solid ${c.border}`,
         padding: "24px 16px",
       }}
       data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
-      <div className="font-barlow font-[800] text-[34px] leading-none" style={{ color: highlight ? "var(--p-accent)" : "var(--p-text)" }}>{value}</div>
+      <div className="font-barlow font-[800] text-[34px] leading-none" style={{ color: c.accent }}>{value}</div>
       <div className="text-[10px] font-medium uppercase tracking-[1.5px] mt-1.5" style={{ color: "var(--p-text-muted)" }}>{label}</div>
     </div>
   );
