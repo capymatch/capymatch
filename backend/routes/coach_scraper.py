@@ -92,10 +92,23 @@ def name_from_email(email):
 
 
 def is_valid_name(name):
-    """Check if a name is real (not a JS-rendered placeholder)."""
+    """Check if a name is real (not a JS-rendered placeholder or label)."""
     if not name:
         return False
-    return name.strip().lower() not in PLACEHOLDER_NAMES and len(name.strip()) > 2
+    n = name.strip().lower()
+    if n in PLACEHOLDER_NAMES:
+        return False
+    if len(n) < 3:
+        return False
+    # Reject labels/categories
+    bad_words = ["volleyball", "sport", "staff", "directory", "contact", "email", "team",
+                 "roster", "schedule", "ticket", "news", "media", "men's", "women's", "athletic"]
+    if any(w in n for w in bad_words):
+        return False
+    # Reject names with years in them
+    if re.search(r'20\d{2}', n):
+        return False
+    return True
 
 
 def is_valid_title(title):
