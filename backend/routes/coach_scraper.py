@@ -19,24 +19,33 @@ HEADERS = {
 scrape_status = {"running": False, "scraped": 0, "failed": 0, "total": 0, "done": True}
 
 # URL patterns to try for volleyball coaching pages
-def get_url_candidates(domain):
+def get_url_candidates(domain, website=""):
     """Generate candidate URLs for the volleyball coaching page."""
-    base = domain.rstrip("/")
-    if not base.startswith("http"):
-        base_https = f"https://{base}"
-    else:
-        base_https = base
-
     candidates = []
-    # Direct athletics subdomain patterns
-    for sport_path in [
-        "/sports/womens-volleyball/coaches",
-        "/sports/volleyball/coaches",
-        "/sports/wvball/coaches",
-        "/sports/w-volley/coaches",
-    ]:
-        candidates.append(f"{base_https}{sport_path}")
-        candidates.append(f"https://athletics.{base}{sport_path}")
+
+    # Priority 1: Use the athletics website URL if available
+    if website:
+        w = website.rstrip("/")
+        if not w.startswith("http"):
+            w = f"https://{w}"
+        # If it's a sport-specific URL, try appending /coaches
+        if "/sports/" in w or "/volleyball" in w:
+            base_sport = re.sub(r'/roster.*|/schedule.*', '', w)
+            candidates.append(f"{base_sport}/coaches")
+            candidates.append(base_sport)
+        # Try the athletics domain root + coaching pages
+        from urllib.parse import urlparse
+        parsed = urlparse(w)
+        ath_base = f"{parsed.scheme}://{parsed.netloc}"
+        for sp in ["/sports/womens-volleyball/coaches", "/sports/volleyball/coaches", "/sports/wvball/coaches"]:
+            candidates.append(f"{ath_base}{sp}")
+
+    # Priority 2: Try domain-based patterns
+    base = domain.rstrip("/")
+    if base:
+        for sp in ["/sports/womens-volleyball/coaches", "/sports/volleyball/coaches", "/sports/wvball/coaches"]:
+            candidates.append(f"https://{base}{sp}")
+            candidates.append(f"https://athletics.{base}{sp}")
 
     return candidates
 
