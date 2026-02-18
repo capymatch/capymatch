@@ -398,7 +398,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
 
   return (
     <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(232,69,107,0.15)", background: "linear-gradient(135deg, rgba(232,69,107,0.04), var(--t-surface) 60%)" }}
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(190,24,93,0.25)", background: "linear-gradient(135deg, rgba(190,24,93,0.08), var(--t-surface) 60%)" }}
       data-testid="next-step-card">
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
@@ -408,7 +408,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
           <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#e8456b" }}>What's Next</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#be185d" }}>What's Next</p>
           <h3 className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>{rule.title}</h3>
           <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>{rule.desc}</p>
           <div className="flex gap-2 flex-wrap">
@@ -471,18 +471,18 @@ function ConversationBubble({ event }) {
     <div className={`flex ${isRight ? "justify-end" : "justify-start"} my-1`} data-testid={`conv-bubble-${isRight ? "right" : "left"}`}>
       <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
         isRight
-          ? "rounded-br-md bg-pink-600/[0.06] border-pink-600/15"
-          : "rounded-bl-md bg-emerald-500/[0.06] border-emerald-500/15"
+          ? "rounded-br-md bg-pink-800/[0.10] border-pink-700/25"
+          : "rounded-bl-md bg-emerald-600/[0.08] border-emerald-500/20"
       }`}>
-        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-pink-500" : "text-emerald-400"}`}>
+        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-pink-700" : "text-emerald-500"}`}>
           {isRight ? "You" : (event.coach_name || "Coach")}
         </p>
         {content && (
           <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
             {hasLong && !expanded ? (
-              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-pink-500 text-[10px] mt-1 font-medium">Show more</button></>
+              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-pink-700 text-[10px] mt-1 font-medium">Show more</button></>
             ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-pink-500 text-[10px] mt-1 font-medium">Show less</button></>
+              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-pink-700 text-[10px] mt-1 font-medium">Show less</button></>
             ) : <p>{content}</p>}
           </div>
         )}
