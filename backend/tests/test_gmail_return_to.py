@@ -174,14 +174,11 @@ class TestNotesChangeCallback:
         programs_resp = self.session.get(f"{BASE_URL}/api/programs")
         programs_data = programs_resp.json()
         
-        all_programs = []
-        for group in programs_data.get("groups", {}).values():
-            all_programs.extend(group.get("programs", []))
-        
-        if not all_programs:
+        # Programs API returns a list directly
+        if not programs_data:
             pytest.skip("No programs found")
         
-        program_id = all_programs[0]["program_id"]
+        program_id = programs_data[0]["program_id"]
         
         # Get initial notes count
         notes_resp = self.session.get(f"{BASE_URL}/api/programs/{program_id}/notes")
