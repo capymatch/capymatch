@@ -195,33 +195,33 @@ def _clean_coaches(coaches):
     return assign_titles(cleaned)
 
 
-async def scrape_coaching_page(client, domain, website=""):
+async def scrape_coaching_page(http_client, domain, website=""):
     """Try to find and scrape the volleyball coaching page for a school."""
     candidates = get_url_candidates(domain, website)
 
-    for url in candidates:
+    for url in candidates[:15]:  # Cap at 15 URLs to avoid excessive requests
         try:
-            resp = await client.get(url, headers=HEADERS, follow_redirects=True, timeout=10)
+            resp = await http_client.get(url, headers=HEADERS, follow_redirects=True, timeout=12)
             if resp.status_code != 200:
                 continue
 
             html = resp.text
-            # Quick check: does this page mention volleyball?
             if "volleyball" not in html.lower() and "volley" not in html.lower():
                 continue
 
             soup = BeautifulSoup(html, "lxml")
 
-            # Extract structured coaches
+            # Try structured extraction first
             coaches = extract_coaches_structured(soup)
 
-            # If no structured data, fall back to email extraction
+            # Fallback: raw email extraction from the page
             if not coaches:
                 emails = extract_emails_from_html(html)
                 if emails:
-                    for i, e in enumerate(emails[:5]):
-                        title = "Head Coach" if i == 0 else ("Assistant Coach" if i < 3 else "Staff")
-                        coaches.append({"name": name_from_email(e), "title": title, "email": e})
+                    coaches = []
+                    for e in emails[:5]:
+                        coaches.append({"name": name_from_email(e), "title": "", "email": e})
+                    coaches = assign_titles(coaches)
 
             if coaches:
                 return {"url": str(resp.url), "coaches": coaches}
