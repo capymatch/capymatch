@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   Search, Plus, AlertTriangle, Clock, MessageSquare, Archive, Sparkles,
   Mail, AlertCircle, CheckCircle2, Send, ChevronRight, X, Loader2,
-  ArrowRight, Filter
+  ArrowRight, Filter, PartyPopper, Rocket
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
