@@ -62,6 +62,23 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Dashboard Redesign with 6 sections
 - My Schools Empty State Redesign
 
+## What's Implemented (Recent — Feb 18, 2026 Session 4)
+
+### Investor Demo Walkthrough (Interactive HTML)
+Created a polished, 8-slide interactive HTML walkthrough at `/investor-walkthrough.html` for investor presentations. Features:
+- **Slide 1**: Problem statement — 500K+ players, ~4% make a roster, 0 tools built for families
+- **Slide 2**: Personalized onboarding questionnaire (mock UI)
+- **Slide 3**: AI-powered school discovery with spotlight hero and grid cards (mock UI)
+- **Slide 4**: Recruiting board command center with kanban columns (mock UI)
+- **Slide 5**: Per-school journey tracking with progress rail, What's Next, and timeline (mock UI)
+- **Slide 6**: Smart follow-up system with AI-drafted emails (mock UI)
+- **Slide 7**: Commitment celebration with confetti and stats
+- **Slide 8**: Business model — pricing tiers (Free/Pro/Premium), TAM metrics, live demo CTA
+- Navigation: Arrow keys, spacebar auto-play, touch swipe, clickable dots, progress bar
+- URL: `{app-url}/investor-walkthrough.html`
+
+**New File:** `/app/frontend/public/investor-walkthrough.html`
+
 ## What's Implemented (Recent — Feb 18, 2026 Session 3)
 
 ### Find Schools Page Complete Redesign (6 Apple-Inspired UX Features)
