@@ -195,6 +195,30 @@ def _clean_coaches(coaches):
     return assign_titles(cleaned)
 
 
+async def discover_athletics_domain(http_client, domain):
+    """Fetch the main university page and look for links to athletics sites."""
+    try:
+        resp = await http_client.get(f"https://www.{domain}", headers=HEADERS, follow_redirects=True, timeout=8)
+        if resp.status_code != 200:
+            resp = await http_client.get(f"https://{domain}", headers=HEADERS, follow_redirects=True, timeout=8)
+        if resp.status_code != 200:
+            return []
+
+        html = resp.text
+        soup = BeautifulSoup(html, "lxml")
+        found = set()
+        for a in soup.select('a[href]'):
+            href = a.get('href', '').lower()
+            text = a.get_text(strip=True).lower()
+            if ('athletics' in href or 'athletics' in text or 'sports' in href) and href.startswith('http'):
+                parsed = urlparse(href)
+                if parsed.netloc and parsed.netloc != domain and f"www.{domain}" not in parsed.netloc:
+                    found.add(f"{parsed.scheme}://{parsed.netloc}")
+        return list(found)[:3]
+    except Exception:
+        return []
+
+
 async def scrape_coaching_page(http_client, domain, website=""):
     """Try to find and scrape the volleyball coaching page for a school."""
     candidates = get_url_candidates(domain, website)
