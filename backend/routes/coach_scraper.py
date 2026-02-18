@@ -106,9 +106,9 @@ def extract_coaches_structured(soup):
     return coaches
 
 
-async def scrape_coaching_page(client, domain):
+async def scrape_coaching_page(client, domain, website=""):
     """Try to find and scrape the volleyball coaching page for a school."""
-    candidates = get_url_candidates(domain)
+    candidates = get_url_candidates(domain, website)
 
     for url in candidates:
         try:
