@@ -40,7 +40,7 @@ function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub }) {
 }
 
 /* ── Action Item Row ── */
-function ActionRow({ color, initial, school, detail, badge, badgeBg, badgeColor, onClick }) {
+function ActionRow({ domain, school, detail, badge, badgeBg, badgeColor, onClick }) {
   return (
     <div
       className="flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors border-b last:border-b-0"
@@ -49,9 +49,7 @@ function ActionRow({ color, initial, school, detail, badge, badgeBg, badgeColor,
       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
     >
-      <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: color }}>
-        {initial}
-      </div>
+      <UniLogo domain={domain} name={school} size={36} />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "var(--t-text)" }}>{school}</p>
         <p className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{detail}</p>
