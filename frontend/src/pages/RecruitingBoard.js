@@ -266,7 +266,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
       <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
         {stage === "waiting_on_reply" && (
           <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
             onClick={() => onMarkReplied(p)}
             data-testid={`quick-mark-replied-${p.program_id}`}
           >
