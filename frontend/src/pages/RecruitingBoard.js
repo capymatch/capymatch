@@ -424,6 +424,62 @@ export default function RecruitingBoard() {
   // All caught up state
   const allCaughtUp = total > 0 && !focusProgram;
 
+  // Congrats screen — shown after first school is added
+  if (showCongrats && total > 0) {
+    const firstSchool = allPrograms[0];
+    return (
+      <div className="flex items-center justify-center min-h-[70vh]" data-testid="congrats-screen">
+        <div className="text-center max-w-md mx-auto px-6">
+          {/* Celebration icon */}
+          <div className="relative inline-flex items-center justify-center mb-6">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(232,69,107,0.1)" }}>
+              <PartyPopper className="w-10 h-10" style={{ color: "#e8456b" }} />
+            </div>
+            <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4 text-white" />
+            </div>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--t-text)", letterSpacing: "-0.5px" }}>
+            Congratulations!
+          </h1>
+          <p className="text-base mb-2" style={{ color: "var(--t-text-secondary)" }}>
+            You added <strong style={{ color: "var(--t-text)" }}>{firstSchool?.university_name || "your first school"}</strong> to your board.
+          </p>
+          <p className="text-sm mb-8" style={{ color: "var(--t-text-muted)" }}>
+            Your recruiting journey starts now. Let's set up your first outreach.
+          </p>
+
+          <button
+            className="inline-flex items-center gap-2 text-base font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90"
+            style={{ backgroundColor: "#e8456b", color: "white", boxShadow: "0 4px 14px rgba(232,69,107,0.3)" }}
+            onClick={() => {
+              if (firstSchool?.program_id) {
+                navigate(`/journey/${firstSchool.program_id}`);
+              } else {
+                setShowCongrats(false);
+              }
+            }}
+            data-testid="start-journey-btn"
+          >
+            <Rocket className="w-5 h-5" />
+            Start Your Journey
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          <button
+            className="block mx-auto mt-4 text-sm font-medium transition-colors"
+            style={{ color: "var(--t-text-muted)" }}
+            onClick={() => setShowCongrats(false)}
+            data-testid="skip-congrats-btn"
+          >
+            or continue to My Schools
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div data-testid="recruiting-board" className="flex flex-col gap-5">
       {/* ─── Empty Board State ─── */}
