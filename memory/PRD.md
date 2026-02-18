@@ -91,7 +91,9 @@ High School Volleyball Athletes & Families
 - Google Auth User (Demo Data): `douglas@yeslms.com`
 
 ## Key Files
-- `/app/frontend/src/components/FindSchools/SchoolGridCard.js` — School cards with scorecard display
+- `/app/backend/routes/coach_scraper.py` — Coach scraper logic and endpoints
+- `/app/backend/tests/test_coach_scraper.py` — Coach scraper test suite
+- `/app/frontend/src/components/FindSchools/SchoolGridCard.js` — School cards with scorecard + coach display
 - `/app/backend/routes/college_scorecard.py` — College Scorecard API routes
 - `/app/backend/routes/admin_integrations.py` — Admin integrations
 - `/app/frontend/src/pages/AdminIntegrations.js` — Admin integrations UI
