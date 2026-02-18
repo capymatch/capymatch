@@ -589,6 +589,35 @@ export default function AdminIntegrations() {
           </div>
         </div>
       </IntegrationCard>
+
+      {/* Coach Scraper */}
+      <IntegrationCard
+        icon={Search}
+        title="Coach Finder"
+        subtitle="Auto-scrape coaching staff names and emails from university athletics websites"
+        status={coachScraper.stats?.has_coach_email > 0}
+        statusLabel={coachScraper.stats?.has_coach_email > 0 ? `${coachScraper.stats.has_coach_email} found` : "Not run yet"}
+        accent="bg-emerald-500/15 text-emerald-400"
+      >
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <StatRow label="Schools with Coach Email" value={`${coachScraper.stats?.has_coach_email || 0} of ${coachScraper.stats?.total || 0}`} />
+            <StatRow label="Missing Coach Data" value={coachScraper.stats?.missing_coach_email || 0} />
+          </div>
+          <Button
+            onClick={scrapeCoaches}
+            disabled={scrapingCoaches}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+            data-testid="coach-scrape-btn"
+          >
+            {scrapingCoaches ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+            {scrapingCoaches ? `Scraping... (${scrapeProgress})` : "Find Coaches for All Schools"}
+          </Button>
+          <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+            Scrapes university athletics websites for volleyball coaching staff. Finds names, titles, and email addresses.
+          </p>
+        </div>
+      </IntegrationCard>
     </div>
   );
 }
