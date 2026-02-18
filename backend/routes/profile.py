@@ -16,7 +16,7 @@ async def get_athlete_profile(request: Request):
     tenant_id = await get_tenant_id(user)
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
-        return {"tenant_id": tenant_id, "athlete_name": "", "grad_year": "", "position": "", "height": "", "club_team": "", "jersey_number": "", "high_school": "", "gpa": "", "contact_email": "", "contact_phone": "", "parent_name": "", "parent_email": "", "parent_phone": "", "video_link": "", "photo_url": "", "bio": "", "state": "", "city": "", "weight": "", "handed": "", "standing_reach": "", "approach_touch": "", "block_touch": "", "wingspan": "", "hudl_profile_url": ""}
+        return {"tenant_id": tenant_id, "athlete_name": "", "graduation_year": "", "position": "", "height": "", "club_team": "", "jersey_number": "", "high_school": "", "gpa": "", "contact_email": "", "contact_phone": "", "parent_name": "", "parent_email": "", "parent_phone": "", "video_link": "", "photo_url": "", "bio": "", "state": "", "city": "", "weight": "", "handed": "", "standing_reach": "", "approach_touch": "", "block_touch": "", "wingspan": "", "hudl_profile_url": ""}
     return profile
 
 
