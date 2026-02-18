@@ -164,11 +164,27 @@ export default function AdminIntegrations() {
     setSyncingScorecard(true);
     try {
       const res = await api.post("/admin/integrations/scorecard/sync");
-      toast.success(`Synced ${res.data.synced} schools (${res.data.failed} failed)`);
-      fetchIntegrations();
+      if (res.data.status === "already_running") {
+        toast.info("Sync already in progress...");
+      } else {
+        toast.success(`Sync started — ${res.data.remaining} schools to sync (${res.data.already_synced} already done)`);
+      }
+      // Poll for progress
+      const poll = setInterval(async () => {
+        try {
+          const status = await api.get("/admin/integrations/scorecard/sync-status");
+          if (status.data.done || !status.data.running) {
+            clearInterval(poll);
+            setSyncingScorecard(false);
+            if (status.data.synced > 0) {
+              toast.success(`Sync complete — ${status.data.synced} synced, ${status.data.failed} failed`);
+            }
+            fetchIntegrations();
+          }
+        } catch { clearInterval(poll); setSyncingScorecard(false); }
+      }, 5000);
     } catch (err) {
       toast.error(err.response?.data?.detail || "Sync failed");
-    } finally {
       setSyncingScorecard(false);
     }
   };
