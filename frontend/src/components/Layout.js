@@ -473,6 +473,17 @@ export default function Layout({ user, onLogout }) {
               )}
             </div>
 
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]"
+              style={{ color: "var(--t-text-muted)" }}
+              data-testid="theme-toggle-btn"
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {theme === "dark" ? <Sun className="w-5 h-5" strokeWidth={1.5} /> : <Moon className="w-5 h-5" strokeWidth={1.5} />}
+            </button>
+
             {/* Divider */}
             <div className="w-px h-8 hidden lg:block" style={{ backgroundColor: "var(--t-border)" }} />
 
