@@ -92,7 +92,7 @@ function ProgressRail({ rail, onStageClick }) {
       {/* Rail track row */}
       <div style={{ position: "relative", height: DOT_ACTIVE + 8, display: "flex", alignItems: "center" }}>
         {/* Background track */}
-        <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: "translateY(-50%)", height: 2, background: "var(--t-border)", zIndex: 0 }} />
+        <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: "translateY(-50%)", height: 2, background: "rgba(255,255,255,0.06)", zIndex: 0 }} />
         {/* Filled track — gradient across completed stages */}
         {fillScale > 0 && (
           <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: fillGradient, zIndex: 0, transition: "transform 0.5s ease" }} />
@@ -110,8 +110,8 @@ function ProgressRail({ rail, onStageClick }) {
               <div style={{ position: "relative", width: size, height: size }}>
                 <div style={{
                   width: size, height: size, borderRadius: "50%",
-                  border: `2px solid ${completed || isActive ? stageColor : "var(--t-border)"}`,
-                  background: completed || isActive ? stageColor : "var(--t-surface)",
+                  border: `2px solid ${completed || isActive ? stageColor : "rgba(255,255,255,0.1)"}`,
+                  background: completed || isActive ? stageColor : "#1e1e2e",
                   boxShadow: isActive ? `0 0 12px ${stageColor}66` : completed ? `0 0 8px ${stageColor}26` : "none",
                   transition: "all 0.3s",
                 }} />
@@ -137,7 +137,7 @@ function ProgressRail({ rail, onStageClick }) {
             <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
               <span style={{
                 fontSize: 10, fontWeight: isActive ? 700 : completed ? 600 : 500,
-                color: isActive ? s.color : completed ? "var(--t-text-secondary)" : "var(--t-text-muted)",
+                color: isActive ? s.color : completed ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.2)",
               }}>{s.label}</span>
             </div>
           );
