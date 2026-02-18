@@ -1299,7 +1299,7 @@ export default function RecruitingJourney() {
             programId={programId} onDraftEmail={openEmail} onAddCoach={openCoach} onScheduleFollowup={() => fetchData()} />
 
           {/* Coach management (below At a Glance) */}
-          {coaches.length > 0 && (
+          {coaches.length > 0 ? (
             <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
