@@ -434,8 +434,7 @@ export default function Dashboard() {
             {needsOutreach.length > 0 ? needsOutreach.slice(0, 4).map((p, i) => (
               <ActionRow
                 key={p.program_id}
-                color={avatarGradients[(i + 3) % avatarGradients.length]}
-                initial={(p.university_name || "?")[0]}
+                domain={p.domain}
                 school={p.university_name}
                 detail={`${p.division || "—"} · Added ${getDaysAgo(p.created_at?.split("T")[0] || "")} · No contact yet`}
                 badge={p.division || "—"}
