@@ -91,8 +91,8 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
             {uni.match_reasons?.length > 0 && (
               <>
                 <div className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted)" }}>Why This School?</div>
-                <div className="rounded-lg p-4 mb-4 text-[13px] leading-relaxed" style={{ background: "var(--t-accent-light, rgba(190,24,93,0.06))", border: "1px solid var(--t-accent-border, rgba(190,24,93,0.12))", color: "var(--t-text-secondary)" }}>
-                  <Sparkles className="w-3.5 h-3.5 inline mr-1.5" style={{ color: "var(--t-accent, #be185d)" }} />
+                <div className="rounded-lg p-4 mb-4 text-[13px] leading-relaxed bg-teal-500/5 border border-teal-500/15" style={{ color: "var(--t-text-secondary)" }}>
+                  <Sparkles className="w-3.5 h-3.5 inline mr-1.5 text-teal-600" />
                   <strong style={{ color: "var(--t-text)" }}>{uni.university_name} is a strong match</strong> because it aligns with your preferences in {uni.match_reasons.join(", ").toLowerCase()}.
                   {uni.primary_coach && ` Coach ${uni.primary_coach.split(" ")[1] || uni.primary_coach} leads the program.`}
                 </div>
@@ -104,7 +104,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 <div className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted)" }}>Match Reasons</div>
                 <div className="flex flex-wrap gap-1.5 mb-5">
                   {uni.match_reasons.map(r => (
-                    <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium" style={{ background: "var(--t-accent-light, rgba(190,24,93,0.08))", color: "var(--t-accent, #be185d)", border: "1px solid var(--t-accent-border, rgba(190,24,93,0.15))" }}>
+                    <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-teal-500/10 text-teal-700 border border-teal-500/20">
                       {r}
                     </span>
                   ))}
@@ -117,7 +117,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 onClick={() => addToBoard(uni)}
                 disabled={adding[uni.university_name] || isOnBoard}
                 data-testid={`expanded-add-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-pink-700 hover:bg-pink-800 text-white"}`}
+                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
               >
                 {isOnBoard ? (<><Check className="w-4 h-4" /> On Your Board</>) : (<><Plus className="w-4 h-4" />{adding[uni.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>
