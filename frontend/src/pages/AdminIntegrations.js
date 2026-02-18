@@ -174,15 +174,18 @@ export default function AdminIntegrations() {
       const poll = setInterval(async () => {
         try {
           const status = await api.get("/admin/integrations/scorecard/sync-status");
-          if (status.data.done || !status.data.running) {
+          const d = status.data;
+          setSyncProgress(`${d.synced + d.failed} / ${d.total}`);
+          if (d.done || !d.running) {
             clearInterval(poll);
             setSyncingScorecard(false);
-            if (status.data.synced > 0) {
-              toast.success(`Sync complete — ${status.data.synced} synced, ${status.data.failed} failed`);
+            setSyncProgress("");
+            if (d.synced > 0) {
+              toast.success(`Sync complete — ${d.synced} synced, ${d.failed} failed`);
             }
             fetchIntegrations();
           }
-        } catch { clearInterval(poll); setSyncingScorecard(false); }
+        } catch { clearInterval(poll); setSyncingScorecard(false); setSyncProgress(""); }
       }, 5000);
     } catch (err) {
       toast.error(err.response?.data?.detail || "Sync failed");
