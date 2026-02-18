@@ -342,10 +342,10 @@ export default function PublicSchedule() {
             <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Athletic Measurables</SectionLabel>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <StatCard value={profile.standing_reach} label="Standing Reach" />
-                <StatCard value={profile.approach_touch} label="Approach Touch" highlight />
-                <StatCard value={profile.block_touch} label="Block Touch" />
-                <StatCard value={profile.wingspan} label="Wingspan" />
+                <StatCard value={profile.standing_reach} label="Standing Reach" colorIndex={0} />
+                <StatCard value={profile.approach_touch} label="Approach Touch" colorIndex={1} />
+                <StatCard value={profile.block_touch} label="Block Touch" colorIndex={2} />
+                <StatCard value={profile.wingspan} label="Wingspan" colorIndex={3} />
               </div>
             </div>
           </div>
