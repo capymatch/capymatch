@@ -1025,6 +1025,11 @@ export default function RecruitingJourney() {
           const found = (msRes.data?.scores || []).find(s => s.program_id === programId);
           if (found) setMatchScore(found);
         } catch {}
+        // Fetch coach watch alert for this school
+        try {
+          const cwRes = await api.get(`/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
+          setCoachWatchAlert(cwRes.data?.alert || null);
+        } catch { setCoachWatchAlert(null); }
       }
     } catch {
       toast.error("Failed to load journey data");
