@@ -605,14 +605,27 @@ export default function AdminIntegrations() {
             <StatRow label="Missing Coach Data" value={coachScraper.stats?.missing_coach_email || 0} />
           </div>
           <Button
-            onClick={scrapeCoaches}
+            onClick={() => scrapeCoaches(false)}
             disabled={scrapingCoaches}
             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
             data-testid="coach-scrape-btn"
           >
             {scrapingCoaches ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            {scrapingCoaches ? `Scraping... (${scrapeProgress})` : "Find Coaches for All Schools"}
+            {scrapingCoaches ? `Scraping... (${scrapeProgress})` : "Find Coaches for Missing Schools"}
           </Button>
+          {(coachScraper.stats?.has_coach_email > 0) && (
+            <Button
+              onClick={() => scrapeCoaches(true)}
+              disabled={scrapingCoaches}
+              variant="outline"
+              className="w-full gap-1.5 text-xs"
+              style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+              data-testid="coach-rescrape-btn"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Re-scrape All Schools (refresh existing data)
+            </Button>
+          )}
           <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
             Scrapes university athletics websites for volleyball coaching staff. Finds names, titles, and email addresses.
           </p>
