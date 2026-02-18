@@ -53,6 +53,7 @@ async def add_to_board(request: Request):
         "conference": uni.get("conference", ""),
         "region": uni.get("region", ""),
         "website": uni.get("website", ""),
+        "domain": uni.get("domain", ""),
         "mascot": uni.get("mascot", ""),
         "primary_coach": uni.get("primary_coach", ""),
         "coach_email": uni.get("coach_email", ""),
