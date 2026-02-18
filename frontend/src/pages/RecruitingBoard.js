@@ -13,6 +13,27 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import EmptyBoardState from "./pipeline/EmptyBoardState";
 
+/* ── University Logo ── */
+function UniversityLogo({ domain, name, size = 40 }) {
+  const [failed, setFailed] = useState(false);
+  const initials = (name || "").split(" ").filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join("").toUpperCase() || "U";
+  if (!domain || failed) {
+    return (
+      <div className="rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs"
+        style={{ width: size, height: size, backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+      >{initials}</div>
+    );
+  }
+  return (
+    <img src={`https://www.google.com/s2/favicons?domain=${domain}&sz=${size * 2}`}
+      alt={`${name} logo`} width={size} height={size}
+      className="rounded-lg flex-shrink-0 object-contain"
+      style={{ backgroundColor: "#fff", border: "1px solid var(--t-border)" }}
+      onError={() => setFailed(true)} loading="lazy" data-testid="university-logo"
+    />
+  );
+}
+
 /* ── Stage Config ── */
 const STAGES = {
   overdue:          { label: "Overdue",          icon: AlertTriangle,  color: "rose",    ring: "#f43f5e" },
