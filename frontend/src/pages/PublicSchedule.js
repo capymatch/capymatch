@@ -215,7 +215,9 @@ export default function PublicSchedule() {
             </div>
 
             <h1 className="font-barlow font-[800] text-[42px] sm:text-[58px] leading-none uppercase text-white mt-3" data-testid="athlete-name">
-              {(profile.athlete_name || "Athlete").split(" ").map((w, i) => <span key={i}>{w}<br className="hidden sm:inline" /></span>)}
+              {(profile.athlete_name || "Athlete").split(" ").map((w, i, arr) => (
+                <span key={i}>{w}{i < arr.length - 1 && <><br className="hidden sm:inline" /><span className="sm:hidden"> </span></>}</span>
+              ))}
             </h1>
 
             <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center sm:justify-start text-[15px] text-[#8b8b9e] font-medium">
