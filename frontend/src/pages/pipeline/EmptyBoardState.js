@@ -325,33 +325,18 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           </div>
         </div>
 
-        {/* Action Path Cards — only shown on Step 3 (Add Schools) */}
+        {/* Action — only shown on Step 3 (Add Schools) */}
         {profileDone && gmailConnected && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 px-6 pb-6 lg:px-8">
-            <ActionPath
-              icon={Sparkles}
-              iconBg="rgba(168,85,247,0.12)"
-              iconColor="#a855f7"
-              title="AI Recommendations"
-              description={firstName ? `Schools matched to ${firstName}'s profile and preferences` : "See schools matched to your athlete's profile"}
-              onClick={() => navigate("/knowledge-base?tab=recommended")}
-            />
-            <ActionPath
-              icon={GraduationCap}
-              iconBg="rgba(59,130,246,0.12)"
-              iconColor="#3b82f6"
-              title="Browse by Division"
-              description="Filter D1, D2, D3, NAIA — find the right competitive level"
+          <div className="px-6 pb-4 lg:px-8 flex items-center gap-4">
+            <button
+              className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
+              style={{ backgroundColor: "#e8456b", color: "white" }}
               onClick={() => navigate("/knowledge-base")}
-            />
-            <ActionPath
-              icon={MapPin}
-              iconBg="rgba(6,182,212,0.12)"
-              iconColor="#06b6d4"
-              title="Search by Location"
-              description="Find programs near home or across the country"
-              onClick={() => navigate("/knowledge-base?tab=location")}
-            />
+              data-testid="find-schools-btn"
+            >
+              Find Schools <ChevronRight className="w-4 h-4" />
+            </button>
+            <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>or add from the matches below</span>
           </div>
         )}
       </div>
