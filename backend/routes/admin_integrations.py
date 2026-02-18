@@ -63,6 +63,12 @@ async def get_integrations_status():
     synced_count = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": True}})
     total_universities = await db.university_knowledge_base.count_documents({})
 
+    # ── Coach Scraper ──
+    has_coach = await db.university_knowledge_base.count_documents({"coach_email": {"$ne": ""}})
+    missing_coach = await db.university_knowledge_base.count_documents(
+        {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]}
+    )
+
     return {
         "gmail": {
             "connected": len(gmail_connected_users) > 0,
