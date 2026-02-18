@@ -13,6 +13,20 @@ const DIV_COLORS = {
 
 const DIV_FULL = { D1: "NCAA I", D2: "NCAA II", D3: "NCAA III" };
 
+function ScorecardStat({ icon: Icon, label, value, color }) {
+  return (
+    <div className="rounded-lg p-2.5 flex items-center gap-2.5" style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
+      <div className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15` }}>
+        <Icon className="w-3.5 h-3.5" style={{ color }} />
+      </div>
+      <div className="min-w-0">
+        <div className="text-[13px] font-bold leading-tight" style={{ color: "var(--t-text)" }}>{value}</div>
+        <div className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{label}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, isExpanded, onToggleExpand }) {
   const isOnBoard = boardSchools.has(uni.university_name);
   const divColor = DIV_COLORS[uni.division] || "bg-gray-500/15 text-gray-600";
