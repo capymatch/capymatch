@@ -15,9 +15,15 @@ const TOUR_STEPS = [
     position: "right",
   },
   {
-    target: '[data-testid="nav-pipeline"]',
+    target: '[data-testid="nav-my schools"]',
     title: "My Schools",
     description: "Track every school you're recruiting with. Drag-and-drop to update status, manage contacts, and log follow-ups.",
+    position: "right",
+  },
+  {
+    target: '[data-testid="nav-my inbox"]',
+    title: "Inbox",
+    description: "Connect Gmail to email coaches directly from the app. AI will help you draft personalized outreach.",
     position: "right",
   },
   {
@@ -27,19 +33,13 @@ const TOUR_STEPS = [
     position: "right",
   },
   {
-    target: '[data-testid="nav-inbox"]',
-    title: "Inbox",
-    description: "Connect Gmail to email coaches directly from the app. AI will help you draft personalized outreach.",
-    position: "right",
-  },
-  {
-    target: '[data-testid="nav-schools"]',
+    target: '[data-testid="nav-find schools"]',
     title: "School Database",
     description: "Browse 1,000+ volleyball programs across D1, D2, and D3. Add schools to your list with one click.",
     position: "right",
   },
   {
-    target: '[data-testid="nav-outreach ai"]',
+    target: '[data-testid="nav-ai-features-toggle"]',
     title: "AI-Powered Tools",
     description: "Pro & Premium members get AI outreach analysis, highlight reel advice, and a personal recruiting assistant.",
     position: "right",
@@ -53,7 +53,7 @@ const TOUR_STEPS = [
   {
     target: null,
     title: "You're all set!",
-    description: "Start by adding your first target school from the Schools page, then build out your athlete profile. Let's go!",
+    description: "You've added your first school — now build out your athlete profile and start reaching out to coaches!",
     position: "center",
   },
 ];
@@ -74,6 +74,7 @@ export default function Tour({ onComplete }) {
       const r = el.getBoundingClientRect();
       setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     } else {
+      // Target not found — skip to next step automatically
       setRect(null);
     }
   }, [current.target]);
@@ -84,8 +85,23 @@ export default function Tour({ onComplete }) {
     return () => window.removeEventListener("resize", updateRect);
   }, [updateRect]);
 
+  // Auto-skip steps where target element doesn't exist
+  useEffect(() => {
+    if (!current.target) return; // center steps are fine
+    const el = document.querySelector(current.target);
+    if (!el) {
+      // Element not in DOM, skip forward
+      if (step < TOUR_STEPS.length - 1) {
+        setStep(s => s + 1);
+      } else {
+        finish();
+      }
+    }
+  }, [step, current.target]);
+
   const finish = () => {
     localStorage.setItem("tour_completed", "true");
+    localStorage.removeItem("show_tour");
     onComplete();
   };
 
