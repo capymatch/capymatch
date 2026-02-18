@@ -129,6 +129,13 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
   - Both panels scroll together
   - New component: `/app/frontend/src/components/ProfilePreview.js`
 
+- **Guided Tour Fix (Complete)**: Fixed tour feature:
+  - Tour now triggers only after user adds their first school (not on every first visit)
+  - Fixed 4 mismatched tour step targets (nav-pipeline→nav-my schools, nav-inbox→nav-my inbox, nav-schools→nav-find schools, nav-outreach ai→nav-ai-features-toggle)
+  - Added auto-skip logic for missing DOM elements
+  - Updated Settings > Replay Tour button to work with new flag system
+  - Tour trigger added to EmptyBoardState and UniversityKnowledgeBase school addition flows
+
 - **First Reply Celebration Feature (Complete)**: End-to-end celebration for first coach reply:
   - Backend: GET /api/first-reply-celebration (checks status), POST /api/first-reply-celebration/dismiss
   - Frontend: `/app/frontend/src/components/FirstReplyCelebration.js` modal with animations
