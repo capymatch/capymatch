@@ -170,7 +170,9 @@ export default function UniversityKnowledgeBase() {
               return (
                 <div key={s.university_name} className="rounded-lg p-4 border transition-all" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }} data-testid={`suggestion-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="min-w-0">
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      <UniversityLogo domain={s.domain} name={s.university_name} size={32} />
+                      <div className="min-w-0">
                       <h4 className="font-semibold text-sm truncate" style={{ color: "var(--t-text)" }}>{s.university_name}</h4>
                       <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
                         <MapPin className="w-3 h-3" /> {s.region}
