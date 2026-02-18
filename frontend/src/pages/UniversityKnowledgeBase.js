@@ -344,7 +344,7 @@ export default function UniversityKnowledgeBase() {
           ) : (
             <>
               {paginated.map((uni) => (
-                <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} />
+                <UniversityCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} />
               ))}
               {/* Pagination */}
               {totalPages > 1 && (
