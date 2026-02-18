@@ -105,7 +105,7 @@ function StatCard({ value, label, colorIndex = 0 }) {
       data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
       <div className="font-barlow font-[800] text-[34px] leading-none" style={{ color: "var(--p-text)" }}>{value}</div>
-      <div className="text-[10px] font-medium uppercase tracking-[1.5px] mt-1.5" style={{ color: "var(--p-text-muted)" }}>{label}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[1px] mt-2" style={{ color: "var(--p-text-secondary)" }}>{label}</div>
     </div>
   );
 }
