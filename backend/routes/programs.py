@@ -619,7 +619,11 @@ async def get_program_journey(program_id: str, request: Request):
         {"_id": 0}
     ).to_list(50)
     
-    coach_emails = {c.get("email", "").lower(): c.get("coach_name", "") for c in coaches if c.get("email")}
+    coach_emails = {}
+    for c in coaches:
+        email = (c.get("email") or "").strip().lower()
+        if email and "@" in email:
+            coach_emails[email] = c.get("coach_name", "")
     
     if coach_emails:
         try:
@@ -629,29 +633,46 @@ async def get_program_journey(program_id: str, request: Request):
                 profile = service.users().getProfile(userId="me").execute()
                 user_email = profile.get("emailAddress", "").lower()
                 
-                # Search for emails to/from coaches
+                # Track gmail message IDs to avoid duplicates
+                seen_gmail_ids = set()
+                
                 for coach_email, coach_name in coach_emails.items():
+                    # Skip if coach email is the user's own email
+                    if coach_email == user_email:
+                        continue
+                    
                     query = f"(from:{coach_email} OR to:{coach_email})"
                     results = service.users().messages().list(
                         userId="me",
                         q=query,
-                        maxResults=30
+                        maxResults=15
                     ).execute()
                     
                     messages = results.get("messages", [])
                     
                     for msg_ref in messages:
+                        if msg_ref["id"] in seen_gmail_ids:
+                            continue
+                        seen_gmail_ids.add(msg_ref["id"])
+                        
                         msg = service.users().messages().get(
                             userId="me",
                             id=msg_ref["id"],
                             format="metadata",
-                            metadataHeaders=["From", "To", "Subject", "Date"]
+                            metadataHeaders=["From", "To", "Cc", "Subject", "Date"]
                         ).execute()
                         
                         headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
                         from_addr = headers.get("From", "").lower()
+                        to_addr = headers.get("To", "").lower()
+                        cc_addr = headers.get("Cc", "").lower()
                         subject = headers.get("Subject", "")
                         date_str = headers.get("Date", "")
+                        
+                        # Strict verification: coach email must actually be in From, To, or Cc
+                        all_recipients = f"{from_addr} {to_addr} {cc_addr}"
+                        if coach_email not in all_recipients:
+                            continue
                         
                         # Parse date
                         try:
@@ -661,10 +682,7 @@ async def get_program_journey(program_id: str, request: Request):
                         except:
                             date_iso = datetime.now(timezone.utc).isoformat()
                         
-                        # Determine if sent or received
                         is_from_coach = coach_email in from_addr
-                        
-                        # Get snippet for content
                         snippet = msg.get("snippet", "")
                         
                         timeline.append({
