@@ -52,6 +52,15 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Enhanced Getting Started Checklist with dynamic steps
 
 ## What's Implemented (Recent — Feb 18, 2026)
+- **University Logos (Complete)**: Added university logos across all pages using Google Favicon API:
+  - Knowledge Base: Logos in both "Recommended for You" cards and main university card list
+  - Dashboard: Logos in Today's Actions (ActionRow) and School Spotlight cards
+  - My Schools/Recruiting Board: Logos on all school cards
+  - Onboarding (EmptyBoardState): Logos on suggested school cards
+  - Fallback: Shows initials with gradient background when domain is missing or image fails
+  - Backend: `domain` field added to `/api/suggested-schools` and `/api/knowledge-base/add-to-board` responses
+  - Data: 1,053 universities in knowledge base have domain fields; existing programs backfilled with domains
+
 - **Light Theme Implementation (Complete)**: Full Apple-inspired light theme across the entire app:
   - Sidebar: White background with pink accent on active nav item (was hardcoded crimson gradient)
   - Header: Glassmorphism blur effect with semi-transparent background
