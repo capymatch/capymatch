@@ -91,9 +91,7 @@ function SpotlightCard({ program, onClick }) {
       data-testid={`spotlight-${program.program_id}`}
     >
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-extrabold flex-shrink-0" style={{ background: gradient }}>
-          {(program.university_name || "?")[0]}
-        </div>
+        <UniLogo domain={program.domain} name={program.university_name} size={40} />
         <div className="min-w-0">
           <p className="text-sm font-bold truncate" style={{ color: "var(--t-text)" }}>{program.university_name}</p>
           <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{program.division || "—"}{program.conference ? ` · ${program.conference}` : ""}</p>
