@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Card Color Options v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #e8e8e8;
+    --text: #1a1a1a;
+    --text-sec: #555;
+    --text-muted: #999;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 40px;
+  }
+  .tag {
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .tag .pill {
+    font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+  }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+
+  /* Shared card */
+  .hero {
+    border-radius: 14px; padding: 20px 24px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .hero-main { flex: 1; min-width: 0; }
+  .hero-kicker { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+  .hero-kicker i { font-size: 9px; }
+  .hero-school { font-weight: 800; font-size: 17px; line-height: 1.15; margin-bottom: 5px; }
+  .hero-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .hero-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .hero-loc { font-size: 11px; display: flex; align-items: center; gap: 3px; }
+  .hero-loc i { font-size: 8px; }
+  .callout { border-radius: 8px; padding: 10px 14px; display: flex; gap: 10px; }
+  .callout-icon { flex-shrink: 0; margin-top: 1px; }
+  .callout-icon i { font-size: 13px; }
+  .callout-title { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
+  .callout-text { font-size: 12px; font-weight: 500; line-height: 1.45; }
+  .hero-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; min-width: 120px; }
+  .btn-fill {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 9px 16px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    border: none; cursor: pointer; width: 100%; color: white;
+  }
+  .btn-ghost {
+    display: flex; align-items: center; justify-content: center;
+    padding: 7px 14px; border-radius: 8px; font-size: 10px; font-weight: 600;
+    cursor: pointer; width: 100%; background: transparent;
+  }
+
+  /* ═══ 1. CHARCOAL ═══ */
+  .hero-charcoal { background: #2a2a2a; }
+  .hero-charcoal .hero-kicker { color: #fbbf24; }
+  .hero-charcoal .hero-school { color: #fff; }
+  .hero-charcoal .hero-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+  .hero-charcoal .hero-loc { color: rgba(255,255,255,0.35); }
+  .hero-charcoal .callout { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+  .hero-charcoal .callout-icon i { color: #fbbf24; }
+  .hero-charcoal .callout-title { color: rgba(255,255,255,0.5); }
+  .hero-charcoal .callout-text { color: rgba(255,255,255,0.85); }
+  .hero-charcoal .btn-fill { background: #fff; color: #2a2a2a; }
+  .hero-charcoal .btn-ghost { color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+
+  /* ═══ 2. WARM CREAM ═══ */
+  .hero-cream { background: #fdf8f3; border: 1px solid #f0e6d9; }
+  .hero-cream .hero-kicker { color: #b45309; }
+  .hero-cream .hero-school { color: var(--text); }
+  .hero-cream .hero-badge { background: #f0e6d9; color: #92400e; border: none; }
+  .hero-cream .hero-loc { color: #a18264; }
+  .hero-cream .callout { background: #fff; border: 1px solid #f0e6d9; border-left: 3px solid #d97706; }
+  .hero-cream .callout-icon i { color: #d97706; }
+  .hero-cream .callout-title { color: #92400e; }
+  .hero-cream .callout-text { color: var(--text); }
+  .hero-cream .btn-fill { background: #1a1a1a; }
+  .hero-cream .btn-ghost { color: var(--text-muted); border: 1px solid #e0d5c7; }
+
+  /* ═══ 3. COOL SLATE ═══ */
+  .hero-slate { background: #f1f5f9; border: 1px solid #e2e8f0; }
+  .hero-slate .hero-kicker { color: #e8456b; }
+  .hero-slate .hero-school { color: var(--text); }
+  .hero-slate .hero-badge { background: #e2e8f0; color: #475569; border: none; }
+  .hero-slate .hero-loc { color: #94a3b8; }
+  .hero-slate .callout { background: #fff; border: 1px solid #e2e8f0; border-left: 3px solid #e8456b; }
+  .hero-slate .callout-icon i { color: #e8456b; }
+  .hero-slate .callout-title { color: #be123c; }
+  .hero-slate .callout-text { color: var(--text); }
+  .hero-slate .btn-fill { background: #e8456b; }
+  .hero-slate .btn-ghost { color: var(--text-muted); border: 1px solid #e2e8f0; }
+
+  /* ═══ 4. WHITE ELEVATED ═══ */
+  .hero-white { background: #fff; border: 1px solid #e8e8e8; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .hero-white .hero-kicker { color: #e8456b; }
+  .hero-white .hero-school { color: var(--text); }
+  .hero-white .hero-badge { background: #f5f5f5; color: var(--text-sec); border: 1px solid #eee; }
+  .hero-white .hero-loc { color: var(--text-muted); }
+  .hero-white .callout { background: #fafafa; border: 1px solid #eee; border-left: 3px solid #e8456b; }
+  .hero-white .callout-icon i { color: #e8456b; }
+  .hero-white .callout-title { color: var(--text-sec); }
+  .hero-white .callout-text { color: var(--text); }
+  .hero-white .btn-fill { background: #e8456b; }
+  .hero-white .btn-ghost { color: var(--text-muted); border: 1px solid #e8e8e8; }
+
+  /* ═══ 5. CHARCOAL + PINK ACCENT ═══ */
+  .hero-dark-pink { background: #1e1e2e; }
+  .hero-dark-pink .hero-kicker { color: #e8456b; }
+  .hero-dark-pink .hero-school { color: #fff; }
+  .hero-dark-pink .hero-badge { background: rgba(232,69,107,0.12); color: rgba(255,255,255,0.6); }
+  .hero-dark-pink .hero-loc { color: rgba(255,255,255,0.3); }
+  .hero-dark-pink .callout { background: rgba(232,69,107,0.06); border: 1px solid rgba(232,69,107,0.12); border-left: 3px solid #e8456b; }
+  .hero-dark-pink .callout-icon i { color: #e8456b; }
+  .hero-dark-pink .callout-title { color: rgba(255,255,255,0.5); }
+  .hero-dark-pink .callout-text { color: rgba(255,255,255,0.85); }
+  .hero-dark-pink .btn-fill { background: #e8456b; }
+  .hero-dark-pink .btn-ghost { color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.08); }
+
+  /* ═══ 6. SOFT GREEN (All caught up variant) ═══ */
+  .hero-green { background: #f0fdf4; border: 1px solid #dcfce7; }
+  .hero-green .hero-kicker { color: #16a34a; }
+  .hero-green .hero-school { color: var(--text); }
+  .hero-green .hero-badge { background: #dcfce7; color: #166534; border: none; }
+  .hero-green .hero-loc { color: #6b9e7d; }
+  .hero-green .callout { background: #fff; border: 1px solid #dcfce7; border-left: 3px solid #16a34a; }
+  .hero-green .callout-icon i { color: #16a34a; }
+  .hero-green .callout-title { color: #166534; }
+  .hero-green .callout-text { color: var(--text); }
+  .hero-green .btn-fill { background: #16a34a; }
+  .hero-green .btn-ghost { color: #16a34a; border: 1px solid #bbf7d0; }
+</style>
+</head>
+<body>
+
+<div class="grid">
+
+  <!-- 1. CHARCOAL -->
+  <div>
+    <div class="tag" style="color: #999;">1. Charcoal <span class="pill" style="background: rgba(251,191,36,0.1); color: #d97706;">Amber accent</span></div>
+    <div class="hero hero-charcoal">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-clock"></i> Keeping Warm</div>
+        <div class="hero-school">University of Michigan</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+          <span class="hero-loc">Ann Arbor, MI</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Follow Up</button>
+        <button class="btn-ghost">Snooze 3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. WARM CREAM -->
+  <div>
+    <div class="tag" style="color: #999;">2. Warm Cream <span class="pill" style="background: rgba(217,119,6,0.08); color: #b45309;">Earthy tones</span></div>
+    <div class="hero hero-cream">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-clock"></i> Keeping Warm</div>
+        <div class="hero-school">University of Michigan</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+          <span class="hero-loc">Ann Arbor, MI</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Follow Up</button>
+        <button class="btn-ghost">Snooze 3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. COOL SLATE -->
+  <div>
+    <div class="tag" style="color: #999;">3. Cool Slate <span class="pill" style="background: rgba(232,69,107,0.08); color: #e8456b;">Pink accent</span></div>
+    <div class="hero hero-slate">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-clock"></i> Keeping Warm</div>
+        <div class="hero-school">University of Michigan</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+          <span class="hero-loc">Ann Arbor, MI</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Follow Up</button>
+        <button class="btn-ghost">Snooze 3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WHITE ELEVATED -->
+  <div>
+    <div class="tag" style="color: #999;">4. White Elevated <span class="pill" style="background: #f5f5f5; color: #666;">Shadow only</span></div>
+    <div class="hero hero-white">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-clock"></i> Keeping Warm</div>
+        <div class="hero-school">University of Michigan</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+          <span class="hero-loc">Ann Arbor, MI</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Follow Up</button>
+        <button class="btn-ghost">Snooze 3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. DARK + PINK -->
+  <div>
+    <div class="tag" style="color: #999;">5. Dark + Pink <span class="pill" style="background: rgba(232,69,107,0.08); color: #e8456b;">Brand accent</span></div>
+    <div class="hero hero-dark-pink">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-clock"></i> Keeping Warm</div>
+        <div class="hero-school">University of Michigan</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+          <span class="hero-loc">Ann Arbor, MI</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Follow Up</button>
+        <button class="btn-ghost">Snooze 3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SOFT GREEN (In Conversation / All good) -->
+  <div>
+    <div class="tag" style="color: #999;">6. Soft Green <span class="pill" style="background: rgba(22,163,74,0.08); color: #16a34a;">Positive state</span></div>
+    <div class="hero hero-green">
+      <div class="hero-main">
+        <div class="hero-kicker"><i class="fas fa-comments"></i> Momentum</div>
+        <div class="hero-school">UCLA Bruins</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span class="hero-loc"><i class="fas fa-map-marker-alt"></i> Pac-12</span>
+          <span class="hero-loc">Los Angeles, CA</span>
+        </div>
+        <div class="callout">
+          <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="callout-title">What to do next</div>
+            <div class="callout-text">Coach Miller replied yesterday. Thank them and ask about a campus visit.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-fill"><i class="fas fa-eye" style="font-size:9px;"></i> View Journey</button>
+        <button class="btn-ghost"><i class="fas fa-check-circle" style="font-size:9px; margin-right:3px;"></i> Mark Replied</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
