@@ -186,7 +186,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
       <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         {steps.map(s => (
-          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-pink-500/30 hover:bg-[var(--t-surface-alt)]"}`}
+          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-pink-700/30 hover:bg-[var(--t-surface-alt)]"}`}
             style={{ borderColor: "var(--t-border)" }}
             onClick={() => !s.done && s.action && s.action()} disabled={s.done}
             data-testid={`checklist-step-${s.key}`}>
@@ -205,7 +205,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
         <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--t-surface-alt)" }}>
           <div className="h-full rounded-full bg-pink-500 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
         </div>
-        <span className="text-[11px] font-semibold text-pink-500">{doneCount} of {steps.length}</span>
+        <span className="text-[11px] font-semibold text-pink-700">{doneCount} of {steps.length}</span>
       </div>
     </div>
   );
@@ -550,18 +550,18 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
       {/* Primary Coach */}
       {coaches.length > 0 ? (
         <div className="flex items-center gap-3 p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-          <div className="w-8 h-8 rounded-lg bg-pink-600/10 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-bold text-pink-500">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
+          <div className="w-8 h-8 rounded-lg bg-pink-700/15 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-bold text-pink-700">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold truncate" style={{ color: "var(--t-text)" }}>{coaches[0].coach_name}</p>
-            {coaches[0].email && <p className="text-[10px] text-pink-500 truncate">{coaches[0].email}</p>}
+            {coaches[0].email && <p className="text-[10px] text-pink-700 truncate">{coaches[0].email}</p>}
             {!coaches[0].email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{coaches[0].role}</p>}
           </div>
           {coaches.length > 1 && <span className="text-[10px] ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>+{coaches.length - 1}</span>}
         </div>
       ) : (
-        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-pink-500/30"
+        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-pink-700/30"
           style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }} data-testid="glance-add-coach">
           <Plus className="w-3.5 h-3.5" /> Add coach contact
         </button>
@@ -624,7 +624,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
               <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>All Coaches</p>
               {coaches.map(c => (
                 <div key={c.coach_id} className="flex items-center gap-2 py-1.5">
-                  <Users className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                  <Users className="w-3 h-3 text-pink-700 flex-shrink-0" />
                   <span className="text-[11px]" style={{ color: "var(--t-text-secondary)" }}>{c.coach_name} — {c.role}</span>
                 </div>
               ))}
@@ -667,7 +667,7 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
         style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-            Log progress: <span className="text-pink-500">{newLabel}</span>
+            Log progress: <span className="text-pink-700">{newLabel}</span>
           </h3>
           <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/5">
             <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
@@ -677,7 +677,7 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
         <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }}>
           <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{fromLabel}</span>
           <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-          <span className="text-xs font-semibold text-pink-500">{newLabel}</span>
+          <span className="text-xs font-semibold text-pink-700">{newLabel}</span>
         </div>
         <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
           What happened with {universityName}? This will be added to the timeline.
@@ -863,7 +863,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
         {canUseAIDrafts ? (
           ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
             <button key={t} onClick={() => draftAI(t)} disabled={drafting}
-              className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
+              className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-700/15 text-pink-700 hover:bg-pink-700/25 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
               <Sparkles className="w-3 h-3 inline mr-0.5" />{t.replace(/_/g, " ")}
             </button>
           ))
@@ -877,7 +877,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
       {canUseAIDrafts && (
         <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "var(--t-text-muted)" }}>
           <AlertCircle className="w-3 h-3 flex-shrink-0" />
-          AI uses your <a href="/profile" className="text-pink-500 hover:underline">athlete profile</a> to generate emails — keep it updated for best results.
+          AI uses your <a href="/profile" className="text-pink-700 hover:underline">athlete profile</a> to generate emails — keep it updated for best results.
         </p>
       )}
       {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-600" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
@@ -904,7 +904,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
               <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
                 style={{ backgroundColor: "rgba(232,69,107,0.06)", borderColor: "rgba(232,69,107,0.15)", color: "var(--t-text-secondary)" }}
                 data-testid={`attachment-${att.file_id}`}>
-                <Paperclip className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                <Paperclip className="w-3 h-3 text-pink-700 flex-shrink-0" />
                 <span className="truncate max-w-[150px]">{att.filename}</span>
                 <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>({formatFileSize(att.size)})</span>
                 <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3" /></button>
@@ -1154,7 +1154,7 @@ export default function RecruitingJourney() {
               {rail && <PulseIndicator pulse={rail.pulse} />}
             </div>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-pink-600/10 text-pink-500">{program.division}</span>}
+              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-pink-700/15 text-pink-700">{program.division}</span>}
               {matchScore && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                   matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
@@ -1237,7 +1237,7 @@ export default function RecruitingJourney() {
               </p>
               <div className="flex gap-2 mt-3">
                 <button onClick={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-pink-600/10 text-pink-500 hover:bg-pink-600/20 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-pink-700/15 text-pink-700 hover:bg-pink-700/25 transition-colors flex items-center gap-1.5"
                   data-testid="overdue-email-btn">
                   <Mail className="w-3.5 h-3.5" />Email Coach
                 </button>
@@ -1309,7 +1309,7 @@ export default function RecruitingJourney() {
           {coaches.length > 0 ? (
             <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
+                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-700" />Coaches</h3>
                 <div className="flex items-center gap-2">
                   {coachWatchAlert ? (
                     <div className="group relative inline-flex items-center gap-1">
@@ -1340,7 +1340,7 @@ export default function RecruitingJourney() {
                       </div>
                     </div>
                   )}
-                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
+                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-700" /></button>
                 </div>
               </div>
               {/* Coach Watch Alert Detail */}
@@ -1375,7 +1375,7 @@ export default function RecruitingJourney() {
                         <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
                       </div>
                     </div>
-                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-pink-500 hover:text-pink-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
+                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-pink-700 hover:text-pink-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
                     {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
                   </div>
                 ))}
