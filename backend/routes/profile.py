@@ -43,7 +43,7 @@ async def upload_athlete_photo(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     body = await request.json()
-    photo_data = body.get("photo_data", "")
+    photo_data = body.get("photo_data") or body.get("photo_base64", "")
     if not photo_data:
         raise HTTPException(status_code=400, detail="photo_data required")
     if len(photo_data) > 5_000_000:
@@ -53,7 +53,7 @@ async def upload_athlete_photo(request: Request):
         {"$set": {"photo_url": photo_data, "updated_at": datetime.now(timezone.utc).isoformat()}},
         upsert=True,
     )
-    return {"ok": True}
+    return {"ok": True, "photo_url": photo_data}
 
 
 # ─── Public Schedule ───
