@@ -389,7 +389,7 @@ export default function UniversityKnowledgeBase() {
   );
 }
 
-function UniversityCard({ uni, adding, addToBoard }) {
+function UniversityCard({ uni, adding, addToBoard, boardSchools }) {
   const divColor = {
     D1: "bg-emerald-500/20 text-emerald-400",
     D2: "bg-blue-500/20 text-blue-400",
