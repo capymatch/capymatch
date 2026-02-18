@@ -88,7 +88,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
 
             <div className="flex flex-wrap gap-1.5">
               {hero.match_reasons?.map(r => (
-                <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium" style={{ background: "var(--t-accent-light, rgba(190,24,93,0.08))", color: "var(--t-accent, #be185d)", border: "1px solid var(--t-accent-border, rgba(190,24,93,0.15))" }}>
+                <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-teal-500/10 text-teal-700 border border-teal-500/20">
                   {r}
                 </span>
               ))}
@@ -111,7 +111,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                 onClick={() => addToBoard(hero)}
                 disabled={adding[hero.university_name] || isOnBoard}
                 data-testid="spotlight-add-to-board"
-                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-pink-700 hover:bg-pink-800 text-white"}`}
+                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
               >
                 {isOnBoard ? (<><span className="text-white">On Your Board</span></>) : (<><Plus className="w-4 h-4" />{adding[hero.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>
@@ -127,6 +127,9 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
       </div>
 
       {/* More Matches Carousel */}
+      {rest.length > 0 && (
+        <div className="mt-4" />
+      )}
       {rest.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-2">
