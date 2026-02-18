@@ -73,6 +73,11 @@ export default function UniversityKnowledgeBase() {
       await api.post("/knowledge-base/add-to-board", { university_name: uni.university_name });
       toast.success(`${uni.university_name} added to your board`);
       setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
+      // Trigger guided tour after first school is added
+      if (!localStorage.getItem("tour_completed")) {
+        localStorage.setItem("show_tour", "true");
+        window.dispatchEvent(new Event("trigger_tour"));
+      }
       if (fromOnboarding) {
         navigate("/pipeline?congrats=true");
       }
