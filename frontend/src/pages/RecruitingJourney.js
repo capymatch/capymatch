@@ -1306,14 +1306,16 @@ export default function RecruitingJourney() {
                 <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
                 <div className="flex items-center gap-2">
                   {coachWatchAlert ? (
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold cursor-help"
                       style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
+                      title="Coach Watch detected a coaching staff change at this school. Review and update your contacts."
                       data-testid="coach-watch-badge-change">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold cursor-help"
                       style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
+                      title="Coach Watch monitors this school's staff page for changes. No recent coaching staff changes detected."
                       data-testid="coach-watch-badge-stable">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
                     </span>
