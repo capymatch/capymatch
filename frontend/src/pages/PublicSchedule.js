@@ -312,6 +312,9 @@ export default function PublicSchedule() {
         </div>
       </section>
 
+      {/* ── Hero to Content Transition ── */}
+      <div style={{ height: 48, background: "linear-gradient(to bottom, var(--p-hero-bg), var(--p-bg))" }} />
+
       {/* ══ Content area ══ */}
       <div style={{ background: "var(--p-bg)" }}>
 
