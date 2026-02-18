@@ -223,7 +223,28 @@ async def scrape_coaching_page(http_client, domain, website=""):
     """Try to find and scrape the volleyball coaching page for a school."""
     candidates = get_url_candidates(domain, website)
 
-    for url in candidates[:15]:  # Cap at 15 URLs to avoid excessive requests
+    # First pass: try all pre-built candidates
+    result = await _try_candidates(http_client, candidates[:15])
+    if result:
+        return result
+
+    # Second pass: discover the athletics domain and try those
+    ath_domains = await discover_athletics_domain(http_client, domain)
+    if ath_domains:
+        extra = []
+        for ath_base in ath_domains:
+            for sp in SPORT_PATHS:
+                extra.append(f"{ath_base}{sp}")
+        result = await _try_candidates(http_client, extra)
+        if result:
+            return result
+
+    return None
+
+
+async def _try_candidates(http_client, urls):
+    """Try a list of candidate URLs and return scraped coaches if found."""
+    for url in urls:
         try:
             resp = await http_client.get(url, headers=HEADERS, follow_redirects=True, timeout=12)
             if resp.status_code != 200:
@@ -234,11 +255,8 @@ async def scrape_coaching_page(http_client, domain, website=""):
                 continue
 
             soup = BeautifulSoup(html, "lxml")
-
-            # Try structured extraction first
             coaches = extract_coaches_structured(soup)
 
-            # Fallback: raw email extraction from the page
             if not coaches:
                 emails = extract_emails_from_html(html)
                 if emails:
@@ -252,7 +270,6 @@ async def scrape_coaching_page(http_client, domain, website=""):
 
         except Exception:
             continue
-
     return None
 
 
