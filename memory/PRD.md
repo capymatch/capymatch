@@ -121,21 +121,18 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ```
 
 ## What's Implemented (Recent — Feb 18, 2026 Session 2)
-- **Apple-Inspired Internal Profile Page (Complete)**: Full rewrite of `/app/frontend/src/pages/ProfilePage.js`:
-  - Completeness ring showing profile strength (% filled of 14 key fields)
-  - Photo hero section with click-to-upload and hover overlay
-  - Share card with Copy Link, Preview, and Email buttons
-  - 5 collapsible section cards: Athlete Info, Athletic Measurables, Team & Location, Media & Bio, Contact Info
-  - Inline editing with 1.2s debounced auto-save and "Auto-saved" indicator
-  - Coach-visible eye icons on fields coaches can see
-  - Status badges per section (Complete/Needs Attention/Incomplete)
-  - Fixed bugs: field name mismatches (graduation_year, hudl_profile_url), photo upload payload, stale closure in updateField
+- **Split-Screen Profile Editor (Complete)**: Full WYSIWYG-style profile editor:
+  - Left panel: Edit form with collapsible sections, auto-save, completeness ring, photo upload, share card
+  - Right panel: Live preview matching the public profile design (PublicSchedule.js) — updates in real-time as user types
+  - Desktop: Side-by-side layout
+  - Mobile: Edit/Preview toggle buttons
+  - Both panels scroll together
+  - New component: `/app/frontend/src/components/ProfilePreview.js`
 
 - **First Reply Celebration Feature (Complete)**: End-to-end celebration for first coach reply:
   - Backend: GET /api/first-reply-celebration (checks status), POST /api/first-reply-celebration/dismiss
   - Frontend: `/app/frontend/src/components/FirstReplyCelebration.js` modal with animations
-  - Integrated into Dashboard.js - shows overlay when a coach replies for the first time
-  - Dismissing sets `first_reply_celebrated: true` on tenant document
+  - Integrated into Dashboard.js
 
 ## P0 Backlog
 - Separate Girls/Boys Volleyball data and features
