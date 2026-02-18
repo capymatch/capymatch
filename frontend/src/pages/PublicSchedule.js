@@ -450,6 +450,7 @@ export default function PublicSchedule() {
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
 
