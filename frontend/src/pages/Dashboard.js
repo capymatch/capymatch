@@ -4,7 +4,7 @@ import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import {
   ChevronRight, Target, MessageCircle, Mail, Clock,
-  Zap, Send, Sparkles,
+  Zap, Send, Sparkles, CheckCircle,
   ArrowRight, User, GraduationCap, Calendar,
   BarChart3, Activity, ChevronDown, ChevronUp
 } from "lucide-react";
