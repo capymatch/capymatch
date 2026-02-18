@@ -320,12 +320,17 @@ async def _try_candidates(http_client, urls):
     return None
 
 
-async def _run_scrape():
+async def _run_scrape(force=False):
     """Background task to scrape coaches for all schools missing coach emails."""
     global scrape_status
     try:
+        if force:
+            query = {"domain": {"$ne": ""}}
+        else:
+            query = {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]}
+
         universities = await db.university_knowledge_base.find(
-            {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]},
+            query,
             {"_id": 0, "university_name": 1, "domain": 1, "website": 1}
         ).to_list(2000)
 
