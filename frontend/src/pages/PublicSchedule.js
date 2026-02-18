@@ -84,10 +84,10 @@ function formatTime(t) {
 }
 
 const STAT_COLORS = [
-  { bg: "#e8edf8", border: "rgba(99,102,241,0.15)", accent: "#4f46e5" },   // indigo
-  { bg: "#fde8ed", border: "rgba(232,69,107,0.20)", accent: "#e8456b" },    // pink (highlight)
-  { bg: "#e6f5ee", border: "rgba(16,185,129,0.15)", accent: "#059669" },    // green
-  { bg: "#f3ebfa", border: "rgba(139,92,246,0.15)", accent: "#7c3aed" },    // purple
+  { bg: "#f2f3f8", border: "rgba(0,0,0,0.06)" },
+  { bg: "#f2f3f8", border: "rgba(0,0,0,0.06)" },
+  { bg: "#f2f3f8", border: "rgba(0,0,0,0.06)" },
+  { bg: "#f2f3f8", border: "rgba(0,0,0,0.06)" },
 ];
 
 /* ── Stat Card ── */
@@ -104,7 +104,7 @@ function StatCard({ value, label, colorIndex = 0 }) {
       }}
       data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
-      <div className="font-barlow font-[800] text-[34px] leading-none" style={{ color: c.accent }}>{value}</div>
+      <div className="font-barlow font-[800] text-[34px] leading-none" style={{ color: "var(--p-text)" }}>{value}</div>
       <div className="text-[10px] font-medium uppercase tracking-[1.5px] mt-1.5" style={{ color: "var(--p-text-muted)" }}>{label}</div>
     </div>
   );
