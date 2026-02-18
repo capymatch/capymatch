@@ -80,70 +80,119 @@ def get_url_candidates(domain, website=""):
 def name_from_email(email):
     """Derive a likely name from an email address like firstname.lastname@school.edu."""
     local = email.split("@")[0]
-    # Remove trailing numbers
     local = re.sub(r'\d+$', '', local)
-    # Split on . _ -
     parts = re.split(r'[._\-]', local)
-    # Filter out very short parts and capitalize
     parts = [p.capitalize() for p in parts if len(p) > 1]
     return " ".join(parts[:3]) if parts else ""
+
+
+def is_valid_name(name):
+    """Check if a name is real (not a JS-rendered placeholder)."""
+    if not name:
+        return False
+    return name.strip().lower() not in PLACEHOLDER_NAMES and len(name.strip()) > 2
+
+
+def is_valid_title(title):
+    """Check if a title is a real coaching title."""
+    if not title:
+        return False
+    t = title.strip().lower()
+    if t in PLACEHOLDER_NAMES:
+        return False
+    # Must contain a coaching-related word
+    coach_words = ["coach", "coordinator", "director", "analyst", "manager", "trainer"]
+    return any(w in t for w in coach_words)
 
 
 def extract_emails_from_html(html_text):
     """Extract .edu and other emails from HTML."""
     emails = set(re.findall(r'[\w.+-]+@[\w.-]+\.(?:edu|com|org|net)', html_text.lower()))
-    # Filter out common non-coach emails
     skip = {"info@", "admissions@", "webmaster@", "privacy@", "help@", "support@", "news@", "marketing@",
-            "compliance@", "noreply@", "tickets@", "camps@", "recruiting@", "athletics@"}
+            "compliance@", "noreply@", "tickets@", "camps@", "recruiting@", "athletics@", "ticket@", "sidearm@"}
     return [e for e in emails if not any(e.startswith(s) for s in skip)]
 
 
+def assign_titles(coaches):
+    """Assign Head Coach / Assistant titles when titles are missing, using order heuristic."""
+    for i, c in enumerate(coaches):
+        if not is_valid_title(c.get("title", "")):
+            c["title"] = "Head Coach" if i == 0 else "Assistant Coach"
+    return coaches
+
+
 def extract_coaches_structured(soup):
-    """Try to extract structured coach data from common CMS patterns."""
+    """Extract structured coach data from common CMS patterns, then clean up placeholder names."""
     coaches = []
 
-    # Pattern 1: Sidearm Sports (most common college athletics CMS)
+    # Pattern 1: Sidearm Sports
     for card in soup.select('.sidearm-coaches-coach'):
         name_el = card.select_one('.sidearm-coaches-coach-name a, .sidearm-coaches-coach-name')
         title_el = card.select_one('.sidearm-coaches-coach-title')
         email_el = card.select_one('a[href^="mailto:"]')
-        name = name_el.get_text(strip=True) if name_el else None
-        title = title_el.get_text(strip=True) if title_el else None
-        email = email_el['href'].replace('mailto:', '').strip() if email_el else None
-        if name and name.lower() not in ("coaching staff", "staff", "coaches"):
-            coaches.append({"name": name, "title": title or "", "email": email or ""})
+        name = name_el.get_text(strip=True) if name_el else ""
+        title = title_el.get_text(strip=True) if title_el else ""
+        email = email_el['href'].replace('mailto:', '').split('?')[0].strip() if email_el else ""
+        if email or is_valid_name(name):
+            coaches.append({"name": name, "title": title, "email": email})
 
     if coaches:
-        return coaches
+        return _clean_coaches(coaches)
 
     # Pattern 2: Generic staff cards with mailto links
     for mailto in soup.select('a[href^="mailto:"]'):
         email = mailto['href'].replace('mailto:', '').split('?')[0].strip()
-        # Walk up to find name context
         parent = mailto.find_parent(['div', 'li', 'article', 'section'])
         if parent:
             name_el = parent.select_one('h2, h3, h4, h5, .name, [class*="name"]')
             title_el = parent.select_one('.title, [class*="title"], [class*="position"], .subtitle')
             name = name_el.get_text(strip=True) if name_el else ""
             title = title_el.get_text(strip=True) if title_el else ""
-            if name and email:
+            if email:
                 coaches.append({"name": name, "title": title, "email": email})
 
     if coaches:
-        return coaches
+        return _clean_coaches(coaches)
 
-    # Pattern 3: Look for staff/person cards
+    # Pattern 3: Staff/person/coach cards
     for card in soup.select('[class*="staff"], [class*="person"], [class*="coach"]'):
         name_el = card.select_one('h2, h3, h4, h5, [class*="name"]')
         title_el = card.select_one('[class*="title"], [class*="position"], [class*="role"]')
         email_el = card.select_one('a[href^="mailto:"]')
-        name = name_el.get_text(strip=True) if name_el else None
-        title = title_el.get_text(strip=True) if title_el else None
-        email = email_el['href'].replace('mailto:', '').split('?')[0].strip() if email_el else None
-        if name and len(name) < 60 and not any(w in name.lower() for w in ["coaching staff", "staff directory"]):
-            coaches.append({"name": name, "title": title or "", "email": email or ""})
+        name = name_el.get_text(strip=True) if name_el else ""
+        title = title_el.get_text(strip=True) if title_el else ""
+        email = email_el['href'].replace('mailto:', '').split('?')[0].strip() if email_el else ""
+        if (email or is_valid_name(name)) and len(name) < 60:
+            coaches.append({"name": name, "title": title, "email": email})
 
-    return coaches
+    return _clean_coaches(coaches)
+
+
+def _clean_coaches(coaches):
+    """Post-process: replace placeholder names with email-derived names, fix titles."""
+    cleaned = []
+    seen_emails = set()
+    for c in coaches:
+        email = c.get("email", "").strip().lower()
+        # Deduplicate by email
+        if email and email in seen_emails:
+            continue
+        if email:
+            seen_emails.add(email)
+
+        # Fix placeholder names
+        if not is_valid_name(c.get("name", "")) and email:
+            c["name"] = name_from_email(email)
+
+        # Fix placeholder titles
+        if not is_valid_title(c.get("title", "")):
+            c["title"] = ""
+
+        # Only keep entries with at least a name or email
+        if c.get("name") or c.get("email"):
+            cleaned.append(c)
+
+    return assign_titles(cleaned)
 
 
 async def scrape_coaching_page(client, domain, website=""):
