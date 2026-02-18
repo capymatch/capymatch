@@ -79,35 +79,39 @@ function getQuickAction(stage) {
 
 /* ═══ Progress Ring ═══ */
 function ProgressRing({ counts, total }) {
-  const size = 80, strokeW = 8, r = (size - strokeW) / 2;
-  const cx = size / 2, cy = size / 2;
+  const size = 80, thickness = 10;
   const activeStages = STAGE_ORDER.filter(k => (counts[k] || 0) > 0);
 
-  // Build segments as percentages
+  // Build conic-gradient stops
+  const gradientStops = [];
   let accumulated = 0;
-  const segments = activeStages.map(k => {
+  activeStages.forEach(k => {
     const pct = (counts[k] || 0) / Math.max(total, 1) * 100;
-    const seg = { key: k, pct, offset: accumulated, color: STAGES[k].ring };
+    gradientStops.push(`${STAGES[k].ring} ${accumulated}% ${accumulated + pct}%`);
     accumulated += pct;
-    return seg;
   });
+  // Fill remaining with border color
+  if (accumulated < 100) {
+    gradientStops.push(`var(--t-border, #e5e7eb) ${accumulated}% 100%`);
+  }
+
+  const gradient = gradientStops.length > 0
+    ? `conic-gradient(from 0deg, ${gradientStops.join(", ")})`
+    : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
 
   return (
     <div className="flex flex-col items-center gap-3" data-testid="progress-ring">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-          <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--t-border, #e5e7eb)" strokeWidth={strokeW} />
-          {segments.map(s => (
-            <circle key={s.key} cx={cx} cy={cy} r={r} fill="none"
-              stroke={s.color} strokeWidth={strokeW}
-              pathLength="100"
-              strokeDasharray={`${s.pct} ${100 - s.pct}`}
-              strokeDashoffset={100 - s.offset}
-              strokeLinecap="round"
-            />
-          ))}
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div style={{
+        width: size, height: size, borderRadius: "50%",
+        background: gradient,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "relative"
+      }}>
+        <div style={{
+          width: size - thickness * 2, height: size - thickness * 2,
+          borderRadius: "50%", backgroundColor: "var(--t-surface, #fff)",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
+        }}>
           <span className="text-xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
           <span className="text-[9px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
