@@ -316,13 +316,12 @@ export default function PublicSchedule() {
 
         {/* ── About ── */}
         {profile.bio && (
-          <>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-11">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-8">
+            <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>About</SectionLabel>
               <p className="text-[15px] leading-[1.75] max-w-[600px]" style={{ color: "var(--p-text-secondary)" }}>{profile.bio}</p>
             </div>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8"><hr className="mt-11" style={{ border: "none", height: 1, background: "var(--p-divider)" }} /></div>
-          </>
+          </div>
         )}
 
         {/* ── Athletic Measurables ── */}
