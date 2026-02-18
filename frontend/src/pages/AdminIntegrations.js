@@ -71,6 +71,10 @@ export default function AdminIntegrations() {
   const [savingResend, setSavingResend] = useState(false);
   const [togglingEmail, setTogglingEmail] = useState(null);
   const [disconnecting, setDisconnecting] = useState(null);
+  const [scorecardKey, setScorecardKey] = useState("");
+  const [showScorecardKey, setShowScorecardKey] = useState(false);
+  const [savingScorecard, setSavingScorecard] = useState(false);
+  const [syncingScorecard, setSyncingScorecard] = useState(false);
 
   const fetchIntegrations = async () => {
     try {
