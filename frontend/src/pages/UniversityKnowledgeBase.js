@@ -72,6 +72,9 @@ export default function UniversityKnowledgeBase() {
       await api.post("/knowledge-base/add-to-board", { university_name: uni.university_name });
       toast.success(`${uni.university_name} added to your board`);
       setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
+      if (fromOnboarding) {
+        navigate("/board");
+      }
     } catch (err) {
       const detail = err.response?.data?.detail;
       if (detail?.error === "subscription_limit") {
