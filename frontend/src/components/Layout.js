@@ -27,7 +27,20 @@ export default function Layout({ user, onLogout }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("sidebar_collapsed") === "true");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [showTour, setShowTour] = useState(() => !localStorage.getItem("tour_completed"));
+  const [showTour, setShowTour] = useState(() => {
+    return localStorage.getItem("show_tour") === "true" && !localStorage.getItem("tour_completed");
+  });
+
+  // Listen for tour trigger (fired when user adds first school)
+  useEffect(() => {
+    const handler = () => {
+      if (!localStorage.getItem("tour_completed")) {
+        setShowTour(true);
+      }
+    };
+    window.addEventListener("trigger_tour", handler);
+    return () => window.removeEventListener("trigger_tour", handler);
+  }, []);
   const [showAssistant, setShowAssistant] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { planEvent, dismissPlanEvent, subscription } = useSubscription();
