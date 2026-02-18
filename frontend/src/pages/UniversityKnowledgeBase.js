@@ -14,6 +14,9 @@ import { toast } from "sonner";
 const PER_PAGE = 50;
 
 export default function UniversityKnowledgeBase() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const fromOnboarding = searchParams.get("from") === "onboarding";
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
