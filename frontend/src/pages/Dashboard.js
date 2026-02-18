@@ -327,26 +327,6 @@ export default function Dashboard() {
   // Upcoming events
   const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 4);
 
-  // Onboarding
-  const profileDone = !!(profile?.athlete_name && profile?.position);
-  const schoolsDone = programs.length > 0;
-  const gmailDone = gmailConnected;
-  const eventsDone = events.length > 0;
-  const onboardingSteps = [
-    { key: "profile", label: "Set up your athlete profile", description: "Add your name, position, stats, and a highlight video", icon: User, done: profileDone, action: () => navigate("/profile") },
-    { key: "schools", label: "Add your first target school", description: "Browse the database and add schools to your list", icon: GraduationCap, done: schoolsDone, action: () => navigate("/knowledge-base") },
-    ...(subscription?.tier !== "basic" ? [{ key: "gmail", label: "Connect your Gmail", description: "Send and receive coach emails right from the app", icon: Mail, done: gmailDone, action: () => navigate("/settings") }] : []),
-    { key: "events", label: "Add an upcoming event", description: "Camps, showcases, and visits — keep them all in one place", icon: Calendar, done: eventsDone, action: () => navigate("/calendar") },
-  ];
-  const completedCount = onboardingSteps.filter(s => s.done).length;
-  const allDone = completedCount === onboardingSteps.length;
-  const showOnboarding = !onboardingDismissed && !allDone;
-
-  const dismissOnboarding = () => {
-    localStorage.setItem("onboarding_dismissed", "true");
-    setOnboardingDismissed(true);
-  };
-
   const avatarGradients = [
     "linear-gradient(135deg, #3b82f6, #1d4ed8)",
     "linear-gradient(135deg, #10b981, #059669)",
