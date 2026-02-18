@@ -148,8 +148,8 @@ export default function ProfilePage() {
     const reader = new FileReader();
     reader.onload = async () => {
       try {
-        const res = await api.post("/athlete-profile/photo", { photo_base64: reader.result });
-        setProfile(p => ({ ...p, photo_url: res.data.photo_url }));
+        await api.post("/athlete-profile/photo", { photo_data: reader.result });
+        setProfile(p => ({ ...p, photo_url: reader.result }));
         toast.success("Photo updated");
       } catch { toast.error("Upload failed"); }
     };
@@ -305,7 +305,7 @@ export default function ProfilePage() {
         status={profile.bio ? "complete" : "partial"}
         statusColor={profile.bio ? "complete" : "partial"}>
         <div className="grid gap-3">
-          <Field testId="field-hudl" label="Hudl Profile Link" value={profile.hudl_link} onChange={v => updateField("hudl_link", v)} placeholder="https://hudl.com/..." />
+          <Field testId="field-hudl" label="Hudl Profile Link" value={profile.hudl_profile_url} onChange={v => updateField("hudl_profile_url", v)} placeholder="https://hudl.com/..." />
           <Field testId="field-video" label="Highlights Video Link" value={profile.video_link} onChange={v => updateField("video_link", v)} placeholder="https://youtube.com/..." />
           <Field testId="field-bio" label="Bio" value={profile.bio} onChange={v => updateField("bio", v)} type="textarea" placeholder="Tell coaches about yourself, your journey, and what drives you..." coachVisible />
         </div>
