@@ -129,6 +129,12 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
   - Both panels scroll together
   - New component: `/app/frontend/src/components/ProfilePreview.js`
 
+- **Coach Watch Badge on Journey Page (Complete)**: Added coaching staff health indicator (Option A) to the Coach Panel:
+  - Green "Staff Stable" badge when no alerts exist for the school
+  - Amber "Staff Change" badge with inline alert details when a coach change is detected  
+  - Fetches from `/api/ai/coach-watch/alert/{university_name}` endpoint
+  - Shows alert type (new coach, departure, staff change), summary, and detection date
+
 - **Guided Tour Fix (Complete)**: Fixed tour feature:
   - Tour now triggers only after user adds their first school (not on every first visit)
   - Fixed 4 mismatched tour step targets (nav-pipeline→nav-my schools, nav-inbox→nav-my inbox, nav-schools→nav-find schools, nav-outreach ai→nav-ai-features-toggle)
