@@ -88,20 +88,30 @@ async def login(request: Request, response: Response):
 
 @router.post("/auth/session")
 async def exchange_session(request: Request, response: Response):
-    body = await request.json()
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid request body")
     session_id = body.get("session_id")
     logger.info(f"[OAuth] Session exchange attempt, session_id present: {bool(session_id)}")
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
-    async with httpx.AsyncClient(timeout=10.0) as hc:
-        resp = await hc.get(
-            "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-            headers={"X-Session-ID": session_id}
-        )
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as hc:
+            resp = await hc.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id}
+            )
+    except Exception as e:
+        logger.error(f"[OAuth] Network error reaching auth server: {e}")
+        raise HTTPException(status_code=503, detail="Authentication service temporarily unavailable. Please try again.")
     logger.info(f"[OAuth] Emergent auth response status: {resp.status_code}")
     if resp.status_code != 200:
         logger.error(f"[OAuth] Emergent auth failed: {resp.text}")
-        raise HTTPException(status_code=401, detail="Invalid session_id")
+        detail = "Session expired. Please try signing in again."
+        if resp.status_code == 404:
+            detail = "Session expired. Please try signing in with Google again."
+        raise HTTPException(status_code=401, detail=detail)
     data = resp.json()
     email = data.get("email")
     name = data.get("name", "")
