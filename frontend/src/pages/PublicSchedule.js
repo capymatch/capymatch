@@ -417,13 +417,13 @@ export default function PublicSchedule() {
                 </div>
               )}
             </div>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8"><hr className="mt-11" style={{ border: "none", height: 1, background: "var(--p-divider)" }} /></div>
-          </>
+          </div>
         )}
 
         {/* ── Where to See Me Play ── */}
-        <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-11 pb-8">
-          <SectionLabel>Where to See Me Play</SectionLabel>
+        <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4 pb-8">
+          <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
+            <SectionLabel>Where to See Me Play</SectionLabel>
           {upcoming_events.length > 0 ? (
             <div className="flex flex-col gap-2.5" data-testid="upcoming-events">
               {upcoming_events.map((evt) => <EventCard key={evt.event_id} event={evt} />)}
