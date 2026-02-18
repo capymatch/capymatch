@@ -45,7 +45,19 @@ High School Volleyball Athletes & Families
 
 ## What's Been Implemented
 
-### Completed in This Session (Feb 18, 2026)
+### Completed Feb 18, 2026 (Latest)
+- **Coach Contact Scraper**: Complete web scraper for finding volleyball coach names, emails, and titles from university athletics websites
+  - Handles JS-rendered pages by deriving names from email patterns (e.g., `ryan.mcguyre@baylor.edu` -> "Ryan Mcguyre")
+  - Structured extraction for Sidearm Sports CMS (most common college athletics platform)
+  - Athletics domain discovery from university homepages (e.g., stanford.edu -> gostanford.com)
+  - Generic/department email filtering (volleyball@, tickets@, etc.)
+  - Background task with progress tracking, force re-scrape option
+  - Admin UI with "Find Coaches for Missing Schools" and "Re-scrape All" buttons
+  - Coach data displayed on expanded school cards in Find Schools (Knowledge Base)
+  - Endpoints: POST /api/admin/coach-scraper/scrape, GET /api/admin/coach-scraper/status, POST /api/admin/coach-scraper/scrape-one
+  - Test suite: /app/backend/tests/test_coach_scraper.py
+
+### Completed Earlier (Feb 18, 2026)
 - Dark + Pink theme on Journey header, Dashboard hero, What's Next card
 - Theme toggle (sun/moon) in header
 - Progress Ring fix (CSS conic-gradient)
