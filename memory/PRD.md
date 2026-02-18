@@ -37,59 +37,50 @@ High School Volleyball Athletes & Families
 ## 3rd Party Integrations
 - Emergent-managed Google Auth (Gmail API) — WORKING
 - Anthropic Claude Sonnet 4.5 (Emergent LLM Key)
-- react-joyride (Product Tour)
-- lucide-react (Icons)
+- College Scorecard API (US Dept of Education) — WORKING
 - Stripe (Payments) — requires User API Key
 - Resend (Email Notifications) — requires User API Key
 - beautifulsoup4 / lxml (Web Scraping for Coach Watch)
 - icon.horse API (University logos)
-- Google Favicon API (Fallback logos)
-- **College Scorecard API** (US Dept of Education) — WORKING, key configured
 
 ## What's Been Implemented
 
 ### Completed in This Session (Feb 18, 2026)
-- **Journey Card Dark + Pink theme**: Applied `#1e1e2e` charcoal bg with `#e8456b` pink accents to Journey header card and progress rail
-- **Dashboard Hero Dark + Pink theme**: Applied matching dark theme to dashboard greeting card and PulseStat components
-- **Darker pink accents on Journey page**: Deepened all pink from `pink-500` to `pink-700` across timeline, labels, badges
-- **What's Next card dark theme**: Applied `#1e1e2e` bg with white text and pink accents
-- **Theme toggle**: Added sun/moon button in top-right header for light/dark mode switching
-- **Progress Ring fix**: Replaced broken SVG stroke-dash approach with CSS conic-gradient donut chart — distinct colors per stage (Red=Overdue, Pink=Outreach, Amber=Waiting, Green=In Conversation, Gray=Archived)
-- **Journey page performance**: Parallelized 7 API calls (was 3 parallel + 4 sequential), ~4x faster load
-- **Sidebar reorder**: Moved "Find Schools" above "Calendar"
-- **College Scorecard integration**: Backend routes for search/sync/key-management, admin UI card with sync button
+- Dark + Pink theme on Journey header, Dashboard hero, What's Next card
+- Theme toggle (sun/moon) in header
+- Progress Ring fix (CSS conic-gradient)
+- Journey page 4x performance boost (parallelized API calls)
+- Sidebar reorder (Find Schools above Calendar)
+- **College Scorecard integration**: Full backend (search/sync-one/sync-all/key-management), admin card, scorecard data display on Knowledge Base school detail pages
+- 15 popular schools pre-synced with admissions data
 
 ### Design System
-- **Primary accent**: `#e8456b` / `#be185d` (pink-700)
-- **Dark card background**: `#1e1e2e` (charcoal)
-- **Key cards use Dark + Pink theme**: Pipeline Hero, Journey Header, Dashboard Hero, What's Next
-- Minimalist palette: charcoal, brand pink, urgent red, success green
-- Theme toggle in header (light/dark mode)
+- Primary accent: `#e8456b` / `#be185d` (pink-700)
+- Dark card background: `#1e1e2e` (charcoal)
+- Key cards use Dark + Pink theme: Pipeline Hero, Journey Header, Dashboard Hero, What's Next
 
 ## Prioritized Backlog
 
 ### P1 — Upcoming
-- Display scorecard data on school detail / Knowledge Base pages
 - Separate Girls/Boys Volleyball data architecture
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
 
 ### P2 — Future
 - Build Marketing Website
-- Tiered Celebrations (milestones beyond first reply)
-- App Naming
-- Multi-sport capability
-- Family Collaboration Roles (read-only Parent/Viewer role)
+- Tiered Celebrations
+- App Naming, Multi-sport, Family Collaboration Roles
 
 ## Test Accounts
-- **Pro User**: `pro@test.com` / `password`
-- **Google Auth User (Demo Data)**: `douglas@yeslms.com`
+- Pro User: `pro@test.com` / `password`
+- Google Auth User (Demo Data): `douglas@yeslms.com`
 
 ## Key Files
+- `/app/frontend/src/components/FindSchools/SchoolGridCard.js` — School cards with scorecard display
+- `/app/backend/routes/college_scorecard.py` — College Scorecard API routes
+- `/app/backend/routes/admin_integrations.py` — Admin integrations
+- `/app/frontend/src/pages/AdminIntegrations.js` — Admin integrations UI
 - `/app/frontend/src/pages/RecruitingBoard.js` — Pipeline page
 - `/app/frontend/src/pages/RecruitingJourney.js` — Journey page
-- `/app/frontend/src/pages/Dashboard.js` — Main dashboard
-- `/app/frontend/src/pages/AdminIntegrations.js` — Admin integrations
-- `/app/frontend/src/components/Layout.js` — App layout + theme toggle
-- `/app/backend/routes/college_scorecard.py` — College Scorecard API routes
-- `/app/backend/routes/admin_integrations.py` — Admin integrations backend
+- `/app/frontend/src/pages/Dashboard.js` — Dashboard
+- `/app/frontend/src/components/Layout.js` — Layout + theme toggle
