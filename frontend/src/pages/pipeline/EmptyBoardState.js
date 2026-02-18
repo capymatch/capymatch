@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../lib/api";
 import {
   Sparkles, MapPin, GraduationCap, ChevronRight,
-  CheckCircle, Plus, Loader2, Mail
+  CheckCircle, Plus, Loader2, Mail, CheckCircle2, Shield
 } from "lucide-react";
 import { toast } from "sonner";
 
