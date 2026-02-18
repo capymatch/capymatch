@@ -999,41 +999,49 @@ export default function RecruitingJourney() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [progRes, journeyRes, coachRes] = await Promise.all([
+      // Run ALL independent API calls in parallel
+      const [progRes, journeyRes, coachRes, profRes, notesRes, msRes] = await Promise.allSettled([
         api.get(`/programs/${programId}`),
         api.get(`/programs/${programId}/journey`),
         api.get(`/coaches?program_id=${programId}`),
+        api.get("/athlete-profile"),
+        api.get(`/programs/${programId}/notes`),
+        !isBasic ? api.get("/match-scores") : Promise.resolve({ data: null }),
       ]);
-      setProgram(progRes.data);
-      setTimeline(journeyRes.data.timeline || []);
-      setCoaches(coachRes.data || []);
-      // Check athlete profile completeness
-      try {
-        const profRes = await api.get("/athlete-profile");
-        const p = profRes.data;
+      if (progRes.status !== "fulfilled" || journeyRes.status !== "fulfilled") {
+        throw new Error("Failed to load core data");
+      }
+      setProgram(progRes.value.data);
+      setTimeline(journeyRes.value.data.timeline || []);
+      setCoaches(coachRes.status === "fulfilled" ? (coachRes.value.data || []) : []);
+      // Profile
+      if (profRes.status === "fulfilled") {
+        const p = profRes.value.data;
         const filled = [p.athlete_name, p.position, p.height, p.grad_year, p.video_link].filter(Boolean);
         setProfileComplete(filled.length >= 5);
-      } catch { setProfileComplete(false); }
-      // Check notes count
-      try {
-        const notesRes = await api.get(`/programs/${programId}/notes`);
-        setNotesCount((notesRes.data.pinned?.length || 0) + (notesRes.data.recent?.length || 0));
-      } catch { setNotesCount(0); }
+      } else { setProfileComplete(false); }
+      // Notes
+      if (notesRes.status === "fulfilled") {
+        setNotesCount((notesRes.value.data.pinned?.length || 0) + (notesRes.value.data.recent?.length || 0));
+      } else { setNotesCount(0); }
+      // Match scores
+      if (msRes.status === "fulfilled" && msRes.value.data?.scores) {
+        const found = msRes.value.data.scores.find(s => s.program_id === programId);
+        if (found) setMatchScore(found);
+      }
+      // Show the page immediately, then load coach watch in background
+      setLoading(false);
+      // Coach watch depends on university_name — fire after core data
       if (!isBasic) {
         try {
-          const msRes = await api.get("/match-scores");
-          const found = (msRes.data?.scores || []).find(s => s.program_id === programId);
-          if (found) setMatchScore(found);
-        } catch {}
-        // Fetch coach watch alert for this school
-        try {
-          const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.data.university_name)}`);
+          const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.value.data.university_name)}`);
           setCoachWatchAlert(cwRes.data?.alert || null);
         } catch { setCoachWatchAlert(null); }
       }
     } catch {
       toast.error("Failed to load journey data");
-    } finally { setLoading(false); }
+      setLoading(false);
+    }
   }, [programId, isBasic]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
