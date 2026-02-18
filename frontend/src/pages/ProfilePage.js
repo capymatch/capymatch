@@ -114,6 +114,8 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const photoRef = useRef(null);
   const saveTimer = useRef(null);
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
 
   useEffect(() => {
     Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
@@ -131,7 +133,7 @@ export default function ProfilePage() {
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       try {
-        const updated = { ...profile, [key]: val };
+        const updated = { ...profileRef.current, [key]: val };
         await api.put("/athlete-profile", updated);
         setAutoSaved(true);
         setTimeout(() => setAutoSaved(false), 2500);
@@ -139,7 +141,7 @@ export default function ProfilePage() {
         toast.error("Failed to save");
       }
     }, 1200);
-  }, [profile]);
+  }, []);
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
