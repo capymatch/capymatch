@@ -6,6 +6,7 @@ import {
   CheckCircle, Plus, Loader2, Mail, CheckCircle2, Shield
 } from "lucide-react";
 import { toast } from "sonner";
+import UniversityLogo from "../../components/UniversityLogo";
 
 /* ── Progress Step ── */
 function ProgressStep({ num, label, done, current }) {
@@ -23,41 +24,6 @@ function ProgressStep({ num, label, done, current }) {
         {label}
       </span>
     </div>
-  );
-}
-
-/* ── University Logo ── */
-function UniversityLogo({ domain, name, size = 40 }) {
-  const [failed, setFailed] = useState(false);
-  const initials = (name || "?")[0];
-  const gradients = [
-    "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-    "linear-gradient(135deg, #10b981, #059669)",
-    "linear-gradient(135deg, #f59e0b, #d97706)",
-    "linear-gradient(135deg, #a855f7, #7c3aed)",
-  ];
-  const hash = (name || "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const gradient = gradients[hash % gradients.length];
-
-  if (!domain || failed) {
-    return (
-      <div className="rounded-xl flex items-center justify-center text-white text-lg font-extrabold flex-shrink-0" style={{ width: size, height: size, background: gradient }}>
-        {initials}
-      </div>
-    );
-  }
-  return (
-    <img
-      src={`https://www.google.com/s2/favicons?domain=${domain}&sz=${size * 2}`}
-      alt={`${name} logo`}
-      width={size}
-      height={size}
-      className="rounded-xl flex-shrink-0 object-contain"
-      style={{ backgroundColor: "#fff", border: "1px solid var(--t-border)" }}
-      onError={() => setFailed(true)}
-      loading="lazy"
-      data-testid="university-logo"
-    />
   );
 }
 
