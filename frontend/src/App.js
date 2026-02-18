@@ -18,7 +18,6 @@ import UniversityKnowledgeBase from "./pages/UniversityKnowledgeBase";
 import Dashboard from "./pages/Dashboard";
 // Tasks/follow-ups feature removed
 import ProgramDetail from "./pages/ProgramDetail";
-import Inbox from "./pages/Inbox";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
 import AccountPage from "./pages/AccountPage";
