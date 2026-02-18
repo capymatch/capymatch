@@ -179,11 +179,12 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
         </div>
 
         {advice && (
-          <div className="rounded-lg p-2.5" style={{ background: glassBg, border: `1px solid ${glassBorder}` }}>
-            <span className="text-[9px] font-bold flex items-center gap-1 mb-0.5" style={{ color: "var(--t-text-secondary, #555)" }}>
-              <Lightbulb className="w-3 h-3" style={{ color: "#d97706" }} />What to do next
-            </span>
-            <p className="text-xs leading-relaxed" style={{ color: "var(--t-text, #1a1a1a)" }}>{advice}</p>
+          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "var(--t-surface, white)", border: `1px solid var(--t-border, #e8e8e8)`, borderLeft: `3px solid #d97706` }}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#d97706" }} />
+            <div>
+              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "#92400e" }}>What to do next</span>
+              <p className="text-[13px] font-medium leading-snug" style={{ color: "var(--t-text, #1a1a1a)" }}>{advice}</p>
+            </div>
           </div>
         )}
       </div>
