@@ -63,17 +63,31 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    api.post("/auth/session", { session_id: sessionId })
-      .then(res => {
-        console.log("[OAuth] Session exchange successful for:", res.data?.email);
-        onAuth(res.data);
+    // Use fetch with same-origin credentials to avoid CORS violation
+    // (proxy returns access-control-allow-origin: * which conflicts with withCredentials)
+    const API_BASE = process.env.REACT_APP_BACKEND_URL + "/api";
+    fetch(`${API_BASE}/auth/session`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data?.detail || `Auth failed (${res.status})`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log("[OAuth] Session exchange successful for:", data?.email);
+        onAuth(data);
         navigate("/board", { replace: true });
       })
       .catch(err => {
-        const detail = err?.response?.data?.detail || err?.message || "Authentication failed";
-        console.error("[OAuth] Session exchange failed:", detail);
+        console.error("[OAuth] Session exchange failed:", err?.message);
         setStatus("error");
-        setErrorMsg(detail);
+        setErrorMsg(err?.message || "Authentication failed");
         setTimeout(() => navigate("/login", { replace: true }), 3000);
       });
   }, [navigate, onAuth]);
