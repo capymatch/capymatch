@@ -11,6 +11,18 @@ import {
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
 
+/* ── University Logo ── */
+function UniLogo({ domain, name, size = 36 }) {
+  const [failed, setFailed] = useState(false);
+  const initial = (name || "?")[0];
+  const gradients = ["linear-gradient(135deg,#3b82f6,#1d4ed8)","linear-gradient(135deg,#10b981,#059669)","linear-gradient(135deg,#f59e0b,#d97706)","linear-gradient(135deg,#ec4899,#db2777)","linear-gradient(135deg,#a855f7,#7c3aed)","linear-gradient(135deg,#06b6d4,#0891b2)"];
+  const hash = (name || "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  if (!domain || failed) {
+    return <div className="rounded-lg flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ width: size, height: size, background: gradients[hash % gradients.length] }}>{initial}</div>;
+  }
+  return <img src={`https://www.google.com/s2/favicons?domain=${domain}&sz=${size * 2}`} alt={`${name} logo`} width={size} height={size} className="rounded-lg flex-shrink-0 object-contain" style={{ backgroundColor: "#fff", border: "1px solid var(--t-border)" }} onError={() => setFailed(true)} loading="lazy" data-testid="university-logo" />;
+}
+
 /* ── Pulse Stat ── */
 function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub }) {
   return (
