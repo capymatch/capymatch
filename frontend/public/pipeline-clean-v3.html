@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — Clean Redesign v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-alt: #f5f5f5;
+    --border: #e8e8e8;
+    --border-light: #f0f0f0;
+    --text: #1a1a1a;
+    --text-sec: #6b6b6b;
+    --text-muted: #999999;
+    --text-faint: #c0c0c0;
+    --accent: #e8456b;
+    --accent-light: rgba(232,69,107,0.07);
+    --accent-medium: rgba(232,69,107,0.12);
+    --urgent: #dc2626;
+    --urgent-light: rgba(220,38,38,0.06);
+    --success: #16a34a;
+    --success-light: rgba(22,163,74,0.06);
+    --navy: #1a2744;
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mockup-badge {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    background: var(--text); color: white;
+    padding: 8px 18px; border-radius: 99px;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mockup-badge::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px; border-right: 1px solid var(--border);
+    background: var(--surface); padding: 24px 0;
+    position: fixed; top: 0; bottom: 0; left: 0;
+  }
+  .sidebar-brand { padding: 0 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 10px; }
+  .sidebar-logo {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--text);
+    display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;
+  }
+  .sidebar-name { font-weight: 800; font-size: 14px; }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; color: var(--text-sec);
+    cursor: pointer; text-decoration: none;
+  }
+  .nav-item:hover { background: var(--surface-alt); color: var(--text); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .nav-item i { width: 18px; text-align: center; font-size: 14px; }
+
+  /* MAIN */
+  .main { margin-left: 220px; flex: 1; padding: 28px 32px; max-width: 1060px; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .add-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 8px;
+    background: var(--text); color: white;
+    font-size: 12px; font-weight: 600; border: none; cursor: pointer;
+  }
+
+  /* TOP ROW */
+  .top-row { display: grid; grid-template-columns: 180px 1fr; gap: 12px; margin-bottom: 16px; }
+
+  /* COMPACT RING */
+  .ring-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .ring-wrap { position: relative; width: 80px; height: 80px; }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-num { font-size: 22px; font-weight: 800; line-height: 1; }
+  .ring-label { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+  .ring-legend { display: flex; flex-direction: column; gap: 3px; width: 100%; }
+  .legend-row { display: flex; align-items: center; gap: 5px; font-size: 10px; }
+  .legend-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+  .legend-count { font-weight: 700; min-width: 10px; }
+  .legend-label { color: var(--text-sec); }
+
+  /* ═══ COMPACT HERO CARD ═══ */
+  .hero-card {
+    background: var(--navy);
+    border-radius: var(--radius);
+    overflow: hidden; position: relative;
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .hero-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(100,60,140,0.1) 100%);
+    pointer-events: none;
+  }
+  .hero-main { flex: 1; min-width: 0; position: relative; z-index: 2; }
+  .hero-top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .hero-kicker {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: #f87171;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .hero-kicker i { font-size: 9px; }
+  .hero-urgency-tag {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: #fca5a5;
+    background: rgba(248,113,113,0.1);
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .hero-school {
+    font-weight: 800; font-size: 18px;
+    color: white; line-height: 1.15;
+    letter-spacing: -0.3px; margin-bottom: 6px;
+  }
+  .hero-meta { display: flex; align-items: center; gap: 8px; }
+  .hero-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+  }
+  .hero-detail {
+    font-size: 11px; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .hero-detail i { font-size: 8px; }
+
+  /* Glass panel — inline */
+  .hero-glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 10px 14px; margin-top: 10px;
+  }
+  .hero-glass-title {
+    font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .hero-glass-title i { font-size: 9px; color: #fbbf24; }
+  .hero-glass-text { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.45; }
+
+  /* Action column */
+  .hero-actions {
+    display: flex; flex-direction: column; gap: 6px;
+    flex-shrink: 0; position: relative; z-index: 2;
+    min-width: 140px;
+  }
+  .hero-btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 9px 18px; border-radius: 8px;
+    background: white; color: var(--navy);
+    font-size: 11px; font-weight: 700;
+    border: none; cursor: pointer; width: 100%;
+  }
+  .hero-btn-ghost {
+    display: flex; align-items: center; justify-content: center;
+    padding: 7px 14px; border-radius: 8px;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4);
+    font-size: 10px; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.07); cursor: pointer; width: 100%;
+  }
+
+  /* FILTER CHIPS */
+  .filter-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .chips { display: flex; gap: 4px; overflow-x: auto; }
+  .chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 99px;
+    font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-sec);
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  }
+  .chip.active { background: var(--text); color: white; border-color: var(--text); }
+  .chip-count { font-size: 10px; font-weight: 700; background: rgba(0,0,0,0.06); padding: 0 5px; border-radius: 3px; }
+  .chip.active .chip-count { background: rgba(255,255,255,0.2); }
+  .chip-dot { width: 4px; height: 4px; border-radius: 50%; }
+
+  /* SCHOOL ROWS */
+  .school-list { display: flex; flex-direction: column; gap: 1px; }
+  .section-label {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-muted); padding: 10px 0 3px;
+  }
+  .section-label.urgent-label { color: var(--urgent); }
+
+  .school-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px; cursor: pointer;
+    margin-bottom: 3px;
+  }
+  .school-row:hover { border-color: #d4d4d4; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
+  .school-row.row-urgent { border-left: 3px solid var(--urgent); }
+
+  .school-logo {
+    width: 32px; height: 32px; border-radius: 7px;
+    background: var(--surface-alt); border: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 9px; color: var(--text-sec);
+    flex-shrink: 0; overflow: hidden;
+  }
+  .school-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .school-info { flex: 1; min-width: 0; }
+  .school-top { display: flex; align-items: center; gap: 5px; }
+  .school-name { font-size: 13px; font-weight: 600; }
+  .school-pct { font-size: 10px; font-weight: 700; color: var(--text-faint); }
+  .school-badge {
+    font-size: 9px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--surface-alt); color: var(--text-muted);
+    border: 1px solid var(--border-light);
+  }
+  .school-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .school-sub .overdue-text { color: var(--urgent); font-weight: 500; }
+
+  .row-action {
+    display: flex; align-items: center; gap: 3px;
+    padding: 3px 10px; border-radius: 5px;
+    font-size: 10px; font-weight: 600;
+    background: var(--accent-light); color: var(--accent);
+    border: 1px solid rgba(232,69,107,0.08);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .row-action.action-urgent { background: var(--urgent-light); color: var(--urgent); border-color: rgba(220,38,38,0.08); }
+  .row-action.action-success { background: var(--success-light); color: var(--success); border-color: rgba(22,163,74,0.08); }
+  .active-badge {
+    font-size: 9px; font-weight: 600;
+    padding: 1px 6px; border-radius: 3px;
+    background: var(--success-light); color: var(--success);
+  }
+  .row-chevron { color: var(--text-faint); font-size: 10px; }
+  .school-row:hover .row-chevron { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="mockup-badge">DESIGN MOCKUP v3</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo"><i class="fas fa-volleyball-ball" style="font-size:13px;"></i></div>
+      <span class="sidebar-name">Recruiting HQ</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="#"><i class="fas fa-home"></i> Dashboard</a>
+      <a class="nav-item active" href="#"><i class="fas fa-layer-group"></i> My Schools</a>
+      <a class="nav-item" href="#"><i class="fas fa-calendar"></i> Calendar</a>
+      <a class="nav-item" href="#"><i class="fas fa-search"></i> Find Schools</a>
+      <a class="nav-item" href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+    </nav>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <h1 class="page-title">My Schools</h1>
+      <button class="add-btn"><i class="fas fa-plus" style="font-size:10px;"></i> Add School</button>
+    </div>
+
+    <!-- TOP ROW -->
+    <div class="top-row">
+
+      <!-- Ring -->
+      <div class="ring-card">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 80 80" width="80" height="80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#f0f0f0" stroke-width="8" />
+            <circle cx="40" cy="40" r="32" fill="none" stroke="#dc2626" stroke-width="8"
+              stroke-dasharray="50.3 150.8" stroke-dashoffset="0"
+              transform="rotate(-90 40 40)" stroke-linecap="round" />
+            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="25.1 176" stroke-dashoffset="-50.3"
+              transform="rotate(-90 40 40)" stroke-linecap="round" opacity="0.7" />
+            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="50.3 150.8" stroke-dashoffset="-75.4"
+              transform="rotate(-90 40 40)" stroke-linecap="round" opacity="0.35" />
+            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="75.4 125.7" stroke-dashoffset="-125.7"
+              transform="rotate(-90 40 40)" stroke-linecap="round" opacity="0.15" />
+          </svg>
+          <div class="ring-center">
+            <span class="ring-num">8</span>
+            <span class="ring-label">schools</span>
+          </div>
+        </div>
+        <div class="ring-legend">
+          <div class="legend-row"><div class="legend-dot" style="background:#dc2626;"></div><span class="legend-count">2</span><span class="legend-label">Overdue</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:var(--accent);opacity:0.8;"></div><span class="legend-count">1</span><span class="legend-label">Outreach</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:var(--accent);opacity:0.4;"></div><span class="legend-count">2</span><span class="legend-label">Waiting</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:var(--accent);opacity:0.18;"></div><span class="legend-count">3</span><span class="legend-label">In Convo</span></div>
+        </div>
+      </div>
+
+      <!-- COMPACT HERO -->
+      <div class="hero-card">
+        <div class="hero-main">
+          <div class="hero-top-row">
+            <div class="hero-kicker"><i class="fas fa-exclamation-circle"></i> Needs Attention</div>
+            <div class="hero-urgency-tag">5 days overdue</div>
+          </div>
+          <div class="hero-school">Northwestern University</div>
+          <div class="hero-meta">
+            <span class="hero-badge">D1</span>
+            <span class="hero-detail"><i class="fas fa-map-marker-alt"></i> Big Ten</span>
+            <span class="hero-detail">Evanston, IL</span>
+          </div>
+          <div class="hero-glass">
+            <div class="hero-glass-title"><i class="fas fa-lightbulb"></i> What to do next</div>
+            <div class="hero-glass-text">Coach Johnson hasn't heard from you since Feb 12. Send a short follow-up.</div>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="hero-btn-primary"><i class="fas fa-paper-plane" style="font-size:9px;"></i> Send Follow-Up</button>
+          <button class="hero-btn-ghost">Snooze 3 days</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHIPS -->
+    <div class="filter-row">
+      <div class="chips">
+        <div class="chip active">All <span class="chip-count">8</span></div>
+        <div class="chip"><div class="chip-dot" style="background:#dc2626;"></div> Overdue <span class="chip-count">2</span></div>
+        <div class="chip">Outreach <span class="chip-count">1</span></div>
+        <div class="chip">Waiting <span class="chip-count">2</span></div>
+        <div class="chip">In Conversation <span class="chip-count">3</span></div>
+      </div>
+    </div>
+
+    <!-- SCHOOL LIST -->
+    <div class="school-list">
+
+      <div class="section-label urgent-label"><i class="fas fa-circle" style="font-size:3px;vertical-align:middle;margin-right:3px;"></i>Overdue</div>
+
+      <div class="school-row row-urgent">
+        <div class="school-logo">NW</div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">Northwestern University</span>
+            <span class="school-pct">84%</span>
+            <span class="school-badge">D1</span>
+          </div>
+          <div class="school-sub"><span class="overdue-text">5 days overdue</span> · Big Ten · Evanston, IL</div>
+        </div>
+        <div class="row-action action-urgent"><i class="fas fa-paper-plane" style="font-size:8px;"></i> Follow Up</div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row row-urgent">
+        <div class="school-logo">DU</div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">Duke University</span>
+            <span class="school-pct">79%</span>
+            <span class="school-badge">D1</span>
+          </div>
+          <div class="school-sub"><span class="overdue-text">3 days overdue</span> · ACC · Durham, NC</div>
+        </div>
+        <div class="row-action action-urgent"><i class="fas fa-paper-plane" style="font-size:8px;"></i> Follow Up</div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="section-label" style="margin-top:6px;">Needs Outreach</div>
+
+      <div class="school-row">
+        <div class="school-logo">USC</div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">USC Trojans</span>
+            <span class="school-pct">91%</span>
+            <span class="school-badge">D1</span>
+          </div>
+          <div class="school-sub">Send your first email to introduce yourself</div>
+        </div>
+        <div class="row-action"><i class="fas fa-paper-plane" style="font-size:8px;"></i> Start Outreach</div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="section-label" style="margin-top:6px;">Waiting on Reply</div>
+
+      <div class="school-row">
+        <div class="school-logo">MSU</div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">Michigan State University</span>
+            <span class="school-pct">87%</span>
+            <span class="school-badge">D1</span>
+          </div>
+          <div class="school-sub">Reached out 4 days ago · Due Feb 22</div>
+        </div>
+        <div class="row-action action-success"><i class="fas fa-check-circle" style="font-size:8px;"></i> Mark Replied</div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo">UNC</div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">UNC Chapel Hill</span>
+            <span class="school-pct">87%</span>
+            <span class="school-badge">D1</span>
+          </div>
+          <div class="school-sub">Reached out 6 days ago · Due Feb 24</div>
+        </div>
+        <div class="row-action action-success"><i class="fas fa-check-circle" style="font-size:8px;"></i> Mark Replied</div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="section-label" style="margin-top:6px;">In Conversation</div>
+
+      <div class="school-row">
+        <div class="school-logo"><img src="https://icon.horse/icon/ucla.edu" alt="" onerror="this.style.display='none';this.parentElement.textContent='UCLA';"/></div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">UCLA</span>
+            <span class="school-pct">96%</span>
+            <span class="school-badge">D1</span>
+            <span class="active-badge">Active</span>
+          </div>
+          <div class="school-sub">Coach Miller replied 2 days ago · Pac-12 · Los Angeles, CA</div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo"><img src="https://icon.horse/icon/stanford.edu" alt="" onerror="this.style.display='none';this.parentElement.textContent='STAN';"/></div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">Stanford University</span>
+            <span class="school-pct">92%</span>
+            <span class="school-badge">D1</span>
+            <span class="active-badge">Active</span>
+          </div>
+          <div class="school-sub">Coach replied today · Pac-12 · Stanford, CA</div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo"><img src="https://icon.horse/icon/utexas.edu" alt="" onerror="this.style.display='none';this.parentElement.textContent='TEX';"/></div>
+        <div class="school-info">
+          <div class="school-top">
+            <span class="school-name">University of Texas</span>
+            <span class="school-pct">89%</span>
+            <span class="school-badge">D1</span>
+            <span class="active-badge">Active</span>
+          </div>
+          <div class="school-sub">Camp invite received · replied 5 days ago · Big 12 · Austin, TX</div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
