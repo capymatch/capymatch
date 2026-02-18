@@ -193,3 +193,25 @@ async def get_share_link(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     return {"tenant_id": tenant_id}
+
+
+@router.get("/first-reply-celebration")
+async def check_first_reply_celebration(request: Request):
+    """Check if user should see the first coach reply celebration."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    tenant = await db.tenants.find_one({"tenant_id": tenant_id}, {"_id": 0, "first_reply_celebrated": 1})
+    celebrated = tenant.get("first_reply_celebrated", False) if tenant else False
+    # Check if there are any coach replies (emails received)
+    has_replies = await db.emails.count_documents({"tenant_id": tenant_id, "direction": "received"}) > 0
+    should_celebrate = has_replies and not celebrated
+    return {"should_celebrate": should_celebrate, "already_celebrated": celebrated}
+
+@router.post("/first-reply-celebration/dismiss")
+async def dismiss_first_reply_celebration(request: Request):
+    """Mark the first reply celebration as seen."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    await db.tenants.update_one({"tenant_id": tenant_id}, {"$set": {"first_reply_celebrated": True}})
+    return {"success": True}
+
