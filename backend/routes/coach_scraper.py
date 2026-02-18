@@ -126,9 +126,19 @@ def is_valid_title(title):
 def extract_emails_from_html(html_text):
     """Extract .edu and other emails from HTML."""
     emails = set(re.findall(r'[\w.+-]+@[\w.-]+\.(?:edu|com|org|net)', html_text.lower()))
-    skip = {"info@", "admissions@", "webmaster@", "privacy@", "help@", "support@", "news@", "marketing@",
-            "compliance@", "noreply@", "tickets@", "camps@", "recruiting@", "athletics@", "ticket@", "sidearm@"}
-    return [e for e in emails if not any(e.startswith(s) for s in skip)]
+    skip_prefixes = {"info@", "admissions@", "webmaster@", "privacy@", "help@", "support@", "news@", "marketing@",
+            "compliance@", "noreply@", "tickets@", "camps@", "recruiting@", "athletics@", "ticket@", "sidearm@",
+            "volleyball@", "vball@", "sportsinfo@", "media@", "development@", "giving@", "alumni@"}
+    skip_substrings = {"volleyball", "vball", "ticket", "camp", "recruit", "sport"}
+    result = []
+    for e in emails:
+        if any(e.startswith(s) for s in skip_prefixes):
+            continue
+        local = e.split("@")[0]
+        if any(s in local for s in skip_substrings):
+            continue
+        result.append(e)
+    return result
 
 
 def assign_titles(coaches):
