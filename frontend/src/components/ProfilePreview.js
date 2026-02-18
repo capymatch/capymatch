@@ -2,26 +2,26 @@ import { User, Mail, Phone, Play, MapPin } from "lucide-react";
 
 const PREVIEW_CSS = `
   .preview-root {
-    --p-bg: #e8e7ef;
-    --p-hero-bg: #ffffff;
+    --p-bg: var(--t-bg, #e8e7ef);
+    --p-hero-bg: var(--t-surface, #ffffff);
     --p-hero-glow: rgba(232,69,107,0.05);
-    --p-surface: #ffffff;
-    --p-text: #1a1a2e;
-    --p-text-secondary: #4a4a60;
-    --p-text-muted: #8b8b9e;
-    --p-text-faint: #b0b0c0;
+    --p-surface: var(--t-surface, #ffffff);
+    --p-text: var(--t-text, #1a1a2e);
+    --p-text-secondary: var(--t-text-secondary, #4a4a60);
+    --p-text-muted: var(--t-text-muted, #8b8b9e);
+    --p-text-faint: var(--t-text-faint, #b0b0c0);
     --p-accent: #e8456b;
-    --p-section-bg: #ffffff;
-    --p-section-border: rgba(0,0,0,0.08);
-    --p-section-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.10);
-    --p-icon-box-bg: #f4f3f9;
-    --p-icon-box-border: rgba(0,0,0,0.08);
-    --p-ghost-bg: #f4f3f9;
-    --p-ghost-border: rgba(0,0,0,0.10);
-    --p-photo-border: rgba(0,0,0,0.08);
+    --p-section-bg: var(--t-surface, #ffffff);
+    --p-section-border: var(--t-border, rgba(0,0,0,0.08));
+    --p-section-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --p-icon-box-bg: var(--t-surface-alt, #f4f3f9);
+    --p-icon-box-border: var(--t-border, rgba(0,0,0,0.08));
+    --p-ghost-bg: var(--t-surface-alt, #f4f3f9);
+    --p-ghost-border: var(--t-border, rgba(0,0,0,0.10));
+    --p-photo-border: var(--t-border, rgba(0,0,0,0.08));
     --p-coach-avatar: linear-gradient(135deg, #6366f1, #8b5cf6);
-    --p-border: rgba(0,0,0,0.08);
-    --p-empty-bg: #f8f7fc;
+    --p-border: var(--t-border, rgba(0,0,0,0.08));
+    --p-empty-bg: var(--t-surface-alt, #f8f7fc);
     font-family: 'DM Sans', -apple-system, sans-serif;
   }
   .preview-root .font-barlow { font-family: 'Barlow Condensed', sans-serif; }
