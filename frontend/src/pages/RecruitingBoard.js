@@ -306,8 +306,8 @@ function FilterChips({ counts, total, active, onFilter }) {
             style={!isActive ? { color: "var(--t-text-secondary)" } : {}}
             data-testid={`chip-${c.key || "all"}`}
           >
-            <span className={isActive ? "text-pink-400" : ""}>{c.label}</span>
-            <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? "bg-pink-600/20 text-pink-400" : `bg-${c.color}-500/10 text-${c.color}-400`}`}>{c.count}</span>
+            <span className={isActive ? "text-pink-600 dark:text-pink-400" : ""}>{c.label}</span>
+            <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? "bg-pink-600/20 text-pink-600 dark:text-pink-400" : `bg-${c.color}-500/10 text-${c.color}-600 dark:text-${c.color}-400`}`}>{c.count}</span>
           </button>
         );
       })}
