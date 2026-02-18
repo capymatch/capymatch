@@ -144,37 +144,44 @@ export default function Layout({ user, onLogout }) {
           transform transition-all duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
-        style={{ background: "linear-gradient(180deg, #c0375a 0%, #8e1b3d 50%, #6b1530 100%)", borderColor: "transparent" }}
+        style={{ background: "var(--t-sidebar-bg)", borderColor: "var(--t-sidebar-border)" }}
       >
         {/* Logo */}
-        <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+        <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "var(--t-sidebar-divider)" }}>
           <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'lg:justify-center lg:w-full' : ''}`}>
-            <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0"
+              style={{ backgroundColor: "var(--t-sidebar-logo-bg)" }}>
+              <Sparkles className="w-5 h-5" style={{ color: "var(--t-sidebar-logo-icon)" }} strokeWidth={2} />
             </div>
             <div className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>
-              <span className="font-heading text-lg font-bold block leading-tight text-white">Recruiting HQ</span>
-              <span className="text-[10px] uppercase tracking-widest text-white/60">
+              <span className="font-heading text-lg font-bold block leading-tight" style={{ color: "var(--t-sidebar-brand-text)" }}>Recruiting HQ</span>
+              <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--t-nav-active-text)", opacity: 0.8 }}>
                 {subscription?.tier ? `${TIER_LABELS[subscription.tier] || subscription.tier}` : "Starter"}
               </span>
             </div>
           </div>
           {/* Collapse button - Desktop only */}
           <button 
-            className={`hidden lg:flex p-2 rounded-lg hover:bg-white/10 transition-colors ${sidebarCollapsed ? '!hidden' : ''}`}
+            className={`hidden lg:flex p-2 rounded-lg transition-colors ${sidebarCollapsed ? '!hidden' : ''}`}
             onClick={() => setSidebarCollapsed(true)}
             title="Collapse sidebar"
             data-testid="sidebar-collapse-btn"
+            style={{ color: "var(--t-nav-text)" }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
           >
-            <SidebarIcon className="w-5 h-5 text-white/60" />
+            <SidebarIcon className="w-5 h-5" />
           </button>
           {/* Close button for mobile */}
           <button 
-            className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 rounded-lg transition-colors"
             onClick={() => setSidebarOpen(false)}
             aria-label="Close menu"
+            style={{ color: "var(--t-nav-text)" }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
           >
-            <X className="w-5 h-5 text-white/60" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -183,9 +190,12 @@ export default function Layout({ user, onLogout }) {
           <div className="hidden lg:block px-4 pt-4">
             <button
               onClick={() => setSidebarCollapsed(false)}
-              className="w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 text-white/70 hover:bg-white/10 hover:text-white"
+              className="w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300"
               data-testid="sidebar-expand-btn"
               title="Expand sidebar"
+              style={{ color: "var(--t-nav-text)" }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"; e.currentTarget.style.color = "var(--t-nav-text-hover)"; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--t-nav-text)"; }}
             >
               <SidebarIcon className="w-5 h-5" strokeWidth={1.5} />
             </button>
@@ -202,15 +212,28 @@ export default function Layout({ user, onLogout }) {
                 data-testid={`nav-${item.label.toLowerCase()}`}
                 title={sidebarCollapsed ? item.label : undefined}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
+                  `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
                     sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
-                  } ${
-                    isActive
-                      ? "bg-white/18 text-white shadow-lg font-semibold"
-                      : "text-white/70 hover:bg-white/10 hover:text-white"
                   }`
                 }
-                style={() => ({})}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? "var(--t-nav-active-bg)" : "transparent",
+                  color: isActive ? "var(--t-nav-active-text)" : "var(--t-nav-text)",
+                  fontWeight: isActive ? 600 : 500,
+                })}
+                onMouseEnter={e => {
+                  if (!e.currentTarget.classList.contains('active')) {
+                    e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)";
+                    e.currentTarget.style.color = "var(--t-nav-text-hover)";
+                  }
+                }}
+                onMouseLeave={e => {
+                  const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--t-nav-text)";
+                  }
+                }}
               >
                 <item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
                 <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
@@ -222,11 +245,14 @@ export default function Layout({ user, onLogout }) {
           <div className="pt-1">
             <button
               onClick={() => setAiOpen(!aiOpen)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group text-white/70 hover:bg-white/10 hover:text-white ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
                 sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
               }`}
               data-testid="nav-ai-features-toggle"
               title={sidebarCollapsed ? "AI Features" : undefined}
+              style={{ color: "var(--t-nav-text)" }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"; e.currentTarget.style.color = "var(--t-nav-text-hover)"; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "var(--t-nav-text)"; }}
             >
               <Sparkles className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
               <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>AI Features</span>
@@ -235,24 +261,23 @@ export default function Layout({ user, onLogout }) {
                   {(!subscription?.tier || subscription.tier !== "premium") && (
                     <Crown className="ml-auto w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
                   )}
-                  <ChevronRight className={`w-4 h-4 text-white/40 flex-shrink-0 transition-transform duration-200 ${aiOpen ? 'rotate-90' : ''}`} />
+                  <ChevronRight className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${aiOpen ? 'rotate-90' : ''}`} style={{ color: "var(--t-text-muted)" }} />
                 </>
               )}
             </button>
             {aiOpen && !sidebarCollapsed && (
-              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+              <div className="ml-4 mt-0.5 space-y-0.5 border-l pl-3" style={{ borderColor: "var(--t-sidebar-divider)" }}>
                 {aiItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
                     data-testid={`nav-${item.label.toLowerCase().replace(/\s/g, '-')}`}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group ${
-                        isActive
-                          ? "bg-white/15 text-white font-semibold"
-                          : "text-white/60 hover:bg-white/8 hover:text-white/90"
-                      }`
-                    }
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group"
+                    style={({ isActive }) => ({
+                      backgroundColor: isActive ? "var(--t-nav-active-bg)" : "transparent",
+                      color: isActive ? "var(--t-nav-active-text)" : "var(--t-nav-text)",
+                      fontWeight: isActive ? 600 : 500,
+                    })}
                   >
                     <item.icon className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
                     <span>{item.label}</span>
@@ -267,8 +292,11 @@ export default function Layout({ user, onLogout }) {
                       setShowAssistant(true);
                     }
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group text-white/60 hover:bg-white/8 hover:text-white/90"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group"
                   data-testid="nav-ai-advisor"
+                  style={{ color: "var(--t-nav-text)" }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
                 >
                   <Sparkles className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
                   <span>AI Advisor</span>
@@ -280,14 +308,17 @@ export default function Layout({ user, onLogout }) {
 
         {/* Subscription Badge + Admin Link */}
         <div className="px-4 pb-2 mt-auto">
-          <div className="border-t mb-3" style={{ borderColor: "rgba(255,255,255,0.15)" }} />
+          <div className="border-t mb-3" style={{ borderColor: "var(--t-sidebar-divider)" }} />
           <NavLink
             to="/admin"
             data-testid="nav-admin"
             title={sidebarCollapsed ? "Admin" : undefined}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
               sidebarCollapsed ? 'lg:justify-center lg:px-3' : ''
-            } text-white/50 hover:bg-white/10 hover:text-white`}
+            }`}
+            style={{ color: "var(--t-nav-text)", opacity: 0.7 }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--t-nav-active-bg)"; e.currentTarget.style.opacity = "1"; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.opacity = "0.7"; }}
           >
             <Shield className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 flex-shrink-0" strokeWidth={1.5} />
             <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>Admin</span>
