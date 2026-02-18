@@ -503,7 +503,7 @@ export default function AdminIntegrations() {
               data-testid="scorecard-sync-btn"
             >
               {syncingScorecard ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-              {syncingScorecard ? "Syncing schools..." : "Sync All Schools"}
+              {syncingScorecard ? `Syncing... (${syncProgress})` : "Sync All Schools"}
             </Button>
           )}
 
