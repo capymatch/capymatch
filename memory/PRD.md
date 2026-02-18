@@ -1,171 +1,101 @@
-# Volleyball Recruiting CRM — PRD
+# Volleyball Recruiting CRM — Product Requirements Document
 
 ## Original Problem Statement
-Public-facing Volleyball Recruiting CRM for parents managing their child's recruiting journey. The app helps track schools, coaches, interactions, and progress through the recruiting pipeline.
+Build a public-facing Volleyball Recruiting CRM with dynamic recruiting board, university knowledge base, mobile-friendly design, admin area, subscription engine, and AI-powered recruiting assistance.
+
+## Target Audience
+High School Volleyball Athletes & Families
 
 ## Core Requirements
-1. Dynamic Recruiting Board with custom parent-friendly grouping
-2. University Knowledge Base
+1. Dynamic Recruiting Board with custom, parent-friendly grouping
+2. University Knowledge Base with logos
 3. Mobile-friendly responsive design
 4. Full-app visual redesign (dark theme with pink/coral accents)
-5. Admin Area (User, University, Subscription, Integration Management)
+5. Admin Area (User, University, Subscription, Integration management)
 6. Subscription Engine with feature gating (Starter, Pro, Premium)
 7. Stripe integration for payments
 8. AI-powered "Next Step" suggestions
-9. Separate data for Girls and Boys volleyball
-10. Complete UX/UI overhaul of Recruiting Journey page
+9. Separate Girls/Boys volleyball data
+10. UX/UI overhaul of Recruiting Journey page
+11. Rule-based "What's Next?" prompts
+12. File attachments for emails
+13. Celebratory hero card for commitments
+14. Private per-school notes
+15. Automated follow-up system
+16. Dashboard redesign for daily actions
+17. University logos for Knowledge Base
 
 ## Tech Stack
-- Frontend: React, Tailwind CSS, Shadcn/UI, Lucide React
-- Backend: FastAPI, Pydantic, MongoDB
-- Auth: Cookie-based sessions + Emergent Google OAuth
-- 3rd Party: Gmail API, Anthropic Claude (Emergent LLM Key), react-joyride, Stripe, Resend
+- Frontend: React + Tailwind + Shadcn/UI
+- Backend: FastAPI + MongoDB
+- Auth: Emergent-managed Google Auth, JWT
+- AI: Anthropic Claude Sonnet 4.5 (Emergent LLM Key)
+- Icons: Lucide React
+- Product Tour: react-joyride
 
-## User Personas
-- **Parents**: Primary users managing their child's volleyball recruiting
-- **Admin**: App administrators managing users, universities, subscriptions
+## 3rd Party Integrations
+- Emergent-managed Google Auth (Gmail API) — WORKING
+- Anthropic Claude Sonnet 4.5 (Emergent LLM Key)
+- react-joyride (Product Tour)
+- lucide-react (Icons)
+- Stripe (Payments) — requires User API Key
+- Resend (Email Notifications) — requires User API Key
+- beautifulsoup4 / lxml (Web Scraping for Coach Watch)
+- icon.horse API (University logos)
+- Google Favicon API (Fallback logos)
 
-## Test Accounts
-- Pro User: pro@test.com / password
-- Premium User: premium@test.com / password
-- Empty Board User: emptytest@test.com / password
+## What's Been Implemented
 
-## What's Implemented (Complete)
-- Full recruiting board with 5-stage funnel
-- Journey Page complete redesign with 7 features
-- Progress Rail cascade fill logic
-- Stage click/undo toggle behavior
-- Rule-based "What's Next?" card
-- Camp milestone in timeline
-- Coach CRUD, Interaction logging, Follow-up scheduling
-- Email composer with AI drafts (Premium)
+### Completed Features
+- Full Pipeline Page ("My Schools") visual overhaul with Dark + Pink theme
+- Dynamic Hero Card on pipeline highlighting most urgent school
+- **Journey Card Dark + Pink theme** (Feb 18, 2026) — applied consistent `#1e1e2e` charcoal background with `#e8456b` pink accents to the Journey page header card and progress rail
+- Investor Demo HTML Walkthrough (8-slide interactive presentation)
+- Multiple UX mockups for iterative design feedback
+- Getting Started Checklist for new schools
+- Committed Hero celebratory card
+- Celebration Hero for coach replies
+- Rule-based Next Step cards
+- Conversation Timeline with chat bubbles
+- At A Glance sidebar
+- Floating Action Bar
+- Email Composer with AI drafts and file attachments
+- Coach management (add/edit/delete)
+- Follow-up scheduler
 - Mark as Replied flow
-- Admin dashboard, user management, university management
-- Subscription engine with feature gating
-- NCAA Timeline, Analytics, Calendar pages
-- Coach Watch (web scraping), Highlight Advisor
-- "Committed" Hero Card with confetti animation
-- Personal Notes Sidebar per school
-- Font Upgrade to Plus Jakarta Sans
-- Stage Log Modal for progress rail
-- Automated Follow-up System (2-14 day reminders)
-- Enhanced Getting Started Checklist with dynamic steps
-- Public Athlete Profile Redesign
-- University Logos across all pages
-- Light Theme Implementation
-- Inline Gmail Connection on Intro Page
-- Split-Screen Profile Editor
-- Google OAuth Login Fix
-- Coach Watch Badge on Journey Page
-- Guided Tour Fix
-- First Reply Celebration Feature
-- Dashboard Redesign with 6 sections
-- My Schools Empty State Redesign
+- Stage progress rail with manual stage advancement
+- Private per-school notes sidebar
+- AI Journey Summary (Premium)
+- Coach Watch alerts
 
-## What's Implemented (Recent — Feb 18, 2026 Session 5)
+### Design System
+- **Primary accent**: `#e8456b` (pink)
+- **Dark card background**: `#1e1e2e` (charcoal)
+- **Key cards use Dark + Pink theme**: Pipeline Hero Card, Journey Header Card
+- Minimalist palette: charcoal, brand pink, urgent red, success green
+- Font: DM Sans (body), Barlow Condensed (headings)
 
-### My Schools Pipeline Page Redesign (Clean Apple-Inspired UX)
-Complete rewrite of `RecruitingBoard.js` with simplified 4-color palette:
-- **Dark navy cinematic hero card** — adapts by priority (Overdue → Needs Outreach → Waiting → In Conversation → All Caught Up)
-- **Monochrome progress ring** — accent pink opacity gradient + red for overdue only
-- **Compact school rows** — grouped by section headers, neutral gray division badges, muted match %
-- **Neutral filter chips** — black active state, shortened labels
-- **Palette**: accent `#e8456b`, urgent `#dc2626`, success `#16a34a`, neutral grays only
-- **Testing**: 9/9 features passed (hero card, ring, chips, rows, navigation, quick actions, filters)
+## Prioritized Backlog
 
-**Modified File:** `/app/frontend/src/pages/RecruitingBoard.js` (full rewrite)
-**Mockup Files:** `/app/frontend/public/pipeline-clean-v3.html` (approved mockup)
-
-## What's Implemented (Recent — Feb 18, 2026 Session 4)
-
-### Investor Demo Walkthrough (Interactive HTML)
-Created a polished, 8-slide interactive HTML walkthrough at `/investor-walkthrough.html` for investor presentations. Features:
-- **Slide 1**: Problem statement — 500K+ players, ~4% make a roster, 0 tools built for families
-- **Slide 2**: Personalized onboarding questionnaire (mock UI)
-- **Slide 3**: AI-powered school discovery with spotlight hero and grid cards (mock UI)
-- **Slide 4**: Recruiting board command center with kanban columns (mock UI)
-- **Slide 5**: Per-school journey tracking with progress rail, What's Next, and timeline (mock UI)
-- **Slide 6**: Smart follow-up system with AI-drafted emails (mock UI)
-- **Slide 7**: Commitment celebration with confetti and stats
-- **Slide 8**: Business model — pricing tiers (Free/Pro/Premium), TAM metrics, live demo CTA
-- Navigation: Arrow keys, spacebar auto-play, touch swipe, clickable dots, progress bar
-- URL: `{app-url}/investor-walkthrough.html`
-
-**New File:** `/app/frontend/public/investor-walkthrough.html`
-
-## What's Implemented (Recent — Feb 18, 2026 Session 3)
-
-### Find Schools Page Complete Redesign (6 Apple-Inspired UX Features)
-Complete rewrite of the Find Schools (UniversityKnowledgeBase) page with 6 major UX improvements:
-
-1. **Spotlight Hero Recommendation**: Top match displayed as a large cinematic hero card (dark visual panel + details panel) with school name, 96% match score, "Why this school?" AI snippet, coach info, and prominent CTA. Below it, a horizontal scrollable carousel of remaining AI matches with mini-cards showing logos and scores.
-
-2. **Horizontal Filter Pills**: Replaced the sidebar filter dropdowns with horizontal scrolling pill buttons. Division pills (D1/D2/D3/NAIA/JUCO) are color-coded (emerald/blue/violet/orange/yellow). Region and Conference pills follow with vertical dividers. Active filters glow with their division color. Reclaimed ~250px horizontal space.
-
-3. **Quick Look Card Expansion**: Clicking any grid card expands it inline (spans full grid width) to reveal: coaching staff with avatars, "Why This School?" AI snippet, match reason tags, and Add to Board/Website/Close buttons. No page navigation needed. Clicking X or another card collapses it.
-
-4. **Compact Grid View with List Toggle**: Grid/List toggle button in the search bar. Grid view (default) shows 3-column logo-forward visual cards with hover-lift animation and pink accent line on hover. List view preserves the original detailed row layout with coach info.
-
-5. **Smart Buckets Preset Filters**: One-tap contextual quick-access buttons above results: "All Schools", "Dream Schools (D1)" with count, "Strong Match (80%+)" with count, "Close to Home", "Strong Academics" with count. Active bucket has pink background with shadow. These help parents who don't know what filters to pick.
-
-6. **Sticky Search + Active Filter Summary**: Search bar sticks to top on scroll with glassmorphism blur effect (backdrop-filter: blur(20px)). Active filters shown as dismissible chips below the search bar with color-coding matching the filter type. "Clear all" resets everything.
-
-**Bug Fixes in this session:**
-- Fixed UCLA name mismatch between programs collection and knowledge base preventing "On Your Board" status
-- Fixed region filter regex matching partial strings (e.g., "West" was returning "Midwest" results)
-
-**New Files:**
-- `/app/frontend/src/components/FindSchools/SpotlightHero.js` — Hero recommendation + carousel
-- `/app/frontend/src/components/FindSchools/SchoolGridCard.js` — Grid card with Quick Look expansion
-- `/app/frontend/src/pages/UniversityKnowledgeBase.js` — Complete rewrite with all 6 features
-- `/app/mockups/find_schools_redesign.html` — Interactive HTML mockup (approved by user)
-
-## Code Architecture
-```
-/app/frontend/src/
-├── components/
-│   ├── FindSchools/
-│   │   ├── SpotlightHero.js          # NEW: Hero recommendation + carousel
-│   │   └── SchoolGridCard.js         # NEW: Grid card with Quick Look expansion
-│   ├── Layout/
-│   │   ├── Layout.js
-│   │   └── Tour.js
-│   ├── Profile/
-│   │   └── ProfilePreview.js
-│   └── UniversityLogo.js
-├── pages/
-│   ├── Dashboard.js
-│   ├── UniversityKnowledgeBase.js    # REWRITTEN: All 6 UX features
-│   ├── RecruitingBoard.js
-│   ├── pipeline/
-│   │   └── EmptyBoardState.js
-│   ├── Auth/
-│   │   └── GoogleLoginHandler.js
-│   ├── Journey/
-│   │   └── JourneyPage.js
-│   └── Profile/
-│       └── ProfilePage.js
-└── App.js
-
-/app/backend/routes/
-├── knowledge.py                      # MODIFIED: Fixed region filter regex
-├── programs.py
-└── athlete_profile.py
-```
-
-## P0 Backlog
-- Separate Girls/Boys Volleyball data and features
-
-## P1 Backlog
-- Advanced UX improvements from Apple designer review (e.g., "Today" hero card on dashboard)
+### P1 — Upcoming
+- Separate Girls/Boys Volleyball data architecture
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
-- JourneyPage.js refactor (component too complex)
-- ProfilePage.js decomposition into smaller sub-components
-- PublicSchedule.js decomposition (500+ lines)
 
-## P2 Backlog (Future)
-- Tiered Celebrations (5th, 10th reply milestones, dream school replies)
+### P2 — Future
+- Build Marketing Website
+- Tiered Celebrations (milestones beyond first reply)
 - App Naming
 - Multi-sport capability
 - Family Collaboration Roles (read-only Parent/Viewer role)
+
+## Test Accounts
+- **Pro User**: `pro@test.com` / `password`
+- **Google Auth User (Demo Data)**: `douglas@yeslms.com`
+
+## Key Files
+- `/app/frontend/src/pages/RecruitingBoard.js` — Pipeline page (Dark + Pink hero card)
+- `/app/frontend/src/pages/RecruitingJourney.js` — Journey page (Dark + Pink header card)
+- `/app/frontend/src/pages/Dashboard.js` — Main dashboard
+- `/app/frontend/public/` — HTML mockups for design iterations
+- `/app/design_guidelines.json` — Design system reference
