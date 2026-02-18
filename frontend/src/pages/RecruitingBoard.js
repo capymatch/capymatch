@@ -275,7 +275,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
         )}
         {quickAction && (
           <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/20 transition-colors"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-pink-600 dark:text-pink-400 bg-pink-600/10 hover:bg-pink-600/20 border border-pink-600/20 transition-colors"
             onClick={() => navigate(`/journey/${p.program_id}`)}
             data-testid={`quick-action-${p.program_id}`}
           >
