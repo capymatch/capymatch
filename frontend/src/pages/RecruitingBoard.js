@@ -17,10 +17,10 @@ import UniversityLogo from "../components/UniversityLogo";
 /* ── Stage Config (Clean palette) ── */
 const STAGES = {
   overdue:          { label: "Overdue",         shortLabel: "Overdue",   icon: AlertTriangle, ring: "#dc2626",  opacity: 1 },
-  needs_outreach:   { label: "Needs Outreach",  shortLabel: "Outreach",  icon: Send,          ring: "#e8456b",  opacity: 0.7 },
-  waiting_on_reply: { label: "Waiting on Reply", shortLabel: "Waiting",   icon: Clock,         ring: "#e8456b",  opacity: 0.35 },
-  in_conversation:  { label: "In Conversation", shortLabel: "In Convo",  icon: MessageSquare, ring: "#e8456b",  opacity: 0.15 },
-  archived:         { label: "Archived",        shortLabel: "Archived",  icon: Archive,       ring: "#e8456b",  opacity: 0.08 },
+  needs_outreach:   { label: "Needs Outreach",  shortLabel: "Outreach",  icon: Send,          ring: "#e8456b",  opacity: 1 },
+  waiting_on_reply: { label: "Waiting on Reply", shortLabel: "Waiting",   icon: Clock,         ring: "#f59e0b",  opacity: 1 },
+  in_conversation:  { label: "In Conversation", shortLabel: "In Convo",  icon: MessageSquare, ring: "#10b981",  opacity: 1 },
+  archived:         { label: "Archived",        shortLabel: "Archived",  icon: Archive,       ring: "#6b7280",  opacity: 1 },
 };
 const STAGE_ORDER = ["overdue", "needs_outreach", "waiting_on_reply", "in_conversation", "archived"];
 
