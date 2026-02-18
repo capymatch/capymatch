@@ -7,13 +7,13 @@ import { BACKEND_URL } from "../lib/api";
 const THEME_CSS = `
   .font-barlow { font-family: 'Barlow Condensed', sans-serif; }
   .profile-root {
-    --p-bg: #eae9f0;
-    --p-hero-bg: linear-gradient(160deg, #f5f4fa 0%, #eae9f2 40%, #f0eff6 100%);
+    --p-bg: #f0eff5;
+    --p-hero-bg: #ffffff;
     --p-hero-glow: rgba(232,69,107,0.05);
     --p-surface: #ffffff;
-    --p-surface-alt: #f0f0f5;
-    --p-border: rgba(0,0,0,0.07);
-    --p-border-hover: rgba(0,0,0,0.13);
+    --p-surface-alt: #f4f3f9;
+    --p-border: rgba(0,0,0,0.08);
+    --p-border-hover: rgba(0,0,0,0.15);
     --p-text: #1a1a2e;
     --p-text-secondary: #4a4a60;
     --p-text-muted: #8b8b9e;
@@ -21,30 +21,30 @@ const THEME_CSS = `
     --p-accent: #e8456b;
     --p-accent-glow: rgba(232,69,107,0.08);
     --p-accent-glow-strong: rgba(232,69,107,0.12);
-    --p-stat-bg: #eef0fa;
-    --p-stat-border: rgba(99,102,241,0.10);
-    --p-stat-highlight-bg: linear-gradient(135deg, rgba(232,69,107,0.10), rgba(232,69,107,0.04));
-    --p-stat-highlight-border: rgba(232,69,107,0.18);
+    --p-stat-bg: #f0eef8;
+    --p-stat-border: rgba(99,102,241,0.12);
+    --p-stat-highlight-bg: #fce8ed;
+    --p-stat-highlight-border: rgba(232,69,107,0.22);
     --p-section-bg: #ffffff;
-    --p-section-border: rgba(0,0,0,0.06);
-    --p-section-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.08);
+    --p-section-border: rgba(0,0,0,0.08);
+    --p-section-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.06);
     --p-coach-avatar: linear-gradient(135deg, #6366f1, #8b5cf6);
-    --p-icon-box-bg: rgba(0,0,0,0.03);
-    --p-icon-box-border: rgba(0,0,0,0.06);
-    --p-ghost-bg: rgba(0,0,0,0.04);
-    --p-ghost-hover: rgba(0,0,0,0.07);
-    --p-ghost-border: rgba(0,0,0,0.08);
+    --p-icon-box-bg: #f4f3f9;
+    --p-icon-box-border: rgba(0,0,0,0.08);
+    --p-ghost-bg: #f4f3f9;
+    --p-ghost-hover: #eae9f0;
+    --p-ghost-border: rgba(0,0,0,0.10);
     --p-photo-border: rgba(0,0,0,0.08);
     --p-video-overlay-bg: rgba(0,0,0,0.5);
     --p-video-label-bg: rgba(0,0,0,0.55);
-    --p-sticky-bg: rgba(234,233,240,0.92);
+    --p-sticky-bg: rgba(240,239,245,0.92);
     --p-sticky-secondary-bg: #ffffff;
-    --p-share-bg: rgba(0,0,0,0.04);
-    --p-share-hover: rgba(0,0,0,0.08);
-    --p-share-border: rgba(0,0,0,0.06);
+    --p-share-bg: rgba(0,0,0,0.05);
+    --p-share-hover: rgba(0,0,0,0.10);
+    --p-share-border: rgba(0,0,0,0.08);
     --p-share-icon: #1a1a2e;
-    --p-divider: rgba(0,0,0,0.06);
-    --p-empty-bg: #fafafa;
+    --p-divider: rgba(0,0,0,0.08);
+    --p-empty-bg: #f8f7fc;
   }
 `;
 
