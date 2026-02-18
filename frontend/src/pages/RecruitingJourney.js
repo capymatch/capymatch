@@ -1138,14 +1138,19 @@ export default function RecruitingJourney() {
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
       {/* ─── Header with Progress Rail ─── */}
-      <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="journey-header">
+      <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", padding: "0", position: "relative" }} data-testid="journey-header">
+        {/* Pink accent line */}
+        <div style={{ height: 2, background: "linear-gradient(90deg, #e8456b 0%, rgba(232,69,107,0.2) 100%)" }} />
+        <div style={{ padding: "20px 24px" }}>
         <div className="flex items-start gap-3 mb-4">
-          <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors mt-0.5" style={{ color: "var(--t-text-muted)" }} data-testid="back-btn">
+          <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg transition-colors mt-0.5" style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.05)" }} data-testid="back-btn"
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}>
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-bold" style={{ color: "var(--t-text)" }}>{program.university_name}</h1>
+              <h1 className="text-lg sm:text-xl font-extrabold" style={{ color: "#ffffff", letterSpacing: "-0.3px" }}>{program.university_name}</h1>
               {rail && <PulseIndicator pulse={rail.pulse} />}
             </div>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -1159,12 +1164,12 @@ export default function RecruitingJourney() {
                   <Target className="w-3 h-3" /> {matchScore.match_score}% Match
                 </span>
               )}
-              <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button variant="outline" size="sm" className="text-[11px] h-8 hidden sm:flex" onClick={() => navigate(`/compare?selected=${programId}`)}
-              style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="compare-btn">
+              style={{ color: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.1)", background: "transparent" }} data-testid="compare-btn">
               <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
             </Button>
             <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
@@ -1177,6 +1182,7 @@ export default function RecruitingJourney() {
         </div>
         {/* Progress Rail */}
         <ProgressRail rail={rail} onStageClick={handleStageClick} />
+        </div>
       </div>
 
       {/* Stage Log Modal */}
