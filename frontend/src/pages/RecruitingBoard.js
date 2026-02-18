@@ -119,7 +119,7 @@ function ProgressRing({ counts, total }) {
   );
 }
 
-/* ═══ Cinematic Hero Card ═══ */
+/* ═══ Tinted Wash Hero Card ═══ */
 function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   if (!program) return null;
   const stage = program.board_group;
@@ -128,15 +128,26 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const quickAction = getQuickAction(stage);
   const advice = getHeroAdvice(program);
 
-  // Dynamic kicker
   const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : stage === "waiting_on_reply" ? "Keeping Warm" : "Momentum";
-  const kickerColor = isUrgent ? "#f87171" : stage === "in_conversation" ? "#4ade80" : "#e8456b";
 
-  // Urgency tag
+  // Tinted wash colors — red for overdue, pink for everything else
+  const tint = isUrgent ? "220, 38, 38" : "232, 69, 107";
+  const cardBg = `rgba(${tint}, 0.035)`;
+  const cardBorder = `rgba(${tint}, 0.1)`;
+  const glassBg = `rgba(${tint}, 0.04)`;
+  const glassBorder = `rgba(${tint}, 0.08)`;
+  const badgeBg = `rgba(${tint}, 0.06)`;
+  const badgeBorder = `rgba(${tint}, 0.08)`;
+  const kickerColor = isUrgent ? "#dc2626" : "#e8456b";
+  const btnBg = isUrgent ? "#dc2626" : "#e8456b";
+
   let urgencyText = "";
   if (isUrgent && program.next_action_due) {
     const days = Math.abs(Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000));
     urgencyText = `${days} day${days !== 1 ? "s" : ""} overdue`;
+  } else if (isWaiting && program.next_action_due) {
+    const d = Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000);
+    urgencyText = d > 0 ? `Due in ${d} day${d !== 1 ? "s" : ""}` : "Due today";
   }
 
   const divLabel = program.division || "";
@@ -144,85 +155,65 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const loc = program.location || program.city_state || "";
 
   return (
-    <div className="rounded-xl overflow-hidden relative flex items-center gap-6" style={{ background: "#1a2744", padding: "18px 22px" }} data-testid="hero-card">
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, transparent 60%, rgba(100,60,140,0.08) 100%)" }} />
-
-      {/* Main content */}
-      <div className="flex-1 min-w-0 relative z-[1]">
-        {/* Kicker + urgency */}
+    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: cardBg, border: `1px solid ${cardBorder}`, padding: "18px 22px" }} data-testid="hero-card">
+      <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2.5 mb-1.5">
           <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
-            <AlertTriangle className="w-3 h-3" style={{ display: isUrgent ? "block" : "none" }} />
+            {isUrgent && <AlertTriangle className="w-3 h-3" />}
+            {!isUrgent && isWaiting && <Clock className="w-3 h-3" />}
             {kicker}
           </span>
           {urgencyText && (
-            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: "#fca5a5", background: "rgba(248,113,113,0.1)" }}>
+            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: `rgba(${tint}, 0.08)` }}>
               {urgencyText}
             </span>
           )}
         </div>
 
-        {/* School name */}
-        <p className="text-lg font-extrabold text-white mb-1.5 leading-tight tracking-tight">{program.university_name}</p>
+        <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight" style={{ color: "var(--t-text)" }}>{program.university_name}</p>
 
-        {/* Meta badges */}
         <div className="flex items-center gap-2 mb-2.5">
-          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
-          {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.35)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
-          {loc && <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.35)" }}>{loc}</span>}
+          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: badgeBg, color: "var(--t-text-secondary, #6b6b6b)", border: `1px solid ${badgeBorder}` }}>{divLabel}</span>}
+          {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
+          {loc && <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{loc}</span>}
         </div>
 
-        {/* Glass advice panel */}
         {advice && (
-          <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <span className="text-[9px] font-bold flex items-center gap-1 mb-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
-              <Lightbulb className="w-3 h-3" style={{ color: "#fbbf24" }} />What to do next
+          <div className="rounded-lg p-2.5" style={{ background: glassBg, border: `1px solid ${glassBorder}` }}>
+            <span className="text-[9px] font-bold flex items-center gap-1 mb-0.5" style={{ color: "var(--t-text-muted)" }}>
+              <Lightbulb className="w-3 h-3" style={{ color: "#d97706" }} />What to do next
             </span>
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{advice}</p>
+            <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary, #6b6b6b)" }}>{advice}</p>
           </div>
         )}
       </div>
 
-      {/* Action column */}
-      <div className="flex flex-col gap-1.5 flex-shrink-0 relative z-[1]" style={{ minWidth: 130 }}>
+      <div className="flex flex-col gap-1.5 flex-shrink-0" style={{ minWidth: 130 }}>
         {quickAction && (
-          <button
-            className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "white", color: "#1a2744", border: "none" }}
-            onClick={() => onAction(program)}
-            data-testid="hero-action-btn"
-          >
+          <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
+            style={{ background: btnBg, color: "white", border: "none" }}
+            onClick={() => onAction(program)} data-testid="hero-action-btn">
             <Send className="w-3 h-3" />{quickAction.label}
           </button>
         )}
         {!quickAction && (
-          <button
-            className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "white", color: "#1a2744", border: "none" }}
-            onClick={() => navigate(`/journey/${program.program_id}`)}
-            data-testid="hero-action-btn"
-          >
+          <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
+            style={{ background: btnBg, color: "white", border: "none" }}
+            onClick={() => navigate(`/journey/${program.program_id}`)} data-testid="hero-action-btn">
             View Journey <ChevronRight className="w-3 h-3" />
           </button>
         )}
         {isUrgent && (
-          <button
-            className="flex items-center justify-center py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.07)" }}
-            onClick={() => onSnooze(program)}
-            data-testid="hero-snooze-btn"
-          >
+          <button className="flex items-center justify-center py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
+            style={{ background: "transparent", color: "var(--t-text-muted)", border: `1px solid ${cardBorder}` }}
+            onClick={() => onSnooze(program)} data-testid="hero-snooze-btn">
             Snooze 3 days
           </button>
         )}
         {isWaiting && (
-          <button
-            className="flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "rgba(22,163,74,0.1)", color: "#4ade80", border: "1px solid rgba(22,163,74,0.15)" }}
-            onClick={() => onDismiss(program)}
-            data-testid="hero-mark-replied-btn"
-          >
+          <button className="flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
+            style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.1)" }}
+            onClick={() => onDismiss(program)} data-testid="hero-mark-replied-btn">
             <CheckCircle2 className="w-3 h-3" />Mark Replied
           </button>
         )}
@@ -234,19 +225,15 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
 /* ═══ All Caught Up Hero ═══ */
 function AllCaughtUpCard({ navigate }) {
   return (
-    <div className="rounded-xl overflow-hidden relative flex items-center gap-6" style={{ background: "#1a2744", padding: "18px 22px" }} data-testid="all-caught-up">
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, transparent 60%, rgba(22,163,74,0.06) 100%)" }} />
-      <div className="flex-1 min-w-0 relative z-[1]">
-        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#4ade80" }}>All Caught Up</span>
-        <p className="text-lg font-extrabold text-white mb-1 leading-tight">You're on top of recruiting!</p>
-        <p className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>All schools are in conversation or archived.</p>
+    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "rgba(22,163,74,0.03)", border: "1px solid rgba(22,163,74,0.1)", padding: "18px 22px" }} data-testid="all-caught-up">
+      <div className="flex-1 min-w-0">
+        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#16a34a" }}>All Caught Up</span>
+        <p className="text-lg font-extrabold mb-1 leading-tight" style={{ color: "var(--t-text)" }}>You're on top of recruiting!</p>
+        <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>All schools are in conversation or archived.</p>
       </div>
-      <button
-        className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "white", color: "#1a2744", border: "none" }}
-        onClick={() => navigate("/knowledge-base")}
-        data-testid="add-more-schools"
-      >
+      <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
+        style={{ background: "#16a34a", color: "white", border: "none" }}
+        onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
         <Plus className="w-3 h-3" />Add School
       </button>
     </div>
