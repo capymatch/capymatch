@@ -173,12 +173,11 @@ export default function UniversityKnowledgeBase() {
                   <Button
                     size="sm"
                     onClick={() => addToBoard(s)}
-                    disabled={adding[s.university_name]}
+                    disabled={adding[s.university_name] || boardSchools.has(s.university_name)}
                     data-testid={`suggest-add-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                    className="w-full text-xs h-8 gap-1.5 bg-pink-700 hover:bg-pink-800 text-white"
+                    className={`w-full text-xs h-8 gap-1.5 ${boardSchools.has(s.university_name) ? "bg-emerald-600 hover:bg-emerald-600 text-white cursor-default" : "bg-pink-700 hover:bg-pink-800 text-white"}`}
                   >
-                    <BookmarkPlus className="w-3.5 h-3.5" />
-                    {adding[s.university_name] ? "Adding..." : "Add to Board"}
+                    {boardSchools.has(s.university_name) ? (<><Check className="w-3.5 h-3.5" />On Your Board</>) : (<><BookmarkPlus className="w-3.5 h-3.5" />{adding[s.university_name] ? "Adding..." : "Add to Board"}</>)}
                   </Button>
                 </div>
               );
