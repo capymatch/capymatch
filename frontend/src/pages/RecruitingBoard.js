@@ -79,26 +79,32 @@ function getQuickAction(stage) {
 
 /* ═══ Progress Ring ═══ */
 function ProgressRing({ counts, total }) {
-  const r = 32, cx = 40, cy = 40, C = 2 * Math.PI * r;
+  const size = 80, strokeW = 8, r = (size - strokeW) / 2;
+  const cx = size / 2, cy = size / 2;
   const activeStages = STAGE_ORDER.filter(k => (counts[k] || 0) > 0);
-  let offset = 0;
-  const arcs = activeStages.map(k => {
-    const pct = (counts[k] || 0) / Math.max(total, 1);
-    const len = pct * C;
-    const arc = { key: k, dasharray: `${len} ${C - len}`, dashoffset: -offset, color: STAGES[k].ring, opacity: STAGES[k].opacity };
-    offset += len;
-    return arc;
+
+  // Build segments as percentages
+  let accumulated = 0;
+  const segments = activeStages.map(k => {
+    const pct = (counts[k] || 0) / Math.max(total, 1) * 100;
+    const seg = { key: k, pct, offset: accumulated, color: STAGES[k].ring };
+    accumulated += pct;
+    return seg;
   });
 
   return (
     <div className="flex flex-col items-center gap-3" data-testid="progress-ring">
-      <div className="relative" style={{ width: 80, height: 80 }}>
-        <svg viewBox="0 0 80 80" width="80" height="80">
-          <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--t-border, #f0f0f0)" strokeWidth="8" />
-          {arcs.map(a => (
-            <circle key={a.key} cx={cx} cy={cy} r={r} fill="none" stroke={a.color} strokeWidth="8"
-              strokeDasharray={a.dasharray} strokeDashoffset={a.dashoffset}
-              transform={`rotate(-90 ${cx} ${cy})`} strokeLinecap="round" opacity={a.opacity} />
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--t-border, #e5e7eb)" strokeWidth={strokeW} />
+          {segments.map(s => (
+            <circle key={s.key} cx={cx} cy={cy} r={r} fill="none"
+              stroke={s.color} strokeWidth={strokeW}
+              pathLength="100"
+              strokeDasharray={`${s.pct} ${100 - s.pct}`}
+              strokeDashoffset={100 - s.offset}
+              strokeLinecap="round"
+            />
           ))}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -109,7 +115,7 @@ function ProgressRing({ counts, total }) {
       <div className="flex flex-col gap-1 w-full">
         {activeStages.map(k => (
           <div key={k} className="flex items-center gap-1.5 text-[10px]">
-            <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring, opacity: STAGES[k].opacity }} />
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
             <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{counts[k]}</span>
             <span style={{ color: "var(--t-text-muted)" }}>{STAGES[k].shortLabel}</span>
           </div>
