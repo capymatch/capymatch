@@ -21,10 +21,10 @@ const THEME_CSS = `
     --p-accent: #e8456b;
     --p-accent-glow: rgba(232,69,107,0.08);
     --p-accent-glow-strong: rgba(232,69,107,0.12);
-    --p-stat-bg: #f0eef8;
-    --p-stat-border: rgba(99,102,241,0.12);
-    --p-stat-highlight-bg: #fce8ed;
-    --p-stat-highlight-border: rgba(232,69,107,0.22);
+    --p-stat-bg: #e8eaf8;
+    --p-stat-border: rgba(99,102,241,0.18);
+    --p-stat-highlight-bg: #fde8ed;
+    --p-stat-highlight-border: rgba(232,69,107,0.25);
     --p-section-bg: #ffffff;
     --p-section-border: rgba(0,0,0,0.08);
     --p-section-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.06);
