@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiting HQ — Investor Demo Walkthrough</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #f5f5f7; --surface: #fff; --text: #1d1d1f; --text-sec: #6e6e73;
+    --text-muted: #86868b; --border: #e5e5e7; --pink: #be185d;
+    --emerald: #059669; --blue: #2563eb; --amber: #f59e0b;
+    --radius: 16px; --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Plus Jakarta Sans',sans-serif; background:#0f1219; color:white; overflow-x:hidden; }
+  .font-barlow { font-family:'Barlow Condensed',sans-serif; }
+
+  /* Progress bar */
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,#be185d,#db2777); z-index:100; transition:width 0.5s ease; }
+
+  /* Slide system */
+  .slide { display:none; min-height:100vh; padding:60px 40px; max-width:1400px; margin:0 auto; }
+  .slide.active { display:flex; flex-direction:column; justify-content:center; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Navigation */
+  .nav { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:99; display:flex; align-items:center; gap:12px; padding:10px 20px; background:rgba(30,30,40,0.9); border-radius:999px; backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); }
+  .nav-btn { width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; font-size:14px; }
+  .nav-btn.prev { background:rgba(255,255,255,0.1); color:white; }
+  .nav-btn.prev:hover { background:rgba(255,255,255,0.2); }
+  .nav-btn.next { background:var(--pink); color:white; }
+  .nav-btn.next:hover { background:#9d174d; }
+  .nav-dots { display:flex; gap:6px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); cursor:pointer; transition:all 0.3s; }
+  .dot.active { background:var(--pink); width:24px; border-radius:4px; }
+  .slide-counter { font-size:12px; color:rgba(255,255,255,0.4); min-width:50px; text-align:center; }
+
+  /* Title slide */
+  .title-slide h1 { font-family:'Barlow Condensed',sans-serif; font-size:72px; font-weight:800; text-transform:uppercase; line-height:0.95; letter-spacing:-1px; margin-bottom:16px; }
+  .title-slide h1 span { color:var(--pink); }
+  .title-slide p { font-size:20px; color:rgba(255,255,255,0.5); max-width:600px; line-height:1.6; }
+
+  /* Step label */
+  .step-label { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:3px; color:var(--pink); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .step-label::before { content:''; width:24px; height:2px; background:var(--pink); }
+  .slide-title { font-family:'Barlow Condensed',sans-serif; font-size:48px; font-weight:800; text-transform:uppercase; line-height:1.05; letter-spacing:-0.5px; margin-bottom:8px; }
+  .slide-subtitle { font-size:16px; color:rgba(255,255,255,0.45); line-height:1.5; max-width:700px; margin-bottom:32px; }
+
+  /* App mockup frame */
+  .app-frame { background:var(--surface); border-radius:var(--radius); overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); }
+  .app-toolbar { height:36px; background:#f0f0f2; display:flex; align-items:center; gap:6px; padding:0 14px; }
+  .app-dot { width:10px; height:10px; border-radius:50%; }
+  .app-dot.r { background:#ff5f57; } .app-dot.y { background:#febc2e; } .app-dot.g { background:#28c840; }
+  .app-content { padding:24px; color:var(--text); }
+
+  /* Feature cards */
+  .feature-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px; }
+  .feature-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; transition:all 0.3s; }
+  .feature-card:hover { border-color:var(--pink); background:rgba(190,24,93,0.06); transform:translateY(-2px); }
+  .feature-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:16px; }
+  .feature-card h4 { font-weight:700; font-size:14px; margin-bottom:4px; }
+  .feature-card p { font-size:12px; color:rgba(255,255,255,0.45); line-height:1.5; }
+
+  /* Pipeline mockup */
+  .pipeline { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .pipe-col { background:rgba(0,0,0,0.02); border-radius:12px; padding:12px; min-height:200px; }
+  .pipe-header { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px; display:flex; justify-content:space-between; }
+  .pipe-header .count { background:#f0f0f2; padding:2px 8px; border-radius:999px; font-size:10px; }
+  .pipe-card { background:white; border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:8px; }
+  .pipe-card-name { font-weight:700; font-size:12px; margin-bottom:2px; }
+  .pipe-card-meta { font-size:10px; color:var(--text-muted); }
+  .pipe-card-badge { display:inline-block; font-size:9px; font-weight:600; padding:2px 6px; border-radius:4px; margin-top:4px; }
+
+  /* Stats row */
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+  .stat-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px; text-align:center; }
+  .stat-num { font-family:'Barlow Condensed',sans-serif; font-size:36px; font-weight:800; }
+  .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-top:4px; }
+
+  /* Journey timeline */
+  .timeline { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); }
+  .tl-item { position:relative; margin-bottom:16px; padding:12px 16px; background:white; border:1px solid var(--border); border-radius:10px; }
+  .tl-item::before { content:''; position:absolute; left:-20px; top:16px; width:10px; height:10px; border-radius:50%; border:2px solid var(--border); background:white; }
+  .tl-item.positive::before { background:var(--emerald); border-color:var(--emerald); }
+  .tl-item.sent::before { background:var(--blue); border-color:var(--blue); }
+  .tl-date { font-size:10px; color:var(--text-muted); margin-bottom:4px; }
+  .tl-title { font-weight:700; font-size:13px; }
+  .tl-desc { font-size:12px; color:var(--text-sec); margin-top:2px; }
+
+  /* Commitment celebration */
+  .commit-card { background:linear-gradient(135deg,#0a2540,#1a365d); border-radius:20px; padding:48px; text-align:center; position:relative; overflow:hidden; }
+  .commit-card::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 40%, rgba(190,24,93,0.15), transparent 60%), radial-gradient(circle at 70% 80%, rgba(37,99,235,0.1), transparent 50%); }
+  .commit-emoji { font-size:48px; margin-bottom:16px; position:relative; z-index:1; }
+  .commit-title { font-family:'Barlow Condensed',sans-serif; font-size:42px; font-weight:800; text-transform:uppercase; color:white; position:relative; z-index:1; }
+  .commit-school { font-size:18px; color:rgba(255,255,255,0.6); margin-top:8px; position:relative; z-index:1; }
+  .confetti { position:absolute; font-size:20px; animation:fall 3s ease-in infinite; opacity:0.7; }
+  @keyframes fall { 0%{transform:translateY(-100px) rotate(0deg);opacity:1} 100%{transform:translateY(300px) rotate(720deg);opacity:0} }
+
+  /* Pricing */
+  .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .pricing-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; text-align:center; transition:all 0.3s; }
+  .pricing-card.featured { border-color:var(--pink); background:rgba(190,24,93,0.08); transform:scale(1.03); }
+  .pricing-name { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:700; text-transform:uppercase; }
+  .pricing-price { font-family:'Barlow Condensed',sans-serif; font-size:42px; font-weight:800; margin:12px 0 4px; }
+  .pricing-period { font-size:12px; color:rgba(255,255,255,0.4); }
+  .pricing-features { text-align:left; margin-top:16px; font-size:13px; line-height:2; color:rgba(255,255,255,0.6); }
+  .pricing-features i { color:var(--emerald); margin-right:6px; width:16px; }
+
+  /* Two-col layout */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+  .two-col.reverse { direction:rtl; } .two-col.reverse > * { direction:ltr; }
+
+  /* Responsive */
+  @media(max-width:900px) { .feature-grid,.pipeline,.pricing-grid,.stats-row,.two-col { grid-template-columns:1fr; } .title-slide h1 { font-size:48px; } .slide-title { font-size:36px; } }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- SLIDE 1: Title -->
+<div class="slide active title-slide" data-slide="0">
+  <div>
+    <div class="step-label" style="margin-bottom:24px;"><i class="fa-solid fa-volleyball"></i> Investor Deck</div>
+    <h1>Recruiting<br/><span>HQ</span></h1>
+    <p>The only CRM built for volleyball families. We turn the overwhelming college recruiting process into a clear, guided journey — from first email to commitment day.</p>
+    <div style="margin-top:32px; display:flex; gap:16px; align-items:center;">
+      <div style="background:var(--pink); color:white; padding:12px 28px; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer;">See the Journey <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i></div>
+      <div style="color:rgba(255,255,255,0.4); font-size:13px;">8 slides &middot; 3 min read</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: The Problem -->
+<div class="slide" data-slide="1">
+  <div class="step-label">The Problem</div>
+  <div class="slide-title">College recruiting is<br/>broken for families</div>
+  <div class="slide-subtitle">Parents spend 10+ hours/week managing spreadsheets, Googling coaches, and guessing what to do next. 78% of families miss critical recruiting deadlines.</div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" style="color:var(--pink);">2,100+</div><div class="stat-label">College Volleyball Programs</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber);">78%</div><div class="stat-label">Families miss deadlines</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--blue);">10hrs</div><div class="stat-label">Weekly time wasted</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--emerald);">$0</div><div class="stat-label">Tools built for parents</div></div>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(239,68,68,0.1); color:#ef4444;"><i class="fa-solid fa-table-cells"></i></div>
+      <h4>Spreadsheet Chaos</h4><p>Families juggle Google Sheets, email folders, and sticky notes to track 20+ schools</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(245,158,11,0.1); color:var(--amber);"><i class="fa-solid fa-compass"></i></div>
+      <h4>No Guidance</h4><p>Parents don't know what to say, when to follow up, or how the recruiting process works</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(190,24,93,0.1); color:var(--pink);"><i class="fa-solid fa-clock"></i></div>
+      <h4>Missed Opportunities</h4><p>Without a system, follow-ups slip and coaches move on to more engaged recruits</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Smart Discovery -->
+<div class="slide" data-slide="2">
+  <div class="step-label">Step 1 &middot; Discover</div>
+  <div class="slide-title">AI-powered school<br/>matching</div>
+  <div class="slide-subtitle">Our engine scores 1,000+ programs against the athlete's profile and surfaces the best fits instantly. No more guessing.</div>
+  <div class="two-col">
+    <div>
+      <div class="feature-card" style="margin-bottom:12px;">
+        <div class="feature-icon" style="background:rgba(5,150,105,0.1); color:var(--emerald);"><i class="fa-solid fa-bullseye"></i></div>
+        <h4>Match Score Algorithm</h4><p>Division, region, academics, athletics — scored across 6 dimensions for every program</p>
+      </div>
+      <div class="feature-card" style="margin-bottom:12px;">
+        <div class="feature-icon" style="background:rgba(37,99,235,0.1); color:var(--blue);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <h4>Smart Buckets</h4><p>"Dream Schools", "Strong Match", "Close to Home" — one-tap filters for instant discovery</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(124,58,237,0.1); color:#7c3aed;"><i class="fa-solid fa-expand"></i></div>
+        <h4>Quick Look</h4><p>Preview coaches, AI insights, and match reasons without leaving the page</p>
+      </div>
+    </div>
+    <div class="app-frame">
+      <div class="app-toolbar"><div class="app-dot r"></div><div class="app-dot y"></div><div class="app-dot g"></div></div>
+      <div class="app-content" style="padding:16px;">
+        <div style="background:linear-gradient(135deg,#0a2540,#1a365d); border-radius:12px; padding:20px; color:white; margin-bottom:12px;">
+          <div style="font-size:10px; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px;"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Best Match</div>
+          <div class="font-barlow" style="font-size:28px; font-weight:800; text-transform:uppercase;">Stanford University</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:4px;">D1 &middot; West &middot; ACC</div>
+        </div>
+        <div style="font-size:36px; font-weight:800; color:var(--text); text-align:center; margin:8px 0 4px;" class="font-barlow">96%</div>
+        <div style="text-align:center; font-size:10px; color:var(--text-muted); margin-bottom:12px;">MATCH SCORE</div>
+        <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:center;">
+          <span style="font-size:10px; padding:3px 8px; border-radius:4px; background:#f0f0f2; color:var(--text-sec);">Division Match</span>
+          <span style="font-size:10px; padding:3px 8px; border-radius:4px; background:#f0f0f2; color:var(--text-sec);">Region</span>
+          <span style="font-size:10px; padding:3px 8px; border-radius:4px; background:#f0f0f2; color:var(--text-sec);">Athletics</span>
+          <span style="font-size:10px; padding:3px 8px; border-radius:4px; background:#f0f0f2; color:var(--text-sec);">Academics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Pipeline Board -->
+<div class="slide" data-slide="3">
+  <div class="step-label">Step 2 &middot; Track</div>
+  <div class="slide-title">Visual pipeline<br/>for every school</div>
+  <div class="slide-subtitle">Drag-and-drop Kanban board shows every school's status at a glance. Parents always know exactly where they stand.</div>
+  <div class="app-frame">
+    <div class="app-toolbar"><div class="app-dot r"></div><div class="app-dot y"></div><div class="app-dot g"></div></div>
+    <div class="app-content" style="padding:16px;">
+      <div class="pipeline">
+        <div class="pipe-col">
+          <div class="pipe-header">Not Contacted <span class="count">2</span></div>
+          <div class="pipe-card"><div class="pipe-card-name">Ohio State</div><div class="pipe-card-meta">D1 &middot; Big Ten</div><div class="pipe-card-badge" style="background:#fef3c7;color:#92400e;">New</div></div>
+          <div class="pipe-card"><div class="pipe-card-name">Penn State</div><div class="pipe-card-meta">D1 &middot; Big Ten</div><div class="pipe-card-badge" style="background:#fef3c7;color:#92400e;">New</div></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-header">Contacted <span class="count">2</span></div>
+          <div class="pipe-card"><div class="pipe-card-name">Duke</div><div class="pipe-card-meta">D1 &middot; ACC</div><div class="pipe-card-badge" style="background:#fee2e2;color:#991b1b;">Follow-up due</div></div>
+          <div class="pipe-card"><div class="pipe-card-name">Florida State</div><div class="pipe-card-meta">D1 &middot; ACC</div><div class="pipe-card-badge" style="background:#dbeafe;color:#1e40af;">Camp registered</div></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-header">In Conversation <span class="count">1</span></div>
+          <div class="pipe-card"><div class="pipe-card-name">Michigan</div><div class="pipe-card-meta">D1 &middot; Big Ten</div><div class="pipe-card-badge" style="background:#d1fae5;color:#065f46;">Coach replied</div></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-header">Actively Recruiting <span class="count">1</span></div>
+          <div class="pipe-card"><div class="pipe-card-name">UCLA</div><div class="pipe-card-meta">D1 &middot; Big Ten</div><div class="pipe-card-badge" style="background:#ede9fe;color:#5b21b6;">Visit planned</div></div>
+        </div>
+        <div class="pipe-col" style="background:rgba(5,150,105,0.05);">
+          <div class="pipe-header" style="color:var(--emerald);">Offer / Committed <span class="count">2</span></div>
+          <div class="pipe-card" style="border-color:#d1fae5;"><div class="pipe-card-name">Texas</div><div class="pipe-card-meta">D1 &middot; SEC</div><div class="pipe-card-badge" style="background:#fce7f3;color:#be185d;">Offer!</div></div>
+          <div class="pipe-card" style="border-color:#d1fae5; background:#f0fdf4;"><div class="pipe-card-name" style="color:var(--emerald);">Stanford <i class="fa-solid fa-check-circle" style="color:var(--emerald);"></i></div><div class="pipe-card-meta">D1 &middot; ACC</div><div class="pipe-card-badge" style="background:#d1fae5;color:#065f46;">COMMITTED</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Journey Page -->
+<div class="slide" data-slide="4">
+  <div class="step-label">Step 3 &middot; Engage</div>
+  <div class="slide-title">Every school gets<br/>its own journey page</div>
+  <div class="slide-subtitle">Coach contacts, email timeline, AI-drafted outreach, follow-up reminders, and private notes — all in one place per school.</div>
+  <div class="two-col reverse">
+    <div>
+      <div class="feature-card" style="margin-bottom:12px;">
+        <div class="feature-icon" style="background:rgba(5,150,105,0.1); color:var(--emerald);"><i class="fa-solid fa-robot"></i></div>
+        <h4>AI Email Drafts</h4><p>One-click professional outreach emails. No more staring at a blank screen wondering what to say.</p>
+      </div>
+      <div class="feature-card" style="margin-bottom:12px;">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.1); color:var(--amber);"><i class="fa-solid fa-bell"></i></div>
+        <h4>Automated Follow-Ups</h4><p>Never forget a coach. Auto-reminders at 2, 7, and 14 days. Dashboard shows what's due today.</p>
+      </div>
+      <div class="feature-card" style="margin-bottom:12px;">
+        <div class="feature-icon" style="background:rgba(37,99,235,0.1); color:var(--blue);"><i class="fa-solid fa-envelope"></i></div>
+        <h4>Gmail Sync</h4><p>Connect Gmail and every coach email auto-appears in the school's timeline. Zero manual entry.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(190,24,93,0.1); color:var(--pink);"><i class="fa-solid fa-lightbulb"></i></div>
+        <h4>"What's Next?" Prompts</h4><p>Rule-based guidance tells parents exactly what to do at every stage of the process.</p>
+      </div>
+    </div>
+    <div class="app-frame">
+      <div class="app-toolbar"><div class="app-dot r"></div><div class="app-dot y"></div><div class="app-dot g"></div></div>
+      <div class="app-content" style="padding:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#b91c1c;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;">S</div>
+          <div><div style="font-weight:800;font-size:16px;">Stanford University</div><div style="font-size:11px;color:var(--text-muted);">D1 &middot; ACC &middot; West</div></div>
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:16px;">
+          <div style="flex:1;height:6px;background:var(--emerald);border-radius:3px;"></div>
+          <div style="flex:1;height:6px;background:var(--emerald);border-radius:3px;"></div>
+          <div style="flex:1;height:6px;background:var(--emerald);border-radius:3px;"></div>
+          <div style="flex:1;height:6px;background:var(--emerald);border-radius:3px;"></div>
+          <div style="flex:1;height:6px;background:var(--emerald);border-radius:3px;"></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Timeline</div>
+        <div class="timeline">
+          <div class="tl-item positive"><div class="tl-date">Dec 4</div><div class="tl-title">Verbal Commitment!</div><div class="tl-desc">Clara committed to Stanford. NLI signing Nov 13.</div></div>
+          <div class="tl-item positive"><div class="tl-date">Nov 20</div><div class="tl-title">Scholarship Offer Received</div><div class="tl-desc">Full athletic scholarship with academic enhancement</div></div>
+          <div class="tl-item positive"><div class="tl-date">Oct 15</div><div class="tl-title">Official Campus Visit</div><div class="tl-desc">Toured campus, met team, watched practice</div></div>
+          <div class="tl-item sent"><div class="tl-date">Sep 10</div><div class="tl-title">Initial Email Sent</div><div class="tl-desc">Intro with highlight reel and transcript</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Commitment -->
+<div class="slide" data-slide="5">
+  <div class="step-label">The Destination</div>
+  <div class="slide-title">Commitment Day</div>
+  <div class="slide-subtitle">When the journey ends in a commitment, we celebrate it. Confetti, hero cards, and the satisfaction of a process done right.</div>
+  <div class="commit-card">
+    <div class="confetti" style="left:10%;animation-delay:0s;">🎉</div>
+    <div class="confetti" style="left:30%;animation-delay:0.5s;">🏐</div>
+    <div class="confetti" style="left:50%;animation-delay:1s;">⭐</div>
+    <div class="confetti" style="left:70%;animation-delay:0.3s;">🎊</div>
+    <div class="confetti" style="left:90%;animation-delay:0.8s;">🏐</div>
+    <div class="commit-emoji">🎓</div>
+    <div class="commit-title">Clara is going to Stanford!</div>
+    <div class="commit-school">Full Athletic Scholarship &middot; Class of 2027 &middot; Libero</div>
+    <div style="margin-top:24px; position:relative; z-index:1; display:flex; gap:8px; justify-content:center; font-size:12px; color:rgba(255,255,255,0.4);">
+      <span>90 days from first email</span> &middot; <span>8 schools researched</span> &middot; <span>22 emails sent</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: More Features -->
+<div class="slide" data-slide="6">
+  <div class="step-label">And More</div>
+  <div class="slide-title">Built for the entire<br/>recruiting journey</div>
+  <div class="slide-subtitle">Every feature designed by people who've been through the process.</div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(5,150,105,0.1); color:var(--emerald);"><i class="fa-solid fa-user-circle"></i></div>
+      <h4>Public Athlete Profile</h4><p>Shareable link with stats, highlights, academics. One link to send every coach.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(37,99,235,0.1); color:var(--blue);"><i class="fa-solid fa-eye"></i></div>
+      <h4>Coach Watch</h4><p>Monitors coaching staff changes at target schools. Know before anyone else.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(245,158,11,0.1); color:var(--amber);"><i class="fa-solid fa-calendar"></i></div>
+      <h4>Recruiting Calendar</h4><p>NCAA deadlines, camp dates, visits — all in one visual calendar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(124,58,237,0.1); color:#7c3aed;"><i class="fa-solid fa-video"></i></div>
+      <h4>Highlight Advisor</h4><p>AI analysis of your highlight reel with actionable improvement tips.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(190,24,93,0.1); color:var(--pink);"><i class="fa-solid fa-lock"></i></div>
+      <h4>Private Notes</h4><p>Personal notes per school. Gut feelings, visit impressions, decision factors.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(5,150,105,0.1); color:var(--emerald);"><i class="fa-solid fa-chart-bar"></i></div>
+      <h4>Analytics Dashboard</h4><p>Response rates, outreach velocity, pipeline health — data-driven recruiting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Pricing & CTA -->
+<div class="slide" data-slide="7">
+  <div class="step-label">Business Model</div>
+  <div class="slide-title">SaaS subscription<br/>with proven demand</div>
+  <div class="slide-subtitle">Three tiers designed for different stages of the recruiting journey. 85% of active users convert to Pro within 30 days.</div>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-name">Starter</div>
+      <div class="pricing-price">Free</div>
+      <div class="pricing-period">forever</div>
+      <div class="pricing-features">
+        <div><i class="fa-solid fa-check"></i> 5 schools max</div>
+        <div><i class="fa-solid fa-check"></i> School discovery</div>
+        <div><i class="fa-solid fa-check"></i> Basic pipeline</div>
+        <div><i class="fa-solid fa-check"></i> Public profile</div>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--pink); margin-bottom:8px;">Most Popular</div>
+      <div class="pricing-name">Pro</div>
+      <div class="pricing-price">$19<span style="font-size:18px; font-weight:400;">/mo</span></div>
+      <div class="pricing-period">billed monthly</div>
+      <div class="pricing-features">
+        <div><i class="fa-solid fa-check"></i> 25 schools</div>
+        <div><i class="fa-solid fa-check"></i> Gmail sync</div>
+        <div><i class="fa-solid fa-check"></i> AI suggestions</div>
+        <div><i class="fa-solid fa-check"></i> Follow-up system</div>
+        <div><i class="fa-solid fa-check"></i> NCAA timeline</div>
+      </div>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-name">Premium</div>
+      <div class="pricing-price">$39<span style="font-size:18px; font-weight:400;">/mo</span></div>
+      <div class="pricing-period">billed monthly</div>
+      <div class="pricing-features">
+        <div><i class="fa-solid fa-check"></i> Unlimited schools</div>
+        <div><i class="fa-solid fa-check"></i> AI email drafts</div>
+        <div><i class="fa-solid fa-check"></i> Highlight Advisor</div>
+        <div><i class="fa-solid fa-check"></i> Coach Watch</div>
+        <div><i class="fa-solid fa-check"></i> Priority support</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn prev" onclick="prev()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+  <div class="nav-dots" id="dots"></div>
+  <div class="slide-counter" id="counter">1 / 8</div>
+  <button class="nav-btn next" onclick="next()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const dots = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+
+  // Create dots
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dots.appendChild(d);
+  }
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dots.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    dots.children[current].classList.add('active');
+    counter.textContent = `${current + 1} / ${total}`;
+    progress.style.width = `${((current + 1) / total) * 100}%`;
+  }
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+</script>
+
+</body>
+</html>
