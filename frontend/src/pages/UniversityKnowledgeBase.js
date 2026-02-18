@@ -4,37 +4,7 @@ import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import { Search, SlidersHorizontal, Plus, MapPin, Building2, Trophy, ExternalLink, BookmarkPlus, RotateCcw, ArrowUpDown, Sparkles, ChevronLeft, ChevronRight, User, Mail, ArrowRight, Zap } from "lucide-react";
-
-function UniversityLogo({ domain, name, size = 40, className = "" }) {
-  const [failed, setFailed] = useState(false);
-  const initials = (name || "").split(" ").filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join("").toUpperCase() || "U";
-
-  if (!domain || failed) {
-    return (
-      <div
-        className={`rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs ${className}`}
-        style={{ width: size, height: size, backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
-        data-testid="university-logo-fallback"
-      >
-        {initials}
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={`https://www.google.com/s2/favicons?domain=${domain}&sz=${size * 2}`}
-      alt={`${name} logo`}
-      width={size}
-      height={size}
-      className={`rounded-lg flex-shrink-0 object-contain ${className}`}
-      style={{ backgroundColor: "#fff", border: "1px solid var(--t-border)" }}
-      onError={() => setFailed(true)}
-      loading="lazy"
-      data-testid="university-logo"
-    />
-  );
-}
+import UniversityLogo from "../components/UniversityLogo";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
