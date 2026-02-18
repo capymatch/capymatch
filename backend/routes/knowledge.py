@@ -20,7 +20,7 @@ async def list_knowledge_base(division: Optional[str] = None, conference: Option
     if conference:
         query["conference"] = {"$regex": conference, "$options": "i"}
     if region:
-        query["region"] = {"$regex": region, "$options": "i"}
+        query["region"] = {"$regex": f"^{region}$", "$options": "i"}
     if search:
         query["university_name"] = {"$regex": search, "$options": "i"}
     universities = await db.university_knowledge_base.find(query, {"_id": 0}).sort("university_name", 1).to_list(2000)
