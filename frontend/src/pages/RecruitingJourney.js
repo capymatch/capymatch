@@ -751,13 +751,13 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
   return (
-    <div className="p-3 rounded-lg border space-y-2" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }}>
-      <input placeholder="Coach name" value={form.coach_name} onChange={e => set("coach_name", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-name-input" />
-      <select value={form.role} onChange={e => set("role", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-role-select">
+    <div className="p-3 rounded-lg border space-y-2" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface)" }}>
+      <input placeholder="Coach name" value={form.coach_name} onChange={e => set("coach_name", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-input-bg, #fff)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-name-input" />
+      <select value={form.role} onChange={e => set("role", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-input-bg, #fff)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-role-select">
         {["Head Coach", "Associate Head Coach", "Assistant Coach", "Recruiting Coordinator", "Director of Operations"].map(r => <option key={r}>{r}</option>)}
       </select>
-      <input placeholder="Email" value={form.email} onChange={e => set("email", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-email-input" />
-      <input placeholder="Phone" value={form.phone} onChange={e => set("phone", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-phone-input" />
+      <input placeholder="Email" value={form.email} onChange={e => set("email", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-input-bg, #fff)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-email-input" />
+      <input placeholder="Phone" value={form.phone} onChange={e => set("phone", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-input-bg, #fff)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="coach-phone-input" />
       <div className="flex gap-2 pt-1">
         <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7" onClick={() => onSave({ ...form, program_id: programId })} data-testid="save-coach-btn"><Save className="w-3 h-3 mr-1" />Save</Button>
         <Button size="sm" variant="ghost" className="text-xs h-7" onClick={onCancel} style={{ color: "var(--t-text-muted)" }}><X className="w-3 h-3 mr-1" />Cancel</Button>
