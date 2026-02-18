@@ -326,8 +326,8 @@ export default function PublicSchedule() {
 
         {/* ── Athletic Measurables ── */}
         {hasStats && (
-          <>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-11">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4">
+            <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Athletic Measurables</SectionLabel>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <StatCard value={profile.standing_reach} label="Standing Reach" />
@@ -336,8 +336,7 @@ export default function PublicSchedule() {
                 <StatCard value={profile.wingspan} label="Wingspan" />
               </div>
             </div>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8"><hr className="mt-11" style={{ border: "none", height: 1, background: "var(--p-divider)" }} /></div>
-          </>
+          </div>
         )}
 
         {/* ── Club Coach ── */}
