@@ -329,25 +329,27 @@ export default function Dashboard() {
       <FirstReplyCelebration />
 
       {/* ═══ Section 1: Greeting + Quick Pulse ═══ */}
-      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="greeting-pulse">
+      <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e" }} data-testid="greeting-pulse">
+        {/* Pink accent line */}
+        <div style={{ height: 2, background: "linear-gradient(90deg, #e8456b 0%, rgba(232,69,107,0.2) 100%)" }} />
         <div className="flex items-start justify-between px-6 py-5 lg:px-7 lg:py-6">
           <div>
-            <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight" style={{ color: "var(--t-text)" }}>
-              {greeting}, <span style={{ color: "#e8628a" }}>{firstName}</span>
+            <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight" style={{ color: "#ffffff" }}>
+              {greeting}, <span style={{ color: "#e8456b" }}>{firstName}</span>
             </h2>
-            <p className="text-sm mt-1" style={{ color: "var(--t-text-muted)" }}>
+            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>
               {athleteName ? `Here's what's happening with ${athleteName.split(" ")[0]}'s recruiting today` : "Here's your recruiting overview for today"}
             </p>
           </div>
-          <div className="text-xs font-semibold px-3 py-1.5 rounded-lg flex-shrink-0" style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-muted)" }}>
+          <div className="text-xs font-semibold px-3 py-1.5 rounded-lg flex-shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>
             {dateStr}
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 border-t" style={{ borderColor: "var(--t-border)" }}>
-          <PulseStat icon={Target} iconBg="rgba(232,98,138,0.12)" iconColor="#e8628a" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} />
-          <PulseStat icon={MessageCircle} iconBg="rgba(59,130,246,0.12)" iconColor="#3b82f6" value={`${responseRate}%`} label="Response Rate" sub={`${replied} of ${contacted} contacted`} />
-          <PulseStat icon={Mail} iconBg="rgba(16,185,129,0.12)" iconColor="#10b981" value={repliesThisWeek.length} label="Replies This Week" sub={lastReply ? `Last: ${lastReply.university_name || ""}` : "—"} />
-          <PulseStat icon={Clock} iconBg="rgba(245,158,11,0.12)" iconColor="#f59e0b" value={awaitingReply.length} label="Awaiting Reply" sub={awaitingReply.length > 0 ? `Oldest: ${getDaysAgo(awaitingReply.sort((a, b) => (a.last_follow_up || a.created_at || "").localeCompare(b.last_follow_up || b.created_at || ""))[0]?.last_follow_up || "")}` : "—"} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <PulseStat icon={Target} iconBg="rgba(232,69,107,0.15)" iconColor="#e8456b" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} dark />
+          <PulseStat icon={MessageCircle} iconBg="rgba(59,130,246,0.15)" iconColor="#60a5fa" value={`${responseRate}%`} label="Response Rate" sub={`${replied} of ${contacted} contacted`} dark />
+          <PulseStat icon={Mail} iconBg="rgba(16,185,129,0.15)" iconColor="#34d399" value={repliesThisWeek.length} label="Replies This Week" sub={lastReply ? `Last: ${lastReply.university_name || ""}` : "—"} dark />
+          <PulseStat icon={Clock} iconBg="rgba(245,158,11,0.15)" iconColor="#fbbf24" value={awaitingReply.length} label="Awaiting Reply" sub={awaitingReply.length > 0 ? `Oldest: ${getDaysAgo(awaitingReply.sort((a, b) => (a.last_follow_up || a.created_at || "").localeCompare(b.last_follow_up || b.created_at || ""))[0]?.last_follow_up || "")}` : "—"} dark />
         </div>
       </div>
 
