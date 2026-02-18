@@ -246,7 +246,7 @@ async def _run_scrape():
             scrape_status.update({"running": False, "done": True})
             return
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient() as http_client:
             for uni in universities:
                 domain = uni.get("domain", "")
                 name = uni.get("university_name", "")
@@ -255,33 +255,9 @@ async def _run_scrape():
                     continue
 
                 try:
-                    result = await scrape_coaching_page(client, domain, uni.get("website", ""))
+                    result = await scrape_coaching_page(http_client, domain, uni.get("website", ""))
                     if result and result["coaches"]:
-                        # Find head coach (first one, or one with "head" in title)
-                        head = None
-                        assistant = None
-                        for c in result["coaches"]:
-                            if "head" in c.get("title", "").lower():
-                                head = c
-                            elif not assistant and c.get("email"):
-                                assistant = c
-                        if not head and result["coaches"]:
-                            head = result["coaches"][0]
-                        if not assistant and len(result["coaches"]) > 1:
-                            assistant = result["coaches"][1]
-
-                        update = {"coaches_scraped": result["coaches"], "coaches_source_url": result["url"]}
-                        if head:
-                            if head.get("name"):
-                                update["primary_coach"] = head["name"]
-                            if head.get("email"):
-                                update["coach_email"] = head["email"]
-                        if assistant:
-                            if assistant.get("name"):
-                                update["recruiting_coordinator"] = assistant["name"]
-                            if assistant.get("email"):
-                                update["coordinator_email"] = assistant["email"]
-
+                        update = _build_update(result)
                         await db.university_knowledge_base.update_one(
                             {"university_name": name},
                             {"$set": update}
@@ -300,6 +276,37 @@ async def _run_scrape():
     finally:
         scrape_status["running"] = False
         scrape_status["done"] = True
+
+
+def _build_update(result):
+    """Build the DB update dict from scraped coach data."""
+    coaches = result["coaches"]
+    update = {"coaches_scraped": coaches, "coaches_source_url": result["url"]}
+
+    head = None
+    assistant = None
+    for c in coaches:
+        if "head" in c.get("title", "").lower():
+            head = c
+        elif not assistant and c.get("email"):
+            assistant = c
+    if not head and coaches:
+        head = coaches[0]
+    if not assistant and len(coaches) > 1:
+        assistant = coaches[1]
+
+    if head:
+        if head.get("name"):
+            update["primary_coach"] = head["name"]
+        if head.get("email"):
+            update["coach_email"] = head["email"]
+    if assistant:
+        if assistant.get("name"):
+            update["recruiting_coordinator"] = assistant["name"]
+        if assistant.get("email"):
+            update["coordinator_email"] = assistant["email"]
+
+    return update
 
 
 @router.post("/scrape")
