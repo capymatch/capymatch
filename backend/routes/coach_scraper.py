@@ -143,7 +143,9 @@ async def scrape_coaching_page(client, domain, website=""):
             if not coaches:
                 emails = extract_emails_from_html(html)
                 if emails:
-                    coaches = [{"name": "", "title": "", "email": e} for e in emails[:5]]
+                    for i, e in enumerate(emails[:5]):
+                        title = "Head Coach" if i == 0 else ("Assistant Coach" if i < 3 else "Staff")
+                        coaches.append({"name": name_from_email(e), "title": title, "email": e})
 
             if coaches:
                 return {"url": str(resp.url), "coaches": coaches}
