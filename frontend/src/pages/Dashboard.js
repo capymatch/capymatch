@@ -325,17 +325,6 @@ export default function Dashboard() {
   // Upcoming events
   const upcoming = events.filter(e => e.start_date >= today).sort((a, b) => a.start_date.localeCompare(b.start_date)).slice(0, 4);
 
-  const avatarGradients = [
-    "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-    "linear-gradient(135deg, #10b981, #059669)",
-    "linear-gradient(135deg, #f59e0b, #d97706)",
-    "linear-gradient(135deg, #ec4899, #db2777)",
-    "linear-gradient(135deg, #a855f7, #7c3aed)",
-    "linear-gradient(135deg, #06b6d4, #0891b2)",
-    "linear-gradient(135deg, #f43f5e, #e11d48)",
-    "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-  ];
-
   const getDaysAgo = (dateStr) => {
     if (!dateStr) return "";
     const d = new Date(dateStr + "T00:00:00");
