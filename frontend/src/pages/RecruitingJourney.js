@@ -780,7 +780,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
     } catch { toast.error("Failed to log interaction"); } finally { setSaving(false); }
   };
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="log-interaction-form">
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="log-interaction-form">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Log Interaction</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
@@ -854,7 +854,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
     finally { setSending(false); }
   };
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="email-composer">
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="email-composer">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Compose Email</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
@@ -952,7 +952,7 @@ function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
     catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
   };
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="mark-replied-modal">
+    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="mark-replied-modal">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}><Mail className="w-4 h-4 text-green-400" />Mark as Replied</h3>
         <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
