@@ -370,8 +370,7 @@ export default function PublicSchedule() {
                 </div>
               </div>
             </div>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8"><hr className="mt-11" style={{ border: "none", height: 1, background: "var(--p-divider)" }} /></div>
-          </>
+          </div>
         )}
 
         {/* ── Highlights Video ── */}
