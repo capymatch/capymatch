@@ -440,8 +440,8 @@ export default function PublicSchedule() {
           <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
             <SectionLabel>Where to See Me Play</SectionLabel>
           {upcoming_events.length > 0 ? (
-            <div className="flex flex-col gap-2.5" data-testid="upcoming-events">
-              {upcoming_events.map((evt) => <EventCard key={evt.event_id} event={evt} />)}
+            <div className="flex flex-col" data-testid="upcoming-events">
+              {upcoming_events.map((evt, i) => <EventCard key={evt.event_id} event={evt} isLast={i === upcoming_events.length - 1} />)}
             </div>
           ) : (
             <div className="text-center py-14 rounded-2xl shadow-sm" style={{ background: "var(--p-empty-bg)", border: "1px solid var(--p-border)" }}>
