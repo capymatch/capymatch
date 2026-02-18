@@ -11,7 +11,7 @@ const THEME_CSS = `
     --p-hero-bg: #ffffff;
     --p-hero-glow: rgba(232,69,107,0.05);
     --p-surface: #ffffff;
-    --p-surface-alt: #f4f3f9;
+    --p-surface-alt: #eeedf5;
     --p-border: rgba(0,0,0,0.08);
     --p-border-hover: rgba(0,0,0,0.15);
     --p-text: #1a1a2e;
