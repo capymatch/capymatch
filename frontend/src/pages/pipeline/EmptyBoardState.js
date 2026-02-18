@@ -63,14 +63,6 @@ function UniversityLogo({ domain, name, size = 40 }) {
 
 /* ── Suggestion Card ── */
 function SuggestionCard({ school, onAdd, adding }) {
-    "linear-gradient(135deg, #ec4899, #db2777)",
-    "linear-gradient(135deg, #06b6d4, #0891b2)",
-    "linear-gradient(135deg, #f43f5e, #e11d48)",
-    "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-  ];
-  const hash = (school.university_name || "").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const gradient = gradients[hash % gradients.length];
-
   const scoreColor = school.match_score >= 80
     ? { bg: "rgba(16,185,129,0.12)", color: "#10b981" }
     : school.match_score >= 60
@@ -85,9 +77,7 @@ function SuggestionCard({ school, onAdd, adding }) {
       onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
       data-testid={`suggestion-${school.university_name}`}
     >
-      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-extrabold flex-shrink-0" style={{ background: gradient }}>
-        {(school.university_name || "?")[0]}
-      </div>
+      <UniversityLogo domain={school.domain} name={school.university_name} size={48} />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{school.university_name}</p>
         <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
