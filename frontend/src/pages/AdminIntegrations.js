@@ -75,6 +75,7 @@ export default function AdminIntegrations() {
   const [showScorecardKey, setShowScorecardKey] = useState(false);
   const [savingScorecard, setSavingScorecard] = useState(false);
   const [syncingScorecard, setSyncingScorecard] = useState(false);
+  const [syncProgress, setSyncProgress] = useState("");
 
   const fetchIntegrations = async () => {
     try {
