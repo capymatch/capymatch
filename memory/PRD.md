@@ -52,14 +52,18 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Enhanced Getting Started Checklist with dynamic steps
 
 ## What's Implemented (Recent — Feb 18, 2026)
-- **Inline Gmail Connection on Intro Page (Complete)**: Gmail connection now embedded directly in the EmptyBoardState onboarding flow (Step 2) instead of redirecting to Settings:
-  - Backend: `/api/gmail/connect` accepts `return_to` param, stores in OAuth state
-  - Backend: `/api/gmail/callback` reads `return_to` from state doc, redirects correctly
-  - Frontend: Inline "Connect Gmail" button with loading state and security info
-  - Frontend: Handles `?gmail=connected` and `?gmail=error` search params with toasts
-  - Settings page flow preserved (passes `return_to=/settings`)
+- **Light Theme Implementation (Complete)**: Full Apple-inspired light theme across the entire app:
+  - Sidebar: White background with pink accent on active nav item (was hardcoded crimson gradient)
+  - Header: Glassmorphism blur effect with semi-transparent background
+  - CSS Variables: Added sidebar-specific tokens (--t-sidebar-bg, --t-sidebar-brand-text, --t-nav-text, --t-nav-text-hover, --t-card-shadow, etc.)
+  - Apple palette: Warm gray (#f5f5f7) page bg, white cards, dark charcoal text (#1d1d1f)
+  - Fixed NotesSidebar hardcoded #141820 → var(--t-surface)
+  - Dark mode fully preserved — gradient sidebar returns when switching back
+  - Theme toggle works in Settings (Dark/Light/System)
 
-- **Note-saving Checklist (Verified Fixed)**: NotesSidebar `onNoteChange` callback properly updates notesCount in RecruitingJourney, causing "Write a note" checklist step to show as completed immediately.
+- **Inline Gmail Connection on Intro Page (Complete)**: Gmail connection now embedded directly in the EmptyBoardState onboarding flow (Step 2) instead of redirecting to Settings.
+
+- **Note-saving Checklist (Verified Fixed)**: NotesSidebar onNoteChange callback properly updates notesCount.
 
 ## What's Implemented (Recent — Feb 17, 2026)
 - **Dashboard Redesign (Complete)**: Full redesign with 6 new sections:
@@ -94,7 +98,7 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ```
 
 ## P0 Backlog
-- Implement Light Theme (pending user feedback on UX review)
+- Make light theme the default for new users (pending user decision)
 - Separate Girls/Boys Volleyball data and features
 
 ## P1 Backlog
