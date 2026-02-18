@@ -26,26 +26,6 @@ function ProgressStep({ num, label, done, current }) {
   );
 }
 
-/* ── Action Path Card ── */
-function ActionPath({ icon: Icon, iconBg, iconColor, title, description, onClick }) {
-  return (
-    <div
-      className="rounded-xl border p-5 cursor-pointer transition-all hover:-translate-y-0.5 relative group"
-      style={{ backgroundColor: "var(--t-surface-alt, var(--t-surface))", borderColor: "var(--t-border)" }}
-      onClick={onClick}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--t-border-strong, rgba(255,255,255,0.12))"; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--t-border)"; }}
-    >
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: iconBg }}>
-        <Icon className="w-5 h-5" style={{ color: iconColor }} strokeWidth={2} />
-      </div>
-      <ChevronRight className="w-4 h-4 absolute top-5 right-4 transition-transform group-hover:translate-x-0.5" style={{ color: "var(--t-text-faint)" }} />
-      <h4 className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>{title}</h4>
-      <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{description}</p>
-    </div>
-  );
-}
-
 /* ── Suggestion Card ── */
 function SuggestionCard({ school, onAdd, adding }) {
   const gradients = [
