@@ -25,11 +25,11 @@ const STAGES = {
 const STAGE_ORDER = ["overdue", "needs_outreach", "waiting_on_reply", "in_conversation", "archived"];
 
 const pillClass = (color) => ({
-  rose:    "bg-rose-500/15 text-rose-400 border-rose-500/25",
-  amber:   "bg-amber-500/15 text-amber-400 border-amber-500/25",
-  blue:    "bg-blue-500/15 text-blue-400 border-blue-500/25",
-  emerald: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
-  gray:    "bg-gray-500/15 text-gray-400 border-gray-500/25",
+  rose:    "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/25",
+  amber:   "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/25",
+  blue:    "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/25",
+  emerald: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
+  gray:    "bg-gray-500/15 text-gray-600 dark:text-gray-400 border-gray-500/25",
 }[color]);
 
 /* ── Contextual subtitle for each program ── */
