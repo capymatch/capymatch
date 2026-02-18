@@ -356,7 +356,7 @@ export default function PublicSchedule() {
           <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-6">
             <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Club Coach</SectionLabel>
-              <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl p-5" style={{ background: "var(--p-surface-alt)", border: "1px solid var(--p-border)" }}>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center font-barlow font-bold text-xl text-white flex-shrink-0" style={{ background: "var(--p-coach-avatar)" }}>
                   {(profile.parent_name || "C")[0].toUpperCase()}
                 </div>
@@ -367,15 +367,15 @@ export default function PublicSchedule() {
                 <div className="flex gap-2">
                   {profile.parent_email && (
                     <a href={`mailto:${profile.parent_email}`} title="Email Coach"
-                      className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center transition-all group"
-                      style={{ background: "var(--p-icon-box-bg)", border: "1px solid var(--p-icon-box-border)" }}>
+                      className="w-[40px] h-[40px] rounded-xl flex items-center justify-center transition-all group"
+                      style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
                       <Mail className="w-4 h-4 group-hover:text-[#e8456b] transition-colors" style={{ color: "var(--p-text-muted)" }} />
                     </a>
                   )}
                   {profile.parent_phone && (
                     <a href={`tel:${profile.parent_phone}`} title="Call Coach"
-                      className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center transition-all group"
-                      style={{ background: "var(--p-icon-box-bg)", border: "1px solid var(--p-icon-box-border)" }}>
+                      className="w-[40px] h-[40px] rounded-xl flex items-center justify-center transition-all group"
+                      style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
                       <Phone className="w-4 h-4 group-hover:text-[#e8456b] transition-colors" style={{ color: "var(--p-text-muted)" }} />
                     </a>
                   )}
