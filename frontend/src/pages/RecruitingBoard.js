@@ -119,7 +119,7 @@ function ProgressRing({ counts, total }) {
   );
 }
 
-/* ═══ Tinted Wash Hero Card ═══ */
+/* ═══ Dark + Pink Hero Card ═══ */
 function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   if (!program) return null;
   const stage = program.board_group;
@@ -129,17 +129,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const advice = getHeroAdvice(program);
 
   const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : stage === "waiting_on_reply" ? "Keeping Warm" : "Momentum";
-
-  // Tinted wash colors — red for overdue, pink for everything else
-  const tint = isUrgent ? "220, 38, 38" : "232, 69, 107";
-  const cardBg = `rgba(${tint}, 0.035)`;
-  const cardBorder = `rgba(${tint}, 0.1)`;
-  const glassBg = `rgba(${tint}, 0.04)`;
-  const glassBorder = `rgba(${tint}, 0.08)`;
-  const badgeBg = `rgba(${tint}, 0.06)`;
-  const badgeBorder = `rgba(${tint}, 0.08)`;
-  const kickerColor = isUrgent ? "#dc2626" : "#e8456b";
-  const btnBg = isUrgent ? "#dc2626" : "#e8456b";
+  const kickerColor = isUrgent ? "#f87171" : "#e8456b";
 
   let urgencyText = "";
   if (isUrgent && program.next_action_due) {
@@ -155,7 +145,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const loc = program.location || program.city_state || "";
 
   return (
-    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: cardBg, border: `1px solid ${cardBorder}`, padding: "18px 22px" }} data-testid="hero-card">
+    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="hero-card">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2.5 mb-1.5">
           <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
@@ -164,26 +154,26 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
             {kicker}
           </span>
           {urgencyText && (
-            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: `rgba(${tint}, 0.08)` }}>
+            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: "rgba(232,69,107,0.12)" }}>
               {urgencyText}
             </span>
           )}
         </div>
 
-        <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight" style={{ color: "var(--t-text)" }}>{program.university_name}</p>
+        <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white">{program.university_name}</p>
 
         <div className="flex items-center gap-2 mb-2.5">
-          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: badgeBg, color: "var(--t-text-secondary, #6b6b6b)", border: `1px solid ${badgeBorder}` }}>{divLabel}</span>}
-          {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
-          {loc && <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{loc}</span>}
+          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(232,69,107,0.12)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
+          {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
+          {loc && <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.3)" }}>{loc}</span>}
         </div>
 
         {advice && (
-          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "var(--t-surface, white)", border: `1px solid var(--t-border, #e8e8e8)`, borderLeft: `3px solid #d97706` }}>
-            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#d97706" }} />
+          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(232,69,107,0.06)", border: "1px solid rgba(232,69,107,0.12)", borderLeft: "3px solid #e8456b" }}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#e8456b" }} />
             <div>
-              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "#92400e" }}>What to do next</span>
-              <p className="text-[13px] font-medium leading-snug" style={{ color: "var(--t-text, #1a1a1a)" }}>{advice}</p>
+              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
+              <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
             </div>
           </div>
         )}
@@ -192,28 +182,28 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
       <div className="flex flex-col gap-1.5 flex-shrink-0" style={{ minWidth: 130 }}>
         {quickAction && (
           <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: btnBg, color: "white", border: "none" }}
+            style={{ background: "#e8456b", color: "white", border: "none" }}
             onClick={() => onAction(program)} data-testid="hero-action-btn">
             <Send className="w-3 h-3" />{quickAction.label}
           </button>
         )}
         {!quickAction && (
           <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: btnBg, color: "white", border: "none" }}
+            style={{ background: "#e8456b", color: "white", border: "none" }}
             onClick={() => navigate(`/journey/${program.program_id}`)} data-testid="hero-action-btn">
             View Journey <ChevronRight className="w-3 h-3" />
           </button>
         )}
         {isUrgent && (
           <button className="flex items-center justify-center py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "transparent", color: "var(--t-text-muted)", border: `1px solid ${cardBorder}` }}
+            style={{ background: "transparent", color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}
             onClick={() => onSnooze(program)} data-testid="hero-snooze-btn">
             Snooze 3 days
           </button>
         )}
         {isWaiting && (
           <button className="flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.1)" }}
+            style={{ background: "rgba(22,163,74,0.1)", color: "#4ade80", border: "1px solid rgba(22,163,74,0.15)" }}
             onClick={() => onDismiss(program)} data-testid="hero-mark-replied-btn">
             <CheckCircle2 className="w-3 h-3" />Mark Replied
           </button>
