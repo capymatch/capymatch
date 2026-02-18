@@ -7,7 +7,7 @@ import { BACKEND_URL } from "../lib/api";
 const THEME_CSS = `
   .font-barlow { font-family: 'Barlow Condensed', sans-serif; }
   .profile-root {
-    --p-bg: #e8e8ef;
+    --p-bg: #e4e4ec;
     --p-hero-bg: linear-gradient(160deg, #f0f0f8 0%, #e8e8f4 40%, #f4f4fa 100%);
     --p-hero-glow: rgba(232,69,107,0.05);
     --p-surface: #ffffff;
