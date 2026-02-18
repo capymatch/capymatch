@@ -125,8 +125,8 @@ export default function Layout({ user, onLogout }) {
   const sidebarItems = [
     { to: "/board", icon: Home, label: "Dashboard" },
     { to: "/pipeline", icon: Kanban, label: "My Schools" },
-    { to: "/calendar", icon: Calendar, label: "Calendar" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Find Schools" },
+    { to: "/calendar", icon: Calendar, label: "Calendar" },
   ];
 
   const aiItems = [
