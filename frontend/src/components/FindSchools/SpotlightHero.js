@@ -128,10 +128,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
 
       {/* More Matches Carousel */}
       {rest.length > 0 && (
-        <div className="mt-4" />
-      )}
-      {rest.length > 0 && (
-        <div>
+        <div className="pt-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <div className="w-4 h-0.5 rounded-full" style={{ background: "var(--t-accent, #be185d)" }} />
