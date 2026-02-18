@@ -37,7 +37,7 @@ const THEME_CSS = `
     --p-photo-border: rgba(0,0,0,0.08);
     --p-video-overlay-bg: rgba(0,0,0,0.5);
     --p-video-label-bg: rgba(0,0,0,0.55);
-    --p-sticky-bg: rgba(246,246,249,0.88);
+    --p-sticky-bg: rgba(237,237,242,0.88);
     --p-sticky-secondary-bg: #ffffff;
     --p-share-bg: rgba(0,0,0,0.04);
     --p-share-hover: rgba(0,0,0,0.08);
