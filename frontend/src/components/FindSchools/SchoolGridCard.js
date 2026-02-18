@@ -112,6 +112,44 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
               </>
             )}
 
+            {/* ── Scorecard Data ── */}
+            {uni.scorecard && (
+              <>
+                <div className="text-[11px] font-bold uppercase tracking-widest mb-3 flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
+                  <GraduationCap className="w-3.5 h-3.5" /> School Profile & Admissions
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-5">
+                  {uni.scorecard.admission_rate != null && (
+                    <ScorecardStat icon={BarChart3} label="Acceptance Rate" value={`${(uni.scorecard.admission_rate * 100).toFixed(0)}%`} color="#be185d" />
+                  )}
+                  {uni.scorecard.graduation_rate != null && (
+                    <ScorecardStat icon={Award} label="Graduation Rate" value={`${(uni.scorecard.graduation_rate * 100).toFixed(0)}%`} color="#10b981" />
+                  )}
+                  {uni.scorecard.retention_rate != null && (
+                    <ScorecardStat icon={Users} label="Retention Rate" value={`${(uni.scorecard.retention_rate * 100).toFixed(0)}%`} color="#3b82f6" />
+                  )}
+                  {uni.scorecard.student_faculty_ratio != null && (
+                    <ScorecardStat icon={User} label="Student-Faculty" value={`${uni.scorecard.student_faculty_ratio}:1`} color="#8b5cf6" />
+                  )}
+                  {uni.scorecard.sat_avg != null && (
+                    <ScorecardStat icon={GraduationCap} label="Avg SAT" value={uni.scorecard.sat_avg} color="#f59e0b" />
+                  )}
+                  {uni.scorecard.act_midpoint != null && (
+                    <ScorecardStat icon={GraduationCap} label="Avg ACT" value={uni.scorecard.act_midpoint} color="#f59e0b" />
+                  )}
+                  {uni.scorecard.tuition_in_state != null && (
+                    <ScorecardStat icon={DollarSign} label="Tuition (In-State)" value={`$${Number(uni.scorecard.tuition_in_state).toLocaleString()}`} color="#6b7280" />
+                  )}
+                  {uni.scorecard.tuition_out_of_state != null && (
+                    <ScorecardStat icon={DollarSign} label="Tuition (Out-of-State)" value={`$${Number(uni.scorecard.tuition_out_of_state).toLocaleString()}`} color="#6b7280" />
+                  )}
+                  {uni.scorecard.student_size != null && (
+                    <ScorecardStat icon={Users} label="Enrollment" value={Number(uni.scorecard.student_size).toLocaleString()} color="#6b7280" />
+                  )}
+                </div>
+              </>
+            )}
+
             <div className="flex gap-3 mt-5">
               <Button
                 onClick={() => addToBoard(uni)}
