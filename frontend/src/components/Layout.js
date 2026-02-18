@@ -469,13 +469,6 @@ export default function Layout({ user, onLogout }) {
               )}
             </div>
 
-            {/* Notification Icons */}
-            <div className="flex items-center gap-1">
-              <button onClick={() => navigate("/inbox")} className="relative p-2 lg:p-2.5 rounded-xl transition-all hover:bg-[var(--t-surface-alt)]" style={{ color: "var(--t-text-muted)" }} data-testid="header-mail-btn">
-                <Mail className="w-5 h-5" strokeWidth={1.5} />
-              </button>
-            </div>
-
             {/* Divider */}
             <div className="w-px h-8 hidden lg:block" style={{ backgroundColor: "var(--t-border)" }} />
 
