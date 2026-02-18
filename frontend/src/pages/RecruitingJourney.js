@@ -1277,6 +1277,7 @@ export default function RecruitingJourney() {
           <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-base font-bold tracking-wide" style={{ color: "var(--t-text)" }}>Timeline</h2>
+              <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Every email, reply, and interaction — all in one place</p>
             </div>
 
             {timeline.length === 0 ? (
