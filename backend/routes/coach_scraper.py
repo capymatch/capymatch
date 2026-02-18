@@ -147,7 +147,7 @@ async def _run_scrape():
     try:
         universities = await db.university_knowledge_base.find(
             {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]},
-            {"_id": 0, "university_name": 1, "domain": 1}
+            {"_id": 0, "university_name": 1, "domain": 1, "website": 1}
         ).to_list(2000)
 
         scrape_status["total"] = len(universities)
