@@ -398,21 +398,33 @@ def _build_update(result):
 
 
 @router.post("/scrape")
-async def start_scrape():
+async def start_scrape(request: Request):
     """Start background scraping of coach data."""
     global scrape_status
     if scrape_status["running"]:
         return {"status": "already_running", **scrape_status}
 
-    already_have = await db.university_knowledge_base.count_documents({"coach_email": {"$ne": ""}})
-    missing = await db.university_knowledge_base.count_documents(
-        {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]}
-    )
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    force = body.get("force", False)
 
-    scrape_status = {"running": True, "scraped": 0, "failed": 0, "total": missing, "done": False}
-    asyncio.create_task(_run_scrape())
-
-    return {"status": "started", "already_have": already_have, "missing": missing}
+    if force:
+        # Re-scrape all schools
+        total = await db.university_knowledge_base.count_documents({"domain": {"$ne": ""}})
+        scrape_status = {"running": True, "scraped": 0, "failed": 0, "total": total, "done": False}
+        asyncio.create_task(_run_scrape(force=True))
+        return {"status": "started", "already_have": 0, "missing": total, "mode": "force_all"}
+    else:
+        already_have = await db.university_knowledge_base.count_documents({"coach_email": {"$ne": ""}})
+        missing = await db.university_knowledge_base.count_documents(
+            {"$or": [{"coach_email": ""}, {"coach_email": {"$exists": False}}]}
+        )
+        scrape_status = {"running": True, "scraped": 0, "failed": 0, "total": missing, "done": False}
+        asyncio.create_task(_run_scrape(force=False))
+        return {"status": "started", "already_have": already_have, "missing": missing}
 
 
 @router.get("/status")
