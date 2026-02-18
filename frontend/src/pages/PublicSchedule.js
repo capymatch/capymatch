@@ -422,7 +422,7 @@ export default function PublicSchedule() {
         )}
 
         {/* ── Where to See Me Play ── */}
-        <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4 pb-8">
+        <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-6 pb-8">
           <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
             <SectionLabel>Where to See Me Play</SectionLabel>
           {upcoming_events.length > 0 ? (
