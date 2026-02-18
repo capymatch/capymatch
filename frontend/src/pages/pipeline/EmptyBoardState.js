@@ -168,6 +168,8 @@ export default function EmptyBoardState({ onSchoolAdded }) {
       toast.success(`${school.university_name} added to your board!`);
       setSuggestions(prev => prev.filter(s => s.university_name !== school.university_name));
       if (onSchoolAdded) onSchoolAdded();
+      // Navigate to congrats page after first school add
+      navigate("/pipeline?congrats=true");
     } catch (err) {
       const msg = err?.response?.data?.detail || "Failed to add school";
       toast.error(msg);
