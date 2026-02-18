@@ -74,24 +74,36 @@ async def search_school(name: str):
     return {"results": results, "total": data.get("metadata", {}).get("total", 0)}
 
 
-@router.post("/sync")
-async def sync_schools():
-    """Fetch scorecard data for all universities in the knowledge base."""
+@router.get("/sync-status")
+async def get_sync_status():
+    """Get the current sync progress."""
+    return sync_status
+
+
+async def _run_sync():
+    """Background task that syncs all unsynced schools."""
+    global sync_status
     api_key = get_api_key()
     if not api_key:
-        raise HTTPException(status_code=400, detail="College Scorecard API key not configured")
+        sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True, "error": "No API key"}
+        return
 
-    universities = await db.university_knowledge_base.find({}, {"_id": 0, "university_name": 1}).to_list(2000)
+    # Only sync schools without scorecard data
+    universities = await db.university_knowledge_base.find(
+        {"scorecard": {"$exists": False}},
+        {"_id": 0, "university_name": 1}
+    ).to_list(2000)
+
+    sync_status["total"] = len(universities)
     if not universities:
-        return {"synced": 0, "failed": 0, "message": "No universities in knowledge base"}
+        sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True}
+        return
 
-    synced = 0
-    failed = 0
     async with httpx.AsyncClient(timeout=15) as client:
         for uni in universities:
             name = uni.get("university_name", "")
             if not name:
-                failed += 1
+                sync_status["failed"] += 1
                 continue
             try:
                 resp = await client.get(SCORECARD_BASE, params={
@@ -101,11 +113,10 @@ async def sync_schools():
                     "per_page": 5,
                 })
                 if resp.status_code != 200:
-                    failed += 1
+                    sync_status["failed"] += 1
                     continue
 
                 results = resp.json().get("results", [])
-                # Find best match (exact or closest name)
                 match = None
                 for r in results:
                     if r.get("school.name", "").lower() == name.lower():
@@ -121,14 +132,34 @@ async def sync_schools():
                         {"university_name": name},
                         {"$set": {"scorecard": scorecard}}
                     )
-                    synced += 1
+                    sync_status["synced"] += 1
                 else:
-                    failed += 1
+                    sync_status["failed"] += 1
             except Exception as e:
                 logger.warning(f"Scorecard sync failed for {name}: {e}")
-                failed += 1
+                sync_status["failed"] += 1
 
-    return {"synced": synced, "failed": failed, "total": len(universities)}
+            # Small delay to avoid rate limiting
+            await asyncio.sleep(0.1)
+
+    sync_status["running"] = False
+    sync_status["done"] = True
+
+
+@router.post("/sync")
+async def sync_schools():
+    """Start background sync for all unsynced universities."""
+    global sync_status
+    if sync_status["running"]:
+        return {"status": "already_running", **sync_status}
+
+    already_synced = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": True}})
+    remaining = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": False}})
+
+    sync_status = {"running": True, "synced": 0, "failed": 0, "total": remaining, "done": False}
+    asyncio.create_task(_run_sync())
+
+    return {"status": "started", "already_synced": already_synced, "remaining": remaining}
 
 
 @router.post("/sync-one")
