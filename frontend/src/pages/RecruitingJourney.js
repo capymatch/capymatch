@@ -203,7 +203,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
       </div>
       <div className="flex items-center gap-3 mt-4 pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
         <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--t-surface-alt)" }}>
-          <div className="h-full rounded-full bg-pink-500 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
+          <div className="h-full rounded-full bg-pink-700 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
         </div>
         <span className="text-[11px] font-semibold text-pink-700">{doneCount} of {steps.length}</span>
       </div>
@@ -364,7 +364,7 @@ const NEXT_STEP_RULES = {
     actions: ["email", "followup"],
   },
   email_sent: {
-    icon: Send, iconColor: "#e8456b", iconBg: "rgba(232,69,107,0.12)",
+    icon: Send, iconColor: "#be185d", iconBg: "rgba(190,24,93,0.12)",
     title: "Email sent! A 14-day follow-up has been set.",
     desc: "We'll remind you if you don't hear back. In the meantime, keep logging your activities.",
     actions: ["log"],
