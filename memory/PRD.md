@@ -51,6 +51,16 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Automated Follow-up System (2-14 day reminders)
 - Enhanced Getting Started Checklist with dynamic steps
 
+## What's Implemented (Recent — Feb 18, 2026)
+- **Inline Gmail Connection on Intro Page (Complete)**: Gmail connection now embedded directly in the EmptyBoardState onboarding flow (Step 2) instead of redirecting to Settings:
+  - Backend: `/api/gmail/connect` accepts `return_to` param, stores in OAuth state
+  - Backend: `/api/gmail/callback` reads `return_to` from state doc, redirects correctly
+  - Frontend: Inline "Connect Gmail" button with loading state and security info
+  - Frontend: Handles `?gmail=connected` and `?gmail=error` search params with toasts
+  - Settings page flow preserved (passes `return_to=/settings`)
+
+- **Note-saving Checklist (Verified Fixed)**: NotesSidebar `onNoteChange` callback properly updates notesCount in RecruitingJourney, causing "Write a note" checklist step to show as completed immediately.
+
 ## What's Implemented (Recent — Feb 17, 2026)
 - **Dashboard Redesign (Complete)**: Full redesign with 6 new sections:
   1. Greeting + Quick Pulse (4 contextual stats)
@@ -84,6 +94,7 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 ```
 
 ## P0 Backlog
+- Implement Light Theme (pending user feedback on UX review)
 - Separate Girls/Boys Volleyball data and features
 
 ## P1 Backlog
