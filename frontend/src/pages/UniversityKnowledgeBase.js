@@ -35,11 +35,14 @@ export default function UniversityKnowledgeBase() {
   const { subscription } = useSubscription();
   const isBasic = false; // Starter now has all Pro features
 
-  // Fetch dynamic filters
+  // Fetch dynamic filters + board schools
   useEffect(() => {
     api.get("/knowledge-base/filters").then(res => {
       if (res.data?.conferences) setConferences(res.data.conferences);
       if (res.data?.regions) setRegions(res.data.regions);
+    }).catch(() => {});
+    api.get("/programs").then(res => {
+      setBoardSchools(new Set((res.data || []).map(p => p.university_name)));
     }).catch(() => {});
   }, []);
 
