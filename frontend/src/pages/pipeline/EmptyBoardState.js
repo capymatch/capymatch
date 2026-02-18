@@ -410,7 +410,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         </div>
         {/* Fade overlay */}
         <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(15,18,25,0) 0%, var(--t-bg, #0f1219) 75%)" }}>
+          style={{ background: "linear-gradient(to bottom, transparent 0%, var(--t-bg) 75%)" }}>
           <div className="text-center pointer-events-auto">
             <p className="text-sm font-medium" style={{ color: "var(--t-text-secondary)" }}>
               This is where you'll track every school — from first contact to offer

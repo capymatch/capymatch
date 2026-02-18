@@ -174,7 +174,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
 
       {/* Panel */}
       <div className={`fixed right-0 top-0 bottom-0 w-[360px] z-50 flex flex-col transition-transform duration-300 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}
-        style={{ backgroundColor: "#141820", borderLeft: "1px solid var(--t-border)", boxShadow: open ? "-8px 0 40px rgba(0,0,0,0.4)" : "none" }}
+        style={{ backgroundColor: "var(--t-surface)", borderLeft: "1px solid var(--t-border)", boxShadow: open ? "-8px 0 40px rgba(0,0,0,0.15)" : "none" }}
         data-testid="notes-panel">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b flex-shrink-0" style={{ borderColor: "var(--t-border)" }}>
