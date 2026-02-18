@@ -73,7 +73,7 @@ export default function UniversityKnowledgeBase() {
       toast.success(`${uni.university_name} added to your board`);
       setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
       if (fromOnboarding) {
-        navigate("/board");
+        navigate("/pipeline");
       }
     } catch (err) {
       const detail = err.response?.data?.detail;
