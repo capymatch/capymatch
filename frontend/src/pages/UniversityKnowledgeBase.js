@@ -428,12 +428,11 @@ function UniversityCard({ uni, adding, addToBoard }) {
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${divColor} text-xs font-bold`}>
-            {uni.division}
-          </div>
+          <UniversityLogo domain={uni.domain} name={uni.university_name} size={40} />
           <div className="flex-1 min-w-0">
             <h3 className="font-heading font-bold text-lg leading-tight" style={{ color: "var(--t-text)" }}>{uni.university_name}</h3>
             <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${divColor}`}>{uni.division}</span>
               {uni.region && (
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" /> {uni.region}
