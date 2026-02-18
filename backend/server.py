@@ -51,6 +51,7 @@ app.include_router(admin_universities_router)
 app.include_router(subscription_router)
 app.include_router(stripe_router)
 app.include_router(admin_integrations_router)
+app.include_router(scorecard_router)
 app.include_router(team_router)
 app.include_router(notes_router)
 
