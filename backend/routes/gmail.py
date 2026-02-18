@@ -95,7 +95,7 @@ def get_gmail_service(creds):
 # ─── OAuth Routes ───
 
 @router.get("/connect")
-async def gmail_connect(request: Request):
+async def gmail_connect(request: Request, return_to: str = "/settings"):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     # Gate Gmail behind Pro+
@@ -108,9 +108,12 @@ async def gmail_connect(request: Request):
         prompt="consent",
         include_granted_scopes="true",
     )
+    # Allow only safe relative paths
+    safe_return = return_to if return_to.startswith("/") else "/settings"
     await db.gmail_oauth_states.insert_one({
         "state": state,
         "user_id": user["user_id"],
+        "return_to": safe_return,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
     return {"auth_url": auth_url}
@@ -120,16 +123,19 @@ async def gmail_connect(request: Request):
 async def gmail_callback(request: Request, code: str = "", state: str = "", error: str = ""):
     frontend_url = os.environ.get("GMAIL_REDIRECT_URI", "").replace("/api/gmail/callback", "")
 
+    # Look up state doc first to get return_to
+    state_doc = await db.gmail_oauth_states.find_one({"state": state}) if state else None
+    return_to = (state_doc or {}).get("return_to", "/settings")
+
     if error:
         logger.error(f"Gmail OAuth error: {error}")
-        return RedirectResponse(f"{frontend_url}/settings?gmail=error&reason={error}")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason={error}")
 
     if not code or not state:
-        return RedirectResponse(f"{frontend_url}/settings?gmail=error&reason=missing_params")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=missing_params")
 
-    state_doc = await db.gmail_oauth_states.find_one({"state": state})
     if not state_doc:
-        return RedirectResponse(f"{frontend_url}/settings?gmail=error&reason=invalid_state")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=invalid_state")
 
     user_id = state_doc["user_id"]
     await db.gmail_oauth_states.delete_one({"state": state})
