@@ -400,7 +400,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
     <div className="rounded-2xl border p-5 relative overflow-hidden"
       style={{ borderColor: "rgba(190,24,93,0.3)", background: "#1e1e2e" }}
       data-testid="next-step-card">
-      <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
+      <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: "rgba(255,255,255,0.35)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
@@ -408,9 +408,9 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
           <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#be185d" }}>What's Next</p>
-          <h3 className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>{rule.title}</h3>
-          <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>{rule.desc}</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#e8456b" }}>What's Next</p>
+          <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>{rule.title}</h3>
+          <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{rule.desc}</p>
           <div className="flex gap-2 flex-wrap">
             {rule.actions.map(key => {
               const btn = ACTION_BUTTONS[key];
@@ -418,7 +418,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
               return (
                 <Button key={key} size="sm" variant={key === rule.actions[0] ? "default" : "outline"}
                   className={`text-xs h-8 px-3 ${key === rule.actions[0] ? "bg-pink-700 hover:bg-pink-800 text-white shadow-md" : ""}`}
-                  style={key !== rule.actions[0] ? { color: "var(--t-text-secondary)", borderColor: "var(--t-border)" } : undefined}
+                  style={key !== rule.actions[0] ? { color: "rgba(255,255,255,0.6)", borderColor: "rgba(255,255,255,0.1)" } : undefined}
                   onClick={actionHandlers[key]} data-testid={btn.testId}>
                   <Icon className="w-3.5 h-3.5 mr-1.5" />{btn.label}
                 </Button>
