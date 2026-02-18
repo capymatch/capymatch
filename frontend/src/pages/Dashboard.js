@@ -53,13 +53,13 @@ function ActionRow({ color, initial, school, detail, badge, badgeBg, badgeColor,
 /* ── Spotlight Card ── */
 function SpotlightCard({ program, onClick }) {
   const colorMap = {
-    "In Conversation": { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
-    "Actively Recruiting": { bg: "rgba(168,85,247,0.12)", color: "#a855f7" },
-    "Active Communication": { bg: "rgba(236,72,153,0.12)", color: "#ec4899" },
-    "Contacted": { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
-    "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
+    "In Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
+    "Actively Recruiting": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
+    "Active Communication": { bg: "rgba(236,72,153,0.12)", color: "#db2777" },
+    "Contacted": { bg: "rgba(59,130,246,0.12)", color: "#2563eb" },
+    "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
-  const statusStyle = colorMap[program.recruiting_status] || { bg: "rgba(107,114,128,0.12)", color: "#6b7280" };
+  const statusStyle = colorMap[program.recruiting_status] || { bg: "rgba(107,114,128,0.12)", color: "#4b5563" };
   const avatarColors = [
     "linear-gradient(135deg, #3b82f6, #1d4ed8)",
     "linear-gradient(135deg, #10b981, #059669)",
