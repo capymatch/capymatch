@@ -291,6 +291,7 @@ async def get_suggested_schools(request: Request):
                 "conference": school.get("conference"),
                 "region": school.get("region"),
                 "website": school.get("website"),
+                "domain": school.get("domain"),
                 "mascot": school.get("mascot"),
                 "match_score": pct,
                 "match_reasons": reasons,
