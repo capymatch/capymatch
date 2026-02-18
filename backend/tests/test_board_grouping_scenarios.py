@@ -16,7 +16,7 @@ import os
 from datetime import datetime, timedelta
 import uuid
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://recruiting-hub.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://athlete-journey-8.preview.emergentagent.com").rstrip("/")
 
 
 @pytest.fixture(scope="module")
