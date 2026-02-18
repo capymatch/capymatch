@@ -88,7 +88,12 @@ def name_from_email(email):
     local = re.sub(r'\d+$', '', local)
     parts = re.split(r'[._\-]', local)
     parts = [p.capitalize() for p in parts if len(p) > 1]
-    return " ".join(parts[:3]) if parts else ""
+    if not parts:
+        return ""
+    # If single word with no separators, it's likely a username not a name
+    if len(parts) == 1 and '.' not in email.split("@")[0] and '_' not in email.split("@")[0]:
+        return ""
+    return " ".join(parts[:3])
 
 
 def is_valid_name(name):
