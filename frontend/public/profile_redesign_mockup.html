@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recruiting HQ — Profile Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f2f1f6; color: #1a1a2e; overflow-x: hidden; }
+
+  /* ═══ Layout Shell ═══ */
+  .app-shell { display: flex; min-height: 100vh; }
+  .sidebar { width: 220px; background: #fff; border-right: 1px solid #e8e7ee; padding: 24px 16px; flex-shrink: 0; display: flex; flex-direction: column; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+  .sidebar-brand .logo { width: 36px; height: 36px; background: linear-gradient(135deg, #e8456b, #d63384); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .sidebar-brand .logo svg { width: 20px; height: 20px; fill: white; }
+  .sidebar-brand span { font-weight: 700; font-size: 15px; }
+  .sidebar-brand small { display: block; font-size: 10px; color: #e8456b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; color: #6b6b80; cursor: pointer; transition: all 0.15s; text-decoration: none; position: relative; }
+  .nav-item:hover { background: #f7f6fb; color: #1a1a2e; }
+  .nav-item.active { background: #fce8ed; color: #e8456b; font-weight: 600; }
+  .nav-item .badge { position: absolute; right: 10px; min-width: 20px; height: 20px; border-radius: 10px; background: #e8456b; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
+  .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* ═══ Main Content ═══ */
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .topbar { height: 60px; background: #fff; border-bottom: 1px solid #e8e7ee; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; flex-shrink: 0; }
+  .topbar-left { display: flex; align-items: center; gap: 8px; }
+  .topbar-left h1 { font-size: 16px; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-right .autosave { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #10b981; font-weight: 500; animation: fadeIn 0.5s; }
+  .topbar-right .avatar { width: 34px; height: 34px; border-radius: 12px; object-fit: cover; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #e8e7ee; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b6b80; transition: all 0.15s; }
+  .icon-btn:hover { background: #f7f6fb; color: #1a1a2e; }
+
+  /* ═══ Split Screen ═══ */
+  .split-container { flex: 1; display: flex; overflow: hidden; }
+  .edit-panel { flex: 1; overflow-y: auto; padding: 28px; max-width: 580px; }
+  .preview-panel { flex: 1; background: #e8e7ef; border-left: 1px solid #e0dfe6; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 28px; }
+  .preview-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #8b8b9e; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .preview-frame { background: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04); width: 100%; max-width: 440px; overflow: hidden; }
+
+  /* ═══ Completeness Ring ═══ */
+  .completeness-card { background: #fff; border-radius: 16px; padding: 20px 24px; border: 1px solid #e8e7ee; margin-bottom: 16px; display: flex; align-items: center; gap: 20px; }
+  .ring-container { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+  .ring-container svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: #f0eff5; stroke-width: 6; }
+  .ring-fill { fill: none; stroke: url(#ringGradient); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+  .ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-family: 'Barlow Condensed', sans-serif; color: #e8456b; }
+  .completeness-info h3 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .completeness-info p { font-size: 12px; color: #8b8b9e; }
+  .completeness-info .hint { color: #e8456b; font-weight: 500; margin-top: 4px; }
+
+  /* ═══ Section Cards ═══ */
+  .section-card { background: #fff; border-radius: 16px; border: 1px solid #e8e7ee; margin-bottom: 12px; overflow: hidden; transition: box-shadow 0.2s; }
+  .section-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; }
+  .section-header-left { display: flex; align-items: center; gap: 12px; }
+  .section-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-icon svg { width: 16px; height: 16px; }
+  .section-title { font-size: 13px; font-weight: 600; }
+  .section-summary { font-size: 11px; color: #8b8b9e; margin-top: 1px; }
+  .section-status { display: flex; align-items: center; gap: 8px; }
+  .status-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .status-complete { background: #e6f5ee; color: #059669; }
+  .status-partial { background: #fef3c7; color: #d97706; }
+  .status-empty { background: #fee2e2; color: #dc2626; }
+  .chevron { width: 18px; height: 18px; color: #b0b0c0; transition: transform 0.25s; }
+  .section-card.open .chevron { transform: rotate(180deg); }
+  .section-body { padding: 0 20px 20px; display: none; }
+  .section-card.open .section-body { display: block; }
+
+  /* ═══ Form Fields ═══ */
+  .field-grid { display: grid; gap: 12px; }
+  .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field-group { position: relative; }
+  .field-label { font-size: 11px; font-weight: 500; color: #8b8b9e; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .field-label .coach-eye { width: 12px; height: 12px; color: #6366f1; cursor: help; }
+  .field-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e8e7ee; font-size: 13px; font-family: inherit; color: #1a1a2e; background: #fafafe; transition: all 0.2s; outline: none; }
+  .field-input:focus { border-color: #e8456b; background: #fff; box-shadow: 0 0 0 3px rgba(232,69,107,0.08); }
+  .field-input::placeholder { color: #c5c5d2; }
+  .field-input.textarea { resize: none; min-height: 80px; }
+
+  /* ═══ Hero Photo Section ═══ */
+  .photo-hero { position: relative; background: linear-gradient(135deg, #fce8ed 0%, #f0eef8 100%); border-radius: 16px; padding: 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 20px; border: 1px solid #e8e7ee; }
+  .photo-upload-area { width: 120px; height: 120px; border-radius: 16px; overflow: hidden; position: relative; cursor: pointer; flex-shrink: 0; border: 3px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .photo-upload-area img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-upload-area .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); opacity: 0; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+  .photo-upload-area:hover .overlay { opacity: 1; }
+  .photo-tips { flex: 1; }
+  .photo-tips h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .photo-tips p { font-size: 12px; color: #6b6b80; line-height: 1.6; }
+  .photo-tips .tip { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #8b8b9e; margin-top: 8px; }
+
+  /* ═══ Share Card ═══ */
+  .share-card { background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border-radius: 16px; padding: 20px 24px; margin-bottom: 16px; color: white; }
+  .share-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .share-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .share-btn { padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .share-btn.primary { background: #e8456b; color: white; }
+  .share-btn.primary:hover { background: #d63a5e; }
+  .share-btn.ghost { background: rgba(255,255,255,0.12); color: white; }
+  .share-btn.ghost:hover { background: rgba(255,255,255,0.2); }
+
+  /* ═══ Preview Card (right panel) ═══ */
+  .pv-hero { position: relative; padding: 28px 24px; text-align: center; }
+  .pv-photo { width: 100px; height: 100px; border-radius: 16px; object-fit: cover; margin: 0 auto 14px; display: block; border: 3px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .pv-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #8b8b9e; margin-bottom: 4px; }
+  .pv-name { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 800; line-height: 1.05; color: #1a1a2e; }
+  .pv-meta { font-size: 12px; color: #6b6b80; margin-top: 6px; }
+  .pv-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 0 20px 20px; }
+  .pv-stat { text-align: center; padding: 14px 8px; border-radius: 12px; background: #f2f3f8; }
+  .pv-stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 800; color: #1a1a2e; }
+  .pv-stat-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #8b8b9e; margin-top: 2px; }
+  .pv-section { padding: 16px 20px; }
+  .pv-section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #8b8b9e; margin-bottom: 8px; }
+  .pv-bio { font-size: 13px; color: #4a4a60; line-height: 1.65; }
+  .pv-measurables { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pv-measurable { text-align: center; padding: 16px 8px; border-radius: 12px; background: #f2f3f8; border: 1px solid rgba(0,0,0,0.04); }
+  .pv-measurable.highlight { background: #fce8ed; }
+  .pv-m-val { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 800; }
+  .pv-m-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #8b8b9e; margin-top: 2px; }
+
+  /* ═══ Mobile Bottom Tab Bar ═══ */
+  .mobile-tabbar { display: none; }
+
+  /* ═══ QR Modal ═══ */
+  .qr-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; }
+  .qr-modal-overlay.show { display: flex; }
+  .qr-modal { background: white; border-radius: 24px; padding: 40px; text-align: center; max-width: 360px; width: 90%; box-shadow: 0 24px 80px rgba(0,0,0,0.2); }
+  .qr-modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .qr-modal p { font-size: 13px; color: #6b6b80; margin-bottom: 20px; }
+  .qr-code-placeholder { width: 180px; height: 180px; margin: 0 auto 20px; border-radius: 16px; background: #f2f3f8; display: flex; align-items: center; justify-content: center; border: 2px dashed #d0d0de; }
+  .qr-code-placeholder span { font-size: 48px; }
+  .qr-modal .close-btn { padding: 10px 24px; border-radius: 12px; border: 1px solid #e8e7ee; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+  /* ═══ Celebration ═══ */
+  .celebration-overlay { position: fixed; inset: 0; background: rgba(26,26,46,0.85); backdrop-filter: blur(12px); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .celebration-overlay.show { display: flex; }
+  .celebration-card { text-align: center; padding: 48px; animation: scaleIn 0.5s ease; }
+  .celebration-card .emoji { font-size: 72px; margin-bottom: 16px; animation: bounce 0.6s ease 0.3s; }
+  .celebration-card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 800; color: white; margin-bottom: 8px; }
+  .celebration-card p { color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 24px; }
+  .celebration-card .cta { padding: 12px 28px; border-radius: 14px; background: #e8456b; color: white; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
+
+  /* ═══ Responsive ═══ */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .preview-panel { display: none; }
+    .edit-panel { max-width: 100%; padding: 20px 16px; padding-bottom: 100px; }
+    .mobile-tabbar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 72px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-top: 1px solid #e8e7ee; z-index: 50; align-items: center; justify-content: space-around; padding: 0 8px; }
+    .tab-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: #8b8b9e; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: all 0.15s; position: relative; }
+    .tab-item.active { color: #e8456b; }
+    .tab-item .tab-dot { width: 4px; height: 4px; border-radius: 2px; background: #e8456b; position: absolute; bottom: 2px; }
+    .tab-item svg { width: 22px; height: 22px; }
+    .tab-item .tab-badge { position: absolute; top: 2px; right: 4px; min-width: 16px; height: 16px; border-radius: 8px; background: #e8456b; color: white; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .field-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+    .photo-hero { flex-direction: column; text-align: center; }
+    .topbar-left .breadcrumb { display: none; }
+    .mobile-preview-btn { display: flex !important; }
+  }
+
+  .mobile-preview-btn { display: none; position: fixed; bottom: 88px; right: 16px; z-index: 40; padding: 12px 20px; border-radius: 100px; background: #1a1a2e; color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.25); align-items: center; gap: 6px; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+  /* Tooltip */
+  .tooltip { position: relative; }
+  .tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; font-size: 11px; padding: 6px 10px; border-radius: 8px; white-space: nowrap; z-index: 10; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- ═══ Sidebar ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo"><svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg></div>
+      <div><span>Recruiting HQ</span><small>Starter</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        My Schools
+        <span class="badge">3</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        My Inbox
+        <span class="badge">2</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendar
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Find Schools
+      </a>
+      <a class="nav-item active" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ═══ Main ═══ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b8b9e" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <h1>Profile</h1>
+        <span class="breadcrumb" style="font-size: 12px; color: #b0b0c0; margin-left: 4px;">/ Athlete Profile Editor</span>
+      </div>
+      <div class="topbar-right">
+        <div class="autosave" id="autosaveIndicator" style="display: none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Auto-saved
+        </div>
+        <div class="icon-btn tooltip" data-tip="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="icon-btn tooltip" data-tip="Inbox">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <img class="avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=face" alt="" />
+      </div>
+    </header>
+
+    <div class="split-container">
+      <!-- ═══ EDIT PANEL (Left) ═══ -->
+      <div class="edit-panel">
+
+        <!-- Completeness Ring -->
+        <div class="completeness-card">
+          <div class="ring-container">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <defs><linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#e8456b"/><stop offset="100%" stop-color="#6366f1"/></linearGradient></defs>
+              <circle class="ring-bg" cx="32" cy="32" r="28" />
+              <circle class="ring-fill" cx="32" cy="32" r="28" stroke-dasharray="175.9" stroke-dashoffset="44" />
+            </svg>
+            <div class="ring-pct">75%</div>
+          </div>
+          <div class="completeness-info">
+            <h3>Profile Strength</h3>
+            <p>8 of 12 fields completed</p>
+            <p class="hint">Add a bio to reach 83%</p>
+          </div>
+        </div>
+
+        <!-- Photo Hero -->
+        <div class="photo-hero">
+          <div class="photo-upload-area">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=240&h=240&fit=crop&crop=face" alt="Clara" />
+            <div class="overlay">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 15.2l3.6-3.6H13V4h-2v7.6H8.4L12 15.2zM20 18H4v-2h16v2z"/></svg>
+            </div>
+          </div>
+          <div class="photo-tips">
+            <h3>Profile Photo</h3>
+            <p>This is the first thing coaches see. Make it count!</p>
+            <div class="tip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Action shots from games work best
+            </div>
+            <div class="tip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Clear face, good lighting
+            </div>
+          </div>
+        </div>
+
+        <!-- Share Card -->
+        <div class="share-card">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share Your Profile
+          </h3>
+          <div class="share-actions">
+            <button class="share-btn primary" onclick="navigator.clipboard.writeText('https://...')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Link
+            </button>
+            <button class="share-btn ghost" onclick="document.getElementById('qrModal').classList.add('show')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+              QR Code
+            </button>
+            <button class="share-btn ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              PDF Resume
+            </button>
+            <button class="share-btn ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Athlete Info -->
+        <div class="section-card open" onclick="toggleSection(this)">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background: #fce8ed;"><svg viewBox="0 0 24 24" fill="none" stroke="#e8456b" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div>
+                <div class="section-title">Athlete Info</div>
+                <div class="section-summary">Clara Gimenes &middot; Class of 2028 &middot; Outside Hitter</div>
+              </div>
+            </div>
+            <div class="section-status">
+              <span class="status-badge status-complete">Complete</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="section-body" onclick="event.stopPropagation()">
+            <div class="field-grid" style="margin-bottom: 12px;">
+              <div class="field-group">
+                <div class="field-label">Full Name <svg class="coach-eye tooltip" data-tip="Visible to coaches" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <input class="field-input" value="Clara Gimenes" oninput="triggerAutoSave()" />
+              </div>
+            </div>
+            <div class="field-grid cols-2" style="margin-bottom: 12px;">
+              <div class="field-group">
+                <div class="field-label">Graduation Year</div>
+                <input class="field-input" value="2028" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">Position</div>
+                <input class="field-input" value="Outside Hitter" oninput="triggerAutoSave()" />
+              </div>
+            </div>
+            <div class="field-grid cols-3">
+              <div class="field-group">
+                <div class="field-label">Height</div>
+                <input class="field-input" value="6'0&quot;" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">Weight</div>
+                <input class="field-input" value="134 lbs" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">Jersey #</div>
+                <input class="field-input" value="14" oninput="triggerAutoSave()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Measurables -->
+        <div class="section-card open" onclick="toggleSection(this)">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background: #e8edf8;"><svg viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></div>
+              <div>
+                <div class="section-title">Athletic Measurables</div>
+                <div class="section-summary">7'8" reach &middot; 9'10" approach &middot; 4.0 GPA</div>
+              </div>
+            </div>
+            <div class="section-status">
+              <span class="status-badge status-complete">Complete</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="section-body" onclick="event.stopPropagation()">
+            <div class="field-grid cols-3" style="margin-bottom: 12px;">
+              <div class="field-group">
+                <div class="field-label">Handed</div>
+                <select class="field-input"><option>Right</option><option>Left</option></select>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Standing Reach <svg class="coach-eye tooltip" data-tip="Visible to coaches" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <input class="field-input" value="7'8&quot;" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">Approach Touch</div>
+                <input class="field-input" value="9'10&quot;" oninput="triggerAutoSave()" />
+              </div>
+            </div>
+            <div class="field-grid cols-3">
+              <div class="field-group">
+                <div class="field-label">Block Touch</div>
+                <input class="field-input" value="9'4&quot;" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">Wingspan</div>
+                <input class="field-input" value="6'2&quot;" oninput="triggerAutoSave()" />
+              </div>
+              <div class="field-group">
+                <div class="field-label">GPA <svg class="coach-eye tooltip" data-tip="Visible to coaches" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <input class="field-input" value="4.0" oninput="triggerAutoSave()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Team & Location -->
+        <div class="section-card" onclick="toggleSection(this)">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background: #e6f5ee;"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+              <div>
+                <div class="section-title">Team & Location</div>
+                <div class="section-summary">Munciana &middot; HSE &middot; Fishers, IN</div>
+              </div>
+            </div>
+            <div class="section-status">
+              <span class="status-badge status-complete">Complete</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="section-body" onclick="event.stopPropagation()">
+            <div class="field-grid cols-2" style="margin-bottom: 12px;">
+              <div class="field-group"><div class="field-label">Club Team</div><input class="field-input" value="Munciana" /></div>
+              <div class="field-group"><div class="field-label">High School</div><input class="field-input" value="HSE" /></div>
+            </div>
+            <div class="field-grid cols-2">
+              <div class="field-group"><div class="field-label">City</div><input class="field-input" value="Fishers" /></div>
+              <div class="field-group"><div class="field-label">State</div><input class="field-input" value="IN" /></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Media & Bio -->
+        <div class="section-card" onclick="toggleSection(this)">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background: #f3ebfa;"><svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+              <div>
+                <div class="section-title">Media & Bio</div>
+                <div class="section-summary" style="color: #d97706;">Missing bio &mdash; coaches love reading your story</div>
+              </div>
+            </div>
+            <div class="section-status">
+              <span class="status-badge status-partial">Needs Bio</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="section-body" onclick="event.stopPropagation()">
+            <div class="field-grid" style="margin-bottom: 12px;">
+              <div class="field-group"><div class="field-label">Hudl Profile Link</div><input class="field-input" value="https://hudl.com/profile/clara" /></div>
+              <div class="field-group"><div class="field-label">Highlights Video</div><input class="field-input" value="https://youtube.com/watch?v=..." /></div>
+              <div class="field-group">
+                <div class="field-label">Bio <svg class="coach-eye tooltip" data-tip="Shows on your public profile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <textarea class="field-input textarea" placeholder="Tell coaches about yourself, your journey, and what drives you..." oninput="triggerAutoSave()"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Contact -->
+        <div class="section-card" onclick="toggleSection(this)">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background: #fef3c7;"><svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/></svg></div>
+              <div>
+                <div class="section-title">Contact Info</div>
+                <div class="section-summary">clara@me.com &middot; Coach Josh</div>
+              </div>
+            </div>
+            <div class="section-status">
+              <span class="status-badge status-complete">Complete</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="section-body" onclick="event.stopPropagation()">
+            <p style="font-size: 11px; font-weight: 600; color: #8b8b9e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Athlete</p>
+            <div class="field-grid cols-2" style="margin-bottom: 16px;">
+              <div class="field-group"><div class="field-label">Email</div><input class="field-input" value="clara@me.com" /></div>
+              <div class="field-group"><div class="field-label">Phone</div><input class="field-input" value="(555) 555-5555" /></div>
+            </div>
+            <div style="height: 1px; background: #e8e7ee; margin-bottom: 16px;"></div>
+            <p style="font-size: 11px; font-weight: 600; color: #8b8b9e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Club Coach</p>
+            <div class="field-grid" style="margin-bottom: 12px;">
+              <div class="field-group"><div class="field-label">Name</div><input class="field-input" value="Josh Collins" /></div>
+            </div>
+            <div class="field-grid cols-2">
+              <div class="field-group"><div class="field-label">Email</div><input class="field-input" value="josh@me.com" /></div>
+              <div class="field-group"><div class="field-label">Phone</div><input class="field-input" value="(333) 333-3333" /></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══ PREVIEW PANEL (Right) ═══ -->
+      <div class="preview-panel">
+        <div class="preview-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          What coaches see
+        </div>
+        <div class="preview-frame">
+          <div class="pv-hero">
+            <img class="pv-photo" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face" alt="" />
+            <div class="pv-tag">Outside Hitter &middot; Class of 2028</div>
+            <div class="pv-name">CLARA<br>GIMENES</div>
+            <div class="pv-meta">Munciana &middot; HSE &middot; Fishers, IN &middot; #14</div>
+          </div>
+          <div class="pv-stats">
+            <div class="pv-stat"><div class="pv-stat-val">6'0"</div><div class="pv-stat-label">Height</div></div>
+            <div class="pv-stat"><div class="pv-stat-val">4.0</div><div class="pv-stat-label">GPA</div></div>
+            <div class="pv-stat"><div class="pv-stat-val">Right</div><div class="pv-stat-label">Dominant</div></div>
+          </div>
+          <div class="pv-section">
+            <div class="pv-section-label">Athletic Measurables</div>
+            <div class="pv-measurables">
+              <div class="pv-measurable"><div class="pv-m-val">7'8"</div><div class="pv-m-label">Standing Reach</div></div>
+              <div class="pv-measurable highlight"><div class="pv-m-val" style="color: #e8456b;">9'10"</div><div class="pv-m-label">Approach Touch</div></div>
+              <div class="pv-measurable"><div class="pv-m-val">9'4"</div><div class="pv-m-label">Block Touch</div></div>
+              <div class="pv-measurable"><div class="pv-m-val">6'2"</div><div class="pv-m-label">Wingspan</div></div>
+            </div>
+          </div>
+          <div class="pv-section">
+            <div class="pv-section-label">About</div>
+            <div class="pv-bio" style="color: #b0b0c0; font-style: italic;">Add a bio to tell coaches your story...</div>
+          </div>
+          <div style="padding: 16px 20px 24px;">
+            <button style="width: 100%; padding: 12px; border-radius: 12px; background: #e8456b; color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Get in Touch
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Mobile Bottom Tab Bar ═══ -->
+<div class="mobile-tabbar">
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Schools
+    <span class="tab-badge">3</span>
+  </div>
+  <div class="tab-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile
+    <div class="tab-dot"></div>
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    Inbox
+    <span class="tab-badge">2</span>
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+    More
+  </div>
+</div>
+
+<!-- Mobile Preview FAB -->
+<button class="mobile-preview-btn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+  Coach View
+</button>
+
+<!-- QR Code Modal -->
+<div class="qr-modal-overlay" id="qrModal" onclick="this.classList.remove('show')">
+  <div class="qr-modal" onclick="event.stopPropagation()">
+    <h2>Scan to View Profile</h2>
+    <p>Coaches at camps can scan this to see Clara's profile instantly</p>
+    <div class="qr-code-placeholder"><span>&#9641;&#9641;&#9641;<br>&#9641;&#9641;&#9641;<br>&#9641;&#9641;&#9641;</span></div>
+    <button class="close-btn" onclick="document.getElementById('qrModal').classList.remove('show')">Close</button>
+  </div>
+</div>
+
+<!-- Celebration Demo -->
+<div class="celebration-overlay" id="celebration" onclick="this.classList.remove('show')">
+  <div class="celebration-card">
+    <div class="emoji">&#127881;</div>
+    <h2>First School Replied!</h2>
+    <p>Ohio State just responded to Clara's email.<br>Your momentum is building!</p>
+    <button class="cta" onclick="document.getElementById('celebration').classList.remove('show')">View Response</button>
+  </div>
+</div>
+
+<script>
+  function toggleSection(card) {
+    card.classList.toggle('open');
+  }
+
+  let autoSaveTimer;
+  function triggerAutoSave() {
+    clearTimeout(autoSaveTimer);
+    const indicator = document.getElementById('autosaveIndicator');
+    indicator.style.display = 'none';
+    autoSaveTimer = setTimeout(() => {
+      indicator.style.display = 'flex';
+      setTimeout(() => { indicator.style.display = 'none'; }, 2500);
+    }, 800);
+  }
+
+  // Demo: show celebration after 8 seconds
+  setTimeout(() => {
+    document.getElementById('celebration').classList.add('show');
+  }, 8000);
+</script>
+
+</body>
+</html>
