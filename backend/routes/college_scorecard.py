@@ -77,7 +77,7 @@ async def sync_schools():
     if not api_key:
         raise HTTPException(status_code=400, detail="College Scorecard API key not configured")
 
-    universities = await db.universities.find({}, {"_id": 0, "university_name": 1}).to_list(2000)
+    universities = await db.university_knowledge_base.find({}, {"_id": 0, "university_name": 1}).to_list(2000)
     if not universities:
         return {"synced": 0, "failed": 0, "message": "No universities in knowledge base"}
 
@@ -113,7 +113,7 @@ async def sync_schools():
                 if match:
                     scorecard = parse_scorecard_result(match)
                     scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
-                    await db.universities.update_one(
+                    await db.university_knowledge_base.update_one(
                         {"university_name": name},
                         {"$set": {"scorecard": scorecard}}
                     )
@@ -165,7 +165,7 @@ async def sync_one_school(request: Request):
     scorecard = parse_scorecard_result(match)
     scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
 
-    await db.universities.update_one(
+    await db.university_knowledge_base.update_one(
         {"university_name": name},
         {"$set": {"scorecard": scorecard}},
         upsert=False

@@ -60,8 +60,8 @@ async def get_integrations_status():
     scorecard_key = os.environ.get("COLLEGE_SCORECARD_API_KEY", "")
     scorecard_connected = bool(scorecard_key)
     scorecard_key_masked = f"...{scorecard_key[-8:]}" if len(scorecard_key) > 10 else ("Set" if scorecard_key else "Not set")
-    synced_count = await db.universities.count_documents({"scorecard": {"$exists": True}})
-    total_universities = await db.universities.count_documents({})
+    synced_count = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": True}})
+    total_universities = await db.university_knowledge_base.count_documents({})
 
     return {
         "gmail": {
