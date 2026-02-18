@@ -1306,19 +1306,33 @@ export default function RecruitingJourney() {
                 <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-500" />Coaches</h3>
                 <div className="flex items-center gap-2">
                   {coachWatchAlert ? (
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold cursor-help"
-                      style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
-                      title="Coach Watch detected a coaching staff change at this school. Review and update your contacts."
-                      data-testid="coach-watch-badge-change">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
-                    </span>
+                    <div className="group relative inline-flex items-center gap-1">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                        style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
+                        data-testid="coach-watch-badge-change">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
+                      </span>
+                      <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
+                        style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
+                        Coach Watch detected a coaching staff change. Review and update your contacts.
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
+                      </div>
+                    </div>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold cursor-help"
-                      style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
-                      title="Coach Watch monitors this school's staff page for changes. No recent coaching staff changes detected."
-                      data-testid="coach-watch-badge-stable">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
-                    </span>
+                    <div className="group relative inline-flex items-center gap-1">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                        style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
+                        data-testid="coach-watch-badge-stable">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
+                      </span>
+                      <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
+                        style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
+                        Coach Watch monitors this school's staff page for changes. No recent changes detected.
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
+                      </div>
+                    </div>
                   )}
                   <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-500" /></button>
                 </div>
