@@ -520,7 +520,7 @@ function ListCard({ uni, adding, addToBoard, boardSchools }) {
             <div className="flex items-center gap-3">
               <h3 className="font-heading font-bold text-lg leading-tight" style={{ color: "var(--t-text)" }}>{uni.university_name}</h3>
               {uni.match_score && (
-                <span className={`font-heading text-sm font-bold ${uni.match_score >= 80 ? "text-emerald-500" : "text-amber-500"}`}>
+                <span className={`font-heading text-sm font-bold ${uni.match_score >= 80 ? "text-gray-700" : "text-gray-500"}`}>
                   {uni.match_score}%
                 </span>
               )}
