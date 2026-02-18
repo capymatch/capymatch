@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Journey Card — Dark + Pink Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0d0d14;
+    color: #f0f0f0;
+    padding: 32px 16px;
+    min-height: 100vh;
+  }
+
+  .label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #e8456b;
+    margin-bottom: 12px;
+  }
+  .label span {
+    color: rgba(255,255,255,0.3);
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ═══ JOURNEY CARD ═══ */
+  .journey-card {
+    background: #1e1e2e;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle gradient accent on top edge */
+  .journey-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #e8456b 0%, rgba(232,69,107,0.2) 100%);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .back-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.08); }
+
+  .card-info { flex: 1; min-width: 0; }
+
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .school-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+
+  .pulse {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: relative;
+  }
+  .pulse-dot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    animation: pulsePing 2s ease-out infinite;
+  }
+  .pulse-dot.active { background: #10b981; }
+  .pulse-dot.active::before { background: #10b981; }
+  .pulse-dot.cooling { background: #eab308; }
+  .pulse-dot.cooling::before { background: #eab308; }
+  .pulse-label {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .pulse-label.active { color: #34d399; }
+  .pulse-label.cooling { color: #facc15; }
+
+  @keyframes pulsePing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .badge-division {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: rgba(232,69,107,0.12);
+    color: #e8456b;
+  }
+
+  .badge-match {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .badge-match.high {
+    background: rgba(16,185,129,0.12);
+    color: #34d399;
+    border: 1px solid rgba(16,185,129,0.2);
+  }
+
+  .meta-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .btn-compare {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+  }
+  .btn-compare:hover {
+    border-color: rgba(232,69,107,0.3);
+    color: rgba(255,255,255,0.7);
+  }
+
+  .badge-active {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(16,185,129,0.12);
+    color: #34d399;
+    border: 1px solid rgba(16,185,129,0.25);
+  }
+
+  /* ═══ PROGRESS RAIL ═══ */
+  .rail-container {
+    margin-top: 4px;
+  }
+
+  .rail-track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 28px;
+  }
+
+  .rail-line {
+    position: absolute;
+    left: 8.33%;
+    right: 8.33%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+  }
+  .rail-line-fill {
+    position: absolute;
+    left: 8.33%;
+    right: 8.33%;
+    top: 50%;
+    transform: translateY(-50%) scaleX(0.4);
+    transform-origin: left;
+    height: 2px;
+    background: linear-gradient(90deg, #e8456b 0%, #f97316 50%, #eab308 100%);
+    transition: transform 0.5s ease;
+  }
+
+  .rail-step {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .rail-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: #1e1e2e;
+    transition: all 0.3s;
+  }
+  .rail-dot.completed {
+    border-color: #e8456b;
+    background: #e8456b;
+    box-shadow: 0 0 8px rgba(232,69,107,0.15);
+  }
+  .rail-dot.completed.outreach {
+    border-color: #f97316;
+    background: #f97316;
+    box-shadow: 0 0 8px rgba(249,115,22,0.15);
+  }
+  .rail-dot.active {
+    width: 16px;
+    height: 16px;
+    border-color: #eab308;
+    background: #eab308;
+    box-shadow: 0 0 12px rgba(234,179,8,0.3);
+  }
+  .rail-dot.active-ring {
+    position: relative;
+  }
+  .rail-dot.active-ring::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid #eab308;
+    animation: railPulse 2s ease-out infinite;
+  }
+
+  @keyframes railPulse {
+    0% { transform: scale(1); opacity: 0.4; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .rail-labels {
+    display: flex;
+    margin-top: 5px;
+  }
+  .rail-label {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.2);
+  }
+  .rail-label.completed { color: rgba(255,255,255,0.4); font-weight: 600; }
+  .rail-label.active { color: #eab308; font-weight: 700; }
+
+  /* ═══ COMPARISON: BEFORE vs AFTER ═══ */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 700px) {
+    .comparison { grid-template-columns: 1fr; }
+  }
+
+  .comp-section h3 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .comp-section h3.before { color: rgba(255,255,255,0.3); }
+  .comp-section h3.after { color: #e8456b; }
+
+  /* BEFORE: old light card style */
+  .old-card {
+    background: #1a1a24;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+  .old-card .school-name { color: rgba(255,255,255,0.6); font-size: 18px; }
+  .old-card .meta-text { color: rgba(255,255,255,0.15); }
+  .old-card .badge-division {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ═══ SEPARATOR ═══ */
+  .sep {
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    margin: 32px 0;
+  }
+
+  /* ═══ NOTES ═══ */
+  .notes {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  .note-item {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    padding: 6px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .note-bullet {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #e8456b;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  /* SVG icons inline */
+  .icon { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="label">Journey Card Mockup <span>— Dark + Pink Theme</span></div>
+
+    <!-- ═══ NEW DARK + PINK JOURNEY CARD ═══ -->
+    <div class="journey-card">
+      <div class="card-top">
+        <button class="back-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </button>
+        <div class="card-info">
+          <div class="name-row">
+            <span class="school-name">University of Florida</span>
+            <div class="pulse">
+              <span class="pulse-dot active"></span>
+              <span class="pulse-label active">Active</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="badge-division">D1</span>
+            <span class="badge-match high">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              87% Match
+            </span>
+            <span class="meta-text">SEC &middot; Gainesville, FL &middot; 12 events</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-compare">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="m21 3-7 7"/><path d="M8 21H3v-5"/><path d="m3 21 7-7"/></svg>
+            Compare
+          </button>
+          <span class="badge-active">Active</span>
+        </div>
+      </div>
+
+      <!-- Progress Rail -->
+      <div class="rail-container">
+        <div class="rail-track">
+          <div class="rail-line"></div>
+          <div class="rail-line-fill"></div>
+          <div class="rail-step"><div class="rail-dot completed"></div></div>
+          <div class="rail-step"><div class="rail-dot completed outreach"></div></div>
+          <div class="rail-step"><div class="rail-dot active active-ring"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+        </div>
+        <div class="rail-labels">
+          <span class="rail-label completed">Added</span>
+          <span class="rail-label completed">Outreach</span>
+          <span class="rail-label active">In Conversation</span>
+          <span class="rail-label">Visit</span>
+          <span class="rail-label">Offer</span>
+          <span class="rail-label">Committed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ═══ SECOND VARIANT: Cooling / Overdue pulse ═══ -->
+    <div class="label">Variant — Cooling Pulse <span>with overdue signal</span></div>
+
+    <div class="journey-card">
+      <div class="card-top">
+        <button class="back-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </button>
+        <div class="card-info">
+          <div class="name-row">
+            <span class="school-name">Stanford University</span>
+            <div class="pulse">
+              <span class="pulse-dot cooling"></span>
+              <span class="pulse-label cooling">Cooling</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="badge-division">D1</span>
+            <span class="badge-match high">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              92% Match
+            </span>
+            <span class="meta-text">Pac-12 &middot; Stanford, CA &middot; 5 events</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-compare">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="m21 3-7 7"/><path d="M8 21H3v-5"/><path d="m3 21 7-7"/></svg>
+            Compare
+          </button>
+          <span class="badge-active">Active</span>
+        </div>
+      </div>
+
+      <!-- Progress Rail — earlier stage -->
+      <div class="rail-container">
+        <div class="rail-track">
+          <div class="rail-line"></div>
+          <div class="rail-line-fill" style="transform: translateY(-50%) scaleX(0.2);"></div>
+          <div class="rail-step"><div class="rail-dot completed"></div></div>
+          <div class="rail-step"><div class="rail-dot active active-ring" style="border-color: #f97316; background: #f97316; box-shadow: 0 0 12px rgba(249,115,22,0.3);"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+          <div class="rail-step"><div class="rail-dot"></div></div>
+        </div>
+        <div class="rail-labels">
+          <span class="rail-label completed">Added</span>
+          <span class="rail-label active" style="color: #f97316;">Outreach</span>
+          <span class="rail-label">In Conversation</span>
+          <span class="rail-label">Visit</span>
+          <span class="rail-label">Offer</span>
+          <span class="rail-label">Committed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- Design Notes -->
+    <div class="notes">
+      <div class="label" style="text-align:left;">Design Notes</div>
+      <div class="note-item"><div class="note-bullet"></div><span>Background <code style="color:#e8456b">#1e1e2e</code> charcoal — matches Pipeline hero card exactly</span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>Thin pink gradient accent line at top edge for brand continuity</span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>Division badge uses pink transparent background <code style="color:#e8456b">rgba(232,69,107,0.12)</code></span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>Match score badge keeps its green / amber semantic coloring</span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>Progress rail dots, labels, and track all adapted for dark background</span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>Compare button + Active badge use subtle borders that breathe on dark bg</span></div>
+      <div class="note-item"><div class="note-bullet"></div><span>School name is pure white, muted text is <code style="color:rgba(255,255,255,0.3)">rgba(255,255,255,0.3)</code></span></div>
+    </div>
+  </div>
+</body>
+</html>
