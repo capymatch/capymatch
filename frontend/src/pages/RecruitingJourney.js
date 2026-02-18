@@ -398,7 +398,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
 
   return (
     <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(190,24,93,0.25)", background: "linear-gradient(135deg, rgba(190,24,93,0.08), var(--t-surface) 60%)" }}
+      style={{ borderColor: "rgba(190,24,93,0.3)", background: "#1e1e2e" }}
       data-testid="next-step-card">
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
