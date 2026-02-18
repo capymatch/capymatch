@@ -21,8 +21,8 @@ const THEME_CSS = `
     --p-accent: #e8456b;
     --p-accent-glow: rgba(232,69,107,0.08);
     --p-accent-glow-strong: rgba(232,69,107,0.12);
-    --p-stat-bg: rgba(246,246,249,0.8);
-    --p-stat-border: rgba(0,0,0,0.05);
+    --p-stat-bg: #f0f0f8;
+    --p-stat-border: rgba(0,0,0,0.06);
     --p-stat-highlight-bg: linear-gradient(135deg, rgba(232,69,107,0.10), rgba(232,69,107,0.05));
     --p-stat-highlight-border: rgba(232,69,107,0.20);
     --p-section-bg: #ffffff;
