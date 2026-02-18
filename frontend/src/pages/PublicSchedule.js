@@ -341,10 +341,10 @@ export default function PublicSchedule() {
 
         {/* ── Club Coach ── */}
         {hasCoach && (
-          <>
-            <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-11">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4">
+            <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Club Coach</SectionLabel>
-              <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl p-6 shadow-sm" style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)" }}>
+              <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl p-5" style={{ background: "var(--p-surface-alt)", border: "1px solid var(--p-border)" }}>
                 <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center font-barlow font-bold text-xl text-white flex-shrink-0" style={{ background: "var(--p-coach-avatar)" }}>
                   {(profile.parent_name || "C")[0].toUpperCase()}
                 </div>
