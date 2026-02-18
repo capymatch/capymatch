@@ -255,7 +255,7 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
         <div className="flex items-center gap-2 mt-0.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
           <span>{subtitle}</span>
           {dueDateFormatted && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-medium">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-medium">
               <Clock className="w-2.5 h-2.5" />Due {dueDateFormatted}
             </span>
           )}
