@@ -1253,9 +1253,12 @@
     // Re-trigger animations on current slide
     const slide = document.querySelectorAll(".slide")[currentSlide];
     slide.querySelectorAll(".fade-up").forEach(el => {
+      const hasFloat = el.classList.contains("float");
       el.style.animation = "none";
+      el.style.opacity = "0";
       el.offsetHeight; // reflow
       el.style.animation = "";
+      el.style.opacity = "";
     });
   }
 
