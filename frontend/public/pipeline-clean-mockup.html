@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — Clean Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-alt: #f5f5f5;
+    --border: #e8e8e8;
+    --border-light: #f0f0f0;
+    --text: #1a1a1a;
+    --text-sec: #6b6b6b;
+    --text-muted: #999999;
+    --text-faint: #bbbbbb;
+    --accent: #e8456b;
+    --accent-light: rgba(232, 69, 107, 0.07);
+    --accent-medium: rgba(232, 69, 107, 0.12);
+    --urgent: #dc2626;
+    --urgent-light: rgba(220, 38, 38, 0.06);
+    --success: #16a34a;
+    --success-light: rgba(22, 163, 74, 0.06);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  /* ─── MOCKUP BADGE ─── */
+  .mockup-badge {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    background: var(--text);
+    color: white; padding: 8px 18px; border-radius: 99px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mockup-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+  }
+
+  /* ─── LAYOUT ─── */
+  .layout {
+    display: flex; min-height: 100vh;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 220px; border-right: 1px solid var(--border);
+    background: var(--surface); padding: 24px 0;
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 50;
+  }
+  .sidebar-brand {
+    padding: 0 20px; margin-bottom: 32px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 12px;
+  }
+  .sidebar-name {
+    font-weight: 800; font-size: 14px; letter-spacing: -0.3px;
+  }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; color: var(--text-sec);
+    cursor: pointer; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--surface-alt); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent-light); color: var(--accent); font-weight: 600;
+  }
+  .nav-item i { width: 18px; text-align: center; font-size: 14px; }
+
+  /* ─── MAIN ─── */
+  .main {
+    margin-left: 220px; flex: 1;
+    padding: 28px 32px;
+    max-width: 1100px;
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .page-title {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  }
+  .add-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 8px;
+    background: var(--text); color: white;
+    font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .add-btn:hover { opacity: 0.85; }
+
+  /* ─── TOP ROW: RING + FOCUS CARD ─── */
+  .top-row {
+    display: grid; grid-template-columns: 260px 1fr; gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* ─── PROGRESS RING ─── */
+  .ring-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .ring-wrap {
+    position: relative; width: 120px; height: 120px;
+  }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  .ring-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .ring-legend {
+    display: flex; flex-direction: column; gap: 6px; width: 100%;
+  }
+  .legend-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px;
+  }
+  .legend-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .legend-count { font-weight: 700; min-width: 14px; }
+  .legend-label { color: var(--text-sec); }
+
+  /* ─── FOCUS CARD ─── */
+  .focus-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex; align-items: flex-start; gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .focus-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+  }
+  .focus-card.urgent::before { background: var(--urgent); }
+
+  .focus-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 16px;
+  }
+  .focus-body { flex: 1; }
+  .focus-kicker {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .focus-card.urgent .focus-kicker { color: var(--urgent); }
+  .focus-school { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .focus-detail { font-size: 13px; color: var(--text-sec); margin-bottom: 16px; }
+  .focus-actions { display: flex; gap: 8px; }
+  .btn-primary {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 8px;
+    background: var(--accent); color: white;
+    font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer;
+  }
+  .btn-outline {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px;
+    background: transparent; color: var(--text-sec);
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); cursor: pointer;
+  }
+
+  /* ─── FILTER CHIPS ─── */
+  .filter-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .chips { display: flex; gap: 6px; }
+  .chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 14px; border-radius: 99px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-sec);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .chip:hover { border-color: #ccc; }
+  .chip.active {
+    background: var(--text); color: white;
+    border-color: var(--text);
+  }
+  .chip-count {
+    font-size: 10px; font-weight: 700;
+    background: rgba(0,0,0,0.06); padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .chip.active .chip-count {
+    background: rgba(255,255,255,0.2);
+  }
+  .chip-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+
+  /* ─── SCHOOL LIST ─── */
+  .school-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .school-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .school-row:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  /* Logo placeholder */
+  .school-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 11px; color: var(--text-sec);
+    flex-shrink: 0; overflow: hidden;
+  }
+  .school-logo img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .school-info { flex: 1; min-width: 0; }
+  .school-name-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 2px;
+  }
+  .school-name {
+    font-size: 14px; font-weight: 600; letter-spacing: -0.2px;
+  }
+  .match-pct {
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted);
+  }
+  .school-sub {
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  /* ─── NEUTRAL BADGES ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    background: var(--surface-alt);
+    color: var(--text-sec);
+    border: 1px solid var(--border-light);
+  }
+  .badge-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+
+  /* Status-specific: only urgent gets color */
+  .badge-urgent {
+    background: var(--urgent-light);
+    color: var(--urgent);
+    border-color: rgba(220,38,38,0.1);
+  }
+  .badge-success {
+    background: var(--success-light);
+    color: var(--success);
+    border-color: rgba(22,163,74,0.1);
+  }
+
+  /* ─── QUICK ACTIONS ─── */
+  .quick-action {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 14px; border-radius: 7px;
+    font-size: 11px; font-weight: 600;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid rgba(232,69,107,0.1);
+    cursor: pointer; transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .quick-action:hover {
+    background: var(--accent-medium);
+  }
+  .quick-action-success {
+    background: var(--success-light);
+    color: var(--success);
+    border-color: rgba(22,163,74,0.1);
+  }
+  .quick-action-success:hover {
+    background: rgba(22,163,74,0.1);
+  }
+
+  .row-chevron {
+    color: var(--text-faint);
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .school-row:hover .row-chevron { color: var(--text-muted); }
+
+  /* ─── DUE DATE ─── */
+  .due-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--text-muted);
+    font-weight: 500;
+  }
+  .due-tag.overdue { color: var(--urgent); }
+
+  /* ─── SECTION DIVIDER ─── */
+  .section-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 8px 0 4px;
+  }
+
+  /* ─── ANNOTATIONS (mockup only) ─── */
+  .annotation {
+    position: absolute;
+    background: var(--text);
+    color: white;
+    font-size: 10px; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .annotation::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--text);
+    transform: rotate(45deg);
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-badge">DESIGN MOCKUP — Clean Pipeline</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo"><i class="fas fa-volleyball-ball" style="font-size: 13px;"></i></div>
+      <span class="sidebar-name">Recruiting HQ</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="#"><i class="fas fa-home"></i> Dashboard</a>
+      <a class="nav-item active" href="#"><i class="fas fa-layer-group"></i> My Schools</a>
+      <a class="nav-item" href="#"><i class="fas fa-calendar"></i> Calendar</a>
+      <a class="nav-item" href="#"><i class="fas fa-search"></i> Find Schools</a>
+      <a class="nav-item" href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">My Schools</h1>
+      <button class="add-btn"><i class="fas fa-plus" style="font-size: 10px;"></i> Add School</button>
+    </div>
+
+    <!-- Top Row: Ring + Focus -->
+    <div class="top-row">
+
+      <!-- Progress Ring -->
+      <div class="ring-card">
+        <div class="ring-wrap">
+          <!-- SVG donut — monochrome pink gradient -->
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f0" stroke-width="10" />
+            <!-- Urgent: 2 schools = ~25% of 8 -->
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#dc2626" stroke-width="10"
+              stroke-dasharray="78.5 235.6" stroke-dashoffset="0"
+              transform="rotate(-90 60 60)" stroke-linecap="round" />
+            <!-- Needs Outreach: 1 school = ~12.5% -->
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#e8456b" stroke-width="10"
+              stroke-dasharray="39.3 274.8" stroke-dashoffset="-78.5"
+              transform="rotate(-90 60 60)" stroke-linecap="round" opacity="0.7" />
+            <!-- Waiting: 2 schools = ~25% -->
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#e8456b" stroke-width="10"
+              stroke-dasharray="78.5 235.6" stroke-dashoffset="-117.8"
+              transform="rotate(-90 60 60)" stroke-linecap="round" opacity="0.4" />
+            <!-- In Conversation: 3 schools = ~37.5% -->
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#e8456b" stroke-width="10"
+              stroke-dasharray="117.8 196.3" stroke-dashoffset="-196.3"
+              transform="rotate(-90 60 60)" stroke-linecap="round" opacity="0.2" />
+          </svg>
+          <div class="ring-center">
+            <span class="ring-num">8</span>
+            <span class="ring-label">schools</span>
+          </div>
+        </div>
+        <div class="ring-legend">
+          <div class="legend-row">
+            <div class="legend-dot" style="background: #dc2626;"></div>
+            <span class="legend-count">2</span>
+            <span class="legend-label">Overdue</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--accent); opacity: 0.9;"></div>
+            <span class="legend-count">1</span>
+            <span class="legend-label">Needs Outreach</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--accent); opacity: 0.5;"></div>
+            <span class="legend-count">2</span>
+            <span class="legend-label">Waiting on Reply</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--accent); opacity: 0.25;"></div>
+            <span class="legend-count">3</span>
+            <span class="legend-label">In Conversation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Focus Card -->
+      <div class="focus-card urgent">
+        <div class="focus-icon" style="background: var(--urgent-light);">
+          <i class="fas fa-exclamation-triangle" style="color: var(--urgent);"></i>
+        </div>
+        <div class="focus-body">
+          <div class="focus-kicker">Needs Attention</div>
+          <div class="focus-school">Northwestern University</div>
+          <div class="focus-detail">Follow-up was due 5 days ago — Coach Johnson hasn't heard from you since Feb 12.</div>
+          <div class="focus-actions">
+            <button class="btn-primary" style="background: var(--urgent);">
+              <i class="fas fa-paper-plane" style="font-size: 10px;"></i> Send Follow-Up
+            </button>
+            <button class="btn-outline">Snooze 3 days</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="filter-row">
+      <div class="chips">
+        <div class="chip active">
+          All <span class="chip-count">8</span>
+        </div>
+        <div class="chip">
+          <div class="chip-dot" style="background: #dc2626;"></div>
+          Overdue <span class="chip-count">2</span>
+        </div>
+        <div class="chip">
+          Needs Outreach <span class="chip-count">1</span>
+        </div>
+        <div class="chip">
+          Waiting <span class="chip-count">2</span>
+        </div>
+        <div class="chip">
+          In Conversation <span class="chip-count">3</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-outline" style="padding: 6px 12px;">
+          <i class="fas fa-filter" style="font-size: 10px;"></i> Filter
+        </button>
+      </div>
+    </div>
+
+    <!-- School List -->
+    <div class="school-list">
+
+      <!-- Section: Overdue -->
+      <div class="section-label" style="color: var(--urgent);">
+        <i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; margin-right: 6px;"></i>Overdue — 2 schools
+      </div>
+
+      <div class="school-row" style="border-left: 3px solid var(--urgent);">
+        <div class="school-logo" style="background: #f0edf5;">NW</div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">Northwestern University</span>
+            <span class="match-pct">84%</span>
+            <span class="badge">D1</span>
+          </div>
+          <div class="school-sub">
+            <span class="due-tag overdue"><i class="fas fa-clock" style="font-size: 9px;"></i> 5 days overdue</span>
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            Big Ten · Evanston, IL
+          </div>
+        </div>
+        <div class="quick-action" style="background: var(--urgent-light); color: var(--urgent); border-color: rgba(220,38,38,0.1);">
+          <i class="fas fa-paper-plane" style="font-size: 9px;"></i> Follow Up
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row" style="border-left: 3px solid var(--urgent);">
+        <div class="school-logo" style="background: #e8edf5;">DU</div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">Duke University</span>
+            <span class="match-pct">79%</span>
+            <span class="badge">D1</span>
+          </div>
+          <div class="school-sub">
+            <span class="due-tag overdue"><i class="fas fa-clock" style="font-size: 9px;"></i> 3 days overdue</span>
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            ACC · Durham, NC
+          </div>
+        </div>
+        <div class="quick-action" style="background: var(--urgent-light); color: var(--urgent); border-color: rgba(220,38,38,0.1);">
+          <i class="fas fa-paper-plane" style="font-size: 9px;"></i> Follow Up
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <!-- Section: Needs Outreach -->
+      <div class="section-label" style="margin-top: 12px;">
+        Needs Outreach — 1 school
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #fef3e2;">USC</div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">USC Trojans</span>
+            <span class="match-pct">91%</span>
+            <span class="badge">D1</span>
+          </div>
+          <div class="school-sub">Send your first email to introduce yourself</div>
+        </div>
+        <div class="quick-action">
+          <i class="fas fa-paper-plane" style="font-size: 9px;"></i> Start Outreach
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <!-- Section: Waiting on Reply -->
+      <div class="section-label" style="margin-top: 12px;">
+        Waiting on Reply — 2 schools
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #e8f0e8;">MSU</div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">Michigan State University</span>
+            <span class="match-pct">87%</span>
+            <span class="badge">D1</span>
+          </div>
+          <div class="school-sub">
+            Reached out 4 days ago — no reply yet
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            <span class="due-tag"><i class="fas fa-clock" style="font-size: 9px;"></i> Due Feb 22</span>
+          </div>
+        </div>
+        <div class="quick-action-success quick-action">
+          <i class="fas fa-check-circle" style="font-size: 9px;"></i> Mark Replied
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #e8edf8;">UNC</div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">UNC Chapel Hill</span>
+            <span class="match-pct">87%</span>
+            <span class="badge">D1</span>
+          </div>
+          <div class="school-sub">
+            Reached out 6 days ago — no reply yet
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            <span class="due-tag"><i class="fas fa-clock" style="font-size: 9px;"></i> Due Feb 24</span>
+          </div>
+        </div>
+        <div class="quick-action-success quick-action">
+          <i class="fas fa-check-circle" style="font-size: 9px;"></i> Mark Replied
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <!-- Section: In Conversation -->
+      <div class="section-label" style="margin-top: 12px;">
+        In Conversation — 3 schools
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #e0eaf8;">
+          <img src="https://icon.horse/icon/ucla.edu" alt="UCLA" onerror="this.style.display='none'; this.parentElement.textContent='UCLA';" />
+        </div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">UCLA</span>
+            <span class="match-pct">96%</span>
+            <span class="badge">D1</span>
+            <span class="badge-success badge" style="font-size: 10px;">
+              <i class="fas fa-comments" style="font-size: 8px;"></i> Active
+            </span>
+          </div>
+          <div class="school-sub">
+            Coach Miller replied 2 days ago
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            Pac-12 · Los Angeles, CA
+          </div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #f5e8e8;">
+          <img src="https://icon.horse/icon/stanford.edu" alt="Stanford" onerror="this.style.display='none'; this.parentElement.textContent='STAN';" />
+        </div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">Stanford University</span>
+            <span class="match-pct">92%</span>
+            <span class="badge">D1</span>
+            <span class="badge-success badge" style="font-size: 10px;">
+              <i class="fas fa-comments" style="font-size: 8px;"></i> Active
+            </span>
+          </div>
+          <div class="school-sub">
+            Coach replied today
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            Pac-12 · Stanford, CA
+          </div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+      <div class="school-row">
+        <div class="school-logo" style="background: #f5ede5;">
+          <img src="https://icon.horse/icon/utexas.edu" alt="Texas" onerror="this.style.display='none'; this.parentElement.textContent='TEX';" />
+        </div>
+        <div class="school-info">
+          <div class="school-name-row">
+            <span class="school-name">University of Texas</span>
+            <span class="match-pct">89%</span>
+            <span class="badge">D1</span>
+            <span class="badge-success badge" style="font-size: 10px;">
+              <i class="fas fa-comments" style="font-size: 8px;"></i> Active
+            </span>
+          </div>
+          <div class="school-sub">
+            Camp invite received · replied 5 days ago
+            <span style="margin: 0 6px; color: var(--border);">·</span>
+            Big 12 · Austin, TX
+          </div>
+        </div>
+        <i class="fas fa-chevron-right row-chevron"></i>
+      </div>
+
+    </div>
+
+    <!-- Design Notes -->
+    <div style="margin-top: 48px; padding: 24px; border-radius: var(--radius); background: var(--surface-alt); border: 1px dashed var(--border);">
+      <div style="font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-palette" style="color: var(--accent);"></i> Color System — What Changed
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; font-size: 12px; color: var(--text-sec); line-height: 1.8;">
+        <div>
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Before (18+ colors)</div>
+          <div>&#10060; Rose, Amber, Blue, Emerald, Gray stages</div>
+          <div>&#10060; Emerald, Blue, Violet, Orange, Yellow divisions</div>
+          <div>&#10060; Pink, Blue, Green, Amber stat icons</div>
+          <div>&#10060; 6 funnel bar colors</div>
+          <div>&#10060; 7 event type colors</div>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">After (4 colors)</div>
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+            <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--accent);"></div>
+            <span><strong>#e8456b</strong> — Accent (CTAs, active states)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+            <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--urgent);"></div>
+            <span><strong>#dc2626</strong> — Urgent (overdue only)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+            <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--success);"></div>
+            <span><strong>#16a34a</strong> — Success (replied, confirmed)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--text-muted);"></div>
+            <span><strong>#999</strong> — Neutral (everything else)</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--text-sec); line-height: 1.8;">
+        <div style="font-weight: 600; color: var(--text); margin-bottom: 4px;">Key Design Decisions</div>
+        <div>1. <strong>Ring chart uses opacity ramp</strong> of one hue instead of 5 colors — same info, less noise</div>
+        <div>2. <strong>Division badges are all neutral</strong> — "D1" text already communicates the meaning</div>
+        <div>3. <strong>Stage names are text-only</strong> — grouped by section header, not painted with color</div>
+        <div>4. <strong>Only overdue gets red</strong> — urgency is preserved, everything else is calm</div>
+        <div>5. <strong>Left border accent</strong> on overdue rows replaces the colored stage pill</div>
+        <div>6. <strong>Match % is muted gray</strong> — it's context, not a competing signal</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
