@@ -350,7 +350,7 @@ export default function ProfilePage() {
       {/* Desktop: Split-screen */}
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 items-start">
         <div>{editPanel}</div>
-        <div className="sticky top-4">
+        <div>
           <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
             <Monitor className="w-3.5 h-3.5" /> Coach's View — Live Preview
           </div>
