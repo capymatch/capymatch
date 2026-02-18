@@ -91,7 +91,7 @@ function StatCard({ value, label, highlight }) {
       className="rounded-2xl text-center transition-all duration-200"
       style={{
         background: highlight ? "var(--p-stat-highlight-bg)" : "var(--p-stat-bg)",
-        border: highlight ? "1px solid var(--p-stat-highlight-border)" : "1px solid var(--p-border)",
+        border: highlight ? "1px solid var(--p-stat-highlight-border)" : "1px solid var(--p-stat-border)",
         padding: "24px 16px",
       }}
       data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
