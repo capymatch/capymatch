@@ -117,7 +117,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 onClick={() => addToBoard(uni)}
                 disabled={adding[uni.university_name] || isOnBoard}
                 data-testid={`expanded-add-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
               >
                 {isOnBoard ? (<><Check className="w-4 h-4" /> On Your Board</>) : (<><Plus className="w-4 h-4" />{adding[uni.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>

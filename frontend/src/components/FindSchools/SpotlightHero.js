@@ -30,8 +30,8 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
     <div className="space-y-4" data-testid="spotlight-section">
       {/* Section Label */}
       <div className="flex items-center gap-2">
-        <div className="w-4 h-0.5 rounded-full bg-blue-600" />
-        <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-blue-600">
+        <div className="w-4 h-0.5 rounded-full bg-gray-700" />
+        <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-gray-700">
           Your #1 Match
         </span>
       </div>
@@ -111,7 +111,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                 onClick={() => addToBoard(hero)}
                 disabled={adding[hero.university_name] || isOnBoard}
                 data-testid="spotlight-add-to-board"
-                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
               >
                 {isOnBoard ? (<><span className="text-white">On Your Board</span></>) : (<><Plus className="w-4 h-4" />{adding[hero.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>
@@ -131,11 +131,11 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
         <div className="pt-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 rounded-full bg-blue-600" />
-              <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-blue-600">
+              <div className="w-4 h-0.5 rounded-full bg-gray-700" />
+              <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-gray-700">
                 More Matches
               </span>
-              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-500/10 text-blue-600">
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-500/10 text-gray-600">
                 {suggestions.length} total
               </span>
             </div>
