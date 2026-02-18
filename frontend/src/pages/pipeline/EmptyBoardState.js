@@ -311,7 +311,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             <button
               className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
               style={{ backgroundColor: "#e8456b", color: "white" }}
-              onClick={() => navigate("/knowledge-base")}
+              onClick={() => navigate("/knowledge-base?from=onboarding")}
               data-testid="find-schools-btn"
             >
               Find Schools <ChevronRight className="w-4 h-4" />
