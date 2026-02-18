@@ -984,6 +984,7 @@ export default function RecruitingJourney() {
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
+  const [coachWatchAlert, setCoachWatchAlert] = useState(null);
 
   // Form visibility
   const [activeForm, setActiveForm] = useState(null); // 'email' | 'log' | 'replied' | 'coach' | 'followup'
