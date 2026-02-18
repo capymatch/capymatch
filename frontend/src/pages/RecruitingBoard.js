@@ -222,8 +222,8 @@ function SchoolCard({ p, navigate, matchScore, onMarkReplied }) {
   const Icon = cfg.icon;
   const subtitle = getSubtitle(p);
   const divLabel = { D1: "D1", D2: "D2", D3: "D3", NAIA: "NAIA", JUCO: "JUCO" }[p.division] || "—";
-  const divColor = { D1: "bg-emerald-500/20 text-emerald-400", D2: "bg-blue-500/20 text-blue-400", D3: "bg-violet-500/20 text-violet-400", NAIA: "bg-orange-500/20 text-orange-400", JUCO: "bg-yellow-500/20 text-yellow-400" }[p.division] || "bg-gray-500/20 text-gray-400";
-  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-400 bg-emerald-500/10" : matchScore?.match_score >= 60 ? "text-amber-400 bg-amber-500/10" : "text-gray-400 bg-gray-500/10";
+  const divColor = { D1: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400", D2: "bg-blue-500/20 text-blue-600 dark:text-blue-400", D3: "bg-violet-500/20 text-violet-600 dark:text-violet-400", NAIA: "bg-orange-500/20 text-orange-600 dark:text-orange-400", JUCO: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400" }[p.division] || "bg-gray-500/20 text-gray-600 dark:text-gray-400";
+  const scoreColor = matchScore?.match_score >= 80 ? "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10" : matchScore?.match_score >= 60 ? "text-amber-700 dark:text-amber-400 bg-amber-500/10" : "text-gray-600 dark:text-gray-400 bg-gray-500/10";
 
   const dueDateFormatted = p.next_action_due && stage !== "overdue"
     ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })
