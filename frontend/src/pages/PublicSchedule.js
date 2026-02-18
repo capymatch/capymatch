@@ -317,7 +317,7 @@ export default function PublicSchedule() {
 
         {/* ── About ── */}
         {profile.bio && (
-          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-8">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-10">
             <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>About</SectionLabel>
               <p className="text-[15px] leading-[1.75] max-w-[600px]" style={{ color: "var(--p-text-secondary)" }}>{profile.bio}</p>
@@ -327,7 +327,7 @@ export default function PublicSchedule() {
 
         {/* ── Athletic Measurables ── */}
         {hasStats && (
-          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-4">
+          <div className="max-w-[860px] mx-auto px-6 sm:px-8 pt-6">
             <div className="rounded-2xl p-6 sm:p-8" style={{ background: "var(--p-section-bg)", border: "1px solid var(--p-section-border)", boxShadow: "var(--p-section-shadow)" }}>
               <SectionLabel>Athletic Measurables</SectionLabel>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
