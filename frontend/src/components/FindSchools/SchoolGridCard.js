@@ -31,7 +31,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
           <div className="p-7 border-r" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-start justify-between mb-1">
               <UniversityLogo domain={uni.domain} name={uni.university_name} size={48} />
-              <span className="font-heading text-3xl font-extrabold text-emerald-500">
+              <span className="font-heading text-3xl font-extrabold text-gray-800">
                 {uni.match_score ? `${uni.match_score}%` : ""}
               </span>
             </div>
@@ -91,8 +91,8 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
             {uni.match_reasons?.length > 0 && (
               <>
                 <div className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted)" }}>Why This School?</div>
-                <div className="rounded-lg p-4 mb-4 text-[13px] leading-relaxed bg-teal-500/5 border border-teal-500/15" style={{ color: "var(--t-text-secondary)" }}>
-                  <Sparkles className="w-3.5 h-3.5 inline mr-1.5 text-teal-600" />
+                <div className="rounded-lg p-4 mb-4 text-[13px] leading-relaxed bg-gray-50 border border-gray-200" style={{ color: "var(--t-text-secondary)" }}>
+                  <Sparkles className="w-3.5 h-3.5 inline mr-1.5 text-gray-500" />
                   <strong style={{ color: "var(--t-text)" }}>{uni.university_name} is a strong match</strong> because it aligns with your preferences in {uni.match_reasons.join(", ").toLowerCase()}.
                   {uni.primary_coach && ` Coach ${uni.primary_coach.split(" ")[1] || uni.primary_coach} leads the program.`}
                 </div>
@@ -104,7 +104,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 <div className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted)" }}>Match Reasons</div>
                 <div className="flex flex-wrap gap-1.5 mb-5">
                   {uni.match_reasons.map(r => (
-                    <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-teal-500/10 text-teal-700 border border-teal-500/20">
+                    <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-gray-100 text-gray-600 border border-gray-200">
                       {r}
                     </span>
                   ))}
@@ -152,7 +152,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
       <div className="flex items-start justify-between mb-3">
         <UniversityLogo domain={uni.domain} name={uni.university_name} size={44} className="shadow-sm" />
         {uni.match_score && (
-          <span className={`font-heading text-xl font-extrabold ${uni.match_score >= 80 ? "text-emerald-500" : uni.match_score >= 60 ? "text-amber-500" : "text-gray-400"}`}>
+          <span className={`font-heading text-xl font-extrabold ${uni.match_score >= 80 ? "text-gray-800" : uni.match_score >= 60 ? "text-gray-500" : "text-gray-400"}`}>
             {uni.match_score}%
           </span>
         )}

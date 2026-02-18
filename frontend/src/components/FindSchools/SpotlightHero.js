@@ -75,7 +75,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
           {/* Right - Details */}
           <div className="p-8 lg:p-10 flex flex-col justify-center gap-5" style={{ backgroundColor: "var(--t-surface)" }}>
             <div className="flex items-center gap-4">
-              <span className="font-heading text-5xl font-extrabold text-emerald-500 leading-none" data-testid="spotlight-hero-score">
+              <span className="font-heading text-5xl font-extrabold text-gray-800 leading-none" data-testid="spotlight-hero-score">
                 {hero.match_score}%
               </span>
               <div>
@@ -88,7 +88,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
 
             <div className="flex flex-wrap gap-1.5">
               {hero.match_reasons?.map(r => (
-                <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-teal-500/10 text-teal-700 border border-teal-500/20">
+                <span key={r} className="text-xs px-2.5 py-1 rounded-md font-medium bg-gray-100 text-gray-600 border border-gray-200">
                   {r}
                 </span>
               ))}
@@ -165,7 +165,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                 >
                   <div className="flex items-center justify-between mb-2">
                     <UniversityLogo domain={s.domain} name={s.university_name} size={32} />
-                    <span className="font-heading text-lg font-bold text-emerald-500">{s.match_score}%</span>
+                    <span className="font-heading text-lg font-bold text-gray-700">{s.match_score}%</span>
                   </div>
                   <div className="font-semibold text-[13px] leading-tight mb-1" style={{ color: "var(--t-text)" }}>{s.university_name}</div>
                   <div className="text-[11px] flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
