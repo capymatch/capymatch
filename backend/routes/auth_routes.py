@@ -93,7 +93,7 @@ async def exchange_session(request: Request, response: Response):
     logger.info(f"[OAuth] Session exchange attempt, session_id present: {bool(session_id)}")
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
-    async with httpx.AsyncClient() as hc:
+    async with httpx.AsyncClient(timeout=10.0) as hc:
         resp = await hc.get(
             "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
             headers={"X-Session-ID": session_id}
