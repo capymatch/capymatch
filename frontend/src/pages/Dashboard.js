@@ -14,17 +14,17 @@ import { FirstReplyCelebration } from "../components/FirstReplyCelebration";
 import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Pulse Stat ── */
-function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub }) {
+function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub, dark }) {
   return (
-    <div className="px-5 py-4 lg:px-6 lg:py-5 border-r last:border-r-0" style={{ borderColor: "var(--t-border)" }} data-testid={`pulse-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+    <div className="px-5 py-4 lg:px-6 lg:py-5 border-r last:border-r-0" style={{ borderColor: dark ? "rgba(255,255,255,0.06)" : "var(--t-border)" }} data-testid={`pulse-${label.toLowerCase().replace(/\s+/g, "-")}`}>
       <div className="flex items-center justify-between mb-1">
         <p className="text-2xl lg:text-3xl font-extrabold tracking-tight" style={{ color: iconColor }}>{value}</p>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: iconBg }}>
           <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={2} />
         </div>
       </div>
-      <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>{label}</p>
-      {sub && <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>{sub}</p>}
+      <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: dark ? "rgba(255,255,255,0.4)" : "var(--t-text-muted)" }}>{label}</p>
+      {sub && <p className="text-[11px] mt-0.5" style={{ color: dark ? "rgba(255,255,255,0.25)" : "var(--t-text-faint)" }}>{sub}</p>}
     </div>
   );
 }
