@@ -328,6 +328,17 @@ export default function RecruitingBoard() {
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showCongrats, setShowCongrats] = useState(false);
+
+  // Handle congrats param
+  useEffect(() => {
+    if (searchParams.get("congrats") === "true") {
+      setShowCongrats(true);
+      searchParams.delete("congrats");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     api.get("/match-scores").then(res => {
