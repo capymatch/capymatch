@@ -196,6 +196,21 @@ def extract_coaches_structured(soup):
     return _clean_coaches(coaches)
 
 
+def _is_generic_email(email):
+    """Check if an email is a generic sports/department email, not a personal one."""
+    local = email.split("@")[0].lower()
+    generic_words = ["volleyball", "vball", "ticket", "camp", "recruit", "sport", "athletics",
+                     "info", "admissions", "webmaster", "privacy", "help", "support", "news",
+                     "marketing", "compliance", "noreply", "media", "weareuk", "goheels",
+                     "gobulldogs", "gofrogs", "gotigers", "goducks", "gobears"]
+    if any(w in local for w in generic_words):
+        return True
+    # If the local part has no separators and is > 10 chars, likely a word not a name
+    if '.' not in local and '_' not in local and '-' not in local and len(local) > 10:
+        return True
+    return False
+
+
 def _clean_coaches(coaches):
     """Post-process: replace placeholder names with email-derived names, fix titles."""
     cleaned = []
@@ -207,6 +222,10 @@ def _clean_coaches(coaches):
             continue
         if email:
             seen_emails.add(email)
+
+        # Skip generic/department emails
+        if email and _is_generic_email(email):
+            continue
 
         # Fix placeholder names
         if not is_valid_name(c.get("name", "")) and email:
