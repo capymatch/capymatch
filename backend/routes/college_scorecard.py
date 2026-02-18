@@ -88,7 +88,6 @@ async def _run_sync():
         sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True, "error": "No API key"}
         return
 
-    # Only sync schools without scorecard data
     universities = await db.university_knowledge_base.find(
         {"scorecard": {"$exists": False}},
         {"_id": 0, "university_name": 1}
@@ -105,42 +104,51 @@ async def _run_sync():
             if not name:
                 sync_status["failed"] += 1
                 continue
-            try:
-                resp = await client.get(SCORECARD_BASE, params={
-                    "api_key": api_key,
-                    "school.name": name,
-                    "fields": SCORECARD_FIELDS,
-                    "per_page": 5,
-                })
-                if resp.status_code != 200:
-                    sync_status["failed"] += 1
-                    continue
 
-                results = resp.json().get("results", [])
-                match = None
-                for r in results:
-                    if r.get("school.name", "").lower() == name.lower():
-                        match = r
+            success = False
+            for attempt in range(3):
+                try:
+                    resp = await client.get(SCORECARD_BASE, params={
+                        "api_key": api_key,
+                        "school.name": name,
+                        "fields": SCORECARD_FIELDS,
+                        "per_page": 5,
+                    })
+                    if resp.status_code == 429:
+                        wait = 2 ** (attempt + 1)
+                        logger.info(f"Rate limited, waiting {wait}s...")
+                        await asyncio.sleep(wait)
+                        continue
+                    if resp.status_code != 200:
                         break
-                if not match and results:
-                    match = results[0]
 
-                if match:
-                    scorecard = parse_scorecard_result(match)
-                    scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
-                    await db.university_knowledge_base.update_one(
-                        {"university_name": name},
-                        {"$set": {"scorecard": scorecard}}
-                    )
-                    sync_status["synced"] += 1
-                else:
-                    sync_status["failed"] += 1
-            except Exception as e:
-                logger.warning(f"Scorecard sync failed for {name}: {e}")
+                    results = resp.json().get("results", [])
+                    match = None
+                    for r in results:
+                        if r.get("school.name", "").lower() == name.lower():
+                            match = r
+                            break
+                    if not match and results:
+                        match = results[0]
+
+                    if match:
+                        scorecard = parse_scorecard_result(match)
+                        scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
+                        await db.university_knowledge_base.update_one(
+                            {"university_name": name},
+                            {"$set": {"scorecard": scorecard}}
+                        )
+                        sync_status["synced"] += 1
+                        success = True
+                    break
+                except Exception as e:
+                    logger.warning(f"Scorecard attempt {attempt+1} failed for {name}: {e}")
+                    await asyncio.sleep(1)
+
+            if not success:
                 sync_status["failed"] += 1
 
-            # Small delay to avoid rate limiting
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.3)
 
     sync_status["running"] = False
     sync_status["done"] = True
