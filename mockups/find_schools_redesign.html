@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Schools — Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --surface-alt: #fafafa;
+    --border: #e5e5e7;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-muted: #86868b;
+    --pink: #be185d;
+    --pink-light: rgba(190, 24, 93, 0.08);
+    --pink-glow: rgba(190, 24, 93, 0.15);
+    --d1: #059669; --d1-bg: rgba(5, 150, 105, 0.1);
+    --d2: #2563eb; --d2-bg: rgba(37, 99, 235, 0.1);
+    --d3: #7c3aed; --d3-bg: rgba(124, 58, 237, 0.1);
+    --naia: #ea580c; --naia-bg: rgba(234, 88, 12, 0.1);
+    --emerald: #10b981;
+    --amber: #f59e0b;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .mockup-badge {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    background: linear-gradient(135deg, #be185d, #db2777);
+    color: white; padding: 8px 16px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+    box-shadow: 0 4px 16px rgba(190, 24, 93, 0.3);
+  }
+
+  .page { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+  /* =================== */
+  /* SECTION LABELS       */
+  /* =================== */
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--pink); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::before {
+    content: ''; width: 16px; height: 2px;
+    background: var(--pink); border-radius: 2px;
+  }
+
+  /* =================== */
+  /* 1. SPOTLIGHT HERO    */
+  /* =================== */
+  .spotlight {
+    margin-bottom: 40px;
+  }
+  .spotlight-hero {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 260px;
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .spotlight-hero:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .spotlight-visual {
+    background: linear-gradient(135deg, #0a2540, #1a365d);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-visual::after {
+    content: '';
+    position: absolute; right: -60px; bottom: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(190, 24, 93, 0.2), transparent 70%);
+    border-radius: 50%;
+  }
+  .spotlight-rank {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(255,255,255,0.5); margin-bottom: 12px;
+  }
+  .spotlight-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px; font-weight: 800;
+    text-transform: uppercase; color: white;
+    letter-spacing: -0.5px; line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .spotlight-meta {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(255,255,255,0.65); font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .spotlight-div {
+    background: var(--d1);
+    color: white; font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .spotlight-why {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 12px 16px;
+    font-size: 13px; color: rgba(255,255,255,0.7);
+    line-height: 1.5; backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .spotlight-why strong { color: rgba(255,255,255,0.9); }
+
+  .spotlight-details {
+    padding: 32px 36px;
+    display: flex; flex-direction: column;
+    justify-content: center; gap: 20px;
+  }
+  .spotlight-score-row {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .spotlight-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 48px; font-weight: 800;
+    color: var(--emerald); line-height: 1;
+  }
+  .spotlight-score-label {
+    font-size: 12px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .spotlight-reasons {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .spotlight-reasons .tag {
+    font-size: 12px; padding: 4px 10px;
+    border-radius: 6px; font-weight: 500;
+    background: var(--pink-light); color: var(--pink);
+    border: 1px solid var(--pink-glow);
+  }
+  .spotlight-coach {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; border-radius: var(--radius-sm);
+    background: var(--surface-alt); border: 1px solid var(--border);
+  }
+  .spotlight-coach-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--d1), #34d399);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+  }
+  .spotlight-coach-name { font-weight: 600; font-size: 14px; }
+  .spotlight-coach-role { font-size: 12px; color: var(--text-muted); }
+  .spotlight-actions {
+    display: flex; gap: 10px;
+  }
+  .btn-primary {
+    flex: 1; padding: 12px 20px;
+    background: var(--pink); color: white;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover { background: #9d174d; transform: translateY(-1px); }
+  .btn-secondary {
+    padding: 12px 20px;
+    background: transparent; color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: var(--pink); color: var(--pink); }
+
+  /* More matches carousel */
+  .more-matches {
+    display: flex; gap: 12px; margin-top: 16px;
+    overflow-x: auto; padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .more-matches::-webkit-scrollbar { display: none; }
+  .mini-card {
+    min-width: 200px; padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+  .mini-card:hover {
+    border-color: var(--pink);
+    box-shadow: 0 4px 16px var(--pink-glow);
+    transform: translateY(-2px);
+  }
+  .mini-card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .mini-logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: white;
+  }
+  .mini-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--emerald);
+  }
+  .mini-name {
+    font-weight: 600; font-size: 13px;
+    margin-bottom: 4px; line-height: 1.3;
+  }
+  .mini-meta {
+    font-size: 11px; color: var(--text-muted);
+  }
+
+  /* =================== */
+  /* 2. STICKY SEARCH    */
+  /* =================== */
+  .sticky-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245, 245, 247, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    margin: 0 -24px; padding: 16px 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+  }
+  .search-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .search-input-wrap {
+    flex: 1; position: relative;
+  }
+  .search-input-wrap i {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px;
+  }
+  .search-input {
+    width: 100%; padding: 10px 14px 10px 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 14px; font-family: inherit;
+    color: var(--text); outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--pink); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .result-count {
+    font-size: 13px; color: var(--text-muted);
+    white-space: nowrap; font-weight: 500;
+  }
+  .view-toggle {
+    display: flex; border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .view-btn {
+    padding: 8px 12px; background: transparent;
+    border: none; cursor: pointer; color: var(--text-muted);
+    transition: all 0.2s; font-size: 13px;
+  }
+  .view-btn.active {
+    background: var(--text); color: white;
+  }
+
+  /* Active filter chips inside sticky bar */
+  .active-chips {
+    display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .chip-d1 { background: var(--d1-bg); color: var(--d1); }
+  .chip-region { background: var(--pink-light); color: var(--pink); }
+  .chip i { font-size: 10px; opacity: 0.6; }
+
+  /* =================== */
+  /* 5. SMART BUCKETS    */
+  /* =================== */
+  .smart-buckets {
+    display: flex; gap: 10px; margin-bottom: 24px;
+    overflow-x: auto; scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .smart-buckets::-webkit-scrollbar { display: none; }
+  .bucket {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer; transition: all 0.25s ease;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .bucket:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    background: var(--pink-light);
+  }
+  .bucket.active {
+    background: var(--pink);
+    color: white;
+    border-color: var(--pink);
+    box-shadow: 0 4px 12px rgba(190, 24, 93, 0.25);
+  }
+  .bucket i { font-size: 14px; }
+  .bucket .count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 14px;
+    opacity: 0.7;
+  }
+
+  /* =================== */
+  /* 2. FILTER PILLS      */
+  /* =================== */
+  .filter-pills {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .filter-group-label {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-muted);
+    font-weight: 600; display: flex;
+    align-items: center; margin-right: 4px;
+  }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .pill:hover { border-color: var(--text-muted); }
+  .pill.active-d1 { background: var(--d1-bg); color: var(--d1); border-color: var(--d1); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+  .pill.active-d2 { background: var(--d2-bg); color: var(--d2); border-color: var(--d2); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  .pill.active-d3 { background: var(--d3-bg); color: var(--d3); border-color: var(--d3); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+  .pill.active-naia { background: var(--naia-bg); color: var(--naia); border-color: var(--naia); box-shadow: 0 0 0 3px rgba(234,88,12,0.1); }
+  .divider-v {
+    width: 1px; height: 24px; background: var(--border);
+    margin: 0 4px; align-self: center;
+  }
+
+  /* =================== */
+  /* 4. GRID VIEW         */
+  /* =================== */
+  .grid-view {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .grid-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .grid-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: transparent;
+    transition: background 0.3s;
+  }
+  .grid-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+  }
+  .grid-card:hover::before {
+    background: linear-gradient(90deg, var(--pink), #db2777);
+  }
+  .grid-card-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .grid-logo {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .grid-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 22px;
+  }
+  .grid-score.high { color: var(--emerald); }
+  .grid-score.medium { color: var(--amber); }
+  .grid-name {
+    font-weight: 700; font-size: 15px;
+    margin-bottom: 4px; line-height: 1.3;
+  }
+  .grid-meta {
+    font-size: 12px; color: var(--text-muted);
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 12px;
+  }
+  .grid-tags {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-bottom: 16px;
+  }
+  .grid-tags .tag {
+    font-size: 10px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600;
+  }
+  .tag-div { text-transform: uppercase; }
+  .tag-d1 { background: var(--d1-bg); color: var(--d1); }
+  .tag-d2 { background: var(--d2-bg); color: var(--d2); }
+  .tag-d3 { background: var(--d3-bg); color: var(--d3); }
+  .tag-naia { background: var(--naia-bg); color: var(--naia); }
+  .tag-conf {
+    background: rgba(0,0,0,0.04); color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .grid-add {
+    width: 100%; padding: 9px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .grid-add:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    background: var(--pink-light);
+  }
+  .grid-add.on-board {
+    border-color: var(--emerald);
+    color: var(--emerald);
+    background: rgba(16, 185, 129, 0.06);
+    cursor: default;
+  }
+
+  /* =================== */
+  /* 3. QUICK LOOK        */
+  /* =================== */
+  .grid-card.expanded {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 0;
+    padding: 0;
+    border-color: var(--pink);
+    box-shadow: 0 20px 40px rgba(190, 24, 93, 0.12);
+  }
+  .grid-card.expanded::before {
+    background: linear-gradient(90deg, var(--pink), #db2777);
+  }
+  .expanded-left {
+    padding: 28px;
+    border-right: 1px solid var(--border);
+  }
+  .expanded-right {
+    padding: 28px;
+    background: var(--surface-alt);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .expanded-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px; font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1; margin-bottom: 6px;
+  }
+  .expanded-section-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-muted); margin-bottom: 8px;
+    margin-top: 20px;
+  }
+  .expanded-coaches {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .expanded-coach {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .coach-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+  .expanded-coach-info { flex: 1; }
+  .expanded-coach-name { font-weight: 600; font-size: 13px; }
+  .expanded-coach-role { font-size: 11px; color: var(--text-muted); }
+  .expanded-ai {
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--pink-light), rgba(219, 39, 119, 0.04));
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--pink-glow);
+    font-size: 13px; line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .expanded-ai i { color: var(--pink); margin-right: 6px; }
+  .expanded-actions {
+    display: flex; gap: 10px; margin-top: 20px;
+  }
+
+  /* =================== */
+  /* ANNOTATION ARROWS    */
+  /* =================== */
+  .annotation {
+    position: relative;
+    margin: 48px 0 32px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px dashed #f59e0b;
+    border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    color: #92400e;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .annotation i { font-size: 18px; color: #d97706; }
+  .annotation-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: #d97706; min-width: 28px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .spotlight-hero { grid-template-columns: 1fr; }
+    .grid-view { grid-template-columns: repeat(2, 1fr); }
+    .grid-card.expanded { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .grid-view { grid-template-columns: 1fr; }
+    .spotlight-name { font-size: 28px; }
+    .spotlight-score { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-badge"><i class="fa-solid fa-wand-magic-sparkles"></i>&nbsp; UX Mockup — Find Schools Redesign</div>
+
+<div class="page">
+
+  <!-- ============================== -->
+  <!-- ANNOTATION: Suggestion #1       -->
+  <!-- ============================== -->
+  <div class="annotation">
+    <span class="annotation-num">1</span>
+    <i class="fa-solid fa-star"></i>
+    <div><strong>Spotlight Hero Recommendation</strong> — One featured "top pick" as a large hero card (like App Store "Today"), with remaining matches in a compact carousel below. Creates hierarchy and a clear starting point.</div>
+  </div>
+
+  <div class="spotlight">
+    <div class="section-label">Your #1 Match</div>
+    <div class="spotlight-hero">
+      <div class="spotlight-visual">
+        <div class="spotlight-rank"><i class="fa-solid fa-trophy" style="margin-right: 4px;"></i> Best Match for Sarah</div>
+        <div class="spotlight-name">University of Texas at Arlington</div>
+        <div class="spotlight-meta">
+          <span class="spotlight-div">D1</span>
+          <span><i class="fa-solid fa-map-pin" style="margin-right: 4px;"></i> South</span>
+          <span>Sun Belt Conference</span>
+        </div>
+        <div class="spotlight-why">
+          <strong><i class="fa-solid fa-sparkles"></i> Why this school?</strong><br>
+          Strong D1 program in your preferred region with active recruiting for your position. Their coaching staff has a history of developing athletes from your area.
+        </div>
+      </div>
+      <div class="spotlight-details">
+        <div class="spotlight-score-row">
+          <div class="spotlight-score">96%</div>
+          <div>
+            <div class="spotlight-score-label">Match Score</div>
+            <div style="font-size:12px; color:var(--text-muted);">Top 1% of all matches</div>
+          </div>
+        </div>
+        <div class="spotlight-reasons">
+          <span class="tag">Division Match</span>
+          <span class="tag">Region Match</span>
+          <span class="tag">Athletics Fit</span>
+          <span class="tag">Academics</span>
+        </div>
+        <div class="spotlight-coach">
+          <div class="spotlight-coach-avatar">MJ</div>
+          <div>
+            <div class="spotlight-coach-name">Mike Johnson</div>
+            <div class="spotlight-coach-role">Head Coach &middot; Recruiting Coordinator</div>
+          </div>
+        </div>
+        <div class="spotlight-actions">
+          <button class="btn-primary"><i class="fa-solid fa-plus"></i> Add to Board</button>
+          <button class="btn-secondary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Website</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel of remaining matches -->
+    <div style="margin-top: 16px; display:flex; align-items:center; justify-content:space-between;">
+      <div class="section-label" style="margin-bottom:0;">More Matches</div>
+      <span style="font-size:12px; color:var(--text-muted);">Scroll for more <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i></span>
+    </div>
+    <div class="more-matches">
+      <div class="mini-card">
+        <div class="mini-card-top">
+          <div class="mini-logo" style="background:linear-gradient(135deg, #1e40af, #3b82f6);">A</div>
+          <div class="mini-score">93%</div>
+        </div>
+        <div class="mini-name">Alabama State University</div>
+        <div class="mini-meta"><i class="fa-solid fa-map-pin"></i> South &middot; SWAC</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-top">
+          <div class="mini-logo" style="background:linear-gradient(135deg, #991b1b, #ef4444);">ASU</div>
+          <div class="mini-score">91%</div>
+        </div>
+        <div class="mini-name">Arizona State University</div>
+        <div class="mini-meta"><i class="fa-solid fa-map-pin"></i> West &middot; Big 12</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-top">
+          <div class="mini-logo" style="background:linear-gradient(135deg, #065f46, #10b981);">AU</div>
+          <div class="mini-score">89%</div>
+        </div>
+        <div class="mini-name">Auburn University</div>
+        <div class="mini-meta"><i class="fa-solid fa-map-pin"></i> South &middot; SEC</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-top">
+          <div class="mini-logo" style="background:linear-gradient(135deg, #5b21b6, #8b5cf6);">BC</div>
+          <div class="mini-score">88%</div>
+        </div>
+        <div class="mini-name">Boston College</div>
+        <div class="mini-meta"><i class="fa-solid fa-map-pin"></i> Northeast &middot; ACC</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-card-top">
+          <div class="mini-logo" style="background:linear-gradient(135deg, #9a3412, #f97316);">CU</div>
+          <div class="mini-score">85%</div>
+        </div>
+        <div class="mini-name">Clemson University</div>
+        <div class="mini-meta"><i class="fa-solid fa-map-pin"></i> South &middot; ACC</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ANNOTATION: Suggestion #6       -->
+  <!-- ============================== -->
+  <div class="annotation">
+    <span class="annotation-num">6</span>
+    <i class="fa-solid fa-thumbtack"></i>
+    <div><strong>Sticky Search + Active Filter Summary</strong> — Search bar sticks on scroll with glassmorphism blur. Active filters shown as chips so users always know what's filtered.</div>
+  </div>
+
+  <!-- STICKY SEARCH BAR -->
+  <div class="sticky-bar">
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" class="search-input" placeholder="Search 1,053 colleges by name, city, or state..." />
+      </div>
+      <div class="result-count">247 results</div>
+      <!-- Suggestion #4 toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" title="Grid View"><i class="fa-solid fa-grid-2"></i></button>
+        <button class="view-btn" title="List View"><i class="fa-solid fa-list"></i></button>
+      </div>
+    </div>
+    <!-- Active filter chips -->
+    <div class="active-chips">
+      <div class="chip chip-d1"><i class="fa-solid fa-circle" style="font-size:6px;"></i> NCAA D1 <i class="fa-solid fa-xmark"></i></div>
+      <div class="chip chip-region"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South <i class="fa-solid fa-xmark"></i></div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ANNOTATION: Suggestion #5       -->
+  <!-- ============================== -->
+  <div class="annotation">
+    <span class="annotation-num">5</span>
+    <i class="fa-solid fa-bolt"></i>
+    <div><strong>Smart Buckets</strong> — Pre-built smart filters for parents who don't know what to search. One tap = instant relevant results. These change dynamically based on the user's profile.</div>
+  </div>
+
+  <div class="smart-buckets">
+    <div class="bucket active"><i class="fa-solid fa-sparkles"></i> All Schools</div>
+    <div class="bucket"><i class="fa-solid fa-star" style="color:var(--amber);"></i> Dream Schools (D1) <span class="count">312</span></div>
+    <div class="bucket"><i class="fa-solid fa-bullseye" style="color:var(--emerald);"></i> Strong Match (80%+) <span class="count">48</span></div>
+    <div class="bucket"><i class="fa-solid fa-location-dot" style="color:var(--d2);"></i> Close to Home <span class="count">67</span></div>
+    <div class="bucket"><i class="fa-solid fa-reply" style="color:var(--pink);"></i> Coaches who replied <span class="count">3</span></div>
+    <div class="bucket"><i class="fa-solid fa-graduation-cap" style="color:var(--d3);"></i> Strong Academics <span class="count">156</span></div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ANNOTATION: Suggestion #2       -->
+  <!-- ============================== -->
+  <div class="annotation">
+    <span class="annotation-num">2</span>
+    <i class="fa-solid fa-sliders"></i>
+    <div><strong>Horizontal Filter Pills</strong> — Color-coded division pills replace the sidebar. Saves ~250px horizontal space. Active filters glow with their division color. Conference pills appear below when a division is selected.</div>
+  </div>
+
+  <div class="filter-pills">
+    <span class="filter-group-label">Division</span>
+    <button class="pill active-d1">D1</button>
+    <button class="pill">D2</button>
+    <button class="pill">D3</button>
+    <button class="pill">NAIA</button>
+    <button class="pill">JUCO</button>
+    <div class="divider-v"></div>
+    <span class="filter-group-label">Region</span>
+    <button class="pill" style="background:var(--pink-light); color:var(--pink); border-color:var(--pink);">South</button>
+    <button class="pill">West</button>
+    <button class="pill">Midwest</button>
+    <button class="pill">Northeast</button>
+    <div class="divider-v"></div>
+    <span class="filter-group-label">Conference</span>
+    <button class="pill">SEC</button>
+    <button class="pill">Big 12</button>
+    <button class="pill">ACC</button>
+    <button class="pill">Big Ten</button>
+    <button class="pill">Pac-12</button>
+    <button class="pill" style="color:var(--text-muted); font-size:12px;">+24 more</button>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ANNOTATION: Suggestion #4       -->
+  <!-- ============================== -->
+  <div class="annotation">
+    <span class="annotation-num">4</span>
+    <i class="fa-solid fa-table-cells-large"></i>
+    <div><strong>Compact Grid View</strong> — Logo-forward visual cards (3 per row) for quick scanning. The toggle is in the search bar. Cards have hover-lift animation and a color accent on hover.</div>
+  </div>
+
+  <!-- GRID VIEW -->
+  <div class="grid-view">
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #991b1b, #ef4444);">
+          <img src="https://icon.horse/icon/ua.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='UA';">
+        </div>
+        <div class="grid-score high">94%</div>
+      </div>
+      <div class="grid-name">University of Alabama</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; SEC</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">SEC</span>
+      </div>
+      <button class="grid-add"><i class="fa-solid fa-plus"></i> Add to Board</button>
+    </div>
+
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #1e40af, #3b82f6);">
+          <img src="https://icon.horse/icon/auburn.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='AU';">
+        </div>
+        <div class="grid-score high">91%</div>
+      </div>
+      <div class="grid-name">Auburn University</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; SEC</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">SEC</span>
+      </div>
+      <button class="grid-add"><i class="fa-solid fa-plus"></i> Add to Board</button>
+    </div>
+
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #5b21b6, #8b5cf6);">
+          <img src="https://icon.horse/icon/lsu.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='LSU';">
+        </div>
+        <div class="grid-score high">90%</div>
+      </div>
+      <div class="grid-name">Louisiana State University</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; SEC</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">SEC</span>
+      </div>
+      <button class="grid-add on-board"><i class="fa-solid fa-check"></i> On Your Board</button>
+    </div>
+
+    <!-- ============================== -->
+    <!-- ANNOTATION: Suggestion #3       -->
+    <!-- ============================== -->
+    <div style="grid-column: 1 / -1;">
+      <div class="annotation" style="margin: 16px 0;">
+        <span class="annotation-num">3</span>
+        <i class="fa-solid fa-expand"></i>
+        <div><strong>Quick Look Expansion</strong> — Clicking a card expands it inline (animated) to show coaches, an AI "Why this school?" snippet, and actions. No page navigation needed. Click away to collapse.</div>
+      </div>
+    </div>
+
+    <!-- EXPANDED QUICK LOOK CARD -->
+    <div class="grid-card expanded">
+      <div class="expanded-left">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+          <div class="grid-logo" style="background:linear-gradient(135deg, #9a3412, #f97316); margin-bottom:12px;">
+            <img src="https://icon.horse/icon/utexas.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='UT';">
+          </div>
+          <div class="grid-score high" style="font-size:28px;">96%</div>
+        </div>
+        <div class="expanded-name">University of Texas</div>
+        <div class="grid-meta" style="margin-bottom:0;">
+          <span class="tag tag-div tag-d1" style="font-size:11px; padding:3px 8px;">D1</span>
+          <i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; Big 12 Conference
+        </div>
+
+        <div class="expanded-section-title">Coaching Staff</div>
+        <div class="expanded-coaches">
+          <div class="expanded-coach">
+            <div class="coach-dot" style="background:linear-gradient(135deg, var(--pink), #db2777);">JE</div>
+            <div class="expanded-coach-info">
+              <div class="expanded-coach-name">Jerritt Elliott</div>
+              <div class="expanded-coach-role">Head Coach</div>
+            </div>
+            <a href="#" style="color:var(--pink); font-size:12px;"><i class="fa-solid fa-envelope"></i></a>
+          </div>
+          <div class="expanded-coach">
+            <div class="coach-dot" style="background:linear-gradient(135deg, #6366f1, #8b5cf6);">SR</div>
+            <div class="expanded-coach-info">
+              <div class="expanded-coach-name">Sarah Rodriguez</div>
+              <div class="expanded-coach-role">Recruiting Coordinator</div>
+            </div>
+            <a href="#" style="color:var(--pink); font-size:12px;"><i class="fa-solid fa-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="expanded-right">
+        <div class="expanded-section-title" style="margin-top:0;">Why This School?</div>
+        <div class="expanded-ai">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <strong>Texas is a strong match</strong> because their D1 program actively recruits athletes from your region with your skill set. The program has a 78% retention rate and strong academic support for student-athletes. Head Coach Elliott has coached 12 All-Americans in the last decade.
+        </div>
+
+        <div class="expanded-section-title">Match Reasons</div>
+        <div class="spotlight-reasons" style="margin-bottom:0;">
+          <span class="tag">Division Match</span>
+          <span class="tag">Region Preference</span>
+          <span class="tag">Athletic Fit</span>
+          <span class="tag">Academic Strength</span>
+          <span class="tag">Coach Active</span>
+        </div>
+
+        <div class="expanded-actions">
+          <button class="btn-primary" style="flex:1;"><i class="fa-solid fa-plus"></i> Add to Board</button>
+          <button class="btn-secondary"><i class="fa-solid fa-arrow-up-right-from-square"></i> Website</button>
+          <button class="btn-secondary"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- More regular grid cards after expanded -->
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #065f46, #10b981);">
+          <img src="https://icon.horse/icon/baylor.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='BU';">
+        </div>
+        <div class="grid-score medium">78%</div>
+      </div>
+      <div class="grid-name">Baylor University</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; Big 12</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">Big 12</span>
+      </div>
+      <button class="grid-add"><i class="fa-solid fa-plus"></i> Add to Board</button>
+    </div>
+
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #0369a1, #38bdf8);">
+          <img src="https://icon.horse/icon/unc.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='UNC';">
+        </div>
+        <div class="grid-score medium">75%</div>
+      </div>
+      <div class="grid-name">UNC Chapel Hill</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> South &middot; ACC</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">ACC</span>
+      </div>
+      <button class="grid-add"><i class="fa-solid fa-plus"></i> Add to Board</button>
+    </div>
+
+    <div class="grid-card">
+      <div class="grid-card-header">
+        <div class="grid-logo" style="background:linear-gradient(135deg, #b91c1c, #f87171);">
+          <img src="https://icon.horse/icon/stanford.edu" width="36" height="36" style="border-radius:8px;" onerror="this.style.display='none'; this.parentElement.textContent='SU';">
+        </div>
+        <div class="grid-score medium">72%</div>
+      </div>
+      <div class="grid-name">Stanford University</div>
+      <div class="grid-meta"><i class="fa-solid fa-map-pin" style="font-size:10px;"></i> West &middot; ACC</div>
+      <div class="grid-tags">
+        <span class="tag tag-div tag-d1">D1</span>
+        <span class="tag tag-conf">ACC</span>
+      </div>
+      <button class="grid-add"><i class="fa-solid fa-plus"></i> Add to Board</button>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
