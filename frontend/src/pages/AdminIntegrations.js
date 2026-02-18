@@ -459,6 +459,82 @@ export default function AdminIntegrations() {
           </div>
         </div>
       </IntegrationCard>
+
+      {/* College Scorecard */}
+      <IntegrationCard
+        icon={GraduationCap}
+        title="College Scorecard"
+        subtitle="US Dept of Education data — admissions, graduation rates, tuition, SAT/ACT scores"
+        status={scorecard.connected}
+        statusLabel={scorecard.connected ? "Connected" : "Not configured"}
+        accent="bg-blue-500/15 text-blue-400"
+        badge={scorecard.connected ? { text: `${scorecard.stats?.synced_schools || 0} synced`, class: "bg-blue-500/15 text-blue-400" } : null}
+      >
+        <div className="space-y-4">
+          {scorecard.connected && (
+            <div className="space-y-1">
+              <StatRow label="API Key" value={scorecard.key_masked} />
+              <StatRow label="Schools Synced" value={`${scorecard.stats?.synced_schools || 0} of ${scorecard.stats?.total_universities || 0}`} />
+            </div>
+          )}
+
+          {/* Sync button */}
+          {scorecard.connected && (
+            <Button
+              onClick={syncScorecard}
+              disabled={syncingScorecard}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+              data-testid="scorecard-sync-btn"
+            >
+              {syncingScorecard ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+              {syncingScorecard ? "Syncing schools..." : "Sync All Schools"}
+            </Button>
+          )}
+
+          {/* Update key form */}
+          <div className="pt-2">
+            <label className="text-xs font-medium uppercase tracking-wider block mb-2" style={{ color: "var(--t-text-muted)" }}>
+              {scorecard.connected ? "Update API Key" : "Add College Scorecard API Key"}
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type={showScorecardKey ? "text" : "password"}
+                  value={scorecardKey}
+                  onChange={(e) => setScorecardKey(e.target.value)}
+                  placeholder="API key from api.data.gov"
+                  className="pr-10 text-sm"
+                  style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  data-testid="scorecard-key-input"
+                />
+                <button
+                  onClick={() => setShowScorecardKey(!showScorecardKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--t-text-muted)" }}
+                  data-testid="scorecard-key-toggle"
+                >
+                  {showScorecardKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <Button
+                onClick={saveScorecardKey}
+                disabled={!scorecardKey.trim() || savingScorecard}
+                className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                data-testid="scorecard-key-save"
+              >
+                {savingScorecard ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save
+              </Button>
+            </div>
+            <p className="text-[11px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>
+              Free API key from{" "}
+              <a href="https://api.data.gov/signup" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-0.5">
+                api.data.gov <ExternalLink className="w-3 h-3" />
+              </a>
+            </p>
+          </div>
+        </div>
+      </IntegrationCard>
     </div>
   );
 }
