@@ -33,6 +33,7 @@ from routes.subscription import router as subscription_router
 from routes.stripe import router as stripe_router
 from routes.admin_integrations import router as admin_integrations_router
 from routes.college_scorecard import router as scorecard_router
+from routes.coach_scraper import router as coach_scraper_router
 from routes.team import router as team_router
 from routes.notes import router as notes_router
 
@@ -52,6 +53,7 @@ app.include_router(subscription_router)
 app.include_router(stripe_router)
 app.include_router(admin_integrations_router)
 app.include_router(scorecard_router)
+app.include_router(coach_scraper_router)
 app.include_router(team_router)
 app.include_router(notes_router)
 
