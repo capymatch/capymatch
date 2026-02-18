@@ -14,14 +14,14 @@ window.addEventListener("error", (e) => {
   }
 });
 window.addEventListener("unhandledrejection", (e) => {
-  if (e.reason?.message?.includes(SUPPRESSED)) {
+  if (SUPPRESSED.some(s => e.reason?.message?.includes(s))) {
     e.preventDefault();
   }
 });
 // Also patch console.error to prevent React overlay
 const origError = console.error;
 console.error = (...args) => {
-  if (typeof args[0] === "string" && args[0].includes(SUPPRESSED)) return;
+  if (typeof args[0] === "string" && SUPPRESSED.some(s => args[0].includes(s))) return;
   origError.apply(console, args);
 };
 
