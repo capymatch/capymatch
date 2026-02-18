@@ -4,27 +4,27 @@ os.environ['DB_NAME'] = 'test_database'
 from database import db
 
 async def main():
-    note = await db.notes.find_one({}, {'_id': 0})
-    if note:
-        print('NOTES SCHEMA:')
-        for k,v in note.items():
-            print(f'  {k}: {type(v).__name__} = {repr(v)[:100]}')
-
-    ev = await db.events.find_one({}, {'_id': 0})
-    if ev:
-        print('\nEVENTS SCHEMA:')
-        for k,v in ev.items():
-            print(f'  {k}: {type(v).__name__} = {repr(v)[:100]}')
-
-    schools = ['Stanford', 'Texas', 'UCLA', 'Michigan', 'Duke', 'Florida State', 'Ohio State', 'Penn State', 'USC', 'Baylor']
-    for s in schools:
+    # Find exact matches for the schools we need
+    searches = [
+        'University of Texas at Austin',
+        'University of Michigan',
+        'University of Southern California',
+        'University of Minnesota',
+        'Purdue University',
+    ]
+    for s in searches:
         kb = await db.university_knowledge_base.find_one(
-            {'university_name': re.compile(s, re.IGNORECASE)},
+            {'university_name': re.compile(f'^{re.escape(s)}', re.IGNORECASE)},
             {'_id': 0, 'university_name': 1, 'division': 1, 'conference': 1, 'region': 1, 'domain': 1, 'primary_coach': 1, 'coach_email': 1}
         )
         if kb:
-            print(f'{s}: {kb}')
+            print(f'FOUND: {kb}')
         else:
-            print(f'{s}: NOT FOUND')
+            # try partial
+            kb = await db.university_knowledge_base.find_one(
+                {'university_name': re.compile(s.split()[0] + '.*' + s.split()[-1], re.IGNORECASE)},
+                {'_id': 0, 'university_name': 1, 'division': 1, 'conference': 1, 'region': 1, 'domain': 1}
+            )
+            print(f'PARTIAL: {kb}')
 
 asyncio.run(main())
