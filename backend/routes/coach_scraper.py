@@ -50,11 +50,24 @@ def get_url_candidates(domain, website=""):
     return candidates
 
 
+def name_from_email(email):
+    """Derive a likely name from an email address like firstname.lastname@school.edu."""
+    local = email.split("@")[0]
+    # Remove trailing numbers
+    local = re.sub(r'\d+$', '', local)
+    # Split on . _ -
+    parts = re.split(r'[._\-]', local)
+    # Filter out very short parts and capitalize
+    parts = [p.capitalize() for p in parts if len(p) > 1]
+    return " ".join(parts[:3]) if parts else ""
+
+
 def extract_emails_from_html(html_text):
     """Extract .edu and other emails from HTML."""
     emails = set(re.findall(r'[\w.+-]+@[\w.-]+\.(?:edu|com|org|net)', html_text.lower()))
     # Filter out common non-coach emails
-    skip = {"info@", "admissions@", "webmaster@", "privacy@", "help@", "support@", "news@", "marketing@"}
+    skip = {"info@", "admissions@", "webmaster@", "privacy@", "help@", "support@", "news@", "marketing@",
+            "compliance@", "noreply@", "tickets@", "camps@", "recruiting@", "athletics@"}
     return [e for e in emails if not any(e.startswith(s) for s in skip)]
 
 
