@@ -450,18 +450,24 @@ function UniversityCard({ uni, adding, addToBoard, boardSchools }) {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => addToBoard(uni)}
-            disabled={adding[uni.university_name]}
-            data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-            className="text-xs h-8 gap-1.5 transition-colors"
-            style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
-          >
-            <BookmarkPlus className="w-3.5 h-3.5" />
-            {adding[uni.university_name] ? "Adding..." : "Add to Board"}
-          </Button>
+          {boardSchools.has(uni.university_name) ? (
+            <span className="inline-flex items-center gap-1.5 text-xs h-8 px-3 rounded-md font-medium text-emerald-600" data-testid={`on-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
+              <Check className="w-3.5 h-3.5" /> On Your Board
+            </span>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => addToBoard(uni)}
+              disabled={adding[uni.university_name]}
+              data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+              className="text-xs h-8 gap-1.5 transition-colors"
+              style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
+            >
+              <BookmarkPlus className="w-3.5 h-3.5" />
+              {adding[uni.university_name] ? "Adding..." : "Add to Board"}
+            </Button>
+          )}
         </div>
       </div>
     </div>
