@@ -290,14 +290,31 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               </div>
             )}
             {profileDone && !gmailConnected && (
-              <button
-                className="mt-4 inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-                style={{ backgroundColor: "#e8456b", color: "white" }}
-                onClick={() => navigate("/settings")}
-                data-testid="connect-gmail-btn"
-              >
-                Connect Gmail <ChevronRight className="w-4 h-4" />
-              </button>
+              <div className="mt-5 space-y-4">
+                <button
+                  className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
+                  style={{ backgroundColor: "#e8456b", color: "white" }}
+                  onClick={handleConnectGmail}
+                  disabled={gmailConnecting}
+                  data-testid="connect-gmail-btn"
+                >
+                  {gmailConnecting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Mail className="w-4 h-4" />
+                  )}
+                  {gmailConnecting ? "Connecting..." : "Connect Gmail"} <ChevronRight className="w-4 h-4" />
+                </button>
+                <div className="flex items-start gap-3 rounded-lg px-4 py-3" style={{ backgroundColor: "var(--t-surface-alt, rgba(255,255,255,0.03))" }}>
+                  <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--t-text-muted)" }} />
+                  <div>
+                    <p className="text-xs font-medium" style={{ color: "var(--t-text-secondary)" }}>Secure Google connection</p>
+                    <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                      We only request permission to send and read emails. You can disconnect anytime from Settings.
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
             {profileDone && gmailConnected && (
               <p className="flex items-center gap-1.5 text-xs mt-3" style={{ color: "var(--t-text-muted)" }}>
