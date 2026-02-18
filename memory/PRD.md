@@ -52,6 +52,19 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 - Enhanced Getting Started Checklist with dynamic steps
 
 ## What's Implemented (Recent — Feb 18, 2026)
+- **Public Athlete Profile Redesign (Complete)**: Full UX/UI overhaul of the public-facing profile page (/s/:shortId):
+  - Side-by-side hero: photo left with accent line, cinematic name treatment right
+  - Typography: Barlow Condensed 800 uppercase for name, DM Sans for body
+  - Dark theme (#08080c) with pink/coral accent (#e8456b) and radial glow
+  - Icon-led Quick Facts row (Height, Weight, GPA, Dominant hand)
+  - Bento stat grid for Athletic Measurables (Approach Touch highlighted)
+  - Elevated Club Coach card with avatar, title, email/call icon buttons
+  - Custom video thumbnail with play overlay → YouTube iframe on click
+  - "Where to See Me Play" calendar-style event cards with type badges
+  - Sticky mobile CTA bar (Email, Call, Hudl) with backdrop blur
+  - Share button (clipboard copy) + "Copy link" on video
+  - Responsive: centers on mobile, side-by-side on desktop
+
 - **University Logos (Complete)**: Added university logos across all pages using icon.horse API (high-quality Apple Touch Icons):
   - Knowledge Base: Logos in both "Recommended for You" cards and main university card list
   - Dashboard: Logos in Today's Actions (ActionRow) and School Spotlight cards
