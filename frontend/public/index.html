@@ -1,6 +1,16 @@
 <!doctype html>
 <html lang="en">
     <head>
+        <script>
+            // Suppress ResizeObserver error before CRA overlay loads
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('ResizeObserver')) {
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            }, true);
+        </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
