@@ -111,27 +111,30 @@ function StatCard({ value, label, colorIndex = 0 }) {
 }
 
 /* ── Event Card ── */
-function EventCard({ event }) {
+function EventCard({ event, isLast }) {
   const { month, day } = formatDate(event.start_date);
   const ts = EVENT_LIGHT_STYLES[event.event_type] || EVENT_LIGHT_STYLES.Other;
 
   return (
-    <div className="flex items-center gap-4 px-5 py-4 rounded-[14px] transition-all" style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)" }}>
-      <div className="w-12 text-center flex-shrink-0">
-        <div className="font-barlow text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--p-accent)" }}>{month}</div>
-        <div className="font-barlow text-[30px] font-[800] leading-none" style={{ color: "var(--p-text)" }}>{day}</div>
-      </div>
-      <div className="w-px h-10 flex-shrink-0" style={{ background: "var(--p-border)" }} />
-      <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm" style={{ color: "var(--p-text)" }}>{event.title}</div>
-        <div className="text-xs mt-1 flex items-center gap-1.5" style={{ color: "var(--p-text-secondary)" }}>
-          {event.location && <><MapPin className="w-3 h-3" style={{ color: "var(--p-text-muted)" }} />{event.location}</>}
-          {!event.location && event.start_time && formatTime(event.start_time)}
+    <div>
+      <div className="flex items-center gap-4 px-2 py-4 transition-all">
+        <div className="w-12 text-center flex-shrink-0">
+          <div className="font-barlow text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--p-accent)" }}>{month}</div>
+          <div className="font-barlow text-[30px] font-[800] leading-none" style={{ color: "var(--p-text)" }}>{day}</div>
         </div>
+        <div className="w-px h-10 flex-shrink-0" style={{ background: "var(--p-border)" }} />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-sm" style={{ color: "var(--p-text)" }}>{event.title}</div>
+          <div className="text-xs mt-1 flex items-center gap-1.5" style={{ color: "var(--p-text-secondary)" }}>
+            {event.location && <><MapPin className="w-3 h-3" style={{ color: "var(--p-text-muted)" }} />{event.location}</>}
+            {!event.location && event.start_time && formatTime(event.start_time)}
+          </div>
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md flex-shrink-0" style={{ background: ts.bg, color: ts.color }}>
+          {event.event_type}
+        </span>
       </div>
-      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md flex-shrink-0" style={{ background: ts.bg, color: ts.color }}>
-        {event.event_type}
-      </span>
+      {!isLast && <div style={{ height: 1, background: "var(--p-divider)", marginLeft: 8, marginRight: 8 }} />}
     </div>
   );
 }
