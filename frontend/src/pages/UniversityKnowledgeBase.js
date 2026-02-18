@@ -173,10 +173,11 @@ export default function UniversityKnowledgeBase() {
                     <div className="flex items-start gap-2.5 min-w-0">
                       <UniversityLogo domain={s.domain} name={s.university_name} size={32} />
                       <div className="min-w-0">
-                      <h4 className="font-semibold text-sm truncate" style={{ color: "var(--t-text)" }}>{s.university_name}</h4>
-                      <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
-                        <MapPin className="w-3 h-3" /> {s.region}
-                        {s.conference && <span>| {s.conference}</span>}
+                        <h4 className="font-semibold text-sm truncate" style={{ color: "var(--t-text)" }}>{s.university_name}</h4>
+                        <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: "var(--t-text-muted)" }}>
+                          <MapPin className="w-3 h-3" /> {s.region}
+                          {s.conference && <span>| {s.conference}</span>}
+                        </div>
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-bold border ${scoreColor}`}>
