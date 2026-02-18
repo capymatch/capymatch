@@ -295,7 +295,7 @@ export default function PublicSchedule() {
               {profile.hudl_profile_url && (
                 <a href={profile.hudl_profile_url} target="_blank" rel="noopener noreferrer" data-testid="hudl-link"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white bg-[#ff5722] hover:brightness-110 transition-all hover:-translate-y-px shadow-sm">
-                  <Play className="w-[15px] h-[15px]" /> Hudl Profile
+                  <Play className="w-[15px] h-[15px]" /> Hudl
                 </a>
               )}
               {profile.video_link && (
