@@ -120,14 +120,14 @@ export default function AdminIntegrations() {
     }
   };
 
-  const scrapeCoaches = async () => {
+  const scrapeCoaches = async (force = false) => {
     setScrapingCoaches(true);
     try {
-      const res = await api.post("/admin/coach-scraper/scrape");
+      const res = await api.post("/admin/coach-scraper/scrape", { force });
       if (res.data.status === "already_running") {
         toast.info("Scrape already in progress...");
       } else {
-        toast.success(`Scraping started — ${res.data.missing} schools to check (${res.data.already_have} already have coaches)`);
+        toast.success(`Scraping started — ${res.data.missing} schools to check${force ? ' (re-scraping all)' : ` (${res.data.already_have} already have coaches)`}`);
       }
       const poll = setInterval(async () => {
         try {
