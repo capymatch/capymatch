@@ -181,7 +181,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
   const doneCount = steps.filter(s => s.done).length;
 
   return (
-    <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="getting-started-checklist">
+    <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="getting-started-checklist">
       <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>Start your {program.university_name} journey</h3>
       <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -398,7 +398,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
 
   return (
     <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(190,24,93,0.25)", background: "linear-gradient(135deg, rgba(190,24,93,0.08), var(--t-surface) 60%)" }}
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(190,24,93,0.25)", background: "linear-gradient(135deg, rgba(190,24,93,0.12), rgba(190,24,93,0.04) 60%)" }}
       data-testid="next-step-card">
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/5 transition-colors" style={{ color: "var(--t-text-muted)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
@@ -522,7 +522,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
   };
 
   return (
-    <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", display: "flex", flexDirection: "column", gap: "14px" }} data-testid="at-a-glance">
+    <div className="rounded-2xl border p-5" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)", display: "flex", flexDirection: "column", gap: "14px" }} data-testid="at-a-glance">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>At a Glance</h3>
         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${stageColors[boardGroup] || stageColors.needs_outreach}`}>{stageLabel}</span>
@@ -1280,7 +1280,7 @@ export default function RecruitingJourney() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
         {/* Conversation Timeline */}
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
+          <div className="rounded-2xl border p-5" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="conversation-timeline">
             <div className="mb-5">
               <h2 className="text-base font-bold tracking-wide" style={{ color: "var(--t-text)" }}>Timeline</h2>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Every email, reply, and interaction — all in one place</p>
@@ -1307,7 +1307,7 @@ export default function RecruitingJourney() {
 
           {/* Coach management (below At a Glance) */}
           {coaches.length > 0 ? (
-            <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
+            <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "rgba(190,24,93,0.035)", borderColor: "rgba(190,24,93,0.12)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-700" />Coaches</h3>
                 <div className="flex items-center gap-2">
