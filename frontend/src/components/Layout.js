@@ -4,7 +4,7 @@ import {
   LayoutGrid, GraduationCap, Settings, 
   Bell, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, ChevronRight, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
-  Video, TrendingUp, LogOut, CreditCard, Crown
+  Video, TrendingUp, LogOut, CreditCard, Crown, Sun, Moon
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Tour from "../components/Tour";
 import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
+import { useTheme } from "../lib/theme";
 import AIAssistantDrawer from "../components/AIAssistantDrawer";
 import InvitationBanner from "../components/InvitationBanner";
 import UpgradeModal from "../components/UpgradeModal";
