@@ -120,16 +120,36 @@ Public-facing Volleyball Recruiting CRM for parents managing their child's recru
 /app/frontend/src/pages/LoginPage.js # Google redirect URL updated
 ```
 
+## What's Implemented (Recent — Feb 18, 2026 Session 2)
+- **Apple-Inspired Internal Profile Page (Complete)**: Full rewrite of `/app/frontend/src/pages/ProfilePage.js`:
+  - Completeness ring showing profile strength (% filled of 14 key fields)
+  - Photo hero section with click-to-upload and hover overlay
+  - Share card with Copy Link, Preview, and Email buttons
+  - 5 collapsible section cards: Athlete Info, Athletic Measurables, Team & Location, Media & Bio, Contact Info
+  - Inline editing with 1.2s debounced auto-save and "Auto-saved" indicator
+  - Coach-visible eye icons on fields coaches can see
+  - Status badges per section (Complete/Needs Attention/Incomplete)
+  - Fixed bugs: field name mismatches (graduation_year, hudl_profile_url), photo upload payload, stale closure in updateField
+
+- **First Reply Celebration Feature (Complete)**: End-to-end celebration for first coach reply:
+  - Backend: GET /api/first-reply-celebration (checks status), POST /api/first-reply-celebration/dismiss
+  - Frontend: `/app/frontend/src/components/FirstReplyCelebration.js` modal with animations
+  - Integrated into Dashboard.js - shows overlay when a coach replies for the first time
+  - Dismissing sets `first_reply_celebrated: true` on tenant document
+
 ## P0 Backlog
-- Make light theme the default for new users (pending user decision)
 - Separate Girls/Boys Volleyball data and features
 
 ## P1 Backlog
+- Advanced UX improvements from Apple designer review (e.g., "Today" hero card on dashboard)
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
 - RecruitingJourney.js refactor (component too complex)
+- ProfilePage.js decomposition into smaller sub-components
+- PublicSchedule.js decomposition (500+ lines)
 
 ## P2 Backlog (Future)
+- Tiered Celebrations (5th, 10th reply milestones, dream school replies)
 - App Naming
 - Multi-sport capability
 - Family Collaboration Roles (read-only Parent/Viewer role)
