@@ -6,48 +6,75 @@ import httpx
 import re
 import asyncio
 import logging
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/admin/coach-scraper")
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate",
 }
 
 # Track scrape progress
 scrape_status = {"running": False, "scraped": 0, "failed": 0, "total": 0, "done": True}
 
-# URL patterns to try for volleyball coaching pages
+# Placeholder names that indicate JS rendering failed
+PLACEHOLDER_NAMES = {"name", "title", "first last", "staff", "coaching staff", "coaches", "coach", ""}
+
+SPORT_PATHS = [
+    "/sports/womens-volleyball/coaches",
+    "/sports/volleyball/coaches",
+    "/sports/wvball/coaches",
+    "/sports/w-volley/coaches",
+    "/sports/wvb/coaches",
+]
+
+
 def get_url_candidates(domain, website=""):
     """Generate candidate URLs for the volleyball coaching page."""
     candidates = []
 
-    # Priority 1: Use the athletics website URL if available
     if website:
         w = website.rstrip("/")
         if not w.startswith("http"):
             w = f"https://{w}"
-        # If it's a sport-specific URL, try appending /coaches
         if "/sports/" in w or "/volleyball" in w:
             base_sport = re.sub(r'/roster.*|/schedule.*', '', w)
             candidates.append(f"{base_sport}/coaches")
             candidates.append(base_sport)
-        # Try the athletics domain root + coaching pages
-        from urllib.parse import urlparse
         parsed = urlparse(w)
         ath_base = f"{parsed.scheme}://{parsed.netloc}"
-        for sp in ["/sports/womens-volleyball/coaches", "/sports/volleyball/coaches", "/sports/wvball/coaches"]:
+        for sp in SPORT_PATHS:
             candidates.append(f"{ath_base}{sp}")
 
-    # Priority 2: Try domain-based patterns
     base = domain.rstrip("/")
     if base:
-        for sp in ["/sports/womens-volleyball/coaches", "/sports/volleyball/coaches", "/sports/wvball/coaches"]:
-            candidates.append(f"https://{base}{sp}")
-            candidates.append(f"https://athletics.{base}{sp}")
+        # Try common athletics subdomain patterns
+        prefixes = [
+            f"https://{base}",
+            f"https://athletics.{base}",
+        ]
+        # Derive likely athletics domain (e.g. baylor.edu -> baylorbears.com)
+        short = base.replace(".edu", "").replace(".com", "")
+        for suffix in ["athletics", "bears", "tigers", "eagles", "lions", "hawks", "wolves", "wildcats", "bulldogs", "warriors", "knights", "panthers", "cougars", "mustangs", "rams", "rebels", "falcons", "cardinals", "aggies", "gators", "terriers", "owls", "hornets"]:
+            prefixes.append(f"https://{short}{suffix}.com")
 
-    return candidates
+        for prefix in prefixes:
+            for sp in SPORT_PATHS:
+                candidates.append(f"{prefix}{sp}")
+
+    # Deduplicate while preserving order
+    seen = set()
+    unique = []
+    for c in candidates:
+        if c not in seen:
+            seen.add(c)
+            unique.append(c)
+    return unique
 
 
 def name_from_email(email):
