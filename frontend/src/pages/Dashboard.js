@@ -38,7 +38,7 @@ function ActionRow({ domain, school, detail, badge, badgeBg, badgeColor, onClick
       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
     >
-      <UniLogo domain={domain} name={school} size={36} />
+      <UniversityLogo domain={domain} name={school} size={36} />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "var(--t-text)" }}>{school}</p>
         <p className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{detail}</p>
