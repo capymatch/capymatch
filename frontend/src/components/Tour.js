@@ -21,12 +21,6 @@ const TOUR_STEPS = [
     position: "right",
   },
   {
-    target: '[data-testid="nav-my inbox"]',
-    title: "Inbox",
-    description: "Connect Gmail to email coaches directly from the app. AI will help you draft personalized outreach.",
-    position: "right",
-  },
-  {
     target: '[data-testid="nav-calendar"]',
     title: "Calendar",
     description: "Camps, showcases, tournaments, and campus visits — all in one place so you never miss an opportunity.",
