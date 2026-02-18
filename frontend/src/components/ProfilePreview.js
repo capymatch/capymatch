@@ -182,18 +182,18 @@ export function ProfilePreview({ profile }) {
                 {(profile.parent_name || "C")[0].toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-[13px]" style={{ color: "var(--p-text)" }}>{profile.parent_name || "Coach"}</div>
-                <div className="text-[11px] mt-0.5" style={{ color: "var(--p-text-muted)" }}>Club Director {profile.club_team && <>&#8226; {profile.club_team}</>}</div>
+                <div className="font-bold text-[13px]" style={{ color: "var(--t-text, #1a1a2e)" }}>{profile.parent_name || "Coach"}</div>
+                <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted, #8b8b9e)" }}>Club Director {profile.club_team && <>&#8226; {profile.club_team}</>}</div>
               </div>
               <div className="flex gap-1.5">
                 {profile.parent_email && (
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
-                    <Mail className="w-3.5 h-3.5" style={{ color: "var(--p-text-muted)" }} />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--t-surface-alt, #f2f3f8)", border: "1px solid var(--t-border, rgba(0,0,0,0.06))" }}>
+                    <Mail className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted, #8b8b9e)" }} />
                   </div>
                 )}
                 {profile.parent_phone && (
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
-                    <Phone className="w-3.5 h-3.5" style={{ color: "var(--p-text-muted)" }} />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--t-surface-alt, #f2f3f8)", border: "1px solid var(--t-border, rgba(0,0,0,0.06))" }}>
+                    <Phone className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted, #8b8b9e)" }} />
                   </div>
                 )}
               </div>
