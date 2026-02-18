@@ -27,10 +27,15 @@ PLACEHOLDER_NAMES = {"name", "title", "first last", "staff", "coaching staff", "
 
 SPORT_PATHS = [
     "/sports/womens-volleyball/coaches",
+    "/sports/womens-volleyball/coaching-staff",
+    "/sports/womens-volleyball/staff",
     "/sports/volleyball/coaches",
+    "/sports/volleyball/coaching-staff",
     "/sports/wvball/coaches",
     "/sports/w-volley/coaches",
     "/sports/wvb/coaches",
+    "/sports/womens-volleyball",  # some sites embed coaches on the main page
+    "/sports/volleyball",
 ]
 
 
