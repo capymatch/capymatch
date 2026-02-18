@@ -173,7 +173,7 @@ export default function SettingsPage() {
             data-testid="replay-tour-btn"
             onClick={() => {
               localStorage.removeItem("tour_completed");
-              localStorage.removeItem("onboarding_dismissed");
+              localStorage.setItem("show_tour", "true");
               window.location.href = "/board";
             }}
             className="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-xs lg:text-sm rounded-xl font-medium text-white bg-pink-600 hover:bg-pink-700 transition-colors"
