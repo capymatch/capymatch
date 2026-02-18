@@ -30,8 +30,8 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
     <div className="space-y-4" data-testid="spotlight-section">
       {/* Section Label */}
       <div className="flex items-center gap-2">
-        <div className="w-4 h-0.5 rounded-full" style={{ background: "var(--t-accent, #be185d)" }} />
-        <span className="font-heading font-bold text-[11px] uppercase tracking-widest" style={{ color: "var(--t-accent, #be185d)" }}>
+        <div className="w-4 h-0.5 rounded-full bg-blue-600" />
+        <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-blue-600">
           Your #1 Match
         </span>
       </div>
@@ -131,11 +131,11 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
         <div className="pt-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 rounded-full" style={{ background: "var(--t-accent, #be185d)" }} />
-              <span className="font-heading font-bold text-[11px] uppercase tracking-widest" style={{ color: "var(--t-accent, #be185d)" }}>
+              <div className="w-4 h-0.5 rounded-full bg-blue-600" />
+              <span className="font-heading font-bold text-[11px] uppercase tracking-widest text-blue-600">
                 More Matches
               </span>
-              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "var(--t-accent-light, rgba(190,24,93,0.08))", color: "var(--t-accent, #be185d)" }}>
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-500/10 text-blue-600">
                 {suggestions.length} total
               </span>
             </div>
