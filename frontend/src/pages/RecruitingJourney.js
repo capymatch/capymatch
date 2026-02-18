@@ -1358,7 +1358,7 @@ export default function RecruitingJourney() {
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
       </>)}
