@@ -120,6 +120,37 @@ export default function AdminIntegrations() {
     }
   };
 
+  const scrapeCoaches = async () => {
+    setScrapingCoaches(true);
+    try {
+      const res = await api.post("/admin/coach-scraper/scrape");
+      if (res.data.status === "already_running") {
+        toast.info("Scrape already in progress...");
+      } else {
+        toast.success(`Scraping started — ${res.data.missing} schools to check (${res.data.already_have} already have coaches)`);
+      }
+      const poll = setInterval(async () => {
+        try {
+          const status = await api.get("/admin/coach-scraper/status");
+          const d = status.data;
+          setScrapeProgress(`${d.scraped + d.failed} / ${d.total}`);
+          if (d.done || !d.running) {
+            clearInterval(poll);
+            setScrapingCoaches(false);
+            setScrapeProgress("");
+            if (d.scraped > 0) {
+              toast.success(`Scrape complete — found coaches for ${d.scraped} schools (${d.failed} not found)`);
+            }
+            fetchIntegrations();
+          }
+        } catch { clearInterval(poll); setScrapingCoaches(false); setScrapeProgress(""); }
+      }, 5000);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Scrape failed");
+      setScrapingCoaches(false);
+    }
+  };
+
   const saveResendKey = async () => {
     if (!resendKey.trim()) return;
     setSavingResend(true);
