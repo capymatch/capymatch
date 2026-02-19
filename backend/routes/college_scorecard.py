@@ -123,72 +123,150 @@ async def get_sync_status():
     return sync_status
 
 
+def _extract_domain(url):
+    """Extract root domain from a URL like 'https://www.indiana.edu/foo' -> 'indiana.edu'."""
+    if not url:
+        return ""
+    from urllib.parse import urlparse
+    try:
+        parsed = urlparse(url if url.startswith("http") else f"https://{url}")
+        host = parsed.netloc or parsed.path.split("/")[0]
+        host = host.lower().strip(".")
+        if host.startswith("www."):
+            host = host[4:]
+        return host
+    except Exception:
+        return ""
+
+
+async def _download_all_scorecard(api_key):
+    """Download ALL schools from College Scorecard API. Returns dict keyed by domain."""
+    all_schools = []
+    page = 0
+    per_page = 100
+
+    async with httpx.AsyncClient(timeout=20) as client:
+        while True:
+            for attempt in range(3):
+                try:
+                    resp = await client.get(f"{SCORECARD_BASE}.json", params={
+                        "api_key": api_key,
+                        "fields": SCORECARD_FIELDS,
+                        "per_page": per_page,
+                        "page": page,
+                    })
+                    if resp.status_code == 429:
+                        await asyncio.sleep(2 ** (attempt + 1))
+                        continue
+                    if resp.status_code != 200:
+                        logger.error(f"Scorecard API error on page {page}: {resp.status_code}")
+                        return all_schools
+                    data = resp.json()
+                    results = data.get("results", [])
+                    all_schools.extend(results)
+                    total = data.get("metadata", {}).get("total", 0)
+                    logger.info(f"Scorecard download: page {page}, got {len(results)}, total so far {len(all_schools)}/{total}")
+                    break
+                except Exception as e:
+                    logger.warning(f"Scorecard download page {page} attempt {attempt+1}: {e}")
+                    await asyncio.sleep(1)
+
+            if not results or len(all_schools) >= total:
+                break
+            page += 1
+            await asyncio.sleep(0.2)
+
+    return all_schools
+
+
+def _build_domain_lookup(scorecard_schools):
+    """Build a lookup: domain -> list of scorecard results (sorted by student size desc)."""
+    lookup = {}
+    for s in scorecard_schools:
+        url = s.get("school.school_url", "") or ""
+        domain = _extract_domain(url)
+        if domain:
+            lookup.setdefault(domain, []).append(s)
+    # Sort each domain's schools by student size (largest first = main campus)
+    for domain in lookup:
+        lookup[domain].sort(
+            key=lambda x: x.get("latest.student.size") or x.get("school.student_size") or 0,
+            reverse=True
+        )
+    return lookup
+
+
 async def _run_sync():
-    """Background task that syncs all unsynced schools."""
+    """Background task: download all Scorecard data, then match to our volleyball schools by domain."""
     global sync_status
     api_key = get_api_key()
     if not api_key:
         sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True, "error": "No API key"}
         return
 
-    universities = await db.university_knowledge_base.find(
-        {"scorecard": {"$exists": False}},
-        {"_id": 0, "university_name": 1}
-    ).to_list(2000)
+    try:
+        # Step 1: Download all Scorecard schools
+        sync_status["phase"] = "downloading"
+        all_scorecard = await _download_all_scorecard(api_key)
+        if not all_scorecard:
+            sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True, "error": "Download failed"}
+            return
 
-    sync_status["total"] = len(universities)
-    if not universities:
-        sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True}
-        return
+        # Build lookup by domain
+        domain_lookup = _build_domain_lookup(all_scorecard)
+        # Also build lookup by name for fallback
+        name_lookup = {}
+        for s in all_scorecard:
+            n = (s.get("school.name") or "").lower()
+            name_lookup.setdefault(n, []).append(s)
 
-    async with httpx.AsyncClient(timeout=15) as client:
+        # Step 2: Match our volleyball schools
+        sync_status["phase"] = "matching"
+        universities = await db.university_knowledge_base.find(
+            {},
+            {"_id": 0, "university_name": 1, "domain": 1}
+        ).to_list(2000)
+
+        sync_status["total"] = len(universities)
+
         for uni in universities:
             name = uni.get("university_name", "")
-            if not name:
-                sync_status["failed"] += 1
-                continue
+            domain = uni.get("domain", "")
 
-            success = False
-            for attempt in range(3):
-                try:
-                    resp = await client.get(SCORECARD_BASE, params={
-                        "api_key": api_key,
-                        "school.name": name,
-                        "fields": SCORECARD_FIELDS,
-                        "per_page": 20,
-                    })
-                    if resp.status_code == 429:
-                        wait = 2 ** (attempt + 1)
-                        logger.info(f"Rate limited, waiting {wait}s...")
-                        await asyncio.sleep(wait)
-                        continue
-                    if resp.status_code != 200:
-                        break
+            match = None
 
-                    results = resp.json().get("results", [])
-                    match = _best_match(name, results)
+            # Strategy 1: Domain match (most reliable)
+            if domain and domain in domain_lookup:
+                match = domain_lookup[domain][0]  # Largest campus
 
-                    if match:
-                        scorecard = parse_scorecard_result(match)
-                        scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
-                        await db.university_knowledge_base.update_one(
-                            {"university_name": name},
-                            {"$set": {"scorecard": scorecard}}
-                        )
-                        sync_status["synced"] += 1
-                        success = True
-                    break
-                except Exception as e:
-                    logger.warning(f"Scorecard attempt {attempt+1} failed for {name}: {e}")
-                    await asyncio.sleep(1)
+            # Strategy 2: Exact name match
+            if not match and name.lower() in name_lookup:
+                candidates = name_lookup[name.lower()]
+                candidates.sort(key=lambda x: x.get("latest.student.size") or 0, reverse=True)
+                match = candidates[0]
 
-            if not success:
+            # Strategy 3: Fuzzy name match using _best_match
+            if not match:
+                match = _best_match(name, all_scorecard[:200])  # Search a subset to avoid O(n*m)
+
+            if match:
+                scorecard = parse_scorecard_result(match)
+                scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
+                scorecard["match_method"] = "domain" if (domain and domain in domain_lookup) else "name"
+                await db.university_knowledge_base.update_one(
+                    {"university_name": name},
+                    {"$set": {"scorecard": scorecard}}
+                )
+                sync_status["synced"] += 1
+            else:
                 sync_status["failed"] += 1
 
-            await asyncio.sleep(0.3)
-
-    sync_status["running"] = False
-    sync_status["done"] = True
+    except Exception as e:
+        logger.error(f"Scorecard sync error: {e}")
+    finally:
+        sync_status["running"] = False
+        sync_status["done"] = True
+        sync_status["phase"] = "complete"
 
 
 @router.post("/sync")
