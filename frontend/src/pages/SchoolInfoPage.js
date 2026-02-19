@@ -65,6 +65,7 @@ function SectionCard({ title, icon, children, testId }) {
 
 /* ── Overview Field ── */
 function OverviewField({ label, value, isLink, gated }) {
+  const linkText = label === "Recruiting Questionnaire" ? "Fill out questionnaire" : "Visit website";
   return (
     <div>
       <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 mb-1.5">{label}</div>
@@ -73,7 +74,7 @@ function OverviewField({ label, value, isLink, gated }) {
       ) : isLink && value ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
           className="text-[13px] text-[#2ec4b6] font-semibold hover:underline inline-flex items-center gap-1">
-          Visit website <ExternalLink className="w-3 h-3" />
+          {linkText} <ExternalLink className="w-3 h-3" />
         </a>
       ) : (
         <div className="text-[13px] font-semibold text-slate-700">{value || "—"}</div>
