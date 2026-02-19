@@ -675,7 +675,7 @@ export default function RecruitingBoard() {
           <div className="rounded-xl border p-3 md:p-5 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
-          <div className="flex flex-col min-h-0">
+          <div className="flex flex-col min-h-0 [&>*]:flex-1">
             {markRepliedProgram ? (
               <InlineMarkReplied program={markRepliedProgram} onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }} onCancel={() => setMarkRepliedProgram(null)} />
             ) : focusProgram ? (
