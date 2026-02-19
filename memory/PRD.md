@@ -76,6 +76,7 @@ High School Volleyball Athletes & Families
 ### P0 — Completed
 - ~~Build Coach Contact Scraper~~ — DONE
 - ~~Fix Progress Ring Size on Pipeline Desktop View~~ — DONE (Feb 19, 2026)
+- ~~Email Preview Modal~~ — DONE (Feb 19, 2026): Confirmation step before sending emails to coaches
 
 ### P1 — Upcoming
 - Separate Girls/Boys Volleyball data architecture
