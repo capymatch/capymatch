@@ -56,24 +56,25 @@ def _name_similarity(query, candidate):
     """Score how well a Scorecard name matches our university name. Higher = better."""
     q = query.lower().strip()
     c = candidate.lower().strip()
-    # Exact match
     if q == c:
         return 100
-    # One contains the other (e.g. "Indiana University" in "Indiana University-Bloomington")
-    if q in c:
-        return 90 - (len(c) - len(q))  # Prefer shorter overshoot
-    if c in q:
-        return 85 - (len(q) - len(c))
+    # Our name is a prefix/substring of the candidate (e.g. "Indiana University" in "Indiana University-Bloomington")
+    c_normalized = c.replace("-", " ").replace("–", " ")
+    q_normalized = q.replace("-", " ").replace("–", " ")
+    if q_normalized in c_normalized:
+        return 95 - min(len(c) - len(q), 20)
+    if c_normalized in q_normalized:
+        return 90 - min(len(q) - len(c), 20)
     # Word overlap
-    q_words = set(q.replace("-", " ").replace("–", " ").split())
-    c_words = set(c.replace("-", " ").replace("–", " ").split())
+    q_words = set(q_normalized.split())
+    c_words = set(c_normalized.split())
     common = q_words & c_words
-    filler = {"university", "of", "the", "at", "and", "&", "college", "state"}
+    filler = {"university", "of", "the", "at", "and", "&", "college"}
     meaningful_common = common - filler
     meaningful_q = q_words - filler
     if not meaningful_q:
         return len(common) * 10
-    return int((len(meaningful_common) / len(meaningful_q)) * 80)
+    return int((len(meaningful_common) / len(meaningful_q)) * 70)
 
 
 def _best_match(name, results):
