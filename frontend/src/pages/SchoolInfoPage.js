@@ -276,10 +276,10 @@ export default function SchoolInfoPage() {
             <OverviewField label="Academic Website" value={school.domain ? `https://${school.domain}` : null} isLink />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <OverviewField label="Recruiting Questionnaire" gated={!hasCoachAccess} value={school.questionnaire_url} isLink />
-            <OverviewField label="Twitter/X" gated={!hasCoachAccess} value={school.twitter_url} isLink />
-            <OverviewField label="Instagram" gated={!hasCoachAccess} value={school.instagram_url} isLink />
-            <OverviewField label="Facebook" gated={!hasCoachAccess} value={school.facebook_url} isLink />
+            <OverviewField label="Recruiting Questionnaire" value={school.questionnaire_url} isLink />
+            <OverviewField label="Twitter/X" value={school.twitter_url} isLink />
+            <OverviewField label="Instagram" value={school.instagram_url} isLink />
+            <OverviewField label="Facebook" value={school.facebook_url} isLink />
           </div>
         </SectionCard>
 
