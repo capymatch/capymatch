@@ -81,6 +81,34 @@ async def add_to_board(request: Request):
     return doc
 
 
+@router.get("/knowledge-base/school/{domain}")
+async def get_school_by_domain(domain: str, request: Request):
+    """Return a single university by its domain, with scorecard and match data if available."""
+    uni = await db.university_knowledge_base.find_one({"domain": domain}, {"_id": 0})
+    if not uni:
+        raise HTTPException(status_code=404, detail="University not found")
+    # Try to get match score for this user
+    try:
+        user = await get_current_user(request)
+        tenant_id = await get_tenant_id(user)
+        profile = await db.recruiting_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
+        if profile:
+            from routes.athlete_profile import compute_match_score
+            score_data = compute_match_score(uni, profile)
+            uni["match_score"] = score_data.get("match_score", 0)
+            uni["match_reasons"] = score_data.get("match_reasons", [])
+        # Check if school is already on the user's board
+        on_board = await db.programs.find_one({"tenant_id": tenant_id, "university_name": uni.get("university_name")})
+        uni["on_board"] = bool(on_board)
+        if on_board:
+            uni["program_id"] = on_board.get("program_id")
+    except Exception:
+        uni["match_score"] = 0
+        uni["match_reasons"] = []
+        uni["on_board"] = False
+    return uni
+
+
 @router.get("/knowledge-base/filters")
 async def get_filters():
     """Return distinct conferences and regions from the knowledge base."""
