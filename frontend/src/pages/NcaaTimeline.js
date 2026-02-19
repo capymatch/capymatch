@@ -130,11 +130,11 @@ const DATE_ICON_BG = {
 };
 
 function StatusTag({ status, range }) {
-  if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded bg-gray-500/20 text-gray-400 font-medium">Passed</span>;
-  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">Info</span>;
+  if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded bg-gray-200 text-gray-600 font-medium">Passed</span>;
+  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 font-medium">Info</span>;
   const days = daysUntilDate(range);
-  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded bg-slate-500/15 text-teal-600 font-medium">Active Now</span>;
-  return <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">{days} days away</span>;
+  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-medium">Active Now</span>;
+  return <span className="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">{days} days away</span>;
 }
 
 // ── Visual Timeline Bar ──
@@ -253,25 +253,25 @@ export default function NcaaTimeline() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className={`w-3 h-3 rounded-full animate-pulse ${
-              currentPeriod.type === "contact" ? "bg-teal-600" :
-              currentPeriod.type === "dead" ? "bg-red-500" :
-              currentPeriod.type === "evaluation" ? "bg-blue-500" : "bg-amber-500"
+              currentPeriod.type === "contact" ? "bg-teal-700" :
+              currentPeriod.type === "dead" ? "bg-red-600" :
+              currentPeriod.type === "evaluation" ? "bg-indigo-600" : "bg-amber-600"
             }`} />
             <div>
               <p className={`text-[10px] uppercase tracking-wider font-bold ${
-                currentPeriod.type === "contact" ? "text-teal-600" :
-                currentPeriod.type === "dead" ? "text-red-400" :
-                currentPeriod.type === "evaluation" ? "text-blue-400" : "text-amber-400"
+                currentPeriod.type === "contact" ? "text-teal-800" :
+                currentPeriod.type === "dead" ? "text-red-700" :
+                currentPeriod.type === "evaluation" ? "text-indigo-700" : "text-amber-700"
               }`}>Current Period - {division}</p>
               <p className="text-base sm:text-lg font-bold mt-0.5" style={{ color: "var(--t-text)" }}>{periodInfo.label} Period</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{periodInfo.desc}</p>
             </div>
           </div>
           <div className={`px-3 py-1.5 rounded-lg text-xs font-semibold border self-start sm:self-auto flex-shrink-0 ${
-            currentPeriod.type === "contact" ? "bg-teal-600/10 text-teal-700 border-teal-600/20" :
-            currentPeriod.type === "dead" ? "bg-red-500/15 text-red-400 border-red-500/30" :
-            currentPeriod.type === "evaluation" ? "bg-blue-500/15 text-blue-400 border-blue-500/30" :
-            "bg-amber-500/15 text-amber-400 border-amber-500/30"
+            currentPeriod.type === "contact" ? "bg-teal-100 text-teal-800 border-teal-200" :
+            currentPeriod.type === "dead" ? "bg-red-100 text-red-800 border-red-200" :
+            currentPeriod.type === "evaluation" ? "bg-indigo-100 text-indigo-800 border-indigo-200" :
+            "bg-amber-100 text-amber-800 border-amber-200"
           }`} data-testid="days-remaining-badge">
             {daysRemaining} days remaining
           </div>
