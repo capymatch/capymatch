@@ -374,8 +374,6 @@ function SchoolRow({ p, navigate, matchScore, onMarkReplied }) {
       onClick={() => navigate(`/journey/${p.program_id}`)}
       data-testid={`school-card-${p.program_id}`}
     >
-      <UniversityLogo domain={p.domain} name={p.university_name} size={32} />
-
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="font-semibold text-[13px] truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>

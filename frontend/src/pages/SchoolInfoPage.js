@@ -174,8 +174,6 @@ export default function SchoolInfoPage() {
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
         <div className="p-6 sm:p-9 flex flex-col sm:flex-row gap-5 sm:gap-7 items-center sm:items-start">
-          <UniversityLogo domain={school.domain} name={school.university_name} size={80}
-            className="rounded-2xl border border-white/[0.06]" />
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <h1 className="text-2xl sm:text-[28px] font-extrabold text-white tracking-tight mb-2 leading-tight" data-testid="school-name">
               {school.university_name}

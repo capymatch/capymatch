@@ -43,7 +43,6 @@ function SuggestionCard({ school, onAdd, adding }) {
       onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
       data-testid={`suggestion-${school.university_name}`}
     >
-      <UniversityLogo domain={school.domain} name={school.university_name} size={48} />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{school.university_name}</p>
         <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
