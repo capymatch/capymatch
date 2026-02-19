@@ -6,7 +6,6 @@ import {
   CheckCircle, Plus, Loader2, Mail, CheckCircle2, Shield
 } from "lucide-react";
 import { toast } from "sonner";
-import UniversityLogo from "../../components/UniversityLogo";
 
 /* ── Progress Step ── */
 function ProgressStep({ num, label, done, current }) {

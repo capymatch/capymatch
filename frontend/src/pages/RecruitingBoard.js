@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import EmptyBoardState from "./pipeline/EmptyBoardState";
-import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Stage Config (Clean palette) ── */
 const STAGES = {
