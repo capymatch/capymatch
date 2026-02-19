@@ -175,12 +175,12 @@ export default function SchoolInfoPage() {
       <div className="rounded-[20px] overflow-hidden mb-6 border border-white/[0.06]"
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
-        <div className="p-6 sm:p-9 flex flex-col sm:flex-row gap-5 sm:gap-7 items-center sm:items-start">
+        <div className="p-5 sm:p-9 flex flex-col sm:flex-row gap-4 sm:gap-7 items-center sm:items-start">
           {school.match_score != null && school.match_score > 0 && (
-            <div className="flex flex-col items-center order-first sm:order-last">
+            <div className="flex flex-col items-center order-first sm:order-last mb-2 sm:mb-0">
               <MatchRing score={school.match_score} />
               {school.match_reasons?.length > 0 && (
-                <div className="flex flex-wrap gap-1 justify-center mt-1.5">
+                <div className="flex flex-wrap gap-1 justify-center mt-2">
                   {school.match_reasons.map(r => (
                     <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
                       style={{ backgroundColor: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.7)", border: "1px solid rgba(46,196,182,0.15)" }}>{r}</span>
@@ -190,20 +190,20 @@ export default function SchoolInfoPage() {
             </div>
           )}
           <div className="flex-1 min-w-0 text-center sm:text-left">
-            <h1 className="text-2xl sm:text-[28px] font-extrabold text-white tracking-tight mb-2 leading-tight" data-testid="school-name">
+            <h1 className="text-xl sm:text-[28px] font-extrabold text-white tracking-tight mb-1.5 leading-tight" data-testid="school-name">
               {school.university_name}
             </h1>
-            <div className="flex flex-wrap items-center gap-2 mb-4 justify-center sm:justify-start">
+            <div className="flex flex-wrap items-center gap-1.5 mb-3 justify-center sm:justify-start">
               {school.division && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-bold" data-testid="school-division"
+                <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold" data-testid="school-division"
                   style={{ backgroundColor: "rgba(46,196,182,0.2)", color: "#2ec4b6" }}>{school.division}</span>
               )}
               {school.conference && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
+                <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-semibold"
                   style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>{school.conference}</span>
               )}
               {school.region && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
+                <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-semibold"
                   style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>{school.region}</span>
               )}
             </div>
