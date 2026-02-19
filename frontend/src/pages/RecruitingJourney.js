@@ -960,10 +960,10 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
         <div className="p-5 space-y-3 overflow-y-auto flex-1">
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>To</label>
-            <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={inputStyle} data-testid="email-to-select">
-              <option value="">Select recipient...</option>
-              {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email}>{c.coach_name} ({c.email})</option>)}
-              <option value="_custom">Type custom email...</option>
+            <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="email-to-select">
+              <option value="" style={{ background: "#1e2230", color: "#94a3b8" }}>Select recipient...</option>
+              {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email} style={{ background: "#1e2230", color: "#e2e8f0" }}>{c.coach_name} ({c.email})</option>)}
+              <option value="_custom" style={{ background: "#1e2230", color: "#e2e8f0" }}>Type custom email...</option>
             </select>
             {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={`${inputCls} mt-2`} style={inputStyle} />}
           </div>
