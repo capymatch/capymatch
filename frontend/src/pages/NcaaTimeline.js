@@ -165,18 +165,26 @@ function TimelineBar({ periods, division }) {
   }, [periods]);
 
   const barColors = {
-    contact: "bg-teal-800/25 border border-teal-800/20",
-    dead: "bg-red-700/25 border border-red-700/20",
-    evaluation: "bg-indigo-700/25 border border-indigo-700/20",
-    quiet: "bg-amber-700/25 border border-amber-700/20",
-    gap: "bg-gray-100",
+    contact: "border border-[#a8d5d1] rounded-sm",
+    dead: "border border-[#e0b8b8] rounded-sm",
+    evaluation: "border border-[#b8c0e0] rounded-sm",
+    quiet: "border border-[#e0d4b0] rounded-sm",
+    gap: "rounded-sm",
+  };
+
+  const barBgStyles = {
+    contact: { backgroundColor: "#c8e6e3" },
+    dead: { backgroundColor: "#e8c8c8" },
+    evaluation: { backgroundColor: "#c8cee8" },
+    quiet: { backgroundColor: "#e8dcc8" },
+    gap: { backgroundColor: "#f1f5f9" },
   };
 
   const textColors = {
-    contact: "text-teal-900",
-    dead: "text-red-800",
-    evaluation: "text-indigo-800",
-    quiet: "text-amber-800",
+    contact: "text-[#1a5c56]",
+    dead: "text-[#8b2020]",
+    evaluation: "text-[#2d3570]",
+    quiet: "text-[#7a5a1a]",
   };
 
   return (
