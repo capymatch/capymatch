@@ -87,17 +87,16 @@ async def get_school_by_domain(domain: str, request: Request):
     uni = await db.university_knowledge_base.find_one({"domain": domain}, {"_id": 0})
     if not uni:
         raise HTTPException(status_code=404, detail="University not found")
-    # Try to get match score for this user
     try:
         user = await get_current_user(request)
         tenant_id = await get_tenant_id(user)
-        profile = await db.recruiting_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
+        profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
         if profile:
-            from routes.athlete_profile import compute_match_score
-            score_data = compute_match_score(uni, profile)
-            uni["match_score"] = score_data.get("match_score", 0)
-            uni["match_reasons"] = score_data.get("match_reasons", [])
-        # Check if school is already on the user's board
+            uni["match_score"] = _compute_match(uni, profile)["score"]
+            uni["match_reasons"] = _compute_match(uni, profile)["reasons"]
+        else:
+            uni["match_score"] = 0
+            uni["match_reasons"] = []
         on_board = await db.programs.find_one({"tenant_id": tenant_id, "university_name": uni.get("university_name")})
         uni["on_board"] = bool(on_board)
         if on_board:
@@ -107,6 +106,31 @@ async def get_school_by_domain(domain: str, request: Request):
         uni["match_reasons"] = []
         uni["on_board"] = False
     return uni
+
+
+def _compute_match(uni, profile):
+    """Quick match score between a university and athlete profile."""
+    score, total, reasons = 0, 100, []
+    pref_div = (profile.get("division") or "").lower()
+    prog_div = (uni.get("division") or "").lower()
+    if pref_div and prog_div and (pref_div in prog_div or prog_div in pref_div):
+        score += 30
+        reasons.append("Division")
+    pref_regions = profile.get("regions") or []
+    region = uni.get("region", "")
+    if region and (region in pref_regions or "open" in [r.lower() for r in pref_regions]):
+        score += 25
+        reasons.append("Location")
+    for pr in (profile.get("priorities") or []):
+        pr_l = pr.lower()
+        if "academ" in pr_l and prog_div in ("d1", "d2"):
+            score += 10; reasons.append("Academics")
+        elif "athlet" in pr_l and "d1" in prog_div:
+            score += 10; reasons.append("Athletics")
+        elif "scholarship" in pr_l and prog_div in ("d1", "d2", "naia"):
+            score += 10; reasons.append("Scholarship")
+    pct = min(round(score / total * 100), 99)
+    return {"score": pct, "reasons": list(set(reasons))}
 
 
 @router.get("/knowledge-base/filters")
