@@ -299,26 +299,11 @@ export default function SchoolInfoPage() {
                       <div className="text-[12px] text-slate-400 mt-0.5">{c.title || "Coach"}</div>
                     </div>
                   </div>
-                  <div className="mt-4 space-y-2">
-                    {c.email && (
-                      <div className="flex items-center gap-2.5">
-                        <Mail className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-[13px] text-[#2ec4b6] font-medium">{c.email}</span>
-                      </div>
-                    )}
-                    {c.phone && (
-                      <div className="flex items-center gap-2.5">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-[13px] text-slate-600">{c.phone}</span>
-                      </div>
-                    )}
-                  </div>
                   {c.email && (
-                    <a href={`mailto:${c.email}`}
-                      className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold border border-[#2ec4b6]/30 text-[#2ec4b6] hover:bg-[#2ec4b6]/5 transition-colors"
-                      data-testid={`coach-send-email-${i}`}>
-                      <Mail className="w-3.5 h-3.5" /> Send Email
-                    </a>
+                    <div className="flex items-center gap-2.5 mt-4">
+                      <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="text-[13px] text-[#2ec4b6] font-medium">{c.email}</span>
+                    </div>
                   )}
                 </div>
               ))}
