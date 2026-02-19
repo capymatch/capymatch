@@ -147,7 +147,9 @@ async def _search_questionnaire_url(university_name, domain, website=None):
         scored = []  # list of (score, url)
         seen_urls = set()
 
-        for query in queries:
+        for i, query in enumerate(queries):
+            if i > 0:
+                await _aio.sleep(1)  # avoid rate limiting between queries
             try:
                 results = list(DDGS().text(query, max_results=8, region="us-en"))
                 for r in results:
