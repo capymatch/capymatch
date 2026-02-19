@@ -223,7 +223,7 @@ async def sync_one_school(request: Request):
             "api_key": api_key,
             "school.name": name,
             "fields": SCORECARD_FIELDS,
-            "per_page": 5,
+            "per_page": 20,
         })
 
     if resp.status_code != 200:
