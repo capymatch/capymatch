@@ -162,6 +162,13 @@ async def _search_questionnaire_url(university_name, domain, website=None):
                     body = (r.get("body") or "").lower()
                     url_lower = href.lower()
 
+                    # Skip URLs with sport-specific query params for wrong sports
+                    if "?path=" in url_lower:
+                        wrong_sport_paths = ["wsoc", "msoc", "base", "soft", "foot", "mbkb", "wbkb",
+                                             "track", "swim", "golf", "tennis", "wrest", "lacros"]
+                        if any(sp in url_lower.split("?path=")[-1] for sp in wrong_sport_paths):
+                            continue
+
                     # Must be from school domain or known questionnaire platform
                     from_school = any(sd in url_lower for sd in school_domains)
                     from_platform = any(qp in url_lower for qp in questionnaire_platforms)
