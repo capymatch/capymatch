@@ -483,7 +483,7 @@ VOLLEYBALL_PATHS = [
 discover_status = {"running": False, "found": 0, "failed": 0, "total": 0, "done": True}
 
 
-async def _discover_volleyball_url(http_client, domain):
+async def _discover_volleyball_url(http_client, domain, university_name=""):
     """Find the volleyball program URL for a school by discovering its athletics domain."""
     # Step 1: Try direct patterns on known athletics subdomains
     bases = [f"https://athletics.{domain}", f"https://{domain}"]
@@ -509,6 +509,46 @@ async def _discover_volleyball_url(http_client, domain):
             except Exception:
                 continue
 
+    # Step 3: Web search fallback
+    if university_name:
+        search_url = await _search_volleyball_url(http_client, university_name)
+        if search_url:
+            return search_url
+
+    return None
+
+
+async def _search_volleyball_url(http_client, university_name):
+    """Use DuckDuckGo to find the volleyball program URL."""
+    try:
+        from duckduckgo_search import DDGS
+        query = f"{university_name} women's volleyball coaches"
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=5))
+        for r in results:
+            href = r.get("href", "")
+            if not href:
+                continue
+            lower = href.lower()
+            # Look for athletics URLs with volleyball in the path
+            if "volleyball" in lower and ("/sports/" in lower or "/coaches" in lower or "/roster" in lower):
+                # Normalize to the volleyball main page
+                base = re.sub(r'/(coaches|roster|schedule|news|stats).*', '', href)
+                # Verify it loads
+                try:
+                    resp = await http_client.get(base, headers=HEADERS, follow_redirects=True, timeout=8)
+                    if resp.status_code == 200:
+                        return str(resp.url).rstrip("/")
+                except Exception:
+                    return base.rstrip("/")
+        # Also check result URLs that contain the domain and sports
+        for r in results:
+            href = r.get("href", "")
+            if "/sports/" in href.lower() and "volleyball" in href.lower():
+                base = re.sub(r'/(coaches|roster|schedule|news|stats).*', '', href)
+                return base.rstrip("/")
+    except Exception as e:
+        logger.warning(f"Search fallback failed for {university_name}: {e}")
     return None
 
 
