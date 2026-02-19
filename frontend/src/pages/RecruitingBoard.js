@@ -224,7 +224,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const loc = program.location || program.city_state || "";
 
   return (
-    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
+    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2.5 mb-1.5">
           <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
@@ -671,7 +671,7 @@ export default function RecruitingBoard() {
 
       {/* Top: Ring + Hero */}
       {total > 0 && (
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-start">
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-stretch">
           <div className="rounded-xl border p-3 md:px-24 md:py-6 flex items-center justify-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
