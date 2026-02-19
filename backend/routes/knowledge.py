@@ -132,8 +132,8 @@ async def _search_questionnaire_url(university_name, domain, website=None):
                     # Only accept URLs from the school's own domains
                     if not any(td in lower for td in trusted_domains):
                         continue
-                    if any(kw in lower for kw in ["questionnaire", "prospect", "recruit", "form", "interest"]):
-                        # Prioritize volleyball-specific URLs
+                    # Only match specific form/questionnaire keywords, not generic "recruit" news
+                    if any(kw in lower for kw in ["questionnaire", "prospect-form", "prospect_form", "interest-form", "recruit-form", "prospective-student-athlete"]):
                         if any(vk in lower for vk in ["volleyball", "women", "wvb"]):
                             return href
                         candidates.append(href)
