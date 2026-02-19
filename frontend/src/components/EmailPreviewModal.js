@@ -7,7 +7,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="email-preview-overlay">
       <div className="w-full max-w-[580px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-        style={{ background: "#161b25", border: "1px solid rgba(232, 98, 138, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(232,98,138,0.08)" }}
+        style={{ background: "#161b25", border: "1px solid rgba(232, 98, 138, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
         data-testid="email-preview-modal">
 
         {/* Header */}
@@ -21,7 +21,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
           <div className="flex items-center gap-2.5">
             <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>To</span>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[13px] font-semibold"
-              style={{ background: "rgba(232,98,138,0.1)", border: "1px solid rgba(232,98,138,0.2)", color: "#2ec4b6" }}
+              style={{ background: "rgba(46,196,182,0.1)", border: "1px solid rgba(46,196,182,0.2)", color: "#2ec4b6" }}
               data-testid="preview-recipient-badge">
               <User className="w-3.5 h-3.5 opacity-70" />
               {coachName || to}
@@ -77,7 +77,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
           <Button
             onClick={onConfirm}
             disabled={sending}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(232,98,138,0.4)]"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
             style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}
             data-testid="preview-confirm-send-btn">
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}

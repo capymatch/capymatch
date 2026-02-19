@@ -129,7 +129,7 @@ function FunnelBar({ count, maxCount, label, color }) {
 /* ── Event Card ── */
 function EventCard({ event, onClick }) {
   const typeBg = {
-    Camp: { bg: "rgba(232,98,138,0.12)", color: "#2ec4b6" },
+    Camp: { bg: "rgba(46,196,182,0.12)", color: "#2ec4b6" },
     Showcase: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
     Tournament: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
     Visit: { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
@@ -472,7 +472,7 @@ export default function Dashboard() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-snapshot">
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(232,98,138,0.12)" }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.12)" }}>
                 <BarChart3 className="w-4 h-4" style={{ color: "#2ec4b6" }} strokeWidth={2} />
               </div>
               <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Pipeline Snapshot</h3>
