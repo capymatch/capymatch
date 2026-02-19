@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Building2, User, Mail, Plus, ExternalLink, X, Check, Sparkles, ChevronDown, GraduationCap, DollarSign, Users, Award, BarChart3, ArrowRight } from "lucide-react";
-import UniversityLogo from "../UniversityLogo";
 import { Button } from "../ui/button";
 
 const DIV_COLORS = {
@@ -46,7 +45,6 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
           {/* Left panel */}
           <div className="p-7 border-r" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-start justify-between mb-1">
-              <UniversityLogo domain={uni.domain} name={uni.university_name} size={48} />
               <span className="font-heading text-3xl font-extrabold text-gray-800">
                 {uni.match_score ? `${uni.match_score}%` : ""}
               </span>
@@ -204,7 +202,6 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
       <div className="absolute top-0 left-0 right-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
 
       <div className="flex items-start justify-between mb-3">
-        <UniversityLogo domain={uni.domain} name={uni.university_name} size={44} className="shadow-sm" />
         {uni.match_score && (
           <span className={`font-heading text-xl font-extrabold ${uni.match_score >= 80 ? "text-gray-800" : uni.match_score >= 60 ? "text-gray-500" : "text-gray-400"}`}>
             {uni.match_score}%

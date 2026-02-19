@@ -1,5 +1,4 @@
 import { Sparkles, Trophy, MapPin, Building2, Plus, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
-import UniversityLogo from "../UniversityLogo";
 import { Button } from "../ui/button";
 import { useRef } from "react";
 
@@ -164,7 +163,6 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                   data-testid={`mini-card-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <UniversityLogo domain={s.domain} name={s.university_name} size={32} />
                     <span className="font-heading text-lg font-bold text-gray-700">{s.match_score}%</span>
                   </div>
                   <div className="font-semibold text-[13px] leading-tight mb-1" style={{ color: "var(--t-text)" }}>{s.university_name}</div>
