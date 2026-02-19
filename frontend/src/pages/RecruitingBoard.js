@@ -97,17 +97,17 @@ function ProgressRing({ counts, total }) {
     : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
 
   return (
-    <div className="flex flex-row md:flex-col items-center gap-3 md:gap-5" data-testid="progress-ring">
-      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[200px] md:h-[200px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
-        <div className="w-[76px] h-[76px] md:w-[164px] md:h-[164px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
-          <span className="text-xl md:text-4xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[9px] md:text-sm" style={{ color: "var(--t-text-muted)" }}>schools</span>
+    <div className="flex items-center gap-4" data-testid="progress-ring">
+      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
+        <div className="w-[76px] h-[76px] md:w-[108px] md:h-[108px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
+          <span className="text-xl md:text-3xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
+          <span className="text-[9px] md:text-xs" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
       </div>
-      <div className="flex flex-wrap md:flex-col gap-x-3 gap-y-1.5">
+      <div className="flex flex-col gap-y-1.5">
         {activeStages.map(k => (
           <div key={k} className="flex items-center gap-1.5 text-[10px] md:text-sm">
-            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
+            <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
             <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{counts[k]}</span>
             <span style={{ color: "var(--t-text-muted)" }}>{STAGES[k].shortLabel}</span>
           </div>
@@ -224,7 +224,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const loc = program.location || program.city_state || "";
 
   return (
-    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
+    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2.5 mb-1.5">
           <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
@@ -672,7 +672,7 @@ export default function RecruitingBoard() {
       {/* Top: Ring + Hero */}
       {total > 0 && (
         <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-stretch">
-          <div className="rounded-xl border p-3 md:px-24 md:py-6 flex items-center justify-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
+          <div className="rounded-xl border p-3 md:p-5 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
           <div className="flex flex-col min-h-0">
