@@ -107,8 +107,8 @@ export default function Layout({ user, onLogout }) {
       case "coach_reply": return <MessageSquare className="w-4 h-4 text-green-500" />;
       case "profile_view_edu": return <Eye className="w-4 h-4 text-blue-500" />;
       case "follow_up_due": return <Clock className="w-4 h-4 text-orange-500" />;
-      case "weekly_summary": return <Sparkles className="w-4 h-4 text-pink-500" />;
-      default: return <Bell className="w-4 h-4 text-pink-500" />;
+      case "weekly_summary": return <Sparkles className="w-4 h-4 text-teal-500" />;
+      default: return <Bell className="w-4 h-4 text-teal-500" />;
     }
   };
 
@@ -385,7 +385,7 @@ export default function Layout({ user, onLogout }) {
               >
                 <Bell className="w-5 h-5" strokeWidth={1.5} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-pink-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-teal-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
@@ -402,7 +402,7 @@ export default function Layout({ user, onLogout }) {
                     {unreadCount > 0 && (
                       <button 
                         onClick={markAllRead}
-                        className="text-xs text-pink-600 hover:text-pink-500 font-medium"
+                        className="text-xs text-teal-600 hover:text-teal-500 font-medium"
                       >
                         Mark all read
                       </button>
@@ -438,7 +438,7 @@ export default function Layout({ user, onLogout }) {
                             }
                             setNotifOpen(false);
                           }}
-                          className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-pink-600/5" : ""}`}
+                          className={`px-4 py-3 border-b cursor-pointer transition-colors hover:bg-[var(--t-surface-hover)] ${!notif.read ? "bg-teal-600/5" : ""}`}
                           style={{ borderColor: "var(--t-border)" }}
                         >
                           <div className="flex gap-3">
@@ -451,7 +451,7 @@ export default function Layout({ user, onLogout }) {
                                 <div className="mt-1 space-y-0.5">
                                   {notif.message.split(" • ").map((line, i) => (
                                     <p key={i} className="text-xs flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
-                                      <span className="w-1 h-1 rounded-full bg-pink-500 flex-shrink-0" />
+                                      <span className="w-1 h-1 rounded-full bg-teal-500 flex-shrink-0" />
                                       {line}
                                     </p>
                                   ))}
@@ -462,7 +462,7 @@ export default function Layout({ user, onLogout }) {
                               <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>{formatTimeAgo(notif.created_at)}</p>
                             </div>
                             {!notif.read && (
-                              <div className="w-2 h-2 rounded-full bg-pink-600 flex-shrink-0 mt-1.5" />
+                              <div className="w-2 h-2 rounded-full bg-teal-600 flex-shrink-0 mt-1.5" />
                             )}
                           </div>
                         </div>
@@ -494,9 +494,9 @@ export default function Layout({ user, onLogout }) {
                 className="flex items-center gap-2 lg:gap-2.5 px-1.5 lg:px-2 py-1.5 rounded-xl transition-colors hover:bg-[var(--t-surface-alt)]"
                 data-testid="profile-dropdown-trigger"
               >
-                <Avatar className="w-8 h-8 ring-2 ring-pink-500/20">
+                <Avatar className="w-8 h-8 ring-2 ring-teal-500/20">
                   <AvatarImage src={user?.picture} alt={user?.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-pink-500 to-rose-700 text-white text-xs font-bold">
+                  <AvatarFallback className="bg-gradient-to-br from-teal-500 to-teal-700 text-white text-xs font-bold">
                     {user?.name?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -512,9 +512,9 @@ export default function Layout({ user, onLogout }) {
                 >
                   <div className="px-4 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-10 h-10 ring-2 ring-pink-500/30">
+                      <Avatar className="w-10 h-10 ring-2 ring-teal-500/30">
                         <AvatarImage src={user?.picture} alt={user?.name} />
-                        <AvatarFallback className="bg-gradient-to-br from-pink-500 to-rose-700 text-white text-sm font-bold">
+                        <AvatarFallback className="bg-gradient-to-br from-teal-500 to-teal-700 text-white text-sm font-bold">
                           {user?.name?.charAt(0) || "U"}
                         </AvatarFallback>
                       </Avatar>
@@ -561,7 +561,7 @@ export default function Layout({ user, onLogout }) {
                     <div className="border-t my-1" style={{ borderColor: "var(--t-border)" }} />
                     <button
                       onClick={() => { setProfileOpen(false); handleLogout(); }}
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left text-rose-400 hover:text-rose-300"
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left text-teal-400 hover:text-teal-300"
                       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
                       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                       data-testid="logout-btn"

@@ -34,8 +34,8 @@ export default function AdminLayout() {
         {/* Header */}
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-pink-600/20 flex items-center justify-center">
-              <Shield className="w-4.5 h-4.5 text-pink-400" strokeWidth={2} />
+            <div className="w-9 h-9 rounded-lg bg-teal-600/20 flex items-center justify-center">
+              <Shield className="w-4.5 h-4.5 text-teal-400" strokeWidth={2} />
             </div>
             <div>
               <span className="font-semibold text-sm text-white block leading-tight">Admin Panel</span>
@@ -70,7 +70,7 @@ export default function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all ${
                     isActive
-                      ? "bg-pink-600/15 text-pink-400"
+                      ? "bg-teal-600/15 text-teal-400"
                       : "text-white/60 hover:bg-white/5 hover:text-white/80"
                   }`
                 }
@@ -106,7 +106,7 @@ export default function AdminLayout() {
             <button className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-white/10" onClick={() => setMobileOpen(true)} data-testid="admin-mobile-menu">
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
-            <Shield className="w-4 h-4 text-pink-500 hidden lg:block" />
+            <Shield className="w-4 h-4 text-teal-500 hidden lg:block" />
             <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
               {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/subscriptions") ? "Subscription Management" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : location.pathname.includes("/universities") ? "University Manager" : location.pathname.includes("/integrations") ? "Integrations" : "Admin"}
             </h2>

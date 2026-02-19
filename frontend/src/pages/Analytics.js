@@ -121,7 +121,7 @@ export default function Analytics() {
     return (
       <FeatureGate feature="analytics">
         <div className="flex items-center justify-center h-64">
-          <div className="w-8 h-8 border-2 border-pink-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
         </div>
       </FeatureGate>
     );
@@ -142,7 +142,7 @@ export default function Analytics() {
       <div data-testid="analytics-page" className="space-y-6">
         {/* Stat Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <StatCard icon={Target} iconColor="text-pink-500" iconBg="bg-pink-500/15" label="Schools Tracked" value={data?.totalSchools || 0} subtext="In your pipeline" trend={12} />
+          <StatCard icon={Target} iconColor="text-teal-500" iconBg="bg-teal-500/15" label="Schools Tracked" value={data?.totalSchools || 0} subtext="In your pipeline" trend={12} />
           <StatCard icon={Mail} iconColor="text-blue-500" iconBg="bg-blue-500/15" label="Response Rate" value={`${data?.responseRate || 0}%`} subtext={`${data?.replied || 0} of ${data?.contacted || 0} contacted`} trend={data?.responseRate > 0 ? 8 : 0} />
           <StatCard icon={Eye} iconColor="text-emerald-500" iconBg="bg-emerald-500/15" label="Profile Views (7d)" value={data?.views?.this_week || 0} subtext={`${data?.views?.today || 0} today`} trend={5} />
           <StatCard icon={TrendingUp} iconColor="text-amber-500" iconBg="bg-amber-500/15" label="Offers Received" value={data?.offers || 0} subtext="Keep going!" trend={null} />
@@ -152,7 +152,7 @@ export default function Analytics() {
           {/* Pipeline Funnel */}
           <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-funnel">
             <div className="flex items-center gap-2 mb-5">
-              <BarChart3 className="w-4 h-4 text-pink-500" />
+              <BarChart3 className="w-4 h-4 text-teal-500" />
               <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Pipeline Funnel</h3>
             </div>
             {statusEntries.length > 0 ? (
@@ -202,7 +202,7 @@ export default function Analytics() {
         {/* Outreach Summary */}
         <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="outreach-summary">
           <div className="flex items-center gap-2 mb-5">
-            <Users className="w-4 h-4 text-pink-500" />
+            <Users className="w-4 h-4 text-teal-500" />
             <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Outreach Overview</h3>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

@@ -11,7 +11,7 @@ const TIER_CONFIG = {
     badge: null,
   },
   pro: {
-    icon: Rocket, gradient: "from-pink-500 via-rose-500 to-pink-600",
+    icon: Rocket, gradient: "from-teal-500 via-teal-500 to-teal-600",
     badge: "Most Popular",
   },
   premium: {
@@ -27,7 +27,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
   return (
     <div
       className={`relative flex flex-col rounded-2xl border transition-all duration-500 ${
-        isRecommended ? `md:scale-[1.05] z-10 shadow-2xl ring-2 ${tier.id === "pro" ? "ring-pink-500/50" : "ring-amber-500/40"}` : "hover:scale-[1.02]"
+        isRecommended ? `md:scale-[1.05] z-10 shadow-2xl ring-2 ${tier.id === "pro" ? "ring-teal-500/50" : "ring-amber-500/40"}` : "hover:scale-[1.02]"
       } ${isCurrent ? "pointer-events-none" : ""}`}
       style={{
         backgroundColor: dark
@@ -68,7 +68,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
             <span className="text-xs font-medium" style={{ color: dark ? "rgba(255,255,255,0.35)" : "#6b7280" }}>/mo</span>
           </div>
           {tier.price === 0 && <p className="text-[10px]" style={{ color: dark ? "rgba(255,255,255,0.3)" : "#6b7280" }}>Free forever</p>}
-          {tier.id === "pro" && <p className="text-[10px] text-pink-500">Save $48/year with annual billing</p>}
+          {tier.id === "pro" && <p className="text-[10px] text-teal-500">Save $48/year with annual billing</p>}
           {tier.id === "premium" && <p className="text-[10px] text-amber-500">Save $96/year with annual billing</p>}
           {tier.description && <p className="text-[10px] mt-1" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#4b5563" }}>{tier.description}</p>}
         </div>
@@ -86,10 +86,10 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           ) : tier.features).map((f, i) => (
             <li key={i} className="flex items-start gap-1.5">
               <div className={`w-3 h-3 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                tier.id === "premium" ? "bg-amber-500/10" : tier.id === "pro" ? "bg-pink-500/10" : "bg-zinc-500/10"
+                tier.id === "premium" ? "bg-amber-500/10" : tier.id === "pro" ? "bg-teal-500/10" : "bg-zinc-500/10"
               }`}>
                 <Check className={`w-2 h-2 ${
-                  tier.id === "premium" ? "text-amber-500" : tier.id === "pro" ? "text-pink-500" : "text-zinc-400"
+                  tier.id === "premium" ? "text-amber-500" : tier.id === "pro" ? "text-teal-500" : "text-zinc-400"
                 }`} strokeWidth={3} />
               </div>
               <span className="text-xs leading-snug" style={{ color: dark ? "rgba(255,255,255,0.7)" : "#374151" }}>{f}</span>
@@ -109,7 +109,7 @@ function TierCard({ tier, isCurrent, isRecommended, checkoutLoading, onUpgrade, 
           <button
             className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
               isRecommended
-                ? `bg-gradient-to-r ${config.gradient} text-white hover:shadow-xl hover:shadow-pink-500/20`
+                ? `bg-gradient-to-r ${config.gradient} text-white hover:shadow-xl hover:shadow-teal-500/20`
                 : tier.id === "premium"
                   ? `bg-gradient-to-r ${config.gradient} text-black hover:shadow-lg hover:shadow-amber-500/20`
                   : dark
@@ -205,11 +205,11 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
 
         {/* Header */}
         <div className="relative px-5 pt-4 pb-6 md:px-8 md:pt-5 md:pb-8 text-center overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-pink-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-teal-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 mb-3">
-              <Rocket className="w-3 h-3 text-pink-500" />
-              <span className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider">Upgrade</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 mb-3">
+              <Rocket className="w-3 h-3 text-teal-500" />
+              <span className="text-[10px] font-semibold text-teal-500 uppercase tracking-wider">Upgrade</span>
             </div>
             <h2 className="text-lg md:text-2xl font-bold mb-0.5" style={{ color: dark ? "#fff" : "#1f2937" }}>
               Choose the Plan That Moves Your College Journey Forward
@@ -224,7 +224,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
         <div className="px-4 pb-3 md:px-6 md:pb-5">
           {loading ? (
             <div className="text-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-pink-400 mx-auto mb-3" />
+              <Loader2 className="w-6 h-6 animate-spin text-teal-400 mx-auto mb-3" />
               <p className="text-sm" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>Loading plans...</p>
             </div>
           ) : (

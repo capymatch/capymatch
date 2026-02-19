@@ -7,7 +7,7 @@ function StatCard({ icon: Icon, label, value, color, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-xl border p-4 transition-all ${onClick ? "cursor-pointer hover:border-pink-600/30" : ""}`}
+      className={`rounded-xl border p-4 transition-all ${onClick ? "cursor-pointer hover:border-teal-600/30" : ""}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`admin-stat-${label.toLowerCase().replace(/\s/g, "-")}`}
     >
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
     <div className="space-y-6" data-testid="admin-dashboard">
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-        <StatCard icon={Users} label="Total Users" value={stats.total_users} color="bg-pink-600/15 text-pink-400" onClick={() => navigate("/admin/users")} />
+        <StatCard icon={Users} label="Total Users" value={stats.total_users} color="bg-teal-600/15 text-teal-400" onClick={() => navigate("/admin/users")} />
         <StatCard icon={Activity} label="Active This Week" value={stats.active_users_this_week} color="bg-emerald-600/15 text-emerald-400" />
         <StatCard icon={School} label="Schools on Boards" value={stats.total_schools_on_boards} color="bg-blue-600/15 text-blue-400" />
         <StatCard icon={MessageSquare} label="Total Interactions" value={stats.total_interactions} color="bg-amber-600/15 text-amber-400" />
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
           <h3 className="text-sm font-semibold mb-4" style={{ color: "var(--t-text)" }}>Subscription Distribution</h3>
           <div className="space-y-3">
             <PlanBar label="Starter" count={stats.plan_counts.basic} total={stats.total_users} color="bg-gray-400" />
-            <PlanBar label="Pro" count={stats.plan_counts.pro} total={stats.total_users} color="bg-pink-500" />
+            <PlanBar label="Pro" count={stats.plan_counts.pro} total={stats.total_users} color="bg-teal-500" />
             <PlanBar label="Premium" count={stats.plan_counts.premium} total={stats.total_users} color="bg-amber-500" />
           </div>
         </div>

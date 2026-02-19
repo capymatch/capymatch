@@ -3,7 +3,7 @@ import { Zap, Sparkles, Crown } from "lucide-react";
 
 const badges = {
   basic: { icon: Zap, label: "Starter", className: "bg-white/15 text-white/80" },
-  pro: { icon: Sparkles, label: "Pro", className: "bg-pink-600/20 text-pink-400" },
+  pro: { icon: Sparkles, label: "Pro", className: "bg-teal-600/20 text-teal-400" },
   premium: { icon: Crown, label: "Premium", className: "bg-amber-600/20 text-amber-400" },
 };
 

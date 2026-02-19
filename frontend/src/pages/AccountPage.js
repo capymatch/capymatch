@@ -39,8 +39,8 @@ export default function AccountPage() {
           data-testid="subscription-card"
         >
           <div className="flex items-center gap-3 px-6 pt-6 pb-2">
-            <div className="w-10 h-10 rounded-lg bg-pink-600/20 flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-pink-600" />
+            <div className="w-10 h-10 rounded-lg bg-teal-600/20 flex items-center justify-center">
+              <CreditCard className="w-5 h-5 text-teal-600" />
             </div>
             <div>
               <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Subscription</h2>
@@ -54,7 +54,7 @@ export default function AccountPage() {
                 {subscription.tier === "premium" ? (
                   <Crown className="w-5 h-5 text-amber-400" />
                 ) : subscription.tier === "pro" ? (
-                  <Sparkles className="w-5 h-5 text-pink-400" />
+                  <Sparkles className="w-5 h-5 text-teal-400" />
                 ) : (
                   <Zap className="w-5 h-5 text-zinc-400" />
                 )}
@@ -68,7 +68,7 @@ export default function AccountPage() {
               {subscription.tier !== "premium" && (
                 <button
                   onClick={() => setShowUpgrade(true)}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg text-white bg-pink-600 hover:bg-pink-700 transition-colors"
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 transition-colors"
                   data-testid="account-upgrade-btn"
                 >
                   Upgrade <ChevronRight className="w-3.5 h-3.5" />
@@ -179,7 +179,7 @@ export default function AccountPage() {
               onChange={(e) => setCurrentPw(e.target.value)}
               required
               data-testid="current-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-pink-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>
@@ -192,7 +192,7 @@ export default function AccountPage() {
               required
               minLength={6}
               data-testid="new-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-pink-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>
@@ -205,7 +205,7 @@ export default function AccountPage() {
               required
               minLength={6}
               data-testid="confirm-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-pink-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>
@@ -213,7 +213,7 @@ export default function AccountPage() {
             type="submit"
             disabled={pwLoading}
             data-testid="change-password-btn"
-            className="flex items-center gap-2 px-4 py-2.5 text-sm rounded-lg font-medium text-white bg-pink-600 hover:bg-pink-700 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm rounded-lg font-medium text-white bg-teal-600 hover:bg-teal-700 transition-colors disabled:opacity-50"
           >
             {pwLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
             Update Password
@@ -238,7 +238,7 @@ export default function AccountPage() {
               <p className="text-sm" style={{ color: "var(--t-text)" }}>Follow-up Reminders</p>
               <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Get notified when follow-ups are due</p>
             </div>
-            <div className="w-10 h-6 bg-pink-700 rounded-full relative cursor-pointer" data-testid="toggle-followup-reminders">
+            <div className="w-10 h-6 bg-teal-700 rounded-full relative cursor-pointer" data-testid="toggle-followup-reminders">
               <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full"></div>
             </div>
           </div>

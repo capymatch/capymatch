@@ -39,11 +39,11 @@ function NoteItem({ note, onPin, onEdit, onDelete }) {
       {editing ? (
         <div className="space-y-2">
           <textarea value={text} onChange={e => setText(e.target.value.slice(0, MAX_CHARS))}
-            className="w-full bg-[var(--t-bg)] border rounded-lg px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-pink-600 resize-none"
+            className="w-full bg-[var(--t-bg)] border rounded-lg px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-teal-600 resize-none"
             style={{ borderColor: "var(--t-border)", color: "var(--t-text)" }} rows={3}
             data-testid="note-edit-textarea" />
           <div className="flex gap-2">
-            <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7 px-3" onClick={handleSave} disabled={saving}
+            <Button size="sm" className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-7 px-3" onClick={handleSave} disabled={saving}
               data-testid="note-edit-save">
               {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}Save
             </Button>
@@ -161,7 +161,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
           <PenLine className="w-4 h-4 text-amber-400" />
           <span className="text-[10px] font-semibold" style={{ writingMode: "vertical-rl", color: "var(--t-text-muted)" }}>My Notes</span>
           {totalCount > 0 && (
-            <span className="w-4.5 h-4.5 rounded-full bg-pink-600 text-white text-[9px] font-bold flex items-center justify-center"
+            <span className="w-4.5 h-4.5 rounded-full bg-teal-600 text-white text-[9px] font-bold flex items-center justify-center"
               style={{ minWidth: 18, minHeight: 18 }}>{totalCount}</span>
           )}
         </button>
@@ -200,7 +200,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
             onKeyDown={e => { if (e.key === "Enter" && e.metaKey) saveNote(); }} />
           <div className="flex items-center justify-between mt-2.5">
             <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{content.length} / {MAX_CHARS}</span>
-            <Button size="sm" className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-7 px-4" onClick={saveNote}
+            <Button size="sm" className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-7 px-4" onClick={saveNote}
               disabled={saving || !content.trim()} data-testid="notes-save-btn">
               {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
               Save Note
@@ -211,7 +211,7 @@ export default function NotesSidebar({ programId, universityName, externalOpen, 
         {/* Notes list */}
         <div className="flex-1 overflow-y-auto px-5 py-4" style={{ display: "flex", flexDirection: "column", gap: "8px" }} data-testid="notes-list">
           {loading && totalCount === 0 ? (
-            <div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-pink-600" /></div>
+            <div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-teal-600" /></div>
           ) : totalCount === 0 ? (
             <div className="text-center py-10">
               <PenLine className="w-8 h-8 mx-auto mb-2 opacity-15" style={{ color: "var(--t-text-muted)" }} />

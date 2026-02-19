@@ -144,7 +144,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
                 <button
                   data-testid="ai-draft-toggle"
                   onClick={() => setShowAiPanel(!showAiPanel)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showAiPanel ? "bg-pink-700 text-white" : "bg-pink-600/15 text-pink-600 hover:bg-pink-600/25"}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showAiPanel ? "bg-teal-700 text-white" : "bg-teal-600/15 text-teal-600 hover:bg-teal-600/25"}`}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   AI Draft
@@ -170,7 +170,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
                 data-testid="ai-program-select"
                 value={selectedProgram}
                 onChange={(e) => setSelectedProgram(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
+                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50"
                 style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
               >
                 <option value="">Select a program...</option>
@@ -182,7 +182,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
                 data-testid="ai-email-type"
                 value={emailType}
                 onChange={(e) => setEmailType(e.target.value)}
-                className="px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
+                className="px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50"
                 style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
               >
                 {emailTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
@@ -193,7 +193,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
                 data-testid="ai-custom-instructions"
                 value={customInstructions}
                 onChange={(e) => setCustomInstructions(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
+                className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50"
                 style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
                 placeholder="Optional: custom instructions (e.g., 'mention I'll be at their camp next month')"
               />
@@ -201,7 +201,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
                 data-testid="ai-generate-btn"
                 onClick={handleAiDraft}
                 disabled={drafting || !selectedProgram}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 disabled:opacity-50 transition-colors whitespace-nowrap"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-teal-700 hover:bg-teal-800 disabled:opacity-50 transition-colors whitespace-nowrap"
               >
                 {drafting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 {drafting ? "Drafting..." : "Generate"}
@@ -218,7 +218,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
               data-testid="compose-to"
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
+              className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50"
               style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
               placeholder="recipient@email.com"
               disabled={!!replyTo}
@@ -230,7 +230,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
               data-testid="compose-subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50"
+              className="flex-1 px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50"
               style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
               placeholder="Subject"
               disabled={!!replyTo}
@@ -241,7 +241,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={10}
-            className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-pink-600/50 resize-none"
+            className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none focus:border-teal-600/50 resize-none"
             style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             placeholder="Write your message..."
             autoFocus
@@ -255,7 +255,7 @@ function ComposeModal({ onClose, onSent, replyTo, isPremium = false }) {
             data-testid="compose-send-btn"
             onClick={handleSend}
             disabled={sending || !to.trim()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-teal-700 hover:bg-teal-800 disabled:opacity-50 transition-colors"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             {sending ? "Sending..." : "Send"}
@@ -350,7 +350,7 @@ function ThreadView({ thread, onBack, onReply }) {
             const lastMsg = messages[messages.length - 1];
             if (lastMsg) onReply(lastMsg);
           }}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-teal-700 hover:bg-teal-800 transition-colors"
         >
           <Reply className="w-4 h-4" />
           Reply
@@ -472,8 +472,8 @@ export default function Inbox() {
   if (gmailStatus !== null && !gmailStatus.connected) {
     return (
       <div data-testid="inbox-page" className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-600/20 to-indigo-500/20 border border-pink-600/30 flex items-center justify-center mb-6">
-          <Mail className="w-10 h-10 text-pink-600" strokeWidth={1.5} />
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-600/20 to-indigo-500/20 border border-teal-600/30 flex items-center justify-center mb-6">
+          <Mail className="w-10 h-10 text-teal-600" strokeWidth={1.5} />
         </div>
         <h2 className="font-heading text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>Connect Your Gmail</h2>
         <p className="text-center max-w-md text-sm mb-6" style={{ color: "var(--t-text-muted)" }}>
@@ -482,7 +482,7 @@ export default function Inbox() {
         <button
           data-testid="connect-gmail-btn"
           onClick={handleConnect}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors shadow-lg"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-white bg-teal-700 hover:bg-teal-800 transition-colors shadow-lg"
         >
           <Mail className="w-4 h-4" />
           Connect Gmail Account
@@ -495,7 +495,7 @@ export default function Inbox() {
   if (gmailStatus === null) {
     return (
       <div data-testid="inbox-page" className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-pink-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
       </div>
     );
   }
@@ -520,7 +520,7 @@ export default function Inbox() {
           <button
             data-testid="compose-btn"
             onClick={() => { setReplyTo(null); setShowCompose(true); }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-pink-700 hover:bg-pink-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-teal-700 hover:bg-teal-800 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Compose
@@ -537,7 +537,7 @@ export default function Inbox() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search emails..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:border-pink-600/50 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:border-teal-600/50 transition-colors"
             style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           />
         </div>
@@ -553,7 +553,7 @@ export default function Inbox() {
         >
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 animate-spin text-pink-600" />
+              <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
             </div>
           ) : emails.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 px-6">
@@ -576,7 +576,7 @@ export default function Inbox() {
                     onClick={() => openThread(em)}
                     data-testid={`email-row-${em.id}`}
                     className={`flex items-start gap-3 px-4 py-3.5 border-b cursor-pointer transition-colors ${
-                      isActive ? "bg-pink-600/10" : ""
+                      isActive ? "bg-teal-600/10" : ""
                     }`}
                     style={{
                       borderColor: "var(--t-border)",
@@ -612,7 +612,7 @@ export default function Inbox() {
                       </p>
                     </div>
                     {em.is_unread && (
-                      <div className="w-2 h-2 rounded-full bg-pink-600 mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 rounded-full bg-teal-600 mt-2 flex-shrink-0" />
                     )}
                   </div>
                 );
@@ -623,7 +623,7 @@ export default function Inbox() {
                     data-testid="load-more-btn"
                     onClick={() => fetchEmails(activeSearch, true, nextPageToken)}
                     disabled={loadingMore}
-                    className="text-sm text-pink-600 hover:text-pink-500 transition-colors"
+                    className="text-sm text-teal-600 hover:text-teal-500 transition-colors"
                   >
                     {loadingMore ? "Loading..." : "Load more"}
                   </button>
@@ -637,7 +637,7 @@ export default function Inbox() {
         <div className={`flex-1 ${!thread ? "hidden lg:flex" : "flex"} flex-col`} style={{ backgroundColor: "var(--t-bg)" }}>
           {threadLoading ? (
             <div className="flex items-center justify-center flex-1">
-              <Loader2 className="w-6 h-6 animate-spin text-pink-600" />
+              <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
             </div>
           ) : thread ? (
             <ThreadView

@@ -14,7 +14,7 @@ function ProgressStep({ num, label, done, current }) {
     <div className="flex items-center gap-2">
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-          done ? "text-emerald-400" : current ? "border-[1.5px] border-pink-500 text-pink-400" : "border border-white/10 text-white/25"
+          done ? "text-emerald-400" : current ? "border-[1.5px] border-teal-500 text-teal-400" : "border border-white/10 text-white/25"
         }`}
         style={done ? { backgroundColor: "rgba(16,185,129,0.12)" } : current ? { backgroundColor: "rgba(232,69,107,0.12)" } : { backgroundColor: "var(--t-surface)" }}
       >
@@ -181,7 +181,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <div className="w-8 h-8 border-2 border-pink-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

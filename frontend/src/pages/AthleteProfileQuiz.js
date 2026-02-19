@@ -199,14 +199,14 @@ export default function AthleteProfileQuiz() {
           {/* Progress bar complete */}
           <div className="mb-10">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-pink-600">Your Volleyball Journey</span>
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
               <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>Complete!</span>
             </div>
             <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
-              <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-emerald-400" style={{ width: "100%" }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-teal-600 to-emerald-400" style={{ width: "100%" }} />
             </div>
             <div className="flex gap-1.5 justify-center mt-2.5">
-              {QUESTIONS.map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-pink-600" />)}
+              {QUESTIONS.map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-teal-600" />)}
             </div>
           </div>
 
@@ -216,7 +216,7 @@ export default function AthleteProfileQuiz() {
               {"\uD83C\uDF89"}
             </div>
             <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
-              Your profile is <span className="bg-gradient-to-r from-emerald-400 to-pink-600 bg-clip-text text-transparent">ready!</span>
+              Your profile is <span className="bg-gradient-to-r from-emerald-400 to-teal-600 bg-clip-text text-transparent">ready!</span>
             </h1>
             <p className="text-sm mb-8 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
               We've built your recruiting profile. Here's a preview of how we'll match you with programs.
@@ -224,7 +224,7 @@ export default function AthleteProfileQuiz() {
 
             {/* Profile summary */}
             <div className="rounded-xl border p-5 text-left mb-5" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-pink-600 mb-4">Your Profile</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-4">Your Profile</p>
               <div className="grid grid-cols-2 gap-3">
                 <div><p className="text-[10px] uppercase tracking-wide" style={{ color: "var(--t-text-muted)" }}>Position</p><p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{answers.position}</p></div>
                 <div><p className="text-[10px] uppercase tracking-wide" style={{ color: "var(--t-text-muted)" }}>Division</p><p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{answers.division}</p></div>
@@ -233,7 +233,7 @@ export default function AthleteProfileQuiz() {
                 <div className="col-span-2">
                   <p className="text-[10px] uppercase tracking-wide mb-1.5" style={{ color: "var(--t-text-muted)" }}>Top Priorities</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {(answers.priorities || []).map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-md bg-pink-600/10 text-pink-500 font-medium">{p}</span>)}
+                    {(answers.priorities || []).map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-md bg-teal-600/10 text-teal-500 font-medium">{p}</span>)}
                   </div>
                 </div>
               </div>
@@ -286,10 +286,10 @@ export default function AthleteProfileQuiz() {
           {/* Progress header */}
           <div className="mb-10">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-pink-600">Your Volleyball Journey</span>
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
             </div>
             <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
-              <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-700 transition-all duration-500" style={{ width: "0%" }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-teal-600 to-teal-700 transition-all duration-500" style={{ width: "0%" }} />
             </div>
             <div className="flex gap-1.5 justify-center mt-2.5">
               {QUESTIONS.map((_, i) => (
@@ -300,7 +300,7 @@ export default function AthleteProfileQuiz() {
 
           {/* Intro Card */}
           <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink-600/30 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
             
             {/* Icon */}
             <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center text-5xl" 
@@ -310,7 +310,7 @@ export default function AthleteProfileQuiz() {
 
             {/* Title */}
             <h1 className="text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
-              Let's Build Your <span className="bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent">Volleyball Journey</span>
+              Let's Build Your <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">Volleyball Journey</span>
             </h1>
             <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
               Answer 7 quick questions so we can match you with the right volleyball programs and coaches.
@@ -319,8 +319,8 @@ export default function AthleteProfileQuiz() {
             {/* Benefits */}
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-pink-600/10">
-                  <Target className="w-5 h-5 text-pink-500" />
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-teal-600/10">
+                  <Target className="w-5 h-5 text-teal-500" />
                 </div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Personalized Matches</p>
                 <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>See schools that fit your playing style & goals</p>
@@ -344,7 +344,7 @@ export default function AthleteProfileQuiz() {
             {/* CTA */}
             <div className="text-center">
               <Button onClick={next}
-                className="bg-pink-700 hover:bg-pink-800 text-white h-12 px-10 text-sm font-semibold shadow-lg shadow-pink-600/20"
+                className="bg-teal-700 hover:bg-teal-800 text-white h-12 px-10 text-sm font-semibold shadow-lg shadow-teal-600/20"
                 data-testid="quiz-start-btn">
                 Get Started <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -365,15 +365,15 @@ export default function AthleteProfileQuiz() {
         {/* Progress */}
         <div className="mb-10">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-pink-600">Your Volleyball Journey</span>
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
             <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{step + 1} of {QUESTIONS.length}</span>
           </div>
           <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
-            <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-700 transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-teal-600 to-teal-700 transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
           </div>
           <div className="flex gap-1.5 justify-center mt-2.5">
             {QUESTIONS.map((_, i) => (
-              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i < step ? "bg-pink-700" : i === step ? "bg-pink-600 shadow-[0_0_6px_rgba(168,85,247,0.5)]" : ""}`}
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i < step ? "bg-teal-700" : i === step ? "bg-teal-600 shadow-[0_0_6px_rgba(168,85,247,0.5)]" : ""}`}
                 style={i > step ? { backgroundColor: "var(--t-border)" } : {}} />
             ))}
           </div>
@@ -381,7 +381,7 @@ export default function AthleteProfileQuiz() {
 
         {/* Question Card */}
         <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink-600/30 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
           <span className="text-4xl block mb-5">{q.emoji}</span>
           <p className="text-[10px] uppercase tracking-[1.5px] font-semibold mb-2" style={{ color: "var(--t-text-muted)" }}>Question {step + 1} of {QUESTIONS.length}</p>
           <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>{q.title}</h1>
@@ -394,10 +394,10 @@ export default function AthleteProfileQuiz() {
                 const isSelected = current === opt.value;
                 return (
                   <button key={opt.value} onClick={() => select(opt.value)}
-                    className={`relative rounded-xl border p-4 text-center transition-all duration-200 hover:-translate-y-0.5 ${isSelected ? "border-pink-600 shadow-[0_0_20px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
+                    className={`relative rounded-xl border p-4 text-center transition-all duration-200 hover:-translate-y-0.5 ${isSelected ? "border-teal-600 shadow-[0_0_20px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
                     style={{ backgroundColor: isSelected ? "rgba(168,85,247,0.06)" : "var(--t-surface-alt)", borderColor: isSelected ? "rgb(168,85,247)" : "var(--t-border)" }}
                     data-testid={`option-${opt.value.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
-                    {isSelected && <div className="absolute top-2 right-2 w-4.5 h-4.5 rounded-full bg-gradient-to-br from-pink-600 to-pink-700 flex items-center justify-center"><Check className="w-3 h-3 text-white" /></div>}
+                    {isSelected && <div className="absolute top-2 right-2 w-4.5 h-4.5 rounded-full bg-gradient-to-br from-teal-600 to-teal-700 flex items-center justify-center"><Check className="w-3 h-3 text-white" /></div>}
                     <span className="text-2xl block mb-2">{opt.icon}</span>
                     <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{opt.label || opt.value}</p>
                     {opt.desc && <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>{opt.desc}</p>}
@@ -413,10 +413,10 @@ export default function AthleteProfileQuiz() {
                     const isSelected = (current || []).includes(opt.value);
                     return (
                       <button key={opt.value} onClick={() => select(opt.value)}
-                        className={`relative rounded-xl border p-4 text-center transition-all duration-200 hover:-translate-y-0.5 ${isSelected ? "border-pink-600 shadow-[0_0_20px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
+                        className={`relative rounded-xl border p-4 text-center transition-all duration-200 hover:-translate-y-0.5 ${isSelected ? "border-teal-600 shadow-[0_0_20px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
                         style={{ backgroundColor: isSelected ? "rgba(168,85,247,0.06)" : "var(--t-surface-alt)", borderColor: isSelected ? "rgb(168,85,247)" : "var(--t-border)" }}
                         data-testid={`option-${opt.value.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
-                        {isSelected && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-gradient-to-br from-pink-600 to-pink-700 flex items-center justify-center"><Check className="w-2.5 h-2.5 text-white" /></div>}
+                        {isSelected && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-gradient-to-br from-teal-600 to-teal-700 flex items-center justify-center"><Check className="w-2.5 h-2.5 text-white" /></div>}
                         <span className="text-xl block mb-1.5">{opt.icon}</span>
                         <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{opt.value}</p>
                         {opt.desc && <p className="text-[10px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{opt.desc}</p>}
@@ -430,12 +430,12 @@ export default function AthleteProfileQuiz() {
                     const isSelected = (current || []).includes(opt.value);
                     return (
                       <button key={opt.value} onClick={() => select(opt.value)}
-                        className={`flex items-center gap-2 rounded-full border px-4 py-2.5 transition-all duration-200 ${isSelected ? "border-pink-600 shadow-[0_0_12px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
+                        className={`flex items-center gap-2 rounded-full border px-4 py-2.5 transition-all duration-200 ${isSelected ? "border-teal-600 shadow-[0_0_12px_rgba(168,85,247,0.1)]" : "hover:border-[var(--t-border-strong)]"}`}
                         style={{ backgroundColor: isSelected ? "rgba(168,85,247,0.08)" : "var(--t-surface-alt)", borderColor: isSelected ? "rgb(168,85,247)" : "var(--t-border)" }}
                         data-testid={`option-${opt.value.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
                         <span className="text-base">{opt.icon}</span>
                         <span className="text-sm font-medium" style={{ color: isSelected ? "var(--t-text)" : "var(--t-text-secondary)" }}>{opt.value}</span>
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? "bg-gradient-to-br from-pink-600 to-pink-700 border-pink-600" : ""}`}
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? "bg-gradient-to-br from-teal-600 to-teal-700 border-teal-600" : ""}`}
                           style={isSelected ? {} : { borderColor: "var(--t-border-strong)" }}>
                           {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
@@ -463,7 +463,7 @@ export default function AthleteProfileQuiz() {
             <ChevronLeft className="w-4 h-4" /> Back
           </button>
           <Button onClick={next} disabled={!canProceed || saving}
-            className="bg-pink-700 hover:bg-pink-800 text-white h-10 px-7 text-sm font-semibold shadow-lg shadow-pink-600/20 disabled:opacity-50"
+            className="bg-teal-700 hover:bg-teal-800 text-white h-10 px-7 text-sm font-semibold shadow-lg shadow-teal-600/20 disabled:opacity-50"
             data-testid="quiz-next-btn">
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
             {step === QUESTIONS.length - 1 ? "Finish" : "Continue"}

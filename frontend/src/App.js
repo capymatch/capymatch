@@ -108,7 +108,7 @@ function OAuthCallback({ onAuth }) {
     <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1a2e" }}>
       {status === "loading" && (
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-pink-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <div className="text-white/60 text-sm">Signing you in...</div>
         </div>
       )}
@@ -118,7 +118,7 @@ function OAuthCallback({ onAuth }) {
           <div className="text-white/50 text-xs mb-3">{errorMsg}</div>
           <button
             onClick={() => navigate("/login", { replace: true })}
-            className="text-pink-400 text-xs underline hover:text-pink-300"
+            className="text-teal-400 text-xs underline hover:text-teal-300"
           >
             Back to login
           </button>

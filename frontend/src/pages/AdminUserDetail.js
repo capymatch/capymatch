@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  pro: "bg-pink-500/15 text-pink-400 border-pink-500/20",
+  pro: "bg-teal-500/15 text-teal-400 border-teal-500/20",
   premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
@@ -91,13 +91,13 @@ export default function AdminUserDetail() {
   return (
     <div className="space-y-5" data-testid="admin-user-detail">
       {/* Back */}
-      <button onClick={() => navigate("/admin/users")} className="flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-pink-400" style={{ color: "var(--t-text-muted)" }} data-testid="admin-back-to-users">
+      <button onClick={() => navigate("/admin/users")} className="flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-teal-400" style={{ color: "var(--t-text-muted)" }} data-testid="admin-back-to-users">
         <ArrowLeft className="w-3.5 h-3.5" /> Back to Users
       </button>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="w-14 h-14 rounded-xl bg-pink-600/15 flex items-center justify-center text-pink-400 text-xl font-bold flex-shrink-0">
+        <div className="w-14 h-14 rounded-xl bg-teal-600/15 flex items-center justify-center text-teal-400 text-xl font-bold flex-shrink-0">
           {(tenant?.athlete_name || user?.name || "?").charAt(0).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
@@ -128,7 +128,7 @@ export default function AdminUserDetail() {
         {/* Manage Subscription */}
         <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-            <Shield className="w-4 h-4 text-pink-400" /> Manage Account
+            <Shield className="w-4 h-4 text-teal-400" /> Manage Account
           </h3>
           <div className="space-y-4">
             <div>
@@ -157,7 +157,7 @@ export default function AdminUserDetail() {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={handleSave} disabled={saving} className="w-full bg-pink-600 hover:bg-pink-700 text-white text-xs" data-testid="admin-user-save-btn">
+            <Button onClick={handleSave} disabled={saving} className="w-full bg-teal-600 hover:bg-teal-700 text-white text-xs" data-testid="admin-user-save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </Button>
           </div>
@@ -191,8 +191,8 @@ export default function AdminUserDetail() {
           <div className="space-y-0">
             {recent_interactions.map((ix, i) => (
               <div key={ix.interaction_id || i} className="flex items-center gap-3 py-2.5 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
-                <div className="w-7 h-7 rounded-lg bg-pink-600/10 flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-3.5 h-3.5 text-pink-400" />
+                <div className="w-7 h-7 rounded-lg bg-teal-600/10 flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-3.5 h-3.5 text-teal-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium truncate" style={{ color: "var(--t-text)" }}>

@@ -50,8 +50,8 @@ export default function LoginPage({ onAuth }) {
 
           <div className="space-y-6">
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Compass className="w-[18px] h-[18px] text-rose-700" />
+              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Compass className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">College Tracker</h3>
@@ -60,8 +60,8 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Zap className="w-[18px] h-[18px] text-rose-700" />
+              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Zap className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Recruiting Journey</h3>
@@ -70,8 +70,8 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Eye className="w-[18px] h-[18px] text-rose-700" />
+              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Eye className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">Coach Watch Alerts</h3>
@@ -80,8 +80,8 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Sparkles className="w-[18px] h-[18px] text-rose-700" />
+              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Sparkles className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold text-gray-900">AI Journey Assistant</h3>
@@ -127,7 +127,7 @@ export default function LoginPage({ onAuth }) {
                     onChange={(e) => setName(e.target.value)}
                     required
                     data-testid="register-name-input"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-teal-600 focus:ring-1 focus:ring-teal-600/20 focus:outline-none transition-colors bg-white"
                   />
                 </div>
               )}
@@ -140,7 +140,7 @@ export default function LoginPage({ onAuth }) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="login-email-input"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-teal-600 focus:ring-1 focus:ring-teal-600/20 focus:outline-none transition-colors bg-white"
                 />
               </div>
               <div className="relative">
@@ -153,7 +153,7 @@ export default function LoginPage({ onAuth }) {
                   required
                   minLength={6}
                   data-testid="login-password-input"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-pink-600 focus:ring-1 focus:ring-pink-600/20 focus:outline-none transition-colors bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-teal-600 focus:ring-1 focus:ring-teal-600/20 focus:outline-none transition-colors bg-white"
                 />
                 <button
                   type="button"
@@ -168,17 +168,17 @@ export default function LoginPage({ onAuth }) {
               {mode === "login" && (
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
-                    <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 accent-pink-700" />
+                    <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 accent-teal-700" />
                     <span className="text-[13px]">Remember me</span>
                   </label>
-                  <button type="button" className="text-[13px] text-pink-700 hover:text-pink-800 font-medium transition-colors">
+                  <button type="button" className="text-[13px] text-teal-700 hover:text-teal-800 font-medium transition-colors">
                     Forgot password?
                   </button>
                 </div>
               )}
 
               {error && (
-                <p className="text-rose-600 text-xs px-1" data-testid="auth-error-msg">{error}</p>
+                <p className="text-teal-600 text-xs px-1" data-testid="auth-error-msg">{error}</p>
               )}
 
               <button
@@ -203,9 +203,9 @@ export default function LoginPage({ onAuth }) {
               <div className="flex-1 h-px bg-gray-200" />
               <span className="text-[13px] text-gray-500 whitespace-nowrap">
                 {mode === "login" ? (
-                  <>New here?{" "}<button onClick={() => { setMode("register"); setError(""); }} className="text-pink-700 hover:text-pink-800 font-semibold transition-colors" data-testid="switch-to-register">Create an account</button></>
+                  <>New here?{" "}<button onClick={() => { setMode("register"); setError(""); }} className="text-teal-700 hover:text-teal-800 font-semibold transition-colors" data-testid="switch-to-register">Create an account</button></>
                 ) : (
-                  <>Already a member?{" "}<button onClick={() => { setMode("login"); setError(""); }} className="text-pink-700 hover:text-pink-800 font-semibold transition-colors" data-testid="switch-to-login">Sign in</button></>
+                  <>Already a member?{" "}<button onClick={() => { setMode("login"); setError(""); }} className="text-teal-700 hover:text-teal-800 font-semibold transition-colors" data-testid="switch-to-login">Sign in</button></>
                 )}
               </span>
               <div className="flex-1 h-px bg-gray-200" />
@@ -227,7 +227,7 @@ export default function LoginPage({ onAuth }) {
             </button>
 
             <p className="text-center text-[11px] text-gray-400 mt-4">
-              By logging in, you agree to <button className="text-pink-700 hover:underline">Terms</button> & <button className="text-pink-700 hover:underline">Privacy Policy</button>
+              By logging in, you agree to <button className="text-teal-700 hover:underline">Terms</button> & <button className="text-teal-700 hover:underline">Privacy Policy</button>
             </p>
           </div>
         </div>

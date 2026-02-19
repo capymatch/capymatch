@@ -75,7 +75,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                         <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Head Coach</div>
                       </div>
                       {uni.coach_email && (
-                        <a href={`mailto:${uni.coach_email}`} className="text-pink-500 hover:text-pink-400" data-testid="expanded-coach-email">
+                        <a href={`mailto:${uni.coach_email}`} className="text-teal-500 hover:text-teal-400" data-testid="expanded-coach-email">
                           <Mail className="w-4 h-4" />
                         </a>
                       )}
@@ -91,7 +91,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                         <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Recruiting Coordinator</div>
                       </div>
                       {uni.coordinator_email && (
-                        <a href={`mailto:${uni.coordinator_email}`} className="text-pink-500 hover:text-pink-400">
+                        <a href={`mailto:${uni.coordinator_email}`} className="text-teal-500 hover:text-teal-400">
                           <Mail className="w-4 h-4" />
                         </a>
                       )}
@@ -230,7 +230,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
         className={`w-full py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-all duration-200 border ${
           isOnBoard
             ? "border-emerald-500/30 text-emerald-600 bg-emerald-50/50 cursor-default"
-            : "border-[var(--t-border)] text-[var(--t-text-secondary)] hover:border-pink-500 hover:text-pink-600 hover:bg-pink-50/50"
+            : "border-[var(--t-border)] text-[var(--t-text-secondary)] hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50/50"
         }`}
         onClick={(e) => {
           e.stopPropagation();

@@ -153,9 +153,9 @@ function ProgressRail({ rail, onStageClick }) {
    ═══════════════════════════════════════════════════════════════ */
 function PulseIndicator({ pulse }) {
   const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
-  const dotColor = { emerald: "bg-emerald-500", amber: "bg-amber-500", rose: "bg-rose-500", gray: "bg-gray-500" }[cfg.color];
-  const ringColor = { emerald: "border-emerald-500", amber: "border-amber-500", rose: "border-rose-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { emerald: "text-emerald-400", amber: "text-amber-400", rose: "text-rose-400", gray: "text-gray-400" }[cfg.color];
+  const dotColor = { emerald: "bg-emerald-500", amber: "bg-amber-500", rose: "bg-teal-500", gray: "bg-gray-500" }[cfg.color];
+  const ringColor = { emerald: "border-emerald-500", amber: "border-amber-500", rose: "border-teal-500", gray: "border-gray-500" }[cfg.color];
+  const textColor = { emerald: "text-emerald-400", amber: "text-amber-400", rose: "text-teal-400", gray: "text-gray-400" }[cfg.color];
   return (
     <div className="flex items-center gap-2" data-testid="pulse-indicator">
       <span className="relative flex h-2.5 w-2.5">
@@ -187,7 +187,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
       <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         {steps.map(s => (
-          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-pink-700/30 hover:bg-[var(--t-surface-alt)]"}`}
+          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-teal-700/30 hover:bg-[var(--t-surface-alt)]"}`}
             style={{ borderColor: "var(--t-border)" }}
             onClick={() => !s.done && s.action && s.action()} disabled={s.done}
             data-testid={`checklist-step-${s.key}`}>
@@ -204,9 +204,9 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
       </div>
       <div className="flex items-center gap-3 mt-4 pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
         <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--t-surface-alt)" }}>
-          <div className="h-full rounded-full bg-pink-700 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
+          <div className="h-full rounded-full bg-teal-700 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
         </div>
-        <span className="text-[11px] font-semibold text-pink-700">{doneCount} of {steps.length}</span>
+        <span className="text-[11px] font-semibold text-teal-700">{doneCount} of {steps.length}</span>
       </div>
     </div>
   );
@@ -313,7 +313,7 @@ function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
           Replied {timeText} — keep the momentum going:
         </p>
         <div className="flex gap-2.5 justify-center flex-wrap">
-          <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-8 px-4 shadow-md" onClick={onEmail} data-testid="celebration-email-btn">
+          <Button className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-8 px-4 shadow-md" onClick={onEmail} data-testid="celebration-email-btn">
             <Mail className="w-3.5 h-3.5 mr-1.5" />Send Thank You
           </Button>
           <Button variant="outline" className="text-xs h-8 px-4" onClick={onCall}
@@ -418,7 +418,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
               const Icon = btn.icon;
               return (
                 <Button key={key} size="sm" variant={key === rule.actions[0] ? "default" : "outline"}
-                  className={`text-xs h-8 px-3 ${key === rule.actions[0] ? "bg-pink-700 hover:bg-pink-800 text-white shadow-md" : ""}`}
+                  className={`text-xs h-8 px-3 ${key === rule.actions[0] ? "bg-teal-700 hover:bg-teal-800 text-white shadow-md" : ""}`}
                   style={key !== rule.actions[0] ? { color: "rgba(255,255,255,0.6)", borderColor: "rgba(255,255,255,0.1)" } : undefined}
                   onClick={actionHandlers[key]} data-testid={btn.testId}>
                   <Icon className="w-3.5 h-3.5 mr-1.5" />{btn.label}
@@ -472,18 +472,18 @@ function ConversationBubble({ event }) {
     <div className={`flex ${isRight ? "justify-end" : "justify-start"} my-1`} data-testid={`conv-bubble-${isRight ? "right" : "left"}`}>
       <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
         isRight
-          ? "rounded-br-md bg-pink-800/[0.10] border-pink-700/25"
+          ? "rounded-br-md bg-teal-800/[0.10] border-teal-700/25"
           : "rounded-bl-md bg-emerald-600/[0.08] border-emerald-500/20"
       }`}>
-        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-pink-700" : "text-emerald-500"}`}>
+        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-teal-700" : "text-emerald-500"}`}>
           {isRight ? "You" : (event.coach_name || "Coach")}
         </p>
         {content && (
           <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
             {hasLong && !expanded ? (
-              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-pink-700 text-[10px] mt-1 font-medium">Show more</button></>
+              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-teal-700 text-[10px] mt-1 font-medium">Show more</button></>
             ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-pink-700 text-[10px] mt-1 font-medium">Show less</button></>
+              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-teal-700 text-[10px] mt-1 font-medium">Show less</button></>
             ) : <p>{content}</p>}
           </div>
         )}
@@ -502,7 +502,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
   const boardGroup = program.board_group;
   const stageLabel = BOARD_STAGE_LABELS[boardGroup] || boardGroup;
   const stageColors = {
-    overdue: "bg-rose-500/12 text-rose-400", needs_outreach: "bg-amber-500/12 text-amber-400",
+    overdue: "bg-teal-500/12 text-teal-400", needs_outreach: "bg-amber-500/12 text-amber-400",
     waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-emerald-500/12 text-emerald-400",
     archived: "bg-gray-500/12 text-gray-400",
   };
@@ -551,18 +551,18 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
       {/* Primary Coach */}
       {coaches.length > 0 ? (
         <div className="flex items-center gap-3 p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-          <div className="w-8 h-8 rounded-lg bg-pink-700/15 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-bold text-pink-700">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
+          <div className="w-8 h-8 rounded-lg bg-teal-700/15 flex items-center justify-center flex-shrink-0">
+            <span className="text-xs font-bold text-teal-700">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold truncate" style={{ color: "var(--t-text)" }}>{coaches[0].coach_name}</p>
-            {coaches[0].email && <p className="text-[10px] text-pink-700 truncate">{coaches[0].email}</p>}
+            {coaches[0].email && <p className="text-[10px] text-teal-700 truncate">{coaches[0].email}</p>}
             {!coaches[0].email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{coaches[0].role}</p>}
           </div>
           {coaches.length > 1 && <span className="text-[10px] ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>+{coaches.length - 1}</span>}
         </div>
       ) : (
-        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-pink-700/30"
+        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-teal-700/30"
           style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }} data-testid="glance-add-coach">
           <Plus className="w-3.5 h-3.5" /> Add coach contact
         </button>
@@ -625,7 +625,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
               <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>All Coaches</p>
               {coaches.map(c => (
                 <div key={c.coach_id} className="flex items-center gap-2 py-1.5">
-                  <Users className="w-3 h-3 text-pink-700 flex-shrink-0" />
+                  <Users className="w-3 h-3 text-teal-700 flex-shrink-0" />
                   <span className="text-[11px]" style={{ color: "var(--t-text-secondary)" }}>{c.coach_name} — {c.role}</span>
                 </div>
               ))}
@@ -668,7 +668,7 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
         style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-            Log progress: <span className="text-pink-700">{newLabel}</span>
+            Log progress: <span className="text-teal-700">{newLabel}</span>
           </h3>
           <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/5">
             <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
@@ -678,7 +678,7 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
         <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }}>
           <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{fromLabel}</span>
           <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-          <span className="text-xs font-semibold text-pink-700">{newLabel}</span>
+          <span className="text-xs font-semibold text-teal-700">{newLabel}</span>
         </div>
         <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
           What happened with {universityName}? This will be added to the timeline.
@@ -686,14 +686,14 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
         <form onSubmit={handleSubmit}>
           <textarea value={note} onChange={e => setNote(e.target.value)}
             placeholder={`e.g. "Had a great campus visit, met Coach Williams..."`}
-            className="w-full bg-[var(--t-bg)] border rounded-xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-pink-600 resize-none leading-relaxed"
+            className="w-full bg-[var(--t-bg)] border rounded-xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-teal-600 resize-none leading-relaxed"
             style={{ borderColor: "var(--t-border)", color: "var(--t-text)" }} rows={3} autoFocus
             data-testid="stage-log-textarea" />
           <div className="flex justify-end gap-2 mt-4">
             <Button type="button" variant="ghost" size="sm" onClick={onCancel}
               className="text-xs h-8 px-4" style={{ color: "var(--t-text-muted)" }}>Cancel</Button>
             <Button type="submit" size="sm" disabled={saving || !note.trim()}
-              className="bg-pink-700 hover:bg-pink-800 text-white text-xs h-8 px-4"
+              className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-8 px-4"
               data-testid="stage-log-submit">
               {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
               Save &amp; Update
@@ -710,7 +710,7 @@ function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCa
    ═══════════════════════════════════════════════════════════════ */
 function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic, activeAction }) {
   const btnBase = "flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors";
-  const btnActive = "bg-pink-600 text-white font-semibold hover:bg-pink-700";
+  const btnActive = "bg-teal-600 text-white font-semibold hover:bg-teal-700";
   const btnInactive = "hover:bg-[var(--t-surface-alt)]";
   return (
     <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-1.5 rounded-2xl border shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
@@ -750,7 +750,7 @@ function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic, act
 function CoachForm({ initial, programId, onSave, onCancel }) {
   const [form, setForm] = useState(initial || { coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" });
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
   const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="coach-form-overlay">
@@ -759,7 +759,7 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
         data-testid="coach-form">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><User className="w-4 h-4 text-pink-400" />{initial ? "Edit Coach" : "Add Coach"}</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><User className="w-4 h-4 text-teal-400" />{initial ? "Edit Coach" : "Add Coach"}</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="coach-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -800,7 +800,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   const [form, setForm] = useState({ type: "Phone Call", notes: "", outcome: "Positive", date_time: new Date().toISOString().slice(0, 16) });
   const [saving, setSaving] = useState(false);
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
   const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const save = async () => {
     if (!form.notes.trim()) { toast.error("Add a note"); return; }
@@ -817,7 +817,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
         data-testid="log-interaction-form">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-pink-400" />Log Interaction</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-teal-400" />Log Interaction</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="log-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -870,7 +870,7 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef(null);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
   const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const draftAI = async (type) => {
     if (!canUseAIDrafts) return;
@@ -950,10 +950,10 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
           {canUseAIDrafts && (
             <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
               <AlertCircle className="w-3 h-3 flex-shrink-0" />
-              AI uses your <a href="/profile" className="text-pink-400 hover:underline">athlete profile</a> to generate emails.
+              AI uses your <a href="/profile" className="text-teal-400 hover:underline">athlete profile</a> to generate emails.
             </p>
           )}
-          {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
+          {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-teal-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
         </div>
 
         {/* Form Body */}
@@ -991,7 +991,7 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
                   <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs"
                     style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.15)", color: "rgba(255,255,255,0.6)" }}
                     data-testid={`attachment-${att.file_id}`}>
-                    <Paperclip className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                    <Paperclip className="w-3 h-3 text-teal-500 flex-shrink-0" />
                     <span className="truncate max-w-[150px]">{att.filename}</span>
                     <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>({formatFileSize(att.size)})</span>
                     <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3 text-white/40" /></button>
@@ -1041,7 +1041,7 @@ function FollowUpScheduler({ program, onSaved, onCancel }) {
   const [date, setDate] = useState(program.next_action_due || "");
   const [action, setAction] = useState(program.next_action || "");
   const [saving, setSaving] = useState(false);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
   const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const save = async () => {
     setSaving(true);
@@ -1055,7 +1055,7 @@ function FollowUpScheduler({ program, onSaved, onCancel }) {
         data-testid="followup-scheduler">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Clock className="w-4 h-4 text-pink-400" />Schedule Follow-up</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Clock className="w-4 h-4 text-teal-400" />Schedule Follow-up</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="followup-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -1085,7 +1085,7 @@ function FollowUpScheduler({ program, onSaved, onCancel }) {
 function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
   const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const save = async () => {
     if (!note.trim()) { toast.error("Please describe what the coach said"); return; }
@@ -1271,7 +1271,7 @@ export default function RecruitingJourney() {
   const [nextStepDismissed, setNextStepDismissed] = useState(null);
   const [showJourneyDetails, setShowJourneyDetails] = useState(false);
 
-  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-pink-600" /></div>;
+  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-teal-600" /></div>;
   if (!program) return (
     <div className="text-center py-24">
       <p style={{ color: "var(--t-text-muted)" }}>Program not found</p>
@@ -1320,7 +1320,7 @@ export default function RecruitingJourney() {
               {rail && <PulseIndicator pulse={rail.pulse} />}
             </div>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-pink-700/15 text-pink-700">{program.division}</span>}
+              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-teal-700/15 text-teal-700">{program.division}</span>}
               {matchScore && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                   matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
@@ -1403,7 +1403,7 @@ export default function RecruitingJourney() {
               </p>
               <div className="flex gap-2 mt-3">
                 <button onClick={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-pink-700/15 text-pink-700 hover:bg-pink-700/25 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-700/15 text-teal-700 hover:bg-teal-700/25 transition-colors flex items-center gap-1.5"
                   data-testid="overdue-email-btn">
                   <Mail className="w-3.5 h-3.5" />Email Coach
                 </button>
@@ -1467,7 +1467,7 @@ export default function RecruitingJourney() {
           {coaches.length > 0 ? (
             <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-pink-700" />Coaches</h3>
+                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-teal-700" />Coaches</h3>
                 <div className="flex items-center gap-2">
                   {coachWatchAlert ? (
                     <div className="group relative inline-flex items-center gap-1">
@@ -1498,7 +1498,7 @@ export default function RecruitingJourney() {
                       </div>
                     </div>
                   )}
-                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-pink-700" /></button>
+                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-teal-700" /></button>
                 </div>
               </div>
               {/* Coach Watch Alert Detail */}
@@ -1533,7 +1533,7 @@ export default function RecruitingJourney() {
                         <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
                       </div>
                     </div>
-                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-pink-700 hover:text-pink-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
+                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
                     {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
                   </div>
                 ))}

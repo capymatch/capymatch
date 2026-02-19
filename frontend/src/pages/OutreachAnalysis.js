@@ -85,7 +85,7 @@ export default function OutreachAnalysis() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-pink-500 mb-3" />
+            <Loader2 className="w-8 h-8 animate-spin text-teal-500 mb-3" />
             <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Analyzing your outreach data...</p>
           </div>
         ) : error ? (
@@ -103,7 +103,7 @@ export default function OutreachAnalysis() {
             {/* Top Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <StatBox label="Schools Tracked" value={data.stats.total_schools} icon={Target} color="text-blue-400" />
-              <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-pink-400" />
+              <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-teal-400" />
               <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-emerald-400" />
               <StatBox label="Response Rate" value={`${data.stats.response_rate}%`} icon={TrendingUp} color="text-amber-400" />
             </div>
@@ -162,12 +162,12 @@ export default function OutreachAnalysis() {
                 {/* Next Steps */}
                 <div className="rounded-xl border p-4 mb-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                   <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-                    <Target className="w-4 h-4 text-pink-400" /> Recommended Next Steps
+                    <Target className="w-4 h-4 text-teal-400" /> Recommended Next Steps
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {(data.ai_insights.next_steps || []).map((step, i) => (
                       <div key={i} className="rounded-lg border p-2.5 flex items-start gap-2" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-                        <span className="w-5 h-5 rounded-full bg-pink-600/15 text-pink-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-teal-600/15 text-teal-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                           {i + 1}
                         </span>
                         <span className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{step}</span>
@@ -188,7 +188,7 @@ export default function OutreachAnalysis() {
                           <span className="text-xs w-24 text-right" style={{ color: "var(--t-text-muted)" }}>{type}</span>
                           <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
                             <div
-                              className="h-full rounded-full bg-pink-500"
+                              className="h-full rounded-full bg-teal-500"
                               style={{ width: `${(count / data.stats.total_interactions) * 100}%` }}
                             />
                           </div>
@@ -266,7 +266,7 @@ function CoachWatch({ isPremium }) {
       )}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Shield className="w-4 h-4 text-pink-400" />
+          <Shield className="w-4 h-4 text-teal-400" />
           <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Coach Watch</h3>
           <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/15 text-amber-400">PREMIUM</span>
         </div>
@@ -289,7 +289,7 @@ function CoachWatch({ isPremium }) {
 
       {scanning ? (
         <div className="flex flex-col items-center justify-center py-10">
-          <Loader2 className="w-6 h-6 animate-spin text-pink-500 mb-2" />
+          <Loader2 className="w-6 h-6 animate-spin text-teal-500 mb-2" />
           <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Scanning news for coaching changes...</p>
           <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>This may take 30-60 seconds</p>
         </div>

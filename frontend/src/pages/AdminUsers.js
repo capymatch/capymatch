@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  pro: "bg-pink-500/15 text-pink-400 border-pink-500/20",
+  pro: "bg-teal-500/15 text-teal-400 border-teal-500/20",
   premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
@@ -85,7 +85,7 @@ function CreateUserModal({ open, onClose, onCreated }) {
         </div>
         <div className="flex justify-end gap-2 mt-6">
           <Button variant="outline" onClick={onClose} className="text-xs" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>Cancel</Button>
-          <Button onClick={handleCreate} disabled={saving} className="text-xs bg-pink-600 hover:bg-pink-700 text-white" data-testid="create-user-submit">
+          <Button onClick={handleCreate} disabled={saving} className="text-xs bg-teal-600 hover:bg-teal-700 text-white" data-testid="create-user-submit">
             {saving ? "Creating..." : "Create User"}
           </Button>
         </div>
@@ -150,7 +150,7 @@ export default function AdminUsers() {
             <SelectItem value="premium">Premium</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setShowCreate(true)} className="bg-pink-600 hover:bg-pink-700 text-white text-xs ml-auto" data-testid="admin-create-user-btn">
+        <Button onClick={() => setShowCreate(true)} className="bg-teal-600 hover:bg-teal-700 text-white text-xs ml-auto" data-testid="admin-create-user-btn">
           <UserPlus className="w-4 h-4 mr-1.5" strokeWidth={1.5} /> New User
         </Button>
       </div>
@@ -186,7 +186,7 @@ export default function AdminUsers() {
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-pink-600/15 flex items-center justify-center text-pink-400 text-xs font-bold flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-teal-600/15 flex items-center justify-center text-teal-400 text-xs font-bold flex-shrink-0">
                           {(u.name || u.athlete_name || "?").charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium text-[13px] truncate" style={{ color: "var(--t-text)" }}>
