@@ -523,18 +523,22 @@ async def _search_volleyball_url(http_client, university_name):
     try:
         from ddgs import DDGS
         query = f"{university_name} women's volleyball coaches"
-        results = list(DDGS().text(query, max_results=5))
+        results = list(DDGS().text(query, max_results=8))
+        # Filter out non-athletics sites
+        skip_domains = ["wikipedia", "facebook", "twitter", "instagram", "youtube", "reddit",
+                        "volleyballworld", "maxpreps", "prepvolleyball", "ncaa.com", "espn.com",
+                        "niche.com", "usnews.com"]
         for r in results:
             href = r.get("href", "")
             if not href:
                 continue
             lower = href.lower()
-            # Skip Wikipedia, social media, etc.
-            if any(s in lower for s in ["wikipedia", "facebook", "twitter", "instagram", "youtube", "reddit"]):
+            if any(s in lower for s in skip_domains):
                 continue
-            # Look for volleyball in the URL
-            if "volleyball" in lower and ("/sports/" in lower or "volleyball" in lower):
-                # Normalize: strip sub-pages
+            if "volleyball" not in lower:
+                continue
+            # Must be a .edu, .com, or .org athletics-style site
+            if "/sports/" in lower or "/staff-directory/" in lower or "volleyball" in lower:
                 base = re.sub(r'/(coaches|roster|schedule|news|stats|media|photos|videos).*', '', href)
                 try:
                     resp = await http_client.get(base, headers=HEADERS, follow_redirects=True, timeout=8)
