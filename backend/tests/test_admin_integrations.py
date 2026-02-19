@@ -191,7 +191,7 @@ class TestStripeCheckoutRegression:
             f"{BASE_URL}/api/stripe/checkout",
             json={
                 "plan": "pro",
-                "origin_url": "https://volleyball-recruit.preview.emergentagent.com/settings"
+                "origin_url": "https://volley-recruit-1.preview.emergentagent.com/settings"
             }
         )
         
