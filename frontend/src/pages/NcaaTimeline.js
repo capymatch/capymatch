@@ -212,8 +212,8 @@ function TimelineBar({ periods, division }) {
           ))}
         </div>
         {/* NOW marker */}
-        <div className="absolute top-[-6px] bottom-[-6px] w-[2px] bg-teal-600 z-10" style={{ left: `${nowPercent}%` }}>
-          <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-extrabold tracking-wider text-slate-500 bg-[var(--t-surface)] px-1.5 py-0.5 rounded border border-teal-600/30">NOW</span>
+        <div className="absolute top-[-6px] bottom-[-6px] w-[2px] bg-slate-700 z-10" style={{ left: `${nowPercent}%` }}>
+          <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[7px] font-extrabold tracking-wider text-slate-600 bg-[var(--t-surface)] px-1.5 py-0.5 rounded border border-slate-400/40">NOW</span>
         </div>
       </div>
 
@@ -246,9 +246,9 @@ export default function NcaaTimeline() {
     <div className="space-y-5" data-testid="ncaa-timeline">
       {/* Current Period Banner */}
       <div className={`rounded-xl border-l-4 border p-4 sm:p-5 ${
-        currentPeriod.type === "contact" ? "border-l-slate-500" :
-        currentPeriod.type === "dead" ? "border-l-red-500" :
-        currentPeriod.type === "evaluation" ? "border-l-blue-500" : "border-l-amber-500"
+        currentPeriod.type === "contact" ? "border-l-teal-700" :
+        currentPeriod.type === "dead" ? "border-l-red-600" :
+        currentPeriod.type === "evaluation" ? "border-l-indigo-600" : "border-l-amber-600"
       }`} style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="current-period-banner">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -284,7 +284,7 @@ export default function NcaaTimeline() {
         {DIVISIONS.map(d => (
           <button key={d} onClick={() => setDivision(d)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-              d === division ? "bg-teal-600/15 border-teal-600/40 text-slate-500" : "border-[var(--t-border)] hover:border-teal-600/30"
+              d === division ? "bg-slate-800/10 border-slate-600/30 text-slate-700" : "border-[var(--t-border)] hover:border-slate-400/40"
             }`}
             style={d !== division ? { color: "var(--t-text-muted)" } : {}}
             data-testid={`division-chip-${d}`}>
