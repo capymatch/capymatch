@@ -131,10 +131,10 @@ const DATE_ICON_BG = {
 
 function StatusTag({ status, range }) {
   if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#e0e4e8", color: "#4a5568" }}>Passed</span>;
-  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#dde0f0", color: "#3d4580" }}>Info</span>;
+  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#5568a8", color: "#ffffff" }}>Info</span>;
   const days = daysUntilDate(range);
-  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#c8e6e3", color: "#1a5c56" }}>Active Now</span>;
-  return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#f0e4c8", color: "#7a5a1a" }}>{days} days away</span>;
+  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#3d9e8f", color: "#ffffff" }}>Active Now</span>;
+  return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#d4a23c", color: "#ffffff" }}>{days} days away</span>;
 }
 
 // ── Visual Timeline Bar ──
