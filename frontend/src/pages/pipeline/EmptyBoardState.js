@@ -233,10 +233,10 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-2" style={{ color: "var(--t-text)" }}>
               {!profileDone
-                ? <>First, let's set up <span style={{ color: "#e8628a" }}>the athlete profile</span></>
+                ? <>First, let's set up <span style={{ color: "#2ec4b6" }}>the athlete profile</span></>
                 : !gmailConnected
-                ? <>Connect <span style={{ color: "#e8628a" }}>Gmail</span> to email coaches</>
-                : (firstName ? <>Let's build <span style={{ color: "#e8628a" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#e8628a" }}>target list</span></>)
+                ? <>Connect <span style={{ color: "#2ec4b6" }}>Gmail</span> to email coaches</>
+                : (firstName ? <>Let's build <span style={{ color: "#2ec4b6" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#2ec4b6" }}>target list</span></>)
               }
             </h2>
             <p className="text-sm leading-relaxed max-w-lg" style={{ color: "var(--t-text-secondary)" }}>
@@ -329,7 +329,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 </p>
               </div>
             </div>
-            <button onClick={() => navigate("/knowledge-base?tab=recommended")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#e8628a" }} data-testid="view-all-matches-btn">
+            <button onClick={() => navigate("/knowledge-base?tab=recommended")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="view-all-matches-btn">
               View all matches <ChevronRight className="w-3 h-3" />
             </button>
           </div>

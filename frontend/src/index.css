@@ -105,12 +105,12 @@
     --t-text-secondary: #a0aec0;
     --t-text-muted: #718096;
     --t-text-faint: #4a5568;
-    --t-accent: #e8628a;
+    --t-accent: #2ec4b6;
     --t-accent-hover: #f48fb1;
     --t-nav-bg: #131820;
     --t-nav-border: rgba(255,255,255,0.07);
     --t-nav-active-bg: rgba(232,98,138,0.14);
-    --t-nav-active-text: #e8628a;
+    --t-nav-active-text: #2ec4b6;
     --t-nav-text: rgba(255,255,255,0.7);
     --t-nav-text-hover: #ffffff;
     --t-input-bg: #1c2230;

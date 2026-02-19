@@ -85,7 +85,7 @@ function SpotlightCard({ program, onClick }) {
       </div>
       <div className="pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
         <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-          <span className="font-semibold" style={{ color: "#e8628a" }}>Next step: </span>
+          <span className="font-semibold" style={{ color: "#2ec4b6" }}>Next step: </span>
           {nextStep}
         </p>
       </div>
@@ -105,7 +105,7 @@ function FeedItem({ dotColor, title, titleHighlight, detail, time, showLine = tr
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-          {title} {titleHighlight && <span style={{ color: "#e8628a" }}>{titleHighlight}</span>}
+          {title} {titleHighlight && <span style={{ color: "#2ec4b6" }}>{titleHighlight}</span>}
         </p>
         {detail && <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{detail}</p>}
       </div>
@@ -129,7 +129,7 @@ function FunnelBar({ count, maxCount, label, color }) {
 /* ── Event Card ── */
 function EventCard({ event, onClick }) {
   const typeBg = {
-    Camp: { bg: "rgba(232,98,138,0.12)", color: "#e8628a" },
+    Camp: { bg: "rgba(232,98,138,0.12)", color: "#2ec4b6" },
     Showcase: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
     Tournament: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
     Visit: { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
@@ -292,7 +292,7 @@ export default function Dashboard() {
   const interactionDotColor = (type) => {
     const t = (type || "").toLowerCase();
     if (t.includes("reply") || t.includes("coach")) return "#10b981";
-    if (t.includes("email") || t.includes("follow")) return "#e8628a";
+    if (t.includes("email") || t.includes("follow")) return "#2ec4b6";
     if (t.includes("camp")) return "#f59e0b";
     if (t.includes("visit")) return "#06b6d4";
     if (t.includes("note")) return "#3b82f6";
@@ -362,7 +362,7 @@ export default function Dashboard() {
             </div>
             <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Today's Actions</h3>
           </div>
-          <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#e8628a" }} data-testid="view-all-schools-btn">
+          <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="view-all-schools-btn">
             View all schools <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -438,7 +438,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setSpotlightExpanded(!spotlightExpanded)}
                 className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80"
-                style={{ color: "#e8628a" }}
+                style={{ color: "#2ec4b6" }}
                 data-testid="spotlight-toggle-btn"
               >
                 {spotlightExpanded ? "Show less" : `View all ${spotlightSchools.length}`}
@@ -473,11 +473,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(232,98,138,0.12)" }}>
-                <BarChart3 className="w-4 h-4" style={{ color: "#e8628a" }} strokeWidth={2} />
+                <BarChart3 className="w-4 h-4" style={{ color: "#2ec4b6" }} strokeWidth={2} />
               </div>
               <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Pipeline Snapshot</h3>
             </div>
-            <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#e8628a" }} data-testid="open-board-btn">
+            <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="open-board-btn">
               Open board <ChevronRight className="w-3 h-3" />
             </button>
           </div>
@@ -505,7 +505,7 @@ export default function Dashboard() {
             <div className="text-center py-12 px-5">
               <BarChart3 className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Add schools to see your pipeline</p>
-              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#e8628a" }}>+ Add a school</button>
+              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }}>+ Add a school</button>
             </div>
           )}
         </div>
@@ -556,7 +556,7 @@ export default function Dashboard() {
             </div>
             <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Coming Up</h3>
           </div>
-          <button onClick={() => navigate("/calendar")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#e8628a" }} data-testid="open-calendar-btn">
+          <button onClick={() => navigate("/calendar")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="open-calendar-btn">
             Open calendar <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -570,7 +570,7 @@ export default function Dashboard() {
           <div className="text-center py-10 px-5">
             <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
             <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
-            <button onClick={() => navigate("/calendar")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#e8628a" }}>+ Add event</button>
+            <button onClick={() => navigate("/calendar")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }}>+ Add event</button>
           </div>
         )}
       </div>

@@ -21,7 +21,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
           <div className="flex items-center gap-2.5">
             <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>To</span>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[13px] font-semibold"
-              style={{ background: "rgba(232,98,138,0.1)", border: "1px solid rgba(232,98,138,0.2)", color: "#e8628a" }}
+              style={{ background: "rgba(232,98,138,0.1)", border: "1px solid rgba(232,98,138,0.2)", color: "#2ec4b6" }}
               data-testid="preview-recipient-badge">
               <User className="w-3.5 h-3.5 opacity-70" />
               {coachName || to}
@@ -78,7 +78,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
             onClick={onConfirm}
             disabled={sending}
             className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(232,98,138,0.4)]"
-            style={{ background: "linear-gradient(135deg, #e8628a, #d63659)" }}
+            style={{ background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}
             data-testid="preview-confirm-send-btn">
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             {sending ? "Sending..." : "Confirm & Send"}
