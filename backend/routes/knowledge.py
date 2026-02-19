@@ -102,22 +102,31 @@ async def add_to_board(request: Request):
     return doc
 
 
-async def _search_questionnaire_url(university_name, domain):
+async def _search_questionnaire_url(university_name, domain, website=None):
     """Use DuckDuckGo to find the recruiting questionnaire URL for a school."""
     try:
-        from duckduckgo_search import DDGS
-        queries = [
-            f'"{university_name}" volleyball recruiting questionnaire',
-            f'site:{domain} volleyball recruiting questionnaire',
-        ]
+        from ddgs import DDGS
+        # Extract athletics domain from website URL
+        athletics_domain = None
+        if website:
+            from urllib.parse import urlparse
+            parsed = urlparse(website)
+            athletics_domain = parsed.netloc or parsed.path.split("/")[0]
+
+        queries = []
+        if athletics_domain:
+            queries.append(f'{athletics_domain} volleyball recruiting questionnaire')
+            queries.append(f'site:{athletics_domain} recruiting questionnaire')
+        queries.append(f'"{university_name}" volleyball recruiting questionnaire form')
+
         skip_domains = ["wikipedia", "facebook", "twitter", "instagram", "youtube", "reddit",
-                        "espn.com", "ncaa.com", "maxpreps", "niche.com", "usnews.com"]
-        questionnaire_keywords = ["questionnaire", "prospect", "recruit-form", "recruiting-form",
-                                  "recruit/form", "prospective", "interest-form", "recruit"]
+                        "espn.com", "ncaa.com", "maxpreps", "niche.com", "usnews.com",
+                        "tiktok.com", "zhihu.com", "britannica", "ncsasports", "fieldlevel"]
+        questionnaire_keywords = ["questionnaire", "prospect", "recruit", "form", "interest"]
 
         for query in queries:
             try:
-                results = list(DDGS().text(query, max_results=10))
+                results = list(DDGS().text(query, max_results=8, region="us-en"))
                 for r in results:
                     href = r.get("href", "")
                     if not href:
@@ -125,7 +134,17 @@ async def _search_questionnaire_url(university_name, domain):
                     lower = href.lower()
                     if any(s in lower for s in skip_domains):
                         continue
-                    if any(kw in lower for kw in questionnaire_keywords):
+                    # Prefer URLs from the athletics domain
+                    if athletics_domain and athletics_domain in lower:
+                        if any(kw in lower for kw in questionnaire_keywords):
+                            return href
+                # Second pass: any URL with questionnaire keywords
+                for r in results:
+                    href = r.get("href", "")
+                    lower = href.lower()
+                    if any(s in lower for s in skip_domains):
+                        continue
+                    if any(kw in lower for kw in ["questionnaire", "prospect-form", "recruit/form", "recruiting-form"]):
                         return href
             except Exception:
                 continue
