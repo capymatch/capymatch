@@ -29,26 +29,25 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
 
   return (
     <>
-      {open && <div className="fixed inset-0 bg-black/40 z-[199]" onClick={onClose} data-testid="filter-overlay" />}
+      {open && <div className="fixed inset-0 bg-black/20 z-[199]" onClick={onClose} data-testid="filter-overlay" />}
       <div className={`fixed top-0 right-0 w-[360px] max-w-[90vw] h-full z-[200] transition-transform duration-300 ease-out overflow-y-auto ${open ? "translate-x-0" : "translate-x-full"}`}
-        style={{ backgroundColor: "#161b25", borderLeft: "1px solid rgba(255,255,255,0.06)", boxShadow: open ? "-10px 0 40px rgba(0,0,0,0.4)" : "none" }}
+        style={{ backgroundColor: "#fff", borderLeft: "1px solid #e2e8f0", boxShadow: open ? "-10px 0 40px rgba(0,0,0,0.08)" : "none" }}
         data-testid="filter-panel">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <span className="text-[15px] font-bold text-white">Filters</span>
-            <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} data-testid="filter-close">
-              <X className="w-3.5 h-3.5 text-white/50" />
+            <span className="text-[15px] font-bold text-slate-800">Filters</span>
+            <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100" data-testid="filter-close">
+              <X className="w-3.5 h-3.5 text-slate-400" />
             </button>
           </div>
 
           {/* Division */}
           <div className="mb-5">
-            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Division</div>
+            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-slate-400 mb-2.5">Division</div>
             <div className="flex flex-wrap gap-1.5">
               {divisions.map(d => (
                 <button key={d} onClick={() => onDivision(d)} data-testid={`filter-div-${d.toLowerCase()}`}
-                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterDivision === d ? "text-[#e8628a] border-[#e8628a]/25" : "text-white/40 border-white/[0.06] hover:text-white/60 hover:border-white/12"}`}
-                  style={{ backgroundColor: filterDivision === d ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterDivision === d ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all border ${filterDivision === d ? "text-[#e8628a] bg-[#e8628a]/10 border-[#e8628a]/25" : "text-slate-500 bg-slate-50 border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}>
                   {d}
                 </button>
               ))}
@@ -57,12 +56,11 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
 
           {/* Region */}
           <div className="mb-5">
-            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Region</div>
+            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-slate-400 mb-2.5">Region</div>
             <div className="flex flex-wrap gap-1.5">
               {regions.map(r => (
                 <button key={r} onClick={() => onRegion(r)} data-testid={`filter-reg-${r.toLowerCase().replace(/\s+/g, "-")}`}
-                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterRegion === r ? "text-[#e8628a]" : "text-white/40 hover:text-white/60"}`}
-                  style={{ backgroundColor: filterRegion === r ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterRegion === r ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all border ${filterRegion === r ? "text-[#e8628a] bg-[#e8628a]/10 border-[#e8628a]/25" : "text-slate-500 bg-slate-50 border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}>
                   {r}
                 </button>
               ))}
@@ -72,19 +70,17 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
           {/* Conference */}
           {conferences.length > 0 && (
             <div className="mb-5">
-              <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Conference</div>
+              <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-slate-400 mb-2.5">Conference</div>
               <div className="flex flex-wrap gap-1.5">
                 {visibleConf.map(c => (
                   <button key={c} onClick={() => onConference(c)} data-testid={`filter-conf-${c.toLowerCase().replace(/\s+/g, "-")}`}
-                    className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterConference === c ? "text-[#e8628a]" : "text-white/40 hover:text-white/60"}`}
-                    style={{ backgroundColor: filterConference === c ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterConference === c ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                    className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all border ${filterConference === c ? "text-[#e8628a] bg-[#e8628a]/10 border-[#e8628a]/25" : "text-slate-500 bg-slate-50 border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}>
                     {c}
                   </button>
                 ))}
                 {conferences.length > 8 && (
                   <button onClick={() => setShowAllConf(!showAllConf)}
-                    className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/30 hover:text-white/50 transition-colors"
-                    style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 border border-slate-200">
                     {showAllConf ? "Show less" : `+${conferences.length - 8} more`}
                   </button>
                 )}
