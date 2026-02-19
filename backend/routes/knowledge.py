@@ -116,8 +116,8 @@ async def _search_questionnaire_url(university_name, domain, website=None):
         trusted_domains = [d for d in [athletics_domain, domain] if d]
         queries = []
         if athletics_domain:
-            queries.append(f'site:{athletics_domain} recruiting questionnaire')
-            queries.append(f'{athletics_domain} volleyball recruiting questionnaire')
+            queries.append(f'site:{athletics_domain} volleyball recruiting questionnaire')
+            queries.append(f'{athletics_domain} women volleyball recruit questionnaire')
         queries.append(f'site:{domain} volleyball recruiting questionnaire')
 
         for query in queries:
