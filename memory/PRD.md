@@ -26,16 +26,17 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 20. Email preview/confirmation before sending
 21. "Find Schools" page redesign
 22. Dedicated single-school detail page
+23. Recruiting Questionnaire URL auto-discovery on School Info pages
 
 ## What's Been Implemented
-- **School Info Page**: New page with backend endpoint, on-demand College Scorecard API data
-- **Find Schools Redesign**: Rebuilt to match cleaner UI mockup
+- **School Info Page**: Card-based layout with stats, coach cards, and scorecard data
+- **Find Schools Redesign**: Dark-themed UI with smart chips, filters, grid/list views
 - **School Sorting**: By match percentage descending
 - **Global Color Palette**: Pink replaced with teal/navy palette across entire light theme
-- **Hybrid Theme**: Dark hero/banner + light content on Find Schools & School Info pages
-- **NCAA Timeline Color Fix** (Feb 2026): Replaced washed-out opacity-based colors with centralized COLORS system. Brighter mid-tone palette: Contact=#6ECEC0, Dead=#E09494, Evaluation=#96A4D0, Quiet=#E4C06A
-- **School Info Page Redesign** (Feb 2026): Redesigned all stat sections to card-based layout matching dark mockup. Added Key Statistics hero row, uppercase section headers with teal icons, individual stat cards with large values/labels/subtitles. Coach cards use teal accent.
-- **Subscription Pricing Redesign** (Feb 2026): Rebuilt UpgradeModal to match mockup. 3 cards: Starter (Free), Pro ($29/mo, Most Popular), Premium ($49/mo). Clean typography, teal checkmarks, centralized COLORS.
+- **NCAA Timeline Color Fix**: Centralized COLORS system with mid-tone palette
+- **School Info Page Redesign**: Card-based stat sections, Key Statistics hero row, teal accent coaching staff cards
+- **Subscription Pricing Redesign**: 3-card layout (Starter/Pro/Premium)
+- **Recruiting Questionnaire URL Discovery** (Feb 2026): Auto-discovers volleyball recruiting questionnaire URLs via DuckDuckGo search with scoring system. Caches results in DB. Displays "Fill out questionnaire" link on SchoolInfoPage. Supports school domains and 3rd-party platforms (armssoftware.com, fieldlevel.com, etc.)
 
 ## Key Architecture
 - Frontend: React + Tailwind + shadcn/ui
@@ -45,7 +46,8 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - External: College Scorecard API, DuckDuckGo Search, BeautifulSoup/lxml scraping
 
 ## Known Issues
-- Pipeline Tour tooltip disappears on off-screen elements (P1, VERIFICATION PENDING)
+- NCAA Timeline page colors unresolved (user paused, P1)
+- Pipeline Tour tooltip disappears on off-screen elements (P2, VERIFICATION PENDING)
 
 ## Upcoming Tasks (P1)
 - Refactor RecruitingJourney.js (extract 5 modals)
