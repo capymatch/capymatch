@@ -342,21 +342,19 @@ export default function UniversityKnowledgeBase() {
     <div data-testid="knowledge-base" className="max-w-[1280px] mx-auto">
       {/* Search + Filter Toggle */}
       <div className="flex gap-2.5 items-center mb-5" data-testid="search-row">
-        <div className="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-[14px]"
-          style={{ backgroundColor: "#161b25", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <Search className="w-[18px] h-[18px] text-white/30 flex-shrink-0" />
+        <div className="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-[14px] bg-white border border-slate-200">
+          <Search className="w-[18px] h-[18px] text-slate-300 flex-shrink-0" />
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setActiveBucket("all"); }}
             placeholder={`Search ${universities.length.toLocaleString()} colleges by name...`}
-            className="flex-1 bg-transparent border-none outline-none text-[14px] text-[#e2e8f0] placeholder:text-white/30"
+            className="flex-1 bg-transparent border-none outline-none text-[14px] text-slate-700 placeholder:text-slate-300"
             data-testid="kb-search"
           />
-          <span className="text-[11px] text-white/25 whitespace-nowrap">{filtered.length.toLocaleString()}</span>
+          <span className="text-[11px] text-slate-300 whitespace-nowrap">{filtered.length.toLocaleString()}</span>
         </div>
         <button onClick={() => setFiltersOpen(true)} data-testid="filter-toggle-btn"
-          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold text-white/50 transition-all hover:border-[#e8628a]/30 hover:text-[#e8628a]"
-          style={{ backgroundColor: "#161b25", border: "1px solid rgba(255,255,255,0.08)" }}>
+          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold text-slate-500 transition-all hover:border-[#e8628a]/30 hover:text-[#e8628a] bg-white border border-slate-200">
           <Filter className="w-4 h-4" />
           Filters
           {activeFilterCount > 0 && (
