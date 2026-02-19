@@ -4,10 +4,10 @@ import { Calendar, Clock, AlertCircle, FileText, GraduationCap, Award, Eye, Tent
 const DIVISIONS = ["D1", "D2", "D3", "NAIA"];
 
 const PERIOD_TYPES = {
-  contact: { label: "Contact", color: "border-[#a8d5d1] text-[#1a5c56]", dot: "bg-[#4a9e96]", desc: "Coaches can call, text, and email you directly", dotStyle: { backgroundColor: "#4a9e96" } },
-  dead: { label: "Dead", color: "border-[#e0b8b8] text-[#8b2020]", dot: "bg-[#c45a5a]", desc: "No in-person or off-campus contact allowed", dotStyle: { backgroundColor: "#c45a5a" } },
-  evaluation: { label: "Evaluation", color: "border-[#b8c0e0] text-[#2d3570]", dot: "bg-[#5a6aad]", desc: "Coaches can watch you compete but can't contact you off-campus", dotStyle: { backgroundColor: "#5a6aad" } },
-  quiet: { label: "Quiet", color: "border-[#e0d4b0] text-[#7a5a1a]", dot: "bg-[#c4a040]", desc: "Limited contact — coaches can only talk to you on campus", dotStyle: { backgroundColor: "#c4a040" } },
+  contact: { label: "Contact", dot: "bg-[#3d9e8f]", desc: "Coaches can call, text, and email you directly", dotStyle: { backgroundColor: "#3d9e8f" } },
+  dead: { label: "Dead", dot: "bg-[#c45555]", desc: "No in-person or off-campus contact allowed", dotStyle: { backgroundColor: "#c45555" } },
+  evaluation: { label: "Evaluation", dot: "bg-[#5568a8]", desc: "Coaches can watch you compete but can't contact you off-campus", dotStyle: { backgroundColor: "#5568a8" } },
+  quiet: { label: "Quiet", dot: "bg-[#d4a23c]", desc: "Limited contact — coaches can only talk to you on campus", dotStyle: { backgroundColor: "#d4a23c" } },
 };
 
 const MONTHS = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
