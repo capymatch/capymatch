@@ -107,41 +107,87 @@ async def _search_questionnaire_url(university_name, domain, website=None):
     try:
         from ddgs import DDGS
         from urllib.parse import urlparse
+
         athletics_domain = None
         if website:
-            parsed = urlparse(website)
-            athletics_domain = parsed.netloc or parsed.path.split("/")[0]
+            parsed = urlparse(website if website.startswith("http") else f"https://{website}")
+            athletics_domain = parsed.netloc.replace("www.", "")
 
-        # Only search with athletics domain or academic domain — both are "trusted"
-        # Only trust the athletics domain for URL matching (academic domain is too broad)
-        trusted_domains = [athletics_domain] if athletics_domain else [domain]
-        queries = []
-        candidates = []
+        # Known 3rd-party questionnaire platforms schools commonly use
+        questionnaire_platforms = ["armssoftware.com", "jumpforward.com", "formstack.com"]
+
+        # Build trusted domains list for this school
+        school_domains = set()
         if athletics_domain:
-            queries.append(f'site:{athletics_domain} volleyball recruiting questionnaire')
-            queries.append(f'{athletics_domain} women volleyball recruit questionnaire')
-        queries.append(f'site:{domain} volleyball recruiting questionnaire')
+            school_domains.add(athletics_domain)
+        if domain:
+            school_domains.add(domain)
+
+        # Use school name for a broader, more accurate search
+        short_name = university_name.split("–")[0].split("-")[0].strip() if university_name else domain
+        queries = [
+            f'"{short_name}" women volleyball recruiting questionnaire',
+            f'"{short_name}" volleyball prospect questionnaire form',
+        ]
+        if athletics_domain:
+            queries.insert(0, f'site:{athletics_domain} volleyball recruiting questionnaire')
+
+        scored = []  # list of (score, url)
 
         for query in queries:
             try:
                 results = list(DDGS().text(query, max_results=8, region="us-en"))
                 for r in results:
                     href = r.get("href", "")
-                    if not href:
+                    if not href or "bing.com/aclick" in href:
                         continue
-                    lower = href.lower()
-                    # Only accept URLs from the school's own domains
-                    if not any(td in lower for td in trusted_domains):
+                    title = (r.get("title") or "").lower()
+                    body = (r.get("body") or "").lower()
+                    url_lower = href.lower()
+                    combined = f"{url_lower} {title} {body}"
+
+                    # Skip results clearly from a different school
+                    if not any(sd in url_lower for sd in school_domains) and \
+                       not any(qp in url_lower for qp in questionnaire_platforms):
                         continue
-                    # Only match specific form/questionnaire keywords, not generic "recruit" news
-                    if any(kw in lower for kw in ["questionnaire", "prospect-form", "prospect_form", "interest-form", "recruit-form", "prospective-student-athlete"]):
-                        if any(vk in lower for vk in ["volleyball", "women", "wvb"]):
-                            return href
-                        candidates.append(href)
+
+                    score = 0
+
+                    # Must have questionnaire/form signal in title, body, or URL
+                    q_keywords = ["questionnaire", "prospect form", "prospect-form",
+                                  "prospective student", "recruiting form", "recruit info",
+                                  "recruiting information"]
+                    if any(kw in combined for kw in q_keywords):
+                        score += 40
+                    else:
+                        continue  # Skip if no questionnaire signal at all
+
+                    # Volleyball mention
+                    if any(vk in combined for vk in ["volleyball", "wvb", "w-vball"]):
+                        score += 30
+
+                    # From school's own domain (high trust)
+                    if any(sd in url_lower for sd in school_domains):
+                        score += 20
+
+                    # From known questionnaire platform (high trust)
+                    if any(qp in url_lower for qp in questionnaire_platforms):
+                        score += 15
+
+                    # Women's specific (vs men's)
+                    if "women" in combined or "girl" in combined:
+                        score += 10
+                    if "men's volleyball" in combined and "women" not in combined:
+                        score -= 20
+
+                    scored.append((score, href))
             except Exception:
                 continue
-        # Return best non-volleyball-specific candidate if no volleyball one found
-        return candidates[0] if candidates else None
+
+        if scored:
+            scored.sort(key=lambda x: x[0], reverse=True)
+            return scored[0][1]
+        return None
     except Exception as e:
         logger.warning(f"Questionnaire search failed for {university_name}: {e}")
     return None
