@@ -143,7 +143,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
         )}
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
           data-testid="top-match-add-btn"
-          className="flex-1 sm:flex-none sm:w-full py-2.5 px-4 sm:px-0 rounded-xl text-[13px] font-bold text-white transition-all"
+          className="w-full sm:flex-none sm:w-full py-2.5 px-4 sm:px-0 rounded-xl text-[13px] font-bold text-white transition-all"
           style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
           {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
