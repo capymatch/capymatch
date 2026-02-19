@@ -245,24 +245,35 @@ async def get_school_by_domain(domain: str, request: Request):
     if not uni:
         raise HTTPException(status_code=404, detail="University not found")
 
-    # Auto-fetch scorecard data if missing
-    if not uni.get("scorecard") or not uni["scorecard"].get("synced_at"):
-        scorecard = await _fetch_scorecard_for_school(uni)
-        if scorecard:
-            uni["scorecard"] = scorecard
-            await db.university_knowledge_base.update_one(
-                {"domain": domain},
-                {"$set": {"scorecard": scorecard}}
-            )
+    # Auto-fetch scorecard and questionnaire in parallel if missing
+    needs_scorecard = not uni.get("scorecard") or not uni["scorecard"].get("synced_at")
+    needs_questionnaire = uni.get("questionnaire_url") is None  # empty string means "searched, not found"
 
-    # Auto-fetch questionnaire URL if missing
-    if not uni.get("questionnaire_url"):
-        q_url = await _search_questionnaire_url(uni.get("university_name", ""), domain, uni.get("website"))
-        if q_url:
-            uni["questionnaire_url"] = q_url
+    if needs_scorecard or needs_questionnaire:
+        tasks = []
+        if needs_scorecard:
+            tasks.append(_fetch_scorecard_for_school(uni))
+        else:
+            tasks.append(asyncio.coroutine(lambda: None)() if False else asyncio.sleep(0))
+        if needs_questionnaire and not _bulk_status["running"]:
+            tasks.append(_search_questionnaire_url(uni.get("university_name", ""), domain, uni.get("website")))
+        else:
+            tasks.append(asyncio.sleep(0))
+
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        scorecard_result = results[0] if needs_scorecard else None
+        q_url_result = results[1] if needs_questionnaire and not _bulk_status["running"] else None
+
+        if scorecard_result and not isinstance(scorecard_result, (Exception, type(None))):
+            uni["scorecard"] = scorecard_result
             await db.university_knowledge_base.update_one(
-                {"domain": domain},
-                {"$set": {"questionnaire_url": q_url}}
+                {"domain": domain}, {"$set": {"scorecard": scorecard_result}}
+            )
+        if q_url_result and not isinstance(q_url_result, (Exception, type(None))):
+            uni["questionnaire_url"] = q_url_result
+            await db.university_knowledge_base.update_one(
+                {"domain": domain}, {"$set": {"questionnaire_url": q_url_result}}
             )
 
     try:
