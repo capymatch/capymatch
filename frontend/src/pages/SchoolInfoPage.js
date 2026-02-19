@@ -286,20 +286,39 @@ export default function SchoolInfoPage() {
         {/* ── Coaching Staff ── */}
         <SectionCard title="Coaching Staff" icon={Users} testId="coaching-staff-section">
           {coaches.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {coaches.map((c, i) => (
-                <div key={i} className="rounded-lg border border-slate-200/80 p-4 flex gap-3 items-start"
-                  style={{ borderLeft: "3px solid #2ec4b6" }}
-                  data-testid={`coach-card-${i}`}>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[12px] font-bold text-slate-800">{c.title || "Coach"}</div>
-                    <div className="text-[13px] text-slate-500 mt-0.5">{c.name}</div>
+                <div key={i} className="rounded-xl border border-slate-200/80 bg-white p-5" data-testid={`coach-card-${i}`}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
+                      <User className="w-5 h-5 text-[#2ec4b6]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[15px] font-bold text-slate-800">{c.name}</div>
+                      <div className="text-[12px] text-slate-400 mt-0.5">{c.title || "Coach"}</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 space-y-2">
                     {hasCoachAccess && c.email && (
-                      <a href={`mailto:${c.email}`} className="text-[11px] text-[#2ec4b6] hover:underline mt-1.5 inline-flex items-center gap-1">
-                        <Mail className="w-3 h-3" /> {c.email}
-                      </a>
+                      <div className="flex items-center gap-2.5">
+                        <Mail className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="text-[13px] text-[#2ec4b6] font-medium">{c.email}</span>
+                      </div>
+                    )}
+                    {hasCoachAccess && c.phone && (
+                      <div className="flex items-center gap-2.5">
+                        <Phone className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="text-[13px] text-slate-600">{c.phone}</span>
+                      </div>
                     )}
                   </div>
+                  {hasCoachAccess && c.email && (
+                    <a href={`mailto:${c.email}`}
+                      className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold border border-[#2ec4b6]/30 text-[#2ec4b6] hover:bg-[#2ec4b6]/5 transition-colors"
+                      data-testid={`coach-send-email-${i}`}>
+                      <Mail className="w-3.5 h-3.5" /> Send Email
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
