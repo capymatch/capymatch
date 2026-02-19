@@ -4,10 +4,10 @@ import { Calendar, Clock, AlertCircle, FileText, GraduationCap, Award, Eye, Tent
 const DIVISIONS = ["D1", "D2", "D3", "NAIA"];
 
 const PERIOD_TYPES = {
-  contact: { label: "Contact", color: "bg-emerald-500/20 border-emerald-500/30 text-emerald-400", dot: "bg-emerald-500/50", desc: "Coaches can call, text, and email you directly" },
-  dead: { label: "Dead", color: "bg-red-500/15 border-red-500/25 text-red-400", dot: "bg-red-500/40", desc: "No in-person or off-campus contact allowed" },
-  evaluation: { label: "Evaluation", color: "bg-blue-500/15 border-blue-500/25 text-blue-400", dot: "bg-blue-500/40", desc: "Coaches can watch you compete but can't contact you off-campus" },
-  quiet: { label: "Quiet", color: "bg-amber-500/12 border-amber-500/25 text-amber-400", dot: "bg-amber-500/35", desc: "Limited contact — coaches can only talk to you on campus" },
+  contact: { label: "Contact", color: "bg-teal-600/10 border-teal-600/20 text-teal-700", dot: "bg-teal-600/40", desc: "Coaches can call, text, and email you directly" },
+  dead: { label: "Dead", color: "bg-red-500/10 border-red-500/20 text-red-400", dot: "bg-red-500/40", desc: "No in-person or off-campus contact allowed" },
+  evaluation: { label: "Evaluation", color: "bg-blue-500/10 border-blue-500/20 text-blue-500", dot: "bg-blue-500/40", desc: "Coaches can watch you compete but can't contact you off-campus" },
+  quiet: { label: "Quiet", color: "bg-amber-500/10 border-amber-500/20 text-amber-500", dot: "bg-amber-500/35", desc: "Limited contact — coaches can only talk to you on campus" },
 };
 
 const MONTHS = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
