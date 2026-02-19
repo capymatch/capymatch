@@ -211,8 +211,8 @@ function TimelineBar({ periods, division }) {
       <div className="relative mb-3">
         <div className="flex gap-[2px] h-8 sm:h-9 rounded-md overflow-hidden">
           {segments.map((s, i) => (
-            <div key={i} className={`${barColors[s.type]} rounded-sm flex items-center justify-center overflow-hidden`}
-              style={{ width: `${s.width}%` }}>
+            <div key={i} className={`${barColors[s.type]} flex items-center justify-center overflow-hidden`}
+              style={{ width: `${s.width}%`, ...barBgStyles[s.type] }}>
               {s.type !== "gap" && s.width > 6 && (
                 <span className={`text-[8px] sm:text-[9px] font-bold uppercase tracking-wide ${textColors[s.type]}`}>{s.label}</span>
               )}
