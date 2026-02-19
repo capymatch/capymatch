@@ -194,27 +194,30 @@ export default function AdminIntegrations() {
     }
   };
 
-  const syncScorecard = async () => {
+  const syncScorecard = async (force = false) => {
     setSyncingScorecard(true);
     try {
-      const res = await api.post("/admin/integrations/scorecard/sync");
+      const res = await api.post("/admin/integrations/scorecard/sync", { force });
       if (res.data.status === "already_running") {
         toast.info("Sync already in progress...");
       } else {
-        toast.success(`Sync started — ${res.data.remaining} schools to sync (${res.data.already_synced} already done)`);
+        toast.success(force
+          ? `Full rebuild started — matching ${res.data.total} schools by domain`
+          : `Sync started — ${res.data.total} schools to sync`);
       }
       // Poll for progress
       const poll = setInterval(async () => {
         try {
           const status = await api.get("/admin/integrations/scorecard/sync-status");
           const d = status.data;
-          setSyncProgress(`${d.synced + d.failed} / ${d.total}`);
+          const phase = d.phase === "downloading" ? "Downloading..." : `${d.synced + d.failed} / ${d.total}`;
+          setSyncProgress(phase);
           if (d.done || !d.running) {
             clearInterval(poll);
             setSyncingScorecard(false);
             setSyncProgress("");
             if (d.synced > 0) {
-              toast.success(`Sync complete — ${d.synced} synced, ${d.failed} failed`);
+              toast.success(`Sync complete — ${d.synced} matched, ${d.failed} unmatched`);
             }
             fetchIntegrations();
           }
