@@ -1399,19 +1399,11 @@ export default function RecruitingJourney() {
       )}
 
       {/* ─── Inline Forms ─── */}
-      {activeForm === "replied" && <div className="mt-5"><MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "log" && <div className="mt-5"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "email" && <div className="mt-5"><EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
+      {activeForm === "replied" && <MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "log" && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "email" && <EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "coach" && <div className="mt-5"><CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} /></div>}
-      {activeForm === "followup" && (
-        <div className="mt-5 rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Schedule Follow-up</h3>
-            <button onClick={closeForm} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
-          </div>
-          <FollowUpScheduler program={program} onSaved={() => { closeForm(); fetchData(); }} />
-        </div>
-      )}
+      {activeForm === "followup" && <FollowUpScheduler program={program} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
 
       {/* ─── Main Grid: Conversation + At a Glance ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
