@@ -14,12 +14,12 @@ function MatchRing({ score }) {
   return (
     <div className="text-center flex-shrink-0" data-testid="match-score-ring">
       <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r={r} fill="none" stroke="#f1f5f9" strokeWidth="6" />
+        <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
         <circle cx="50" cy="50" r={r} fill="none" stroke="#e8628a" strokeWidth="6"
           strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
           transform="rotate(-90 50 50)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
         <text x="50" y="46" textAnchor="middle" fill="#e8628a" fontSize="24" fontWeight="800">{score}%</text>
-        <text x="50" y="60" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="600" letterSpacing="1">MATCH</text>
+        <text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" letterSpacing="1">MATCH</text>
       </svg>
     </div>
   );
@@ -27,42 +27,43 @@ function MatchRing({ score }) {
 
 function BentoCard({ value, label, sub, pink }) {
   return (
-    <div className="rounded-[14px] p-4 text-center transition-colors border border-slate-200 hover:border-[#e8628a]/30 bg-white"
-      data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-      <div className={`text-[22px] sm:text-[26px] font-extrabold mb-1 tracking-tight ${pink ? "text-[#e8628a]" : "text-slate-800"}`}>{value}</div>
-      <div className="text-[10px] text-slate-400 uppercase tracking-[1px] font-semibold">{label}</div>
-      {sub && <div className="text-[11px] text-slate-300 mt-1">{sub}</div>}
+    <div className="rounded-[14px] p-4 text-center transition-colors border border-white/[0.06] hover:border-[#e8628a]/15"
+      style={{ backgroundColor: "#161b25" }} data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className={`text-[22px] sm:text-[26px] font-extrabold mb-1 tracking-tight ${pink ? "text-[#e8628a]" : "text-white"}`}>{value}</div>
+      <div className="text-[10px] text-white/35 uppercase tracking-[1px] font-semibold">{label}</div>
+      {sub && <div className="text-[11px] text-white/25 mt-1">{sub}</div>}
     </div>
   );
 }
 
 function CoachCard({ coach, onEmail }) {
   return (
-    <div className="rounded-[14px] p-5 flex gap-3.5 items-start border border-slate-200 hover:border-[#e8628a]/30 transition-colors bg-white"
-      data-testid={`coach-card-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}>
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#e8628a]/10">
+    <div className="rounded-[14px] p-5 flex gap-3.5 items-start border border-white/[0.06] hover:border-[#e8628a]/15 transition-colors"
+      style={{ backgroundColor: "#161b25" }} data-testid={`coach-card-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}>
+      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(232,98,138,0.1)" }}>
         <User className="w-5 h-5 text-[#e8628a]" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-bold text-slate-800">{coach.name}</div>
-        <div className="text-[11px] text-slate-400 mb-2.5">{coach.title || "Coach"}</div>
+        <div className="text-[14px] font-bold text-white">{coach.name}</div>
+        <div className="text-[11px] text-white/35 mb-2.5">{coach.title || "Coach"}</div>
         <div className="flex flex-col gap-1">
           {coach.email && (
-            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
-              <Mail className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-[12px] text-white/50">
+              <Mail className="w-3.5 h-3.5 text-white/25 flex-shrink-0" />
               <a href={`mailto:${coach.email}`} className="text-[#e8628a] hover:underline truncate">{coach.email}</a>
             </div>
           )}
           {coach.phone && (
-            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
-              <Phone className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-[12px] text-white/50">
+              <Phone className="w-3.5 h-3.5 text-white/25 flex-shrink-0" />
               {coach.phone}
             </div>
           )}
         </div>
         {coach.email && (
           <button onClick={() => onEmail(coach)} data-testid={`email-coach-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}
-            className="mt-3 px-3.5 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors bg-[#e8628a]/10 text-[#e8628a] border border-[#e8628a]/20 hover:bg-[#e8628a]/20">
+            className="mt-3 px-3.5 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors"
+            style={{ backgroundColor: "rgba(232,98,138,0.1)", color: "#e8628a", border: "1px solid rgba(232,98,138,0.2)" }}>
             <Mail className="w-3 h-3" /> Send Email
           </button>
         )}
@@ -73,13 +74,13 @@ function CoachCard({ coach, onEmail }) {
 
 function DetailRow({ label, value, isLink }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-b-0">
-      <span className="text-[12px] text-slate-400 font-medium">{label}</span>
+    <div className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-b-0">
+      <span className="text-[12px] text-white/40 font-medium">{label}</span>
       {isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
           className="text-[13px] text-[#e8628a] font-semibold hover:underline truncate max-w-[200px]">{value.replace(/^https?:\/\//, "")}</a>
       ) : (
-        <span className="text-[13px] text-slate-700 font-semibold">{value}</span>
+        <span className="text-[13px] text-white font-semibold">{value}</span>
       )}
     </div>
   );
@@ -151,51 +152,57 @@ export default function SchoolInfoPage() {
   };
 
   return (
-    <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" data-testid="school-info-page">
+    <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" style={{ background: "#0f1219", minHeight: "100vh" }} data-testid="school-info-page">
       {/* Back link */}
       <button onClick={() => navigate(-1)} data-testid="back-button"
-        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#e8628a] transition-colors">
+        className="inline-flex items-center gap-1.5 text-[12px] text-white/35 font-semibold mb-5 pt-6 hover:text-[#e8628a] transition-colors">
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
       {/* Hero Header */}
-      <div className="rounded-[20px] overflow-hidden mb-6 border border-slate-200 bg-white shadow-sm"
+      <div className="rounded-[20px] overflow-hidden mb-6 border border-white/[0.06]"
+        style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
         <div className="p-6 sm:p-9 flex flex-col sm:flex-row gap-5 sm:gap-7 items-center sm:items-start">
           <UniversityLogo domain={school.domain} name={school.university_name} size={80}
-            className="rounded-2xl border border-slate-200" />
+            className="rounded-2xl border border-white/[0.06]" />
           <div className="flex-1 min-w-0 text-center sm:text-left">
-            <h1 className="text-2xl sm:text-[28px] font-extrabold text-slate-800 tracking-tight mb-2 leading-tight" data-testid="school-name">
+            <h1 className="text-2xl sm:text-[28px] font-extrabold text-white tracking-tight mb-2 leading-tight" data-testid="school-name">
               {school.university_name}
             </h1>
             <div className="flex flex-wrap items-center gap-2 mb-4 justify-center sm:justify-start">
               {school.division && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-bold bg-[#e8628a]/15 text-[#e8628a]" data-testid="school-division">{school.division}</span>
+                <span className="px-3 py-1 rounded-lg text-[12px] font-bold" data-testid="school-division"
+                  style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#e8628a" }}>{school.division}</span>
               )}
               {school.conference && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold bg-slate-100 text-slate-500">{school.conference}</span>
+                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
+                  style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>{school.conference}</span>
               )}
               {school.region && (
-                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold bg-slate-100 text-slate-500">{school.region}</span>
+                <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
+                  style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>{school.region}</span>
               )}
             </div>
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
               <button onClick={addToBoard} disabled={adding || school.on_board} data-testid="add-to-board-btn"
                 className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
                 style={school.on_board
-                  ? { background: "#10b981", color: "#fff" }
+                  ? { background: "rgba(16,185,129,0.2)", color: "#10b981" }
                   : { background: "linear-gradient(135deg, #e8628a, #d63659)" }}>
                 {school.on_board ? <><Check className="w-4 h-4" /> On Your Board</> : <><Plus className="w-4 h-4" /> {adding ? "Adding..." : "Add to Board"}</>}
               </button>
               {coaches[0]?.email && (
                 <a href={`mailto:${coaches[0].email}`} data-testid="email-coach-hero-btn"
-                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all bg-slate-100 text-slate-600 border border-slate-200 hover:border-[#e8628a]/30 hover:text-[#e8628a]">
+                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
+                  style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   <Mail className="w-4 h-4" /> Email Coach
                 </a>
               )}
               {school.website && (
                 <a href={school.website} target="_blank" rel="noreferrer" data-testid="visit-website-btn"
-                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all bg-slate-100 text-slate-600 border border-slate-200 hover:border-[#e8628a]/30 hover:text-[#e8628a]">
+                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
+                  style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   <ExternalLink className="w-4 h-4" /> Visit Website
                 </a>
               )}
@@ -207,7 +214,8 @@ export default function SchoolInfoPage() {
               {school.match_reasons?.length > 0 && (
                 <div className="flex flex-wrap gap-1 justify-center mt-1.5">
                   {school.match_reasons.map(r => (
-                    <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium bg-[#e8628a]/10 text-[#e8628a]/70 border border-[#e8628a]/15">{r}</span>
+                    <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
+                      style={{ backgroundColor: "rgba(232,98,138,0.1)", color: "rgba(232,98,138,0.7)", border: "1px solid rgba(232,98,138,0.15)" }}>{r}</span>
                   ))}
                 </div>
               )}
@@ -219,7 +227,7 @@ export default function SchoolInfoPage() {
       {/* Key Statistics */}
       {hasScorecardStats && (
         <div className="mb-7" data-testid="key-statistics-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
             <Activity className="w-3.5 h-3.5 text-[#e8628a]" /> Key Statistics
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -235,7 +243,7 @@ export default function SchoolInfoPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {coaches.length > 0 && (
           <div data-testid="coaching-staff-section">
-            <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
+            <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
               <Users className="w-3.5 h-3.5 text-[#e8628a]" /> Coaching Staff
             </div>
             <div className="flex flex-col gap-2.5">
@@ -247,10 +255,10 @@ export default function SchoolInfoPage() {
         )}
 
         <div data-testid="school-details-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
             <Info className="w-3.5 h-3.5 text-[#e8628a]" /> School Details
           </div>
-          <div className="rounded-[14px] p-5 border border-slate-200 bg-white">
+          <div className="rounded-[14px] p-5 border border-white/[0.06]" style={{ backgroundColor: "#161b25" }}>
             {school.region && <DetailRow label="Location" value={school.region} />}
             {school.division && <DetailRow label="Division" value={divFull[school.division] || school.division} />}
             {school.conference && <DetailRow label="Conference" value={school.conference} />}
