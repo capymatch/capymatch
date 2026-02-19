@@ -179,7 +179,7 @@ export default function AccountPage() {
               onChange={(e) => setCurrentPw(e.target.value)}
               required
               data-testid="current-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-slate-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>
@@ -192,7 +192,7 @@ export default function AccountPage() {
               required
               minLength={6}
               data-testid="new-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-slate-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>
@@ -205,7 +205,7 @@ export default function AccountPage() {
               required
               minLength={6}
               data-testid="confirm-password-input"
-              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-teal-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 rounded-lg text-sm border focus:border-slate-500 focus:outline-none transition-colors"
               style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
             />
           </div>

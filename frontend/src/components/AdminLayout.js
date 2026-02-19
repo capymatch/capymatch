@@ -106,7 +106,7 @@ export default function AdminLayout() {
             <button className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-white/10" onClick={() => setMobileOpen(true)} data-testid="admin-mobile-menu">
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
-            <Shield className="w-4 h-4 text-teal-500 hidden lg:block" />
+            <Shield className="w-4 h-4 text-slate-500 hidden lg:block" />
             <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
               {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/subscriptions") ? "Subscription Management" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : location.pathname.includes("/universities") ? "University Manager" : location.pathname.includes("/integrations") ? "Integrations" : "Admin"}
             </h2>

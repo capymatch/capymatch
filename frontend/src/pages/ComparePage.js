@@ -28,7 +28,7 @@ const STAGE_LABELS = {
 const PULSE_LABELS = {
   active: { label: "Active", color: "text-emerald-400", dot: "bg-emerald-500" },
   cooling: { label: "Cooling", color: "text-amber-400", dot: "bg-amber-500" },
-  cold: { label: "Going Cold", color: "text-teal-400", dot: "bg-teal-500" },
+  cold: { label: "Going Cold", color: "text-teal-400", dot: "bg-slate-500" },
   neutral: { label: "New", color: "text-gray-400", dot: "bg-gray-500" },
 };
 
@@ -40,8 +40,8 @@ function MiniRail({ rail }) {
     <div className="flex items-center gap-0.5">
       {RAIL_STAGES.map((s) => (
         <div key={s.key} className={`w-2 h-2 rounded-full ${
-          s.key === active ? "bg-teal-500 shadow-[0_0_6px_rgba(46,196,182,0.5)]"
-          : stages[s.key] ? "bg-teal-500/60" : "bg-[var(--t-border)]"
+          s.key === active ? "bg-slate-500 shadow-[0_0_6px_rgba(46,196,182,0.5)]"
+          : stages[s.key] ? "bg-slate-500/60" : "bg-[var(--t-border)]"
         }`} title={s.label} />
       ))}
     </div>
@@ -66,11 +66,11 @@ function CompareCard({ program, isCurrent, onRemove }) {
   ];
 
   return (
-    <div className={`rounded-2xl border p-5 relative ${isCurrent ? "border-teal-500/40 shadow-[0_0_20px_rgba(46,196,182,0.08)]" : ""}`}
+    <div className={`rounded-2xl border p-5 relative ${isCurrent ? "border-slate-500/40 shadow-[0_0_20px_rgba(46,196,182,0.08)]" : ""}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: isCurrent ? undefined : "var(--t-border)" }}
       data-testid={`compare-card-${program.program_id}`}>
       {isCurrent && (
-        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-teal-500 text-white">Current</div>
+        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-500 text-white">Current</div>
       )}
       <button onClick={onRemove} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid={`remove-compare-${program.program_id}`}>
         <X className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
@@ -171,9 +171,9 @@ export default function ComparePage() {
           {selectedIds.map(id => {
             const p = allPrograms.find(x => x.program_id === id);
             return p ? (
-              <span key={id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-teal-600/10 text-teal-500 border border-teal-600/20">
+              <span key={id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-teal-600/10 text-slate-500 border border-teal-600/20">
                 {p.university_name}
-                <button onClick={() => removeSchool(id)} className="hover:text-teal-300"><X className="w-3 h-3" /></button>
+                <button onClick={() => removeSchool(id)} className="hover:text-slate-300"><X className="w-3 h-3" /></button>
               </span>
             ) : null;
           })}

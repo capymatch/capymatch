@@ -85,7 +85,7 @@ export default function OutreachAnalysis() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-teal-500 mb-3" />
+            <Loader2 className="w-8 h-8 animate-spin text-slate-500 mb-3" />
             <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Analyzing your outreach data...</p>
           </div>
         ) : error ? (
@@ -188,7 +188,7 @@ export default function OutreachAnalysis() {
                           <span className="text-xs w-24 text-right" style={{ color: "var(--t-text-muted)" }}>{type}</span>
                           <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
                             <div
-                              className="h-full rounded-full bg-teal-500"
+                              className="h-full rounded-full bg-slate-500"
                               style={{ width: `${(count / data.stats.total_interactions) * 100}%` }}
                             />
                           </div>
@@ -289,7 +289,7 @@ function CoachWatch({ isPremium }) {
 
       {scanning ? (
         <div className="flex flex-col items-center justify-center py-10">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-500 mb-2" />
+          <Loader2 className="w-6 h-6 animate-spin text-slate-500 mb-2" />
           <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Scanning news for coaching changes...</p>
           <p className="text-[10px] mt-1" style={{ color: "var(--t-text-muted)" }}>This may take 30-60 seconds</p>
         </div>

@@ -233,7 +233,7 @@ export default function AthleteProfileQuiz() {
                 <div className="col-span-2">
                   <p className="text-[10px] uppercase tracking-wide mb-1.5" style={{ color: "var(--t-text-muted)" }}>Top Priorities</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {(answers.priorities || []).map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-md bg-teal-600/10 text-teal-500 font-medium">{p}</span>)}
+                    {(answers.priorities || []).map(p => <span key={p} className="text-[10px] px-2.5 py-1 rounded-md bg-teal-600/10 text-slate-500 font-medium">{p}</span>)}
                   </div>
                 </div>
               </div>
@@ -310,7 +310,7 @@ export default function AthleteProfileQuiz() {
 
             {/* Title */}
             <h1 className="text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
-              Let's Build Your <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">Volleyball Journey</span>
+              Let's Build Your <span className="bg-gradient-to-r from-slate-500 to-teal-600 bg-clip-text text-transparent">Volleyball Journey</span>
             </h1>
             <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
               Answer 7 quick questions so we can match you with the right volleyball programs and coaches.
@@ -320,7 +320,7 @@ export default function AthleteProfileQuiz() {
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
                 <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-teal-600/10">
-                  <Target className="w-5 h-5 text-teal-500" />
+                  <Target className="w-5 h-5 text-slate-500" />
                 </div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Personalized Matches</p>
                 <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>See schools that fit your playing style & goals</p>

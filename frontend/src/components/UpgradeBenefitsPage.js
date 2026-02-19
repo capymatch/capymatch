@@ -42,8 +42,8 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
       <div className="max-w-3xl mx-auto py-8 px-4" data-testid={`upgrade-benefits-${featureKey}`}>
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center bg-teal-500/15">
-            <Icon className="w-8 h-8 text-teal-500" />
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center bg-slate-500/15">
+            <Icon className="w-8 h-8 text-slate-500" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
             {premiumOnly ? `${config.title} is a Premium Feature` : `Unlock ${config.title}`}
@@ -65,8 +65,8 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
                 className="rounded-xl border p-5 transition-all hover:shadow-md"
                 style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
               >
-                <div className="w-10 h-10 rounded-lg mb-3 flex items-center justify-center bg-teal-500/10">
-                  <BIcon className="w-5 h-5 text-teal-500" />
+                <div className="w-10 h-10 rounded-lg mb-3 flex items-center justify-center bg-slate-500/10">
+                  <BIcon className="w-5 h-5 text-slate-500" />
                 </div>
                 <h3 className="font-semibold text-sm mb-1" style={{ color: "var(--t-text)" }}>{b.title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{b.desc}</p>
@@ -81,7 +81,7 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
           style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
         >
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Crown className="w-5 h-5 text-teal-500" />
+            <Crown className="w-5 h-5 text-slate-500" />
             <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
               {premiumOnly ? "Exclusive to Premium plan" : "Available on Pro & Premium plans"}
             </span>
@@ -92,7 +92,7 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
           <button
             onClick={() => setShowUpgrade(true)}
             data-testid="upgrade-benefits-cta"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:shadow-lg bg-gradient-to-r from-teal-500 to-teal-600 hover:shadow-teal-500/20"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:shadow-lg bg-gradient-to-r from-slate-500 to-teal-600 hover:shadow-slate-500/20"
           >
             View Plans <ArrowRight className="w-4 h-4" />
           </button>

@@ -41,7 +41,7 @@ export default function HighlightAdvisor() {
 
         {!advice && !loading && (
           <div className="rounded-xl border p-8 text-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500/15 to-violet-600/15 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-500/15 to-violet-600/15 flex items-center justify-center mx-auto mb-4">
               <Video className="w-8 h-8 text-teal-400" />
             </div>
             <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--t-text)" }}>
@@ -65,7 +65,7 @@ export default function HighlightAdvisor() {
             </div>
             <button
               onClick={() => fetchAdvice(question)}
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-teal-600 text-white text-sm font-semibold hover:from-teal-500 hover:to-teal-500 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-teal-900/30"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-teal-600 text-white text-sm font-semibold hover:from-slate-500 hover:to-slate-500 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-teal-900/30"
               data-testid="generate-advice-btn"
             >
               <Sparkles className="w-4 h-4" /> Generate Advice
@@ -76,7 +76,7 @@ export default function HighlightAdvisor() {
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-teal-500 mb-3" />
+            <Loader2 className="w-8 h-8 animate-spin text-slate-500 mb-3" />
             <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Generating personalized advice...</p>
           </div>
         )}
@@ -205,7 +205,7 @@ export default function HighlightAdvisor() {
                 />
                 <button
                   onClick={() => fetchAdvice(question)}
-                  className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-500 transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-slate-500 transition-colors flex items-center gap-1.5"
                   data-testid="regenerate-advice-btn"
                 >
                   <Sparkles className="w-3.5 h-3.5" /> {question ? "Ask" : "Regenerate"}

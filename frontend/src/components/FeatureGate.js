@@ -24,7 +24,7 @@ export default function FeatureGate({ feature, children, fallback }) {
         <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
         <div className="flex flex-col items-center gap-3 relative z-10">
           <div className="w-12 h-12 rounded-full bg-teal-600/15 flex items-center justify-center">
-            <Lock className="w-5 h-5 text-teal-500" />
+            <Lock className="w-5 h-5 text-slate-500" />
           </div>
           <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
             Upgrade to Unlock
@@ -33,7 +33,7 @@ export default function FeatureGate({ feature, children, fallback }) {
             This feature requires a higher subscription plan.
           </p>
           <button
-            className="mt-2 px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-teal-600 text-white text-xs font-semibold hover:from-teal-500 hover:to-teal-500 transition-all flex items-center gap-2 shadow-lg shadow-teal-900/30"
+            className="mt-2 px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-teal-600 text-white text-xs font-semibold hover:from-slate-500 hover:to-slate-500 transition-all flex items-center gap-2 shadow-lg shadow-teal-900/30"
             data-testid={`feature-gate-upgrade-${feature}`}
           >
             <Sparkles className="w-3.5 h-3.5" />

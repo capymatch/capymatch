@@ -125,7 +125,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
               <ChevronLeft className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
             </button>
           )}
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-violet-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-500 to-violet-600 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -178,7 +178,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center pt-8 px-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/15 to-violet-600/15 flex items-center justify-center mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500/15 to-violet-600/15 flex items-center justify-center mb-4">
                     <Sparkles className="w-7 h-7 text-teal-400" />
                   </div>
                   <h4 className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>Ask me anything</h4>
@@ -211,7 +211,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
                       style={msg.role === "assistant" ? { backgroundColor: "var(--t-surface)", color: "var(--t-text)" } : {}}
                     >
                       <p className="text-[13px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                      <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-teal-200" : ""}`} style={msg.role === "assistant" ? { color: "var(--t-text-faint)" } : {}}>
+                      <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-slate-200" : ""}`} style={msg.role === "assistant" ? { color: "var(--t-text-faint)" } : {}}>
                         {formatTime(msg.time)}
                       </p>
                     </div>
@@ -248,7 +248,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
                 <button
                   onClick={sendMessage}
                   disabled={!input.trim() || sending}
-                  className="p-2.5 rounded-xl bg-teal-600 text-white hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="p-2.5 rounded-xl bg-teal-600 text-white hover:bg-slate-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   data-testid="ai-send-btn"
                 >
                   <Send className="w-4 h-4" />

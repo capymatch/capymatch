@@ -11,7 +11,7 @@ const EVENT_COLORS = {
   Showcase: "bg-blue-500",
   Tournament: "bg-amber-500",
   Visit: "bg-emerald-500",
-  Tryout: "bg-teal-500",
+  Tryout: "bg-slate-500",
   Meeting: "bg-cyan-500",
   Deadline: "bg-red-500",
   Other: "bg-gray-500",
@@ -364,7 +364,7 @@ export default function CalendarPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32" data-testid="calendar-loading">
-        <div className="w-8 h-8 border-2 border-teal-500/30 border-t-teal-600 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-slate-500/30 border-t-teal-600 rounded-full animate-spin" />
       </div>
     );
   }
@@ -475,7 +475,7 @@ export default function CalendarPage() {
                     data-testid={`calendar-day-${day}`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className={`text-sm font-medium ${isToday(day) ? "text-teal-500 font-semibold" : ""}`}
+                      <span className={`text-sm font-medium ${isToday(day) ? "text-slate-500 font-semibold" : ""}`}
                         style={{ color: isToday(day) ? undefined : "var(--t-text-secondary)" }}>
                         {day}
                       </span>
@@ -550,8 +550,8 @@ export default function CalendarPage() {
             {upcomingUserEvents.length > 0 ? (
               <div className="space-y-2">
                 {upcomingUserEvents.slice(0, 5).map((evt) => {
-                  const typeBg = { Camp: "bg-teal-600/15 text-teal-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-teal-500/15 text-teal-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
-                  const colorBar = { Camp: "bg-teal-600", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-emerald-500", Tryout: "bg-teal-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
+                  const typeBg = { Camp: "bg-teal-600/15 text-teal-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-slate-500/15 text-teal-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
+                  const colorBar = { Camp: "bg-teal-600", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-emerald-500", Tryout: "bg-slate-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
                   return (
                     <div
                       key={evt.event_id}
@@ -572,7 +572,7 @@ export default function CalendarPage() {
                   );
                 })}
                 {upcomingUserEvents.length > 5 && (
-                  <button className="w-full text-sm text-teal-500 hover:text-teal-400 transition-colors pt-2">
+                  <button className="w-full text-sm text-slate-500 hover:text-teal-400 transition-colors pt-2">
                     View all {upcomingUserEvents.length} events →
                   </button>
                 )}
@@ -583,7 +583,7 @@ export default function CalendarPage() {
                 <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
                 <button
                   onClick={() => handleAddEvent(null)}
-                  className="mt-2 text-sm text-teal-600 hover:text-teal-500 transition-colors"
+                  className="mt-2 text-sm text-teal-600 hover:text-slate-500 transition-colors"
                 >
                   + Create event
                 </button>

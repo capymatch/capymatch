@@ -623,7 +623,7 @@ export default function Inbox() {
                     data-testid="load-more-btn"
                     onClick={() => fetchEmails(activeSearch, true, nextPageToken)}
                     disabled={loadingMore}
-                    className="text-sm text-teal-600 hover:text-teal-500 transition-colors"
+                    className="text-sm text-teal-600 hover:text-slate-500 transition-colors"
                   >
                     {loadingMore ? "Loading..." : "Load more"}
                   </button>

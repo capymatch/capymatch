@@ -36,7 +36,7 @@ function HowItWorks({ isOwner }) {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="w-7 h-7 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-slate-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <UserPlus className="w-3.5 h-3.5 text-teal-400" />
                 </div>
                 <div>
@@ -61,7 +61,7 @@ function HowItWorks({ isOwner }) {
           ) : (
             <>
               <div className="flex gap-3">
-                <div className="w-7 h-7 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-slate-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Users className="w-3.5 h-3.5 text-teal-400" />
                 </div>
                 <div>
@@ -94,7 +94,7 @@ function BasicPlanUpgradeCard() {
   return (
     <div className="rounded-xl border border-dashed p-5" style={{ borderColor: "rgba(244,63,94,0.25)", backgroundColor: "rgba(244,63,94,0.03)" }} data-testid="team-upgrade-card">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center flex-shrink-0">
           <Users className="w-5 h-5 text-teal-400" />
         </div>
         <div className="flex-1">
@@ -106,7 +106,7 @@ function BasicPlanUpgradeCard() {
           </p>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-teal-500" />
+              <div className="w-2 h-2 rounded-full bg-slate-500" />
               <span className="text-[11px] font-medium" style={{ color: "var(--t-text-secondary)" }}>Pro — 2 members</span>
             </div>
             <div className="flex items-center gap-2">
@@ -262,7 +262,7 @@ export default function TeamSection() {
         {/* Members */}
         {team.members.map((m) => (
           <div key={m.user_id} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }} data-testid={`team-member-${m.user_id}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-500 to-teal-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
               {m.name?.charAt(0) || "M"}
             </div>
             <div className="flex-1 min-w-0">
@@ -273,7 +273,7 @@ export default function TeamSection() {
               <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{m.email}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-400">
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-500/10 text-teal-400">
                 Member
               </span>
               {isOwner && (
@@ -338,7 +338,7 @@ export default function TeamSection() {
                     onChange={(e) => setInviteEmail(e.target.value)}
                     required
                     data-testid="invite-email-input"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:border-teal-500/50 transition-colors"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:border-slate-500/50 transition-colors"
                     style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
                   />
                 </div>
@@ -346,7 +346,7 @@ export default function TeamSection() {
                   type="submit"
                   disabled={inviting}
                   data-testid="invite-submit-btn"
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-teal-500 transition-all disabled:opacity-50 flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-teal-600 hover:from-slate-500 hover:to-slate-500 transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Invite"}
                 </button>

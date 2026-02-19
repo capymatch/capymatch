@@ -232,7 +232,7 @@ export default function Tour({ onComplete }) {
           )}
           <button
             onClick={next}
-            className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white transition-all bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-teal-500 shadow-lg shadow-teal-900/30"
+            className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white transition-all bg-gradient-to-r from-teal-600 to-teal-600 hover:from-slate-500 hover:to-slate-500 shadow-lg shadow-teal-900/30"
             data-testid="tour-next-btn"
           >
             {step === TOUR_STEPS.length - 1 ? "Get Started" : step === 0 ? "Start Tour" : "Next"}

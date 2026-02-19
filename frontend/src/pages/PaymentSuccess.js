@@ -70,7 +70,7 @@ export default function PaymentSuccess() {
       >
         {status === "polling" && (
           <div className="space-y-4" data-testid="payment-polling">
-            <Loader2 className="w-12 h-12 mx-auto text-teal-500 animate-spin" />
+            <Loader2 className="w-12 h-12 mx-auto text-slate-500 animate-spin" />
             <h2 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>
               Processing Payment...
             </h2>
@@ -93,7 +93,7 @@ export default function PaymentSuccess() {
             </p>
             <Button
               onClick={() => navigate("/board")}
-              className="mt-4 bg-gradient-to-r from-teal-600 to-teal-600 text-white hover:from-teal-500 hover:to-teal-500"
+              className="mt-4 bg-gradient-to-r from-teal-600 to-teal-600 text-white hover:from-slate-500 hover:to-slate-500"
               data-testid="payment-go-dashboard"
             >
               Go to Dashboard
@@ -103,7 +103,7 @@ export default function PaymentSuccess() {
 
         {status === "failed" && (
           <div className="space-y-4" data-testid="payment-failed">
-            <div className="w-16 h-16 mx-auto rounded-full bg-teal-500/15 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto rounded-full bg-slate-500/15 flex items-center justify-center">
               <XCircle className="w-8 h-8 text-teal-400" />
             </div>
             <h2 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>

@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: { bg: "bg-zinc-500/15 text-zinc-400 border-zinc-500/20", icon: Zap },
-  pro: { bg: "bg-teal-500/15 text-teal-400 border-teal-500/20", icon: Sparkles },
+  pro: { bg: "bg-slate-500/15 text-teal-400 border-slate-500/20", icon: Sparkles },
   premium: { bg: "bg-amber-500/15 text-amber-400 border-amber-500/20", icon: Crown },
 };
 
@@ -192,7 +192,7 @@ export default function AdminSubscriptions() {
                 </div>
                 <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: "var(--t-border)" }}>
                   <div
-                    className={`h-full rounded-full transition-all ${p === "basic" ? "bg-zinc-500" : p === "pro" ? "bg-teal-500" : "bg-amber-500"}`}
+                    className={`h-full rounded-full transition-all ${p === "basic" ? "bg-zinc-500" : p === "pro" ? "bg-slate-500" : "bg-amber-500"}`}
                     style={{ width: `${Math.max(pct, 2)}%` }}
                   />
                 </div>

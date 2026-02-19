@@ -50,7 +50,7 @@ export default function LoginPage({ onAuth }) {
 
           <div className="space-y-6">
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Compass className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
@@ -60,7 +60,7 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Zap className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
@@ -70,7 +70,7 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Eye className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>
@@ -80,7 +80,7 @@ export default function LoginPage({ onAuth }) {
             </div>
 
             <div className="flex gap-3.5">
-              <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Sparkles className="w-[18px] h-[18px] text-teal-700" />
               </div>
               <div>

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  pro: "bg-teal-500/15 text-teal-400 border-teal-500/20",
+  pro: "bg-slate-500/15 text-teal-400 border-slate-500/20",
   premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
