@@ -51,6 +51,13 @@ Public-facing Volleyball Recruiting CRM for families navigating the college recr
   - Coaching staff cards with email links
   - School details table
   - Navigation from Find Schools expanded cards
+- **Find Schools Redesign** — Complete UI overhaul matching approved mockup (Feb 2026)
+  - Dark-themed search bar with separate Filters toggle button
+  - Smart chip filters (All Schools, Dream D1, Strong Match 80%+, Close to Home, Academics)
+  - Compact Top Match banner with #1 match school, score, and Add to Board
+  - Clean dark school cards with Add to Board + Details navigation
+  - Slide-in filter panel (Division/Region/Conference pills)
+  - Grid/List view toggle, pagination
 
 ## Architecture
 - **Frontend**: React (CRA) + Tailwind + Shadcn/UI + Lucide icons
@@ -72,7 +79,6 @@ Public-facing Volleyball Recruiting CRM for families navigating the college recr
 
 ## Backlog (Prioritized)
 ### P1
-- Redesign "Find Schools" page (mockup approved at public/mockup-find-schools.html)
 - Separate Girls/Boys volleyball data
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
