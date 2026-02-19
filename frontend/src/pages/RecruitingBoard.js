@@ -126,32 +126,37 @@ function PipelineTour({ step, steps, onNext, onBack, onClose }) {
     if (step < 0 || step >= steps.length) { setPos(null); return; }
     const el = document.querySelector(steps[step].target);
     if (!el) { setPos(null); return; }
-    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
     const update = () => {
       const rect = el.getBoundingClientRect();
       if (rect.width === 0 && rect.height === 0) { setPos(null); return; }
-      setPos({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+      // Clamp to visible viewport so tall/off-screen elements still show the tooltip
+      const visTop = Math.max(0, rect.top);
+      const visBottom = Math.min(window.innerHeight, rect.bottom);
+      const visHeight = Math.max(visBottom - visTop, 40);
+      setPos({ top: visTop, left: rect.left, width: rect.width, height: visHeight });
     };
-    const t1 = setTimeout(update, 500);
-    const t2 = setTimeout(update, 800);
+    const t1 = setTimeout(update, 400);
+    const t2 = setTimeout(update, 700);
     window.addEventListener("resize", update);
-    return () => { clearTimeout(t1); clearTimeout(t2); window.removeEventListener("resize", update); };
+    window.addEventListener("scroll", update, true);
+    return () => { clearTimeout(t1); clearTimeout(t2); window.removeEventListener("resize", update); window.removeEventListener("scroll", update, true); };
   }, [step, steps]);
 
   if (step < 0 || step >= steps.length || !pos) return null;
   const s = steps[step];
   const isLast = step === steps.length - 1;
 
-  // Position tooltip below or above target
-  const tooltipBelow = pos.top < window.innerHeight / 2;
+  // Position tooltip below or above target, clamped to viewport
+  const tooltipBelow = pos.top + pos.height + 200 < window.innerHeight;
   const tooltipStyle = {
     position: "fixed",
     zIndex: 10002,
     left: Math.max(12, Math.min(pos.left, window.innerWidth - 340)),
     maxWidth: 320,
     ...(tooltipBelow
-      ? { top: pos.top + pos.height + 12 }
-      : { bottom: window.innerHeight - pos.top + 12 }),
+      ? { top: Math.min(pos.top + pos.height + 12, window.innerHeight - 220) }
+      : { top: Math.max(12, pos.top - 200) }),
   };
 
   return (
