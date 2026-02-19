@@ -100,7 +100,7 @@ function ProgressRing({ counts, total }) {
     : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
 
   return (
-    <div className="flex items-center gap-4" data-testid="progress-ring">
+    <div className="flex flex-row md:flex-col items-center gap-3" data-testid="progress-ring">
       <div className="flex-shrink-0" style={{
         width: size, height: size, borderRadius: "50%",
         background: gradient,
