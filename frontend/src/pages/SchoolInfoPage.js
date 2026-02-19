@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { useSubscription, canAccess } from "../lib/subscription";
 import UniversityLogo from "../components/UniversityLogo";
 import { toast } from "sonner";
 import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
-  Phone, Activity, Info, Check, Loader2
+  Check, Loader2, Lock
 } from "lucide-react";
 
+/* ── Match Ring (dark hero) ── */
 function MatchRing({ score }) {
   const r = 44, c = 2 * Math.PI * r;
   const offset = c - (score / 100) * c;
@@ -25,61 +27,43 @@ function MatchRing({ score }) {
   );
 }
 
-function BentoCard({ value, label, sub, pink }) {
+/* ── Reusable Section Card ── */
+function SectionCard({ title, children, testId }) {
   return (
-    <div className="rounded-[14px] p-4 text-center transition-colors border border-slate-200 hover:border-[#e8628a]/30 bg-white"
-      data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-      <div className={`text-[22px] sm:text-[26px] font-extrabold mb-1 tracking-tight ${pink ? "text-[#e8628a]" : "text-slate-800"}`}>{value}</div>
-      <div className="text-[10px] text-slate-400 uppercase tracking-[1px] font-semibold">{label}</div>
-      {sub && <div className="text-[11px] text-slate-300 mt-1">{sub}</div>}
+    <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6" data-testid={testId}>
+      <h3 className="text-[15px] font-bold text-slate-800 mb-4">{title}</h3>
+      {children}
     </div>
   );
 }
 
-function CoachCard({ coach, onEmail }) {
+/* ── Stat Cell ── */
+function StatCell({ value, label }) {
+  const isEmpty = !value && value !== 0;
   return (
-    <div className="rounded-[14px] p-5 flex gap-3.5 items-start border border-slate-200 hover:border-[#e8628a]/30 transition-colors bg-white"
-      data-testid={`coach-card-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}>
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#e8628a]/10">
-        <User className="w-5 h-5 text-[#e8628a]" />
+    <div className="text-center sm:text-left">
+      <div className={`text-[20px] sm:text-[22px] font-extrabold tracking-tight ${isEmpty ? "text-slate-300" : "text-slate-800"}`}>
+        {isEmpty ? "N/A" : value}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-bold text-slate-800">{coach.name}</div>
-        <div className="text-[11px] text-slate-400 mb-2.5">{coach.title || "Coach"}</div>
-        <div className="flex flex-col gap-1">
-          {coach.email && (
-            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
-              <Mail className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
-              <a href={`mailto:${coach.email}`} className="text-[#e8628a] hover:underline truncate">{coach.email}</a>
-            </div>
-          )}
-          {coach.phone && (
-            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
-              <Phone className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
-              {coach.phone}
-            </div>
-          )}
-        </div>
-        {coach.email && (
-          <button onClick={() => onEmail(coach)} data-testid={`email-coach-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}
-            className="mt-3 px-3.5 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors bg-[#e8628a]/10 text-[#e8628a] border border-[#e8628a]/20 hover:bg-[#e8628a]/20">
-            <Mail className="w-3 h-3" /> Send Email
-          </button>
-        )}
-      </div>
+      <div className="text-[11px] text-slate-400 mt-0.5">{label}</div>
     </div>
   );
 }
 
-function DetailRow({ label, value, isLink }) {
+/* ── Overview Field ── */
+function OverviewField({ label, value, isLink, gated }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-b-0">
-      <span className="text-[12px] text-slate-400 font-medium">{label}</span>
-      {isLink ? (
+    <div>
+      <div className="text-[11px] text-slate-400 mb-1">{label}</div>
+      {gated ? (
+        <span className="text-[13px] text-blue-400 cursor-pointer hover:underline">Subscribe to view</span>
+      ) : isLink && value ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
-          className="text-[13px] text-[#e8628a] font-semibold hover:underline truncate max-w-[200px]">{value.replace(/^https?:\/\//, "")}</a>
+          className="text-[13px] text-blue-500 font-medium hover:underline inline-flex items-center gap-1">
+          Visit website <ExternalLink className="w-3 h-3" />
+        </a>
       ) : (
-        <span className="text-[13px] text-slate-700 font-semibold">{value}</span>
+        <div className="text-[13px] font-semibold text-slate-700">{value || "—"}</div>
       )}
     </div>
   );
@@ -91,6 +75,8 @@ export default function SchoolInfoPage() {
   const [school, setSchool] = useState(null);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const { subscription } = useSubscription();
+  const hasCoachAccess = canAccess(subscription, "coach_contacts");
 
   useEffect(() => {
     api.get(`/knowledge-base/school/${domain}`)
@@ -122,7 +108,6 @@ export default function SchoolInfoPage() {
       </div>
     );
   }
-
   if (!school) return null;
 
   const coaches = school.coaches_scraped?.length
@@ -133,22 +118,11 @@ export default function SchoolInfoPage() {
       ].filter(Boolean);
 
   const sc = school.scorecard || {};
-  const hasScorecardStats = sc.tuition_out_of_state || sc.admission_rate != null || sc.student_size || sc.graduation_rate != null;
-  const divFull = { D1: "NCAA Division I", D2: "NCAA Division II", D3: "NCAA Division III", NAIA: "NAIA", JUCO: "JUCO" };
+  const divLabel = { D1: "NCAA D1", D2: "NCAA D2", D3: "NCAA D3", NAIA: "NAIA", JUCO: "JUCO" };
 
-  const getSizeLabel = (size) => {
-    if (!size) return "";
-    if (size > 15000) return "Large university";
-    if (size > 5000) return "Medium-sized";
-    return "Small college";
-  };
-  const getSelectivityLabel = (rate) => {
-    if (rate == null) return "";
-    if (rate < 0.15) return "Highly selective";
-    if (rate < 0.40) return "Selective";
-    if (rate < 0.70) return "Moderately selective";
-    return "Open admission";
-  };
+  const fmtPct = (v) => v != null ? `${(v * 100).toFixed(1)}%` : null;
+  const fmtMoney = (v) => v != null ? `$${Number(v).toLocaleString()}` : null;
+  const fmtRatio = (v) => v != null ? `${v}:1` : null;
 
   return (
     <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" data-testid="school-info-page">
@@ -158,7 +132,7 @@ export default function SchoolInfoPage() {
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
-      {/* ── DARK Hero Card ── */}
+      {/* ══════ DARK Hero Card (UNTOUCHED) ══════ */}
       <div className="rounded-[20px] overflow-hidden mb-6 border border-white/[0.06]"
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
@@ -223,52 +197,124 @@ export default function SchoolInfoPage() {
         </div>
       </div>
 
-      {/* ── LIGHT: Key Statistics ── */}
-      {hasScorecardStats && (
-        <div className="mb-7" data-testid="key-statistics-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
-            <Activity className="w-3.5 h-3.5 text-[#e8628a]" /> Key Statistics
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {sc.tuition_out_of_state && <BentoCard value={`$${Number(sc.tuition_out_of_state).toLocaleString()}`} label="Tuition" sub="Out-of-state" />}
-            {sc.admission_rate != null && <BentoCard value={`${(sc.admission_rate * 100).toFixed(0)}%`} label="Acceptance Rate" sub={getSelectivityLabel(sc.admission_rate)} pink />}
-            {sc.student_size && <BentoCard value={Number(sc.student_size).toLocaleString()} label="Undergrads" sub={getSizeLabel(sc.student_size)} />}
-            {sc.graduation_rate != null && <BentoCard value={`${(sc.graduation_rate * 100).toFixed(0)}%`} label="Graduation Rate" sub={sc.graduation_rate >= 0.8 ? "Excellent" : sc.graduation_rate >= 0.6 ? "Good" : ""} pink />}
-          </div>
-        </div>
-      )}
+      {/* ══════ LIGHT Sections Below ══════ */}
+      <div className="flex flex-col gap-5">
 
-      {/* ── LIGHT: Coaches + School Details ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {coaches.length > 0 && (
-          <div data-testid="coaching-staff-section">
-            <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
-              <Users className="w-3.5 h-3.5 text-[#e8628a]" /> Coaching Staff
-            </div>
-            <div className="flex flex-col gap-2.5">
+        {/* ── Program Overview ── */}
+        <SectionCard title="Program Overview" testId="program-overview-section">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b border-slate-100">
+            <OverviewField label="Division" value={
+              school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-blue-200 text-blue-700 bg-blue-50">{divLabel[school.division] || school.division}</span> : "—"
+            } />
+            <OverviewField label="Conference" value={school.conference || "—"} />
+            <OverviewField label="Program Website" value={school.website} isLink />
+            <OverviewField label="Academic Website" value={school.domain ? `https://${school.domain}` : null} isLink />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <OverviewField label="Recruiting Questionnaire" gated={!hasCoachAccess} value={school.questionnaire_url} isLink />
+            <OverviewField label="Twitter/X" gated={!hasCoachAccess} value={school.twitter_url} isLink />
+            <OverviewField label="Instagram" gated={!hasCoachAccess} value={school.instagram_url} isLink />
+            <OverviewField label="Facebook" gated={!hasCoachAccess} value={school.facebook_url} isLink />
+          </div>
+        </SectionCard>
+
+        {/* ── Coaching Staff ── */}
+        <SectionCard title="Coaching Staff" testId="coaching-staff-section">
+          {coaches.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
               {coaches.map((c, i) => (
-                <CoachCard key={i} coach={c} onEmail={(coach) => window.location.href = `mailto:${coach.email}`} />
+                <div key={i} className="rounded-lg border border-slate-200 p-4 flex gap-3 items-start"
+                  style={{ borderLeft: "3px solid #e8c55a" }}
+                  data-testid={`coach-card-${i}`}>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12px] font-bold text-slate-800">{c.title || "Coach"}</div>
+                    <div className="text-[13px] text-slate-500 mt-0.5">{c.name}</div>
+                    {hasCoachAccess && c.email && (
+                      <a href={`mailto:${c.email}`} className="text-[11px] text-[#e8628a] hover:underline mt-1.5 inline-flex items-center gap-1">
+                        <Mail className="w-3 h-3" /> {c.email}
+                      </a>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-[13px] text-slate-400 mb-4">No coaching staff data available.</p>
+          )}
+          {!hasCoachAccess && (
+            <div className="rounded-lg px-4 py-3 flex items-center gap-2.5" data-testid="coach-subscribe-banner"
+              style={{ backgroundColor: "#fef9e7", border: "1px solid #f5e6a3" }}>
+              <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <span className="text-[13px] text-slate-600">
+                <button onClick={() => navigate("/settings")} className="text-blue-500 font-semibold hover:underline">Subscribe</button>
+                {" "}to view the coaching staff for this program, along with their contact information.
+              </span>
+            </div>
+          )}
+        </SectionCard>
 
-        <div data-testid="school-details-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
-            <Info className="w-3.5 h-3.5 text-[#e8628a]" /> School Details
+        {/* ── School Profile ── */}
+        <SectionCard title="School Profile" testId="school-profile-section">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            <StatCell value={fmtPct(sc.graduation_rate)} label="Graduation Rate" />
+            <StatCell value={fmtPct(sc.retention_rate)} label="Retention Rate" />
+            <StatCell value={fmtRatio(sc.student_faculty_ratio)} label="Student-Faculty Ratio" />
+            <StatCell value={sc.student_size ? Number(sc.student_size).toLocaleString() : null} label="Undergrad Students" />
           </div>
-          <div className="rounded-[14px] p-5 border border-slate-200 bg-white">
-            {school.region && <DetailRow label="Location" value={school.region} />}
-            {school.division && <DetailRow label="Division" value={divFull[school.division] || school.division} />}
-            {school.conference && <DetailRow label="Conference" value={school.conference} />}
-            {school.mascot && <DetailRow label="Mascot" value={school.mascot} />}
-            {school.scholarship_type && <DetailRow label="Scholarship" value={school.scholarship_type} />}
-            {sc.tuition_in_state && <DetailRow label="In-State Tuition" value={`$${Number(sc.tuition_in_state).toLocaleString()}`} />}
-            {sc.tuition_out_of_state && <DetailRow label="Out-of-State Tuition" value={`$${Number(sc.tuition_out_of_state).toLocaleString()}`} />}
-            {school.website && <DetailRow label="Program Website" value={school.website} isLink />}
-            {school.domain && <DetailRow label="School Website" value={school.domain} isLink />}
+        </SectionCard>
+
+        {/* ── Admissions ── */}
+        <SectionCard title="Admissions" testId="admissions-section">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-4">
+            <StatCell value={sc.avg_gpa || null} label="Average GPA" />
+            <StatCell value={sc.act_midpoint ? String(sc.act_midpoint) : null} label="ACT" />
+            <StatCell value={sc.sat_avg ? String(sc.sat_avg) : null} label="SAT" />
+            <StatCell value={fmtPct(sc.admission_rate)} label="Acceptance Rate" />
           </div>
-        </div>
+          {sc.test_requirements && (
+            <div className="pt-3 border-t border-slate-100">
+              <div className="text-[11px] text-slate-400 mb-1">Test Requirements</div>
+              <div className="text-[13px] text-slate-600 leading-relaxed">{sc.test_requirements}</div>
+            </div>
+          )}
+        </SectionCard>
+
+        {/* ── Financial ── */}
+        <SectionCard title="Financial" testId="financial-section">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            <StatCell value={fmtMoney(sc.tuition_out_of_state)} label="Out-of-State Tuition" />
+            <StatCell value={fmtMoney(sc.tuition_in_state)} label="In-State Tuition" />
+            <StatCell value={fmtMoney(sc.median_debt)} label="Median Debt at Graduation" />
+            <StatCell value={fmtMoney(sc.monthly_loan_payment)} label="Monthly Loan Payment" />
+            <StatCell value={fmtMoney(sc.median_earnings)} label="Median Earnings" />
+          </div>
+        </SectionCard>
+
+        {/* ── School Details (legacy fallback) ── */}
+        {(school.mascot || school.scholarship_type || school.region) && (
+          <SectionCard title="Additional Details" testId="additional-details-section">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {school.region && (
+                <div>
+                  <div className="text-[11px] text-slate-400 mb-1">Location</div>
+                  <div className="text-[13px] font-semibold text-slate-700">{school.region}</div>
+                </div>
+              )}
+              {school.mascot && (
+                <div>
+                  <div className="text-[11px] text-slate-400 mb-1">Mascot</div>
+                  <div className="text-[13px] font-semibold text-slate-700">{school.mascot}</div>
+                </div>
+              )}
+              {school.scholarship_type && (
+                <div>
+                  <div className="text-[11px] text-slate-400 mb-1">Scholarship</div>
+                  <div className="text-[13px] font-semibold text-slate-700">{school.scholarship_type}</div>
+                </div>
+              )}
+            </div>
+          </SectionCard>
+        )}
       </div>
     </div>
   );
