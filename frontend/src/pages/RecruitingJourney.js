@@ -920,9 +920,23 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
           </div>
         )}
       </div>
-      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={send} disabled={sending} data-testid="send-email-btn">
-        {sending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Send className="w-3 h-3 mr-1" />}Send Email{attachments.length > 0 ? ` (${attachments.length} file${attachments.length > 1 ? "s" : ""})` : ""}
+      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={handleReview} disabled={sending} data-testid="send-email-btn">
+        <Send className="w-3 h-3 mr-1" />Review & Send{attachments.length > 0 ? ` (${attachments.length} file${attachments.length > 1 ? "s" : ""})` : ""}
       </Button>
+      {showPreview && (
+        <EmailPreviewModal
+          to={to}
+          subject={subject}
+          body={body}
+          attachments={attachments}
+          coachName={selectedCoach?.coach_name}
+          universityName={universityName}
+          onEdit={() => setShowPreview(false)}
+          onConfirm={send}
+          onClose={() => setShowPreview(false)}
+          sending={sending}
+        />
+      )}
     </div>
   );
 }
