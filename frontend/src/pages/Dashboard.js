@@ -14,9 +14,9 @@ import { FirstReplyCelebration } from "../components/FirstReplyCelebration";
 import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Pulse Stat ── */
-function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub, dark }) {
+function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub, dark, onClick }) {
   return (
-    <div className="px-5 py-4 lg:px-6 lg:py-5 border-r last:border-r-0" style={{ borderColor: dark ? "rgba(255,255,255,0.06)" : "var(--t-border)" }} data-testid={`pulse-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+    <div className={`px-5 py-4 lg:px-6 lg:py-5 border-r last:border-r-0${onClick ? " cursor-pointer transition-opacity hover:opacity-80" : ""}`} style={{ borderColor: dark ? "rgba(255,255,255,0.06)" : "var(--t-border)" }} onClick={onClick} data-testid={`pulse-${label.toLowerCase().replace(/\s+/g, "-")}`}>
       <div className="flex items-center justify-between mb-1">
         <p className="text-2xl lg:text-3xl font-extrabold tracking-tight" style={{ color: iconColor }}>{value}</p>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: iconBg }}>
