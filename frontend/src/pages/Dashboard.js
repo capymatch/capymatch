@@ -426,7 +426,7 @@ export default function Dashboard() {
 
       {/* ═══ Section 3: School Spotlight ═══ */}
       {spotlightSchools.length > 0 && (
-        <div data-testid="school-spotlight">
+        <div data-testid="school-spotlight" className="mt-6">
           <div className="flex items-center justify-between mb-3 px-1">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(168,85,247,0.12)" }}>
