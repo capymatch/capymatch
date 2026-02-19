@@ -300,20 +300,20 @@ export default function SchoolInfoPage() {
                     </div>
                   </div>
                   <div className="mt-4 space-y-2">
-                    {hasCoachAccess && c.email && (
+                    {c.email && (
                       <div className="flex items-center gap-2.5">
                         <Mail className="w-3.5 h-3.5 text-slate-400" />
                         <span className="text-[13px] text-[#2ec4b6] font-medium">{c.email}</span>
                       </div>
                     )}
-                    {hasCoachAccess && c.phone && (
+                    {c.phone && (
                       <div className="flex items-center gap-2.5">
                         <Phone className="w-3.5 h-3.5 text-slate-400" />
                         <span className="text-[13px] text-slate-600">{c.phone}</span>
                       </div>
                     )}
                   </div>
-                  {hasCoachAccess && c.email && (
+                  {c.email && (
                     <a href={`mailto:${c.email}`}
                       className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold border border-[#2ec4b6]/30 text-[#2ec4b6] hover:bg-[#2ec4b6]/5 transition-colors"
                       data-testid={`coach-send-email-${i}`}>
