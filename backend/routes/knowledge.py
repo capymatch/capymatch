@@ -9,6 +9,7 @@ import os
 import re
 import httpx
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
