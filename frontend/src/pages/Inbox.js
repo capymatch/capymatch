@@ -27,7 +27,7 @@ function formatDate(dateStr) {
 }
 
 function EmailAvatar({ name, email: addr }) {
-  const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#f97316", "#10b981", "#3b82f6", "#ef4444", "#14b8a6"];
+  const colors = ["#6366f1", "#8b5cf6", "#2ec4b6", "#f97316", "#10b981", "#3b82f6", "#ef4444", "#14b8a6"];
   const char = (name || addr || "?").charAt(0).toUpperCase();
   const idx = char.charCodeAt(0) % colors.length;
   return (

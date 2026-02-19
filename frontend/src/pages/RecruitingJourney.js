@@ -365,7 +365,7 @@ const NEXT_STEP_RULES = {
     actions: ["email", "followup"],
   },
   email_sent: {
-    icon: Send, iconColor: "#be185d", iconBg: "rgba(190,24,93,0.12)",
+    icon: Send, iconColor: "#0d9488", iconBg: "rgba(46,196,182,0.12)",
     title: "Email sent! A 14-day follow-up has been set.",
     desc: "We'll remind you if you don't hear back. In the meantime, keep logging your activities.",
     actions: ["log"],
@@ -399,7 +399,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
 
   return (
     <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ borderColor: "rgba(190,24,93,0.3)", background: "#1e1e2e" }}
+      style={{ borderColor: "rgba(46,196,182,0.3)", background: "#1e1e2e" }}
       data-testid="next-step-card">
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: "rgba(255,255,255,0.35)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>

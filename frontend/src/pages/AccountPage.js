@@ -90,7 +90,7 @@ export default function AccountPage() {
                     className="h-full rounded-full transition-all duration-500"
                     style={{
                       width: subscription.usage.schools_limit === -1 ? "15%" : `${Math.min(100, (subscription.usage.schools / subscription.usage.schools_limit) * 100)}%`,
-                      backgroundColor: subscription.usage.schools_remaining <= 1 && subscription.usage.schools_limit !== -1 ? "#ef4444" : "#ec4899",
+                      backgroundColor: subscription.usage.schools_remaining <= 1 && subscription.usage.schools_limit !== -1 ? "#ef4444" : "#2ec4b6",
                     }}
                   />
                 </div>

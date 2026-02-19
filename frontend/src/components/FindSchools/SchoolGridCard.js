@@ -38,10 +38,10 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
     return (
       <div
         className="col-span-full rounded-xl border-2 overflow-hidden shadow-lg transition-all duration-300 animate-in fade-in"
-        style={{ borderColor: "var(--t-accent, #be185d)", backgroundColor: "var(--t-surface)" }}
+        style={{ borderColor: "var(--t-accent, #0d9488)", backgroundColor: "var(--t-surface)" }}
         data-testid={`expanded-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
       >
-        <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #be185d, #db2777)" }} />
+        <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left panel */}
           <div className="p-7 border-r" style={{ borderColor: "var(--t-border)" }}>
@@ -67,7 +67,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 <div className="space-y-2">
                   {uni.primary_coach && (
                     <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)", border: "1px solid var(--t-border)" }}>
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: "linear-gradient(135deg, #be185d, #db2777)" }}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)" }}>
                         {uni.primary_coach.split(" ").map(w => w[0]).join("").slice(0, 2)}
                       </div>
                       <div className="flex-1">
@@ -136,7 +136,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 </div>
                 <div className="grid grid-cols-2 gap-2 mb-5">
                   {uni.scorecard.admission_rate != null && (
-                    <ScorecardStat icon={BarChart3} label="Acceptance Rate" value={`${(uni.scorecard.admission_rate * 100).toFixed(0)}%`} color="#be185d" />
+                    <ScorecardStat icon={BarChart3} label="Acceptance Rate" value={`${(uni.scorecard.admission_rate * 100).toFixed(0)}%`} color="#0d9488" />
                   )}
                   {uni.scorecard.graduation_rate != null && (
                     <ScorecardStat icon={Award} label="Graduation Rate" value={`${(uni.scorecard.graduation_rate * 100).toFixed(0)}%`} color="#10b981" />
@@ -201,7 +201,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
       data-testid={`grid-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
     >
       {/* Top accent line on hover */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(90deg, #be185d, #db2777)" }} />
+      <div className="absolute top-0 left-0 right-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
 
       <div className="flex items-start justify-between mb-3">
         <UniversityLogo domain={uni.domain} name={uni.university_name} size={44} className="shadow-sm" />

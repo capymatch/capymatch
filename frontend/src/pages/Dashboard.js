@@ -55,7 +55,7 @@ function SpotlightCard({ program, onClick }) {
   const colorMap = {
     "In Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
     "Actively Recruiting": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
-    "Active Communication": { bg: "rgba(236,72,153,0.12)", color: "#db2777" },
+    "Active Communication": { bg: "rgba(46,196,182,0.12)", color: "#14b8a6" },
     "Contacted": { bg: "rgba(59,130,246,0.12)", color: "#2563eb" },
     "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
@@ -133,7 +133,7 @@ function EventCard({ event, onClick }) {
     Showcase: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
     Tournament: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
     Visit: { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
-    Tryout: { bg: "rgba(236,72,153,0.12)", color: "#ec4899" },
+    Tryout: { bg: "rgba(46,196,182,0.12)", color: "#2ec4b6" },
     Meeting: { bg: "rgba(6,182,212,0.12)", color: "#06b6d4" },
     Deadline: { bg: "rgba(239,68,68,0.12)", color: "#ef4444" },
   };
@@ -264,7 +264,7 @@ export default function Dashboard() {
     { key: "Not Contacted", label: "Not\nContacted", color: "#6b7280" },
     { key: "Contacted", label: "Contacted", color: "#3b82f6" },
     { key: "Actively Recruiting", label: "Actively\nRecruiting", color: "#a855f7" },
-    { key: "Active Communication", label: "In\nConversation", color: "#ec4899" },
+    { key: "Active Communication", label: "In\nConversation", color: "#2ec4b6" },
     { key: "Offer Received", label: "Offer\nReceived", color: "#10b981" },
     { key: "Not a Fit / Closed", label: "Closed", color: "#ef4444" },
   ];

@@ -289,7 +289,7 @@ export default function AdminSubscriptions() {
                                   className="h-full rounded-full"
                                   style={{
                                     width: `${u.school_limit === -1 ? 15 : Math.min(100, schoolPct)}%`,
-                                    backgroundColor: overLimit ? "#ef4444" : schoolPct > 80 ? "#f59e0b" : "#ec4899",
+                                    backgroundColor: overLimit ? "#ef4444" : schoolPct > 80 ? "#f59e0b" : "#2ec4b6",
                                   }}
                                 />
                               </div>

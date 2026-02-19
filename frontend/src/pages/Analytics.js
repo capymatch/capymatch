@@ -130,7 +130,7 @@ export default function Analytics() {
   const divColors = { D1: "#10b981", D2: "#3b82f6", D3: "#8b5cf6", NAIA: "#f59e0b", JUCO: "#ef4444", Unknown: "#6b7280" };
   const statusColors = {
     "Not Contacted": "#6b7280", "Contacted": "#3b82f6", "Actively Recruiting": "#8b5cf6",
-    "Active Communication": "#ec4899", "Offer Received": "#10b981", "Not a Fit / Closed": "#ef4444",
+    "Active Communication": "#2ec4b6", "Offer Received": "#10b981", "Not a Fit / Closed": "#ef4444",
   };
 
   const divSegments = Object.entries(data?.divCounts || {}).map(([k, v]) => ({ label: k, value: v, color: divColors[k] || "#6b7280" }));
@@ -158,7 +158,7 @@ export default function Analytics() {
             {statusEntries.length > 0 ? (
               <div className="space-y-3">
                 {statusEntries.map(([status, count]) => (
-                  <HBar key={status} label={status} value={count} max={maxStatus} color={statusColors[status] || "#ec4899"} />
+                  <HBar key={status} label={status} value={count} max={maxStatus} color={statusColors[status] || "#2ec4b6"} />
                 ))}
               </div>
             ) : (
