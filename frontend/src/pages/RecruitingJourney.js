@@ -837,7 +837,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
             </div>
             <div>
               <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</label>
-              <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-date-input" />
+              <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-date-input" />
             </div>
           </div>
           <div>
@@ -1062,7 +1062,7 @@ function FollowUpScheduler({ program, onSaved, onCancel }) {
         <div className="p-5 space-y-3">
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</label>
-            <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} style={inputStyle} data-testid="followup-date-input" />
+            <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="followup-date-input" />
           </div>
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Next Action</label>
