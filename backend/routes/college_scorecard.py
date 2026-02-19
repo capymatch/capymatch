@@ -86,7 +86,7 @@ def _best_match(name, results):
         sc_name = r.get("school.name", "")
         sim = _name_similarity(name, sc_name)
         # Use student_size as tiebreaker — larger campus = more likely the main one
-        size = r.get("school.student_size") or 0
+        size = r.get("latest.student.size") or r.get("school.student_size") or 0
         scored.append((sim, size, r))
     scored.sort(key=lambda x: (-x[0], -x[1]))
     best_sim, _, best = scored[0]
