@@ -152,17 +152,18 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
   );
 }
 
-/* ── School Card (Light theme) ── */
+/* ── School Card ── */
 function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
   const isOnBoard = boardSchools.has(uni.university_name);
   return (
-    <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2ec4b6]/30 bg-white border border-slate-200 group"
+    <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2ec4b6]/30 group"
+      style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}
       onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
       data-testid={`school-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
       <div className="flex items-center gap-3 mb-3.5">
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-bold text-slate-800 truncate">{uni.university_name}</div>
-          <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-400">
+          <div className="text-[13px] font-bold truncate" style={{ color: "var(--t-text)" }}>{uni.university_name}</div>
+          <div className="flex items-center gap-1.5 mt-0.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
             <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#2ec4b6]/15 text-[#2ec4b6]">{uni.division}</span>
             {uni.region && <span>{uni.region}</span>}
             {uni.conference && <span>· {uni.conference}</span>}
@@ -175,7 +176,7 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
       {uni.match_reasons?.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3.5">
           {uni.match_reasons.map(r => (
-            <span key={r} className="text-[10px] px-1.5 py-0.5 rounded-[5px] text-slate-400 bg-slate-100">{r}</span>
+            <span key={r} className="text-[10px] px-1.5 py-0.5 rounded-[5px]" style={{ color: "var(--t-text-muted)", backgroundColor: "var(--t-surface-alt)" }}>{r}</span>
           ))}
         </div>
       )}
@@ -188,7 +189,8 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
         </button>
         <button onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
           data-testid={`details-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-          className="py-2 px-3 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 bg-slate-100 text-slate-400 hover:text-slate-600">
+          className="py-2 px-3 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+          style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-muted)" }}>
           <ArrowRight className="w-3 h-3" /> Details
         </button>
       </div>
