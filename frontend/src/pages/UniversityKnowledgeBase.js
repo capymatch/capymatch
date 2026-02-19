@@ -303,7 +303,13 @@ export default function UniversityKnowledgeBase() {
   const suggestionMap = {};
   suggestions.forEach(s => { suggestionMap[s.university_name] = s; });
 
-  let filtered = [...universities].sort((a, b) => a.university_name.localeCompare(b.university_name));
+  // Sort by match score desc (schools with scores first), then alphabetically
+  let filtered = [...universities].sort((a, b) => {
+    const sa = suggestionMap[a.university_name]?.match_score || 0;
+    const sb = suggestionMap[b.university_name]?.match_score || 0;
+    if (sb !== sa) return sb - sa;
+    return a.university_name.localeCompare(b.university_name);
+  });
   if (activeBucket === "strong") {
     filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
