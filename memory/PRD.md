@@ -33,7 +33,9 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - **School Sorting**: By match percentage descending
 - **Global Color Palette**: Pink replaced with teal/navy palette across entire light theme
 - **Hybrid Theme**: Dark hero/banner + light content on Find Schools & School Info pages
-- **NCAA Timeline Color Fix** (Feb 2026): Replaced washed-out opacity-based colors with solid muted medium-tone palette. Contact=#7ab8b0, Dead=#c09090, Evaluation=#8890b8, Quiet=#c0b080
+- **NCAA Timeline Color Fix** (Feb 2026): Replaced washed-out opacity-based colors with centralized COLORS system. Brighter mid-tone palette: Contact=#6ECEC0, Dead=#E09494, Evaluation=#96A4D0, Quiet=#E4C06A
+- **School Info Page Redesign** (Feb 2026): Redesigned all stat sections to card-based layout matching dark mockup. Added Key Statistics hero row, uppercase section headers with teal icons, individual stat cards with large values/labels/subtitles. Coach cards use teal accent.
+- **Subscription Pricing Redesign** (Feb 2026): Rebuilt UpgradeModal to match mockup. 3 cards: Starter (Free), Pro ($29/mo, Most Popular), Premium ($49/mo). Clean typography, teal checkmarks, centralized COLORS.
 
 ## Key Architecture
 - Frontend: React + Tailwind + shadcn/ui
