@@ -151,6 +151,16 @@ async def get_school_by_domain(domain: str, request: Request):
                 {"$set": {"scorecard": scorecard}}
             )
 
+    # Auto-fetch questionnaire URL if missing
+    if not uni.get("questionnaire_url"):
+        q_url = await _search_questionnaire_url(uni.get("university_name", ""), domain)
+        if q_url:
+            uni["questionnaire_url"] = q_url
+            await db.university_knowledge_base.update_one(
+                {"domain": domain},
+                {"$set": {"questionnaire_url": q_url}}
+            )
+
     try:
         user = await get_current_user(request)
         tenant_id = await get_tenant_id(user)
