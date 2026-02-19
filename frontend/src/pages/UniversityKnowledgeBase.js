@@ -129,7 +129,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           </div>
         )}
       </div>
-      <div className="sm:w-[240px] flex flex-row sm:flex-col items-center justify-center p-4 sm:p-7 gap-3 sm:gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
+      <div className="sm:w-[240px] flex flex-col items-center justify-center p-4 sm:p-7 gap-3 sm:gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
         <div className="flex sm:flex-col items-center gap-2 sm:gap-0">
           <div className="text-[36px] sm:text-[48px] font-extrabold text-[#2ec4b6] leading-none">{school.match_score}%</div>
           <div className="text-[10px] sm:text-[11px] text-white/35 uppercase tracking-[1px] font-semibold sm:-mt-2">Match Score</div>
