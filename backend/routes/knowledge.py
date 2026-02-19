@@ -113,7 +113,8 @@ async def _search_questionnaire_url(university_name, domain, website=None):
             athletics_domain = parsed.netloc or parsed.path.split("/")[0]
 
         # Only search with athletics domain or academic domain — both are "trusted"
-        trusted_domains = [d for d in [athletics_domain, domain] if d]
+        # Only trust the athletics domain for URL matching (academic domain is too broad)
+        trusted_domains = [athletics_domain] if athletics_domain else [domain]
         queries = []
         candidates = []
         if athletics_domain:
