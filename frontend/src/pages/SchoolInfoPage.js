@@ -326,15 +326,6 @@ export default function SchoolInfoPage() {
           ) : (
             <p className="text-[13px] text-slate-400 mb-4">No coaching staff data available.</p>
           )}
-          {!hasCoachAccess && (
-            <div className="rounded-lg px-4 py-3 flex items-center gap-2.5 bg-[#2ec4b6]/5 border border-[#2ec4b6]/15" data-testid="coach-subscribe-banner">
-              <Lock className="w-4 h-4 text-[#2ec4b6] flex-shrink-0" />
-              <span className="text-[13px] text-slate-600">
-                <button onClick={() => navigate("/settings")} className="text-[#2ec4b6] font-semibold hover:underline">Subscribe</button>
-                {" "}to view coaching staff contact information.
-              </span>
-            </div>
-          )}
         </div>
 
         {/* ── School Profile ── */}
