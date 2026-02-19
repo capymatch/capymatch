@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Info — Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f1219; color: #e2e8f0; min-height: 100vh; }
+  .mockup-badge { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(232,98,138,0.15); border: 1px solid rgba(232,98,138,0.3); color: #e8628a; padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; z-index: 100; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 24px 60px; }
+
+  /* ── Back link ── */
+  .back { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 20px; text-decoration: none; font-weight: 600; transition: color 0.2s; cursor: pointer; }
+  .back:hover { color: #e8628a; }
+  .back svg { width: 14px; height: 14px; }
+
+  /* ── Hero Header ── */
+  .hero { border-radius: 20px; overflow: hidden; margin-bottom: 24px; position: relative; background: linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%); border: 1px solid rgba(255,255,255,0.06); }
+  .hero-inner { padding: 36px 36px 32px; display: flex; gap: 28px; align-items: flex-start; }
+  .hero-logo { width: 80px; height: 80px; border-radius: 16px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+  .hero-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .hero-info { flex: 1; min-width: 0; }
+  .hero-name { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.15; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; }
+  .badge-div { padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; background: rgba(232,98,138,0.2); color: #e8628a; }
+  .badge-conf { padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+  .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-primary { background: linear-gradient(135deg, #e8628a, #d63659); color: #fff; }
+  .btn-primary:hover { box-shadow: 0 0 20px rgba(232,98,138,0.4); }
+  .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.08); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .hero-score { text-align: center; flex-shrink: 0; }
+  .score-ring { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: conic-gradient(#e8628a 0% 86%, rgba(255,255,255,0.08) 86% 100%); margin: 0 auto 8px; }
+  .score-inner { width: 82px; height: 82px; border-radius: 50%; background: #1a1f2e; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-num { font-size: 28px; font-weight: 800; color: #e8628a; line-height: 1; }
+  .score-label { font-size: 9px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-top: 2px; }
+  .match-reasons { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 6px; }
+  .match-reason { font-size: 9px; padding: 2px 7px; border-radius: 5px; background: rgba(232,98,138,0.1); color: rgba(232,98,138,0.7); border: 1px solid rgba(232,98,138,0.15); }
+
+  /* ── Section ── */
+  .section { margin-bottom: 28px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title svg { width: 14px; height: 14px; color: #e8628a; }
+
+  /* ── Bento Stats ── */
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .bento-card { background: #161b25; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+  .bento-card:hover { border-color: rgba(232,98,138,0.15); }
+  .bento-value { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .bento-value.pink { color: #e8628a; }
+  .bento-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .bento-sub { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 4px; }
+
+  /* ── Two-column layout ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ── Coach Card ── */
+  .coach-card { background: #161b25; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 20px; display: flex; gap: 14px; align-items: flex-start; transition: border-color 0.2s; }
+  .coach-card:hover { border-color: rgba(232,98,138,0.15); }
+  .coach-avatar { width: 44px; height: 44px; border-radius: 12px; background: rgba(232,98,138,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .coach-avatar svg { width: 20px; height: 20px; color: #e8628a; }
+  .coach-info { flex: 1; min-width: 0; }
+  .coach-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .coach-role { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 10px; }
+  .coach-contact { display: flex; flex-direction: column; gap: 4px; }
+  .coach-contact-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.5); }
+  .coach-contact-row svg { width: 13px; height: 13px; color: rgba(255,255,255,0.25); flex-shrink: 0; }
+  .coach-contact-row a { color: #e8628a; text-decoration: none; }
+  .coach-contact-row a:hover { text-decoration: underline; }
+  .coach-btn { margin-top: 12px; padding: 7px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; background: rgba(232,98,138,0.1); color: #e8628a; border: 1px solid rgba(232,98,138,0.2); cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
+  .coach-btn:hover { background: rgba(232,98,138,0.2); }
+  .coach-btn svg { width: 12px; height: 12px; }
+
+  /* ── About Card ── */
+  .about-card { background: #161b25; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 20px; }
+  .about-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .about-row:last-child { border-bottom: none; }
+  .about-key { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500; }
+  .about-val { font-size: 13px; color: #fff; font-weight: 600; }
+  .about-val a { color: #e8628a; text-decoration: none; }
+  .about-val a:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero-inner { flex-direction: column; align-items: center; text-align: center; }
+    .hero-actions { justify-content: center; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .hero-meta { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-badge">MOCKUP — School Info Page</div>
+
+<div class="page">
+  <a class="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Find Schools
+  </a>
+
+  <!-- Hero Header -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-logo"><img src="https://icon.horse/icon/duke.edu" onerror="this.style.display='none';this.parentElement.textContent='DU'"></div>
+      <div class="hero-info">
+        <div class="hero-name">Duke University</div>
+        <div class="hero-meta">
+          <span class="badge-div">D1</span>
+          <span class="badge-conf">ACC</span>
+          <span class="badge-conf">Southeast</span>
+          <span class="badge-conf">Durham, NC</span>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add to Board
+          </button>
+          <button class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><polyline points="2 3 12 10 22 3"/></svg>
+            Email Coach
+          </button>
+          <button class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Visit Website
+          </button>
+        </div>
+      </div>
+      <div class="hero-score">
+        <div class="score-ring">
+          <div class="score-inner">
+            <div class="score-num">86%</div>
+            <div class="score-label">Match</div>
+          </div>
+        </div>
+        <div class="match-reasons">
+          <span class="match-reason">Division</span>
+          <span class="match-reason">Region</span>
+          <span class="match-reason">Academics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scorecard Stats -->
+  <div class="section">
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Key Statistics
+    </div>
+    <div class="bento">
+      <div class="bento-card">
+        <div class="bento-value">$60,489</div>
+        <div class="bento-label">Tuition</div>
+        <div class="bento-sub">Out-of-state</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-value pink">6%</div>
+        <div class="bento-label">Acceptance Rate</div>
+        <div class="bento-sub">Highly selective</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-value">6,789</div>
+        <div class="bento-label">Undergrads</div>
+        <div class="bento-sub">Medium-sized</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-value pink">96%</div>
+        <div class="bento-label">Graduation Rate</div>
+        <div class="bento-sub">Excellent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Column: Coaches + School Details -->
+  <div class="two-col">
+    <!-- Coaching Staff -->
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Coaching Staff
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="coach-card">
+          <div class="coach-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="coach-info">
+            <div class="coach-name">Mike Rodriguez</div>
+            <div class="coach-role">Head Coach</div>
+            <div class="coach-contact">
+              <div class="coach-contact-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="2 3 12 10 22 3"/></svg>
+                <a href="#">mrodriguez@duke.edu</a>
+              </div>
+              <div class="coach-contact-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/></svg>
+                (919) 555-0123
+              </div>
+            </div>
+            <button class="coach-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="2 3 12 10 22 3"/></svg>
+              Send Email
+            </button>
+          </div>
+        </div>
+        <div class="coach-card">
+          <div class="coach-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="coach-info">
+            <div class="coach-name">Sarah Chen</div>
+            <div class="coach-role">Assistant Coach</div>
+            <div class="coach-contact">
+              <div class="coach-contact-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="2 3 12 10 22 3"/></svg>
+                <a href="#">schen@duke.edu</a>
+              </div>
+            </div>
+            <button class="coach-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="2 3 12 10 22 3"/></svg>
+              Send Email
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- School Details -->
+    <div class="section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        School Details
+      </div>
+      <div class="about-card">
+        <div class="about-row">
+          <span class="about-key">Location</span>
+          <span class="about-val">Durham, NC</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">Type</span>
+          <span class="about-val">Private, 4-year</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">Division</span>
+          <span class="about-val">NCAA Division I</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">Conference</span>
+          <span class="about-val">ACC</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">Region</span>
+          <span class="about-val">Southeast</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">In-State Tuition</span>
+          <span class="about-val">$60,489</span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">Program Website</span>
+          <span class="about-val"><a href="#">goduke.com/volleyball</a></span>
+        </div>
+        <div class="about-row">
+          <span class="about-key">School Website</span>
+          <span class="about-val"><a href="#">duke.edu</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
