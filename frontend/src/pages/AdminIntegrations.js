@@ -78,6 +78,8 @@ export default function AdminIntegrations() {
   const [syncProgress, setSyncProgress] = useState("");
   const [scrapingCoaches, setScrapingCoaches] = useState(false);
   const [scrapeProgress, setScrapeProgress] = useState("");
+  const [discoveringUrls, setDiscoveringUrls] = useState(false);
+  const [discoverProgress, setDiscoverProgress] = useState("");
 
   const fetchIntegrations = async () => {
     try {
