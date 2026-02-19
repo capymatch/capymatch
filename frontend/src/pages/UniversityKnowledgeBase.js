@@ -8,7 +8,6 @@ import {
   Target, MapPinned, GraduationCap, X, Filter, ExternalLink,
   Loader2, RotateCcw, Sparkles, ArrowRight
 } from "lucide-react";
-import UniversityLogo from "../components/UniversityLogo";
 import { toast } from "sonner";
 
 const PER_PAGE = 48;
