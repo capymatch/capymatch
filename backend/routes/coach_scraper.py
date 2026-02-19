@@ -575,7 +575,7 @@ async def _run_discover():
                     continue
 
                 try:
-                    url = await _discover_volleyball_url(http_client, domain)
+                    url = await _discover_volleyball_url(http_client, domain, name)
                     if url:
                         await db.university_knowledge_base.update_one(
                             {"university_name": name},
