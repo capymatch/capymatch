@@ -78,7 +78,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
             onClick={onConfirm}
             disabled={sending}
             className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(232,98,138,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}
+            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}
             data-testid="preview-confirm-send-btn">
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             {sending ? "Sending..." : "Confirm & Send"}
