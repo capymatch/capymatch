@@ -270,19 +270,30 @@ async def _run_sync():
 
 
 @router.post("/sync")
-async def sync_schools():
-    """Start background sync for all unsynced universities."""
+async def sync_schools(request: Request):
+    """Start background sync. With force=true, clears all existing scorecard data first."""
     global sync_status
     if sync_status["running"]:
         return {"status": "already_running", **sync_status}
 
-    already_synced = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": True}})
-    remaining = await db.university_knowledge_base.count_documents({"scorecard": {"$exists": False}})
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    force = body.get("force", False)
 
-    sync_status = {"running": True, "synced": 0, "failed": 0, "total": remaining, "done": False}
+    if force:
+        # Clear all existing scorecard data for a fresh rebuild
+        await db.university_knowledge_base.update_many({}, {"$unset": {"scorecard": ""}})
+
+    total = await db.university_knowledge_base.count_documents({})
+    already_synced = 0 if force else await db.university_knowledge_base.count_documents({"scorecard": {"$exists": True}})
+
+    sync_status = {"running": True, "synced": 0, "failed": 0, "total": total, "done": False, "phase": "starting"}
     asyncio.create_task(_run_sync())
 
-    return {"status": "started", "already_synced": already_synced, "remaining": remaining}
+    return {"status": "started", "already_synced": already_synced, "total": total, "mode": "force_rebuild" if force else "incremental"}
 
 
 @router.post("/sync-one")
