@@ -770,8 +770,8 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
           </div>
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Role</label>
-            <select value={form.role} onChange={e => set("role", e.target.value)} className={inputCls} style={inputStyle} data-testid="coach-role-select">
-              {["Head Coach", "Associate Head Coach", "Assistant Coach", "Recruiting Coordinator", "Director of Operations"].map(r => <option key={r}>{r}</option>)}
+            <select value={form.role} onChange={e => set("role", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="coach-role-select">
+              {["Head Coach", "Associate Head Coach", "Assistant Coach", "Recruiting Coordinator", "Director of Operations"].map(r => <option key={r} style={{ background: "#1e2230", color: "#e2e8f0" }}>{r}</option>)}
             </select>
           </div>
           <div>
@@ -825,14 +825,14 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div>
               <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Type</label>
-              <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-type-select">
-                {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
+              <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-type-select">
+                {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t} style={{ background: "#1e2230", color: "#e2e8f0" }}>{t}</option>)}
               </select>
             </div>
             <div>
               <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Outcome</label>
-              <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-outcome-select">
-                {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o}>{o}</option>)}
+              <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-outcome-select">
+                {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o} style={{ background: "#1e2230", color: "#e2e8f0" }}>{o}</option>)}
               </select>
             </div>
             <div>
