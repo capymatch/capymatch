@@ -173,10 +173,10 @@ function TimelineBar({ periods, division }) {
   };
 
   const barBgStyles = {
-    contact: { backgroundColor: "#3d9e8f" },
-    dead: { backgroundColor: "#c45555" },
-    evaluation: { backgroundColor: "#5568a8" },
-    quiet: { backgroundColor: "#d4a23c" },
+    contact: { backgroundColor: "#5bb8ac" },
+    dead: { backgroundColor: "#d07070" },
+    evaluation: { backgroundColor: "#7080b8" },
+    quiet: { backgroundColor: "#d8b050" },
     gap: { backgroundColor: "#edf0f4" },
   };
 
