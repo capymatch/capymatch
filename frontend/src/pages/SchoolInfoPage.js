@@ -162,7 +162,7 @@ export default function SchoolInfoPage() {
                 className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
                 style={school.on_board
                   ? { background: "rgba(16,185,129,0.2)", color: "#10b981" }
-                  : { background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}>
+                  : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
                 {school.on_board ? <><Check className="w-4 h-4" /> On Your Board</> : <><Plus className="w-4 h-4" /> {adding ? "Adding..." : "Add to Board"}</>}
               </button>
               {coaches[0]?.email && (

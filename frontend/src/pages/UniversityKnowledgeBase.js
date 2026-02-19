@@ -90,7 +90,7 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
 
           <button onClick={onApply} data-testid="filter-apply-btn"
             className="w-full py-3 rounded-xl text-[13px] font-bold text-white mt-2"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}>
+            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
             Apply Filters {activeCount > 0 && `(${activeCount})`}
           </button>
           <button onClick={onClear} data-testid="filter-clear-btn"
@@ -143,7 +143,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
           data-testid="top-match-add-btn"
           className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all"
-          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}>
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
           {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
       </div>
