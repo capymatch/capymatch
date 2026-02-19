@@ -697,7 +697,7 @@ export default function RecruitingBoard() {
 
       {/* School List with Section Headers */}
       {filteredPrograms.length > 0 && (
-        <div className="flex flex-col" data-testid="smart-list">
+        <div className="flex flex-col" data-testid="school-list">
           {STAGE_ORDER.filter(stage => groupedByStage[stage]?.length > 0).map(stage => (
             <React.Fragment key={stage}>
               {!activeFilter && <SectionLabel stage={stage} count={groupedByStage[stage].length} />}
