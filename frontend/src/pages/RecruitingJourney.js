@@ -803,7 +803,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   );
 }
 
-function EmailComposer({ coaches, programId, onSent, onCancel }) {
+function EmailComposer({ coaches, programId, universityName, onSent, onCancel }) {
   const { subscription } = useSubscription();
   const canUseAIDrafts = subscription?.tier === "premium";
   const [to, setTo] = useState(coaches?.[0]?.email || "");
@@ -813,6 +813,7 @@ function EmailComposer({ coaches, programId, onSent, onCancel }) {
   const [drafting, setDrafting] = useState(false);
   const [attachments, setAttachments] = useState([]); // { file_id, filename, size }
   const [uploading, setUploading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef(null);
   const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
   const draftAI = async (type) => {
