@@ -8,7 +8,7 @@ const FEATURE_BENEFITS = {
     title: "Engagement AI",
     subtitle: "Supercharge your recruiting outreach with AI-powered insights",
     icon: TrendingUp,
-    color: "pink",
+    color: "teal",
     benefits: [
       { icon: BarChart3, title: "Outreach Score", desc: "Get a personalized score measuring the strength of your recruiting engagement" },
       { icon: MessageSquare, title: "AI Email Drafts", desc: "Generate personalized emails to coaches with one click using AI" },
@@ -35,7 +35,7 @@ export default function UpgradeBenefitsPage({ featureKey, premiumOnly = false })
   const [showUpgrade, setShowUpgrade] = useState(false);
   const config = FEATURE_BENEFITS[featureKey] || FEATURE_BENEFITS["outreach-analysis"];
   const Icon = config.icon;
-  const accent = "pink";
+  const accent = "teal";
 
   return (
     <>

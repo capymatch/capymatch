@@ -35,16 +35,16 @@ const PULSE_CONFIG = {
 };
 
 const CONV_CONFIG = {
-  email_sent:     { side: "right", color: "pink",   label: "Email sent" },
+  email_sent:     { side: "right", color: "teal",   label: "Email sent" },
   email_received: { side: "left",  color: "emerald", label: "Email received" },
   coach_reply:    { side: "left",  color: "emerald", label: "Coach replied" },
-  phone_call:     { side: "right", color: "pink",   label: "Phone call" },
+  phone_call:     { side: "right", color: "teal",   label: "Phone call" },
   video_call:     { side: "right", color: "cyan",   label: "Video call" },
-  text_message:   { side: "right", color: "pink",   label: "Text message" },
+  text_message:   { side: "right", color: "teal",   label: "Text message" },
   camp:           { side: "center", color: "orange", label: "Camp" },
   camp_meeting:   { side: "center", color: "orange", label: "Camp" },
-  visit:          { side: "center", color: "pink",   label: "Campus visit" },
-  campus_visit:   { side: "center", color: "pink",   label: "Campus visit" },
+  visit:          { side: "center", color: "teal",   label: "Campus visit" },
+  campus_visit:   { side: "center", color: "teal",   label: "Campus visit" },
   showcase:       { side: "center", color: "yellow", label: "Showcase" },
   meeting:        { side: "center", color: "indigo", label: "Meeting" },
   note:           { side: "right", color: "gray",   label: "Note" },
