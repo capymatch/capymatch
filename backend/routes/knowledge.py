@@ -379,3 +379,70 @@ async def get_filters():
     conferences = sorted([c for c in conferences if c])
     regions = sorted([r for r in regions if r])
     return {"conferences": conferences, "regions": regions}
+
+
+# ── Bulk Questionnaire Discovery ──
+_bulk_status = {"running": False, "processed": 0, "found": 0, "failed": 0, "total": 0}
+
+
+async def _bulk_discover_questionnaires():
+    """Background task: discover questionnaire URLs for all schools missing one."""
+    global _bulk_status
+    _bulk_status = {"running": True, "processed": 0, "found": 0, "failed": 0, "total": 0}
+
+    schools = await db.university_knowledge_base.find(
+        {"$or": [{"questionnaire_url": {"$exists": False}}, {"questionnaire_url": None}, {"questionnaire_url": ""}]},
+        {"_id": 0, "domain": 1, "university_name": 1, "website": 1}
+    ).to_list(5000)
+
+    _bulk_status["total"] = len(schools)
+    logger.info(f"Bulk questionnaire discovery started for {len(schools)} schools")
+
+    for school in schools:
+        domain = school.get("domain", "")
+        name = school.get("university_name", "")
+        website = school.get("website")
+        try:
+            url = await _search_questionnaire_url(name, domain, website)
+            if url:
+                await db.university_knowledge_base.update_one(
+                    {"domain": domain},
+                    {"$set": {"questionnaire_url": url}}
+                )
+                _bulk_status["found"] += 1
+            else:
+                # Mark as searched so we don't retry every time
+                await db.university_knowledge_base.update_one(
+                    {"domain": domain},
+                    {"$set": {"questionnaire_url": ""}}
+                )
+        except Exception as e:
+            _bulk_status["failed"] += 1
+            logger.warning(f"Bulk discovery failed for {name}: {e}")
+
+        _bulk_status["processed"] += 1
+
+        if _bulk_status["processed"] % 50 == 0:
+            logger.info(f"Bulk progress: {_bulk_status['processed']}/{_bulk_status['total']} "
+                        f"(found: {_bulk_status['found']}, failed: {_bulk_status['failed']})")
+
+        # Throttle: 4s between searches to avoid rate limiting
+        await asyncio.sleep(4)
+
+    _bulk_status["running"] = False
+    logger.info(f"Bulk questionnaire discovery complete: {_bulk_status['found']} found out of {_bulk_status['total']}")
+
+
+@router.post("/knowledge-base/bulk-discover-questionnaires")
+async def start_bulk_discover():
+    """Trigger bulk discovery of questionnaire URLs for all schools."""
+    if _bulk_status["running"]:
+        return {"status": "already_running", **_bulk_status}
+    asyncio.create_task(_bulk_discover_questionnaires())
+    return {"status": "started", "message": "Bulk discovery started in background"}
+
+
+@router.get("/knowledge-base/bulk-discover-status")
+async def get_bulk_discover_status():
+    """Check progress of bulk questionnaire discovery."""
+    return _bulk_status
