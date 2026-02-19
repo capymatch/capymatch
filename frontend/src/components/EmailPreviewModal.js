@@ -7,7 +7,7 @@ export default function EmailPreviewModal({ to, subject, body, attachments = [],
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="email-preview-overlay">
       <div className="w-full max-w-[580px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-        style={{ background: "#161b25", border: "1px solid rgba(232, 98, 138, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
+        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
         data-testid="email-preview-modal">
 
         {/* Header */}
