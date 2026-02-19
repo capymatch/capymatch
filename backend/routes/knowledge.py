@@ -5,9 +5,29 @@ from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_school_limit
 import uuid
+import os
+import httpx
 import logging
 
 logger = logging.getLogger(__name__)
+
+SCORECARD_BASE = "https://api.data.gov/ed/collegescorecard/v1/schools"
+SCORECARD_FIELDS = ",".join([
+    "id", "school.name", "school.city", "school.state", "school.school_url",
+    "school.student_size", "latest.student.size",
+    "latest.admissions.admission_rate.overall",
+    "latest.admissions.sat_scores.average.overall",
+    "latest.admissions.act_scores.midpoint.cumulative",
+    "latest.completion.completion_rate_4yr_100nt",
+    "latest.student.retention_rate.four_year.full_time",
+    "latest.student.demographics.student_faculty_ratio",
+    "latest.cost.tuition.in_state",
+    "latest.cost.tuition.out_of_state",
+    "latest.cost.avg_net_price.overall",
+    "latest.aid.median_debt.completers.overall",
+    "latest.aid.loan_principal",
+    "latest.earnings.10_yrs_after_entry.median",
+])
 
 router = APIRouter(prefix="/api")
 
