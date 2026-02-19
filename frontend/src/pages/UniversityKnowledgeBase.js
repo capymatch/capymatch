@@ -1,18 +1,14 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  Search, Plus, MapPin, Building2, BookmarkPlus, RotateCcw,
-  ArrowUpDown, ChevronLeft, ChevronRight, User, Mail, Check,
-  LayoutGrid, List, Star, Target, MapPinned, Reply, GraduationCap, X
+  Search, Plus, MapPin, Check, LayoutGrid, List, Star,
+  Target, MapPinned, GraduationCap, X, Filter, ExternalLink,
+  Loader2, RotateCcw, Sparkles, ArrowRight
 } from "lucide-react";
 import UniversityLogo from "../components/UniversityLogo";
-import SpotlightHero from "../components/FindSchools/SpotlightHero";
-import SchoolGridCard from "../components/FindSchools/SchoolGridCard";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
 const PER_PAGE = 48;
@@ -21,16 +17,197 @@ const SMART_BUCKETS = [
   { id: "all", label: "All Schools", icon: LayoutGrid },
   { id: "dream", label: "Dream Schools (D1)", icon: Star, filter: { division: "D1" } },
   { id: "strong", label: "Strong Match (80%+)", icon: Target, filter: { minScore: 80 } },
-  { id: "close", label: "Close to Home", icon: MapPinned, filter: { closeToHome: true } },
-  { id: "academics", label: "Strong Academics", icon: GraduationCap, filter: { academics: true } },
+  { id: "close", label: "Close to Home", icon: MapPinned },
+  { id: "academics", label: "Strong Academics", icon: GraduationCap },
 ];
+
+/* ── Slide-in Filter Panel ── */
+function FilterPanel({ open, onClose, divisions, regions, conferences, filterDivision, filterRegion, filterConference, onDivision, onRegion, onConference, onApply, onClear }) {
+  const [showAllConf, setShowAllConf] = useState(false);
+  const visibleConf = showAllConf ? conferences : conferences.slice(0, 8);
+  const activeCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
+
+  return (
+    <>
+      {open && <div className="fixed inset-0 bg-black/40 z-[199]" onClick={onClose} data-testid="filter-overlay" />}
+      <div className={`fixed top-0 right-0 w-[360px] max-w-[90vw] h-full z-[200] transition-transform duration-300 ease-out overflow-y-auto ${open ? "translate-x-0" : "translate-x-full"}`}
+        style={{ backgroundColor: "#161b25", borderLeft: "1px solid rgba(255,255,255,0.06)", boxShadow: open ? "-10px 0 40px rgba(0,0,0,0.4)" : "none" }}
+        data-testid="filter-panel">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[15px] font-bold text-white">Filters</span>
+            <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} data-testid="filter-close">
+              <X className="w-3.5 h-3.5 text-white/50" />
+            </button>
+          </div>
+
+          {/* Division */}
+          <div className="mb-5">
+            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Division</div>
+            <div className="flex flex-wrap gap-1.5">
+              {divisions.map(d => (
+                <button key={d} onClick={() => onDivision(d)} data-testid={`filter-div-${d.toLowerCase()}`}
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterDivision === d ? "text-[#e8628a] border-[#e8628a]/25" : "text-white/40 border-white/[0.06] hover:text-white/60 hover:border-white/12"}`}
+                  style={{ backgroundColor: filterDivision === d ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterDivision === d ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                  {d}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Region */}
+          <div className="mb-5">
+            <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Region</div>
+            <div className="flex flex-wrap gap-1.5">
+              {regions.map(r => (
+                <button key={r} onClick={() => onRegion(r)} data-testid={`filter-reg-${r.toLowerCase().replace(/\s+/g, "-")}`}
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterRegion === r ? "text-[#e8628a]" : "text-white/40 hover:text-white/60"}`}
+                  style={{ backgroundColor: filterRegion === r ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterRegion === r ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Conference */}
+          {conferences.length > 0 && (
+            <div className="mb-5">
+              <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-white/30 mb-2.5">Conference</div>
+              <div className="flex flex-wrap gap-1.5">
+                {visibleConf.map(c => (
+                  <button key={c} onClick={() => onConference(c)} data-testid={`filter-conf-${c.toLowerCase().replace(/\s+/g, "-")}`}
+                    className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filterConference === c ? "text-[#e8628a]" : "text-white/40 hover:text-white/60"}`}
+                    style={{ backgroundColor: filterConference === c ? "rgba(232,98,138,0.12)" : "rgba(255,255,255,0.04)", border: `1px solid ${filterConference === c ? "rgba(232,98,138,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                    {c}
+                  </button>
+                ))}
+                {conferences.length > 8 && (
+                  <button onClick={() => setShowAllConf(!showAllConf)}
+                    className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/30 hover:text-white/50 transition-colors"
+                    style={{ backgroundColor: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    {showAllConf ? "Show less" : `+${conferences.length - 8} more`}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          <button onClick={onApply} data-testid="filter-apply-btn"
+            className="w-full py-3 rounded-xl text-[13px] font-bold text-white mt-2"
+            style={{ background: "linear-gradient(135deg, #e8628a, #d63659)" }}>
+            Apply Filters {activeCount > 0 && `(${activeCount})`}
+          </button>
+          <button onClick={onClear} data-testid="filter-clear-btn"
+            className="w-full py-2.5 rounded-xl text-[12px] font-semibold text-white/40 mt-2 transition-colors hover:text-white/60"
+            style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+            Clear All
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ── Top Match Banner ── */
+function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) {
+  if (!school) return null;
+  const isOnBoard = boardSchools.has(school.university_name);
+  return (
+    <div className="flex rounded-2xl overflow-hidden mb-7 border border-[#e8628a]/12" data-testid="top-match-banner">
+      <div className="flex-1 p-7" style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 100%)" }}>
+        <div className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#e8628a] mb-2.5 flex items-center gap-1.5">
+          <Sparkles className="w-3 h-3" /> Your #1 Match
+        </div>
+        <div className="text-[22px] font-extrabold text-white mb-2 tracking-tight leading-tight cursor-pointer hover:text-[#e8628a] transition-colors"
+          onClick={() => school.domain && navigate(`/school/${school.domain}`)} data-testid="top-match-name">
+          {school.university_name}
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold" style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#e8628a" }}>{school.division}</span>
+          <span className="text-[12px] text-white/40">{school.region} {school.conference && `· ${school.conference}`}</span>
+        </div>
+        {school.match_reasons?.length > 0 && (
+          <div className="rounded-xl p-3.5" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
+            <div className="text-[11px] font-bold text-white/60 mb-1">Why this school?</div>
+            <div className="text-[12px] text-white/40 leading-relaxed">
+              Strong match across {school.match_reasons.join(", ").toLowerCase()}. This program aligns well with your recruiting profile and preferences.
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="w-[240px] flex flex-col items-center justify-center p-7 gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
+        <div className="text-[48px] font-extrabold text-[#e8628a] leading-none">{school.match_score}%</div>
+        <div className="text-[11px] text-white/35 uppercase tracking-[1px] font-semibold -mt-2">Match Score</div>
+        {school.match_reasons?.length > 0 && (
+          <div className="flex flex-wrap gap-1 justify-center">
+            {school.match_reasons.map(r => (
+              <span key={r} className="text-[10px] px-2 py-0.5 rounded-md text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}>{r}</span>
+            ))}
+          </div>
+        )}
+        <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
+          data-testid="top-match-add-btn"
+          className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all"
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #e8628a, #d63659)" }}>
+          {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── School Card (Mockup style) ── */
+function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
+  const isOnBoard = boardSchools.has(uni.university_name);
+  return (
+    <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#e8628a]/20 group"
+      style={{ backgroundColor: "#161b25", border: "1px solid rgba(255,255,255,0.06)" }}
+      onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
+      data-testid={`school-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
+      <div className="flex items-center gap-3 mb-3.5">
+        <UniversityLogo domain={uni.domain} name={uni.university_name} size={40} className="rounded-[10px]" />
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-bold text-white truncate">{uni.university_name}</div>
+          <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-white/30">
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#e8628a" }}>{uni.division}</span>
+            {uni.region && <span>{uni.region}</span>}
+            {uni.conference && <span>· {uni.conference}</span>}
+          </div>
+        </div>
+        {uni.match_score > 0 && (
+          <span className="text-[18px] font-extrabold text-[#e8628a] flex-shrink-0" data-testid="card-match-score">{uni.match_score}%</span>
+        )}
+      </div>
+      {uni.match_reasons?.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3.5">
+          {uni.match_reasons.map(r => (
+            <span key={r} className="text-[10px] px-1.5 py-0.5 rounded-[5px] text-white/35" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>{r}</span>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
+        <button onClick={() => !isOnBoard && addToBoard(uni)} disabled={adding[uni.university_name] || isOnBoard}
+          data-testid={`add-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+          className="flex-1 py-2 rounded-lg text-[11px] font-bold text-center transition-all"
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.12)", color: "#10b981" } : { backgroundColor: "rgba(232,98,138,0.12)", color: "#e8628a" }}>
+          {isOnBoard ? "On Board" : adding[uni.university_name] ? "Adding..." : "+ Add to Board"}
+        </button>
+        <button onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
+          data-testid={`details-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+          className="py-2 px-3 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+          style={{ backgroundColor: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.4)" }}>
+          <ArrowRight className="w-3 h-3" /> Details
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function UniversityKnowledgeBase() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const fromOnboarding = searchParams.get("from") === "onboarding";
 
-  // Data states
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
@@ -39,25 +216,19 @@ export default function UniversityKnowledgeBase() {
   const [conferences, setConferences] = useState([]);
   const [regions, setRegions] = useState(REGIONS);
 
-  // Filter states
   const [search, setSearch] = useState("");
   const [filterDivision, setFilterDivision] = useState("");
   const [filterRegion, setFilterRegion] = useState("");
   const [filterConference, setFilterConference] = useState("");
-  const [sortBy, setSortBy] = useState("name");
   const [activeBucket, setActiveBucket] = useState("all");
 
-  // UI states
   const [adding, setAdding] = useState({});
   const [viewMode, setViewMode] = useState("grid");
-  const [expandedCard, setExpandedCard] = useState(null);
   const [page, setPage] = useState(1);
-  const [showAllConferences, setShowAllConferences] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const stickyRef = useRef(null);
   const { subscription } = useSubscription();
 
-  // Fetch filters + board schools
   useEffect(() => {
     api.get("/knowledge-base/filters").then(res => {
       if (res.data?.conferences) setConferences(res.data.conferences);
@@ -68,7 +239,6 @@ export default function UniversityKnowledgeBase() {
     }).catch(() => {});
   }, []);
 
-  // Fetch universities
   const fetchUniversities = useCallback(async () => {
     try {
       const params = {};
@@ -88,14 +258,12 @@ export default function UniversityKnowledgeBase() {
 
   useEffect(() => { fetchUniversities(); }, [fetchUniversities]);
 
-  // Fetch suggestions
   useEffect(() => {
     api.get("/suggested-schools").then(res => {
       setSuggestions(res.data?.suggestions || []);
     }).catch(() => {}).finally(() => setSuggestionsLoading(false));
   }, []);
 
-  // Add to board handler
   const addToBoard = async (uni) => {
     setAdding(prev => ({ ...prev, [uni.university_name]: true }));
     try {
@@ -110,467 +278,175 @@ export default function UniversityKnowledgeBase() {
       if (fromOnboarding) navigate("/pipeline?congrats=true");
     } catch (err) {
       const detail = err.response?.data?.detail;
-      if (detail?.error === "subscription_limit") {
-        toast.error(detail.message || "School limit reached. Upgrade your plan.");
-      } else {
-        toast.error(typeof detail === "string" ? detail : "Failed to add");
-      }
+      if (detail?.error === "subscription_limit") toast.error(detail.message || "School limit reached. Upgrade your plan.");
+      else toast.error(typeof detail === "string" ? detail : "Failed to add");
     } finally {
       setAdding(prev => ({ ...prev, [uni.university_name]: false }));
     }
   };
 
-  // Smart bucket handler
   const handleBucketClick = (bucket) => {
     setActiveBucket(bucket.id);
-    if (bucket.id === "all") {
-      setFilterDivision("");
-      setFilterRegion("");
-      setFilterConference("");
-    } else if (bucket.filter?.division) {
-      setFilterDivision(bucket.filter.division);
-      setFilterRegion("");
-      setFilterConference("");
-    } else {
-      // For non-API filters, reset API filters
-      setFilterDivision("");
-      setFilterRegion("");
-      setFilterConference("");
-    }
+    if (bucket.id === "all") { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
+    else if (bucket.filter?.division) { setFilterDivision(bucket.filter.division); setFilterRegion(""); setFilterConference(""); }
+    else { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
     setPage(1);
   };
 
-  // Filter pill handlers
-  const toggleDivision = (div) => {
-    setFilterDivision(prev => prev === div ? "" : div);
-    setActiveBucket("all");
-    setPage(1);
-  };
-  const toggleRegion = (reg) => {
-    setFilterRegion(prev => prev === reg ? "" : reg);
-    setActiveBucket("all");
-    setPage(1);
-  };
-  const toggleConference = (conf) => {
-    setFilterConference(prev => prev === conf ? "" : conf);
-    setActiveBucket("all");
-    setPage(1);
-  };
+  const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); };
+  const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); };
+  const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); };
+  const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setSearch(""); setActiveBucket("all"); setPage(1); };
 
-  const resetFilters = () => {
-    setFilterDivision("");
-    setFilterRegion("");
-    setFilterConference("");
-    setSearch("");
-    setActiveBucket("all");
-    setPage(1);
-  };
+  const activeFilterCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
 
-  const hasFilters = filterDivision || filterRegion || filterConference || search;
+  const suggestionMap = {};
+  suggestions.forEach(s => { suggestionMap[s.university_name] = s; });
 
-  // Build active filter tags
-  const activeFilterTags = [];
-  if (filterDivision) activeFilterTags.push({ label: filterDivision, key: "div", clear: () => { setFilterDivision(""); setActiveBucket("all"); } });
-  if (filterRegion) activeFilterTags.push({ label: filterRegion, key: "reg", clear: () => { setFilterRegion(""); setActiveBucket("all"); } });
-  if (filterConference) activeFilterTags.push({ label: filterConference, key: "conf", clear: () => { setFilterConference(""); setActiveBucket("all"); } });
-
-  // Sort + paginate
-  const sorted = [...universities].sort((a, b) => {
-    if (sortBy === "name") return a.university_name.localeCompare(b.university_name);
-    if (sortBy === "division") return (a.division || "").localeCompare(b.division || "");
-    return 0;
-  });
-
-  // Apply smart bucket client-side filters
-  let filtered = sorted;
+  let filtered = [...universities].sort((a, b) => a.university_name.localeCompare(b.university_name));
   if (activeBucket === "strong") {
-    const suggestionScores = {};
-    suggestions.forEach(s => { suggestionScores[s.university_name] = s.match_score; });
-    filtered = sorted.filter(u => (suggestionScores[u.university_name] || 0) >= 80);
+    filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-
-  // Enrich paginated with match scores from suggestions
-  const suggestionMap = {};
-  suggestions.forEach(s => { suggestionMap[s.university_name] = s; });
   const enriched = paginated.map(u => ({
     ...u,
     match_score: suggestionMap[u.university_name]?.match_score || null,
     match_reasons: suggestionMap[u.university_name]?.match_reasons || [],
   }));
 
-  const visibleConferences = showAllConferences ? conferences : conferences.slice(0, 6);
+  const topMatch = suggestions[0] || null;
+
+  // Bucket counts
+  const bucketCounts = {
+    all: filtered.length,
+    dream: universities.filter(u => u.division === "D1").length,
+    strong: Object.values(suggestionMap).filter(s => s.match_score >= 80).length,
+    academics: Object.values(suggestionMap).filter(s => (s.match_reasons || []).includes("Academics")).length,
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20" data-testid="kb-loading">
-        <div className="text-center space-y-3">
-          <div className="w-8 h-8 border-2 rounded-full animate-spin mx-auto" style={{ borderColor: "var(--t-border)", borderTopColor: "var(--t-accent, #be185d)" }} />
-          <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Loading schools...</p>
-        </div>
+        <Loader2 className="w-6 h-6 text-[#e8628a] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div data-testid="knowledge-base" className="space-y-6">
-      {/* === FEATURE 1: Spotlight Hero === */}
-      {!suggestionsLoading && suggestions.length > 0 && (
-        <SpotlightHero
-          suggestions={suggestions}
-          adding={adding}
-          addToBoard={addToBoard}
-          boardSchools={boardSchools}
-        />
+    <div data-testid="knowledge-base" className="max-w-[1280px] mx-auto">
+      {/* Search + Filter Toggle */}
+      <div className="flex gap-2.5 items-center mb-5" data-testid="search-row">
+        <div className="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-[14px]"
+          style={{ backgroundColor: "#161b25", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <Search className="w-[18px] h-[18px] text-white/30 flex-shrink-0" />
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setActiveBucket("all"); }}
+            placeholder={`Search ${universities.length.toLocaleString()} colleges by name...`}
+            className="flex-1 bg-transparent border-none outline-none text-[14px] text-[#e2e8f0] placeholder:text-white/30"
+            data-testid="kb-search"
+          />
+          <span className="text-[11px] text-white/25 whitespace-nowrap">{filtered.length.toLocaleString()}</span>
+        </div>
+        <button onClick={() => setFiltersOpen(true)} data-testid="filter-toggle-btn"
+          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold text-white/50 transition-all hover:border-[#e8628a]/30 hover:text-[#e8628a]"
+          style={{ backgroundColor: "#161b25", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <Filter className="w-4 h-4" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="bg-[#e8628a] text-white text-[10px] px-1.5 py-0.5 rounded-[10px] font-bold">{activeFilterCount}</span>
+          )}
+        </button>
+      </div>
+
+      {/* Smart Chips */}
+      <div className="flex gap-2 flex-wrap mb-6" data-testid="smart-chips">
+        {SMART_BUCKETS.map(b => {
+          const isActive = activeBucket === b.id;
+          const count = bucketCounts[b.id];
+          return (
+            <button key={b.id} onClick={() => handleBucketClick(b)} data-testid={`chip-${b.id}`}
+              className={`px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all ${isActive ? "text-[#e8628a] border-[#e8628a]/30" : "text-white/45 border-white/[0.06] hover:text-white/70 hover:border-white/12"}`}
+              style={{ backgroundColor: isActive ? "rgba(232,98,138,0.15)" : "rgba(255,255,255,0.04)", border: `1px solid ${isActive ? "rgba(232,98,138,0.3)" : "rgba(255,255,255,0.06)"}` }}>
+              {b.label}
+              {count > 0 && <span className="ml-1 opacity-50 font-medium">{count}</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Top Match Banner */}
+      {!suggestionsLoading && topMatch && (
+        <TopMatchBanner school={topMatch} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} />
       )}
 
-      {/* === FEATURE 6: Sticky Search Bar === */}
-      <div
-        ref={stickyRef}
-        className="sticky top-0 z-30 -mx-4 px-4 py-3 border-b transition-all duration-200"
-        style={{
-          backgroundColor: "rgba(var(--t-bg-rgb, 245, 245, 247), 0.85)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          borderColor: "rgba(0,0,0,0.06)",
-        }}
-        data-testid="sticky-search-bar"
-      >
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-            <Input
-              data-testid="kb-search"
-              placeholder={`Search ${sorted.length.toLocaleString()} colleges by name...`}
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setActiveBucket("all"); }}
-              className="pl-9 h-10"
-              style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
-            />
-          </div>
-          <span className="text-[13px] whitespace-nowrap font-medium" style={{ color: "var(--t-text-muted)" }} data-testid="kb-count">
-            {filtered.length} results
-          </span>
-          {/* === FEATURE 4: View Toggle === */}
-          <div className="flex border rounded-lg overflow-hidden" style={{ borderColor: "var(--t-border)" }} data-testid="view-toggle">
-            <button
-              className={`p-2 transition-colors ${viewMode === "grid" ? "text-white" : ""}`}
-              style={viewMode === "grid" ? { backgroundColor: "var(--t-text)" } : { color: "var(--t-text-muted)" }}
-              onClick={() => setViewMode("grid")}
-              data-testid="view-grid-btn"
-            >
-              <LayoutGrid className="w-4 h-4" />
+      {/* Results Header */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[12px] text-white/30" data-testid="results-count">Showing {filtered.length.toLocaleString()} schools</span>
+        <div className="flex gap-1" data-testid="view-toggle">
+          {[{ mode: "grid", Icon: LayoutGrid }, { mode: "list", Icon: List }].map(({ mode, Icon }) => (
+            <button key={mode} onClick={() => setViewMode(mode)} data-testid={`view-${mode}-btn`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${viewMode === mode ? "border-white/12" : "border-white/[0.06]"}`}
+              style={{ backgroundColor: viewMode === mode ? "rgba(255,255,255,0.08)" : "transparent", border: `1px solid ${viewMode === mode ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.06)"}` }}>
+              <Icon className={`w-[15px] h-[15px] ${viewMode === mode ? "text-white/70" : "text-white/30"}`} />
             </button>
-            <button
-              className={`p-2 transition-colors ${viewMode === "list" ? "text-white" : ""}`}
-              style={viewMode === "list" ? { backgroundColor: "var(--t-text)" } : { color: "var(--t-text-muted)" }}
-              onClick={() => setViewMode("list")}
-              data-testid="view-list-btn"
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Active filter chips */}
-        {activeFilterTags.length > 0 && (
-          <div className="flex items-center gap-2 mt-2 flex-wrap" data-testid="active-filter-chips">
-            {activeFilterTags.map(tag => {
-              const isDivision = tag.key === "div";
-              const divChipColors = {
-                D1: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-                D2: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-                D3: "bg-violet-500/10 text-violet-600 border-violet-500/20",
-                NAIA: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-                JUCO: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-              };
-              const chipClass = isDivision
-                ? `${divChipColors[tag.label] || "bg-gray-100 text-gray-600 border-gray-200"}`
-                : "bg-pink-500/8 text-pink-600 border-pink-500/15";
-              return (
-                <button
-                  key={tag.key}
-                  onClick={tag.clear}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border cursor-pointer transition-colors hover:opacity-75 ${chipClass}`}
-                  data-testid={`chip-${tag.key}`}
-                >
-                  {isDivision && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
-                  {!isDivision && <MapPin className="w-3 h-3" />}
-                  {tag.label}
-                  <X className="w-3 h-3 opacity-50" />
-                </button>
-              );
-            })}
-            <button onClick={resetFilters} className="text-xs flex items-center gap-1 px-2 py-1 transition-colors hover:opacity-75" style={{ color: "var(--t-text-muted)" }} data-testid="clear-all-filters">
-              <RotateCcw className="w-3 h-3" /> Clear all
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* === FEATURE 5: Smart Buckets === */}
-      <div className="flex gap-2.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} data-testid="smart-buckets">
-        {SMART_BUCKETS.map(bucket => {
-          const Icon = bucket.icon;
-          const isActive = activeBucket === bucket.id;
-          let count = null;
-          if (bucket.id === "dream") count = universities.filter(u => u.division === "D1").length;
-          if (bucket.id === "strong") {
-            const scores = {};
-            suggestions.forEach(s => { scores[s.university_name] = s.match_score; });
-            count = universities.filter(u => (scores[u.university_name] || 0) >= 80).length;
-          }
-          if (bucket.id === "academics") count = universities.filter(u => (suggestionMap[u.university_name]?.match_reasons || []).includes("Academics")).length;
-
-          return (
-            <button
-              key={bucket.id}
-              onClick={() => handleBucketClick(bucket)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-[13px] font-medium whitespace-nowrap flex-shrink-0 border transition-all duration-200 ${
-                isActive
-                  ? "text-white shadow-md"
-                  : "hover:border-pink-500/50 hover:text-pink-600"
-              }`}
-              style={isActive
-                ? { backgroundColor: "var(--t-accent, #be185d)", borderColor: "var(--t-accent, #be185d)", boxShadow: "0 4px 12px rgba(190,24,93,0.25)" }
-                : { backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }
-              }
-              data-testid={`bucket-${bucket.id}`}
-            >
-              <Icon className="w-4 h-4" />
-              {bucket.label}
-              {count !== null && count > 0 && (
-                <span className={`font-heading font-bold text-[13px] ${isActive ? "opacity-70" : "opacity-50"}`}>
-                  {count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* === FEATURE 2: Horizontal Filter Pills === */}
-      <div className="flex items-center gap-2 flex-wrap" data-testid="filter-pills">
-        <span className="text-[11px] uppercase tracking-widest font-semibold mr-1" style={{ color: "var(--t-text-muted)" }}>Division</span>
-        {DIVISIONS.map(d => {
-          const isActive = filterDivision === d;
-          const colorMap = {
-            D1: { active: "bg-emerald-500/15 text-emerald-600 border-emerald-500 shadow-emerald-500/10", hover: "hover:border-emerald-400" },
-            D2: { active: "bg-blue-500/15 text-blue-600 border-blue-500 shadow-blue-500/10", hover: "hover:border-blue-400" },
-            D3: { active: "bg-violet-500/15 text-violet-600 border-violet-500 shadow-violet-500/10", hover: "hover:border-violet-400" },
-            NAIA: { active: "bg-orange-500/15 text-orange-600 border-orange-500 shadow-orange-500/10", hover: "hover:border-orange-400" },
-            JUCO: { active: "bg-yellow-500/15 text-yellow-600 border-yellow-500 shadow-yellow-500/10", hover: "hover:border-yellow-400" },
-          };
-          const colors = colorMap[d] || { active: "", hover: "" };
-          return (
-            <button
-              key={d}
-              onClick={() => toggleDivision(d)}
-              className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium border-[1.5px] transition-all duration-200 ${
-                isActive ? `${colors.active} shadow-sm` : `border-[var(--t-border)] ${colors.hover}`
-              }`}
-              style={!isActive ? { color: "var(--t-text-secondary)" } : undefined}
-              data-testid={`pill-div-${d.toLowerCase()}`}
-            >
-              {d}
-            </button>
-          );
-        })}
-
-        <div className="w-px h-6 mx-1" style={{ backgroundColor: "var(--t-border)" }} />
-
-        <span className="text-[11px] uppercase tracking-widest font-semibold mr-1" style={{ color: "var(--t-text-muted)" }}>Region</span>
-        {regions.slice(0, 5).map(r => {
-          const isActive = filterRegion === r;
-          return (
-            <button
-              key={r}
-              onClick={() => toggleRegion(r)}
-              className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium border-[1.5px] transition-all duration-200 ${
-                isActive ? "bg-pink-500/10 text-pink-600 border-pink-500 shadow-sm shadow-pink-500/10" : "border-[var(--t-border)] hover:border-pink-400"
-              }`}
-              style={!isActive ? { color: "var(--t-text-secondary)" } : undefined}
-              data-testid={`pill-reg-${r.toLowerCase().replace(/\s+/g, "-")}`}
-            >
-              {r}
-            </button>
-          );
-        })}
-
-        {regions.length > 5 && !filterRegion && (
-          <span className="text-[12px] px-2 py-1" style={{ color: "var(--t-text-muted)" }}>+{regions.length - 5} more</span>
-        )}
-
-        {conferences.length > 0 && (
-          <>
-            <div className="w-px h-6 mx-1" style={{ backgroundColor: "var(--t-border)" }} />
-            <span className="text-[11px] uppercase tracking-widest font-semibold mr-1" style={{ color: "var(--t-text-muted)" }}>Conference</span>
-            {visibleConferences.map(c => {
-              const isActive = filterConference === c;
-              return (
-                <button
-                  key={c}
-                  onClick={() => toggleConference(c)}
-                  className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium border-[1.5px] transition-all duration-200 ${
-                    isActive ? "bg-pink-500/10 text-pink-600 border-pink-500 shadow-sm" : "border-[var(--t-border)] hover:border-gray-400"
-                  }`}
-                  style={!isActive ? { color: "var(--t-text-secondary)" } : undefined}
-                  data-testid={`pill-conf-${c.toLowerCase().replace(/\s+/g, "-")}`}
-                >
-                  {c}
-                </button>
-              );
-            })}
-            {conferences.length > 6 && (
-              <button
-                onClick={() => setShowAllConferences(!showAllConferences)}
-                className="text-[12px] px-2 py-1 transition-colors"
-                style={{ color: "var(--t-text-muted)" }}
-                data-testid="show-more-conferences"
-              >
-                {showAllConferences ? "Show less" : `+${conferences.length - 6} more`}
-              </button>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* === FEATURES 3 & 4: Grid/List View with Quick Look === */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-16" data-testid="no-results">
-          <Search className="w-10 h-10 mx-auto mb-3 opacity-20" style={{ color: "var(--t-text-muted)" }} />
-          <p className="text-sm font-medium" style={{ color: "var(--t-text-muted)" }}>No universities found matching your filters</p>
-          {hasFilters && (
-            <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto transition-colors" style={{ color: "var(--t-accent, #be185d)" }}>
-              <RotateCcw className="w-3.5 h-3.5" /> Reset filters
-            </button>
-          )}
-        </div>
-      ) : viewMode === "grid" ? (
-        /* Grid View */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="kb-grid-view">
-          {enriched.map(uni => (
-            <SchoolGridCard
-              key={uni.university_name}
-              uni={uni}
-              adding={adding}
-              addToBoard={addToBoard}
-              boardSchools={boardSchools}
-              isExpanded={expandedCard === uni.university_name}
-              onToggleExpand={() => setExpandedCard(expandedCard === uni.university_name ? null : uni.university_name)}
-            />
           ))}
         </div>
+      </div>
+
+      {/* School Grid / List */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-16" data-testid="no-results">
+          <Search className="w-10 h-10 mx-auto mb-3 text-white/10" />
+          <p className="text-sm font-medium text-white/30">No universities found matching your filters</p>
+          <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto text-[#e8628a] transition-colors hover:opacity-80">
+            <RotateCcw className="w-3.5 h-3.5" /> Reset filters
+          </button>
+        </div>
       ) : (
-        /* List View */
-        <div className="space-y-3" data-testid="kb-list-view">
+        <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" : "flex flex-col gap-2.5"} data-testid="kb-grid">
           {enriched.map(uni => (
-            <ListCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} />
+            <SchoolCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} />
           ))}
         </div>
       )}
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 pb-2" data-testid="kb-pagination">
-          <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>
-            Showing {(page - 1) * PER_PAGE + 1}-{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
+        <div className="flex items-center justify-between pt-6 pb-2" data-testid="kb-pagination">
+          <span className="text-[12px] text-white/30">
+            {(page - 1) * PER_PAGE + 1}-{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
           </span>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}
-              data-testid="kb-prev-page" className="h-8 gap-1" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-              <ChevronLeft className="w-4 h-4" /> Prev
-            </Button>
-            <span className="text-sm px-2" style={{ color: "var(--t-text)" }}>{page} / {totalPages}</span>
-            <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}
-              data-testid="kb-next-page" className="h-8 gap-1" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-              Next <ChevronRight className="w-4 h-4" />
-            </Button>
+            <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} data-testid="kb-prev-page"
+              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/40 disabled:opacity-30 transition-colors hover:text-white/60"
+              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>Prev</button>
+            <span className="text-[12px] text-white/50 px-2">{page} / {totalPages}</span>
+            <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} data-testid="kb-next-page"
+              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/40 disabled:opacity-30 transition-colors hover:text-white/60"
+              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>Next</button>
           </div>
         </div>
       )}
-    </div>
-  );
-}
 
-/* List view card - keeps the original detailed layout */
-function ListCard({ uni, adding, addToBoard, boardSchools }) {
-  const isOnBoard = boardSchools.has(uni.university_name);
-  const divColor = {
-    D1: "bg-emerald-500/15 text-emerald-600",
-    D2: "bg-blue-500/15 text-blue-600",
-    D3: "bg-violet-500/15 text-violet-600",
-    NAIA: "bg-orange-500/15 text-orange-600",
-    JUCO: "bg-yellow-500/15 text-yellow-600",
-  }[uni.division] || "bg-gray-500/15 text-gray-600";
-  const divFull = uni.division === "D1" ? "NCAA I" : uni.division === "D2" ? "NCAA II" : uni.division === "D3" ? "NCAA III" : uni.division;
-
-  return (
-    <div
-      className="rounded-xl p-5 transition-all duration-200 group shadow-sm border hover:shadow-md"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
-      data-testid={`kb-list-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <UniversityLogo domain={uni.domain} name={uni.university_name} size={40} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h3 className="font-heading font-bold text-lg leading-tight" style={{ color: "var(--t-text)" }}>{uni.university_name}</h3>
-              {uni.match_score && (
-                <span className={`font-heading text-sm font-bold ${uni.match_score >= 80 ? "text-gray-700" : "text-gray-500"}`}>
-                  {uni.match_score}%
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-3 mt-1 text-sm flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${divColor}`}>{uni.division}</span>
-              {uni.region && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {uni.region}</span>}
-              {uni.conference && <span className="flex items-center gap-1"><Building2 className="w-3.5 h-3.5" /> {divFull} | {uni.conference}</span>}
-            </div>
-            {(uni.primary_coach || uni.recruiting_coordinator) && (
-              <div className="flex items-center gap-4 mt-2 text-xs flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-                {uni.primary_coach && (
-                  <span className="flex items-center gap-1">
-                    <User className="w-3 h-3" /> {uni.primary_coach}
-                    {uni.coach_email && (
-                      <a href={`mailto:${uni.coach_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={uni.coach_email}>
-                        <Mail className="w-3 h-3" />
-                      </a>
-                    )}
-                  </span>
-                )}
-                {uni.recruiting_coordinator && (
-                  <span className="flex items-center gap-1">
-                    <User className="w-3 h-3 opacity-60" /> {uni.recruiting_coordinator} <span className="opacity-50">(RC)</span>
-                    {uni.coordinator_email && (
-                      <a href={`mailto:${uni.coordinator_email}`} className="text-pink-500 hover:text-pink-400 ml-1" title={uni.coordinator_email}>
-                        <Mail className="w-3 h-3" />
-                      </a>
-                    )}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {isOnBoard ? (
-            <span className="inline-flex items-center gap-1.5 text-xs h-8 px-3 rounded-md font-medium text-emerald-600" data-testid={`on-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
-              <Check className="w-3.5 h-3.5" /> On Your Board
-            </span>
-          ) : (
-            <Button size="sm" variant="outline" onClick={() => addToBoard(uni)} disabled={adding[uni.university_name]}
-              data-testid={`add-to-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-              className="text-xs h-8 gap-1.5 transition-colors" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-              <BookmarkPlus className="w-3.5 h-3.5" />
-              {adding[uni.university_name] ? "Adding..." : "Add to Board"}
-            </Button>
-          )}
-        </div>
-      </div>
+      {/* Filter Panel */}
+      <FilterPanel
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        divisions={DIVISIONS}
+        regions={regions}
+        conferences={conferences}
+        filterDivision={filterDivision}
+        filterRegion={filterRegion}
+        filterConference={filterConference}
+        onDivision={toggleDiv}
+        onRegion={toggleReg}
+        onConference={toggleConf}
+        onApply={() => setFiltersOpen(false)}
+        onClear={() => { resetFilters(); setFiltersOpen(false); }}
+      />
     </div>
   );
 }
