@@ -771,7 +771,8 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
   const [form, setForm] = useState({ type: "Phone Call", notes: "", outcome: "Positive", date_time: new Date().toISOString().slice(0, 16) });
   const [saving, setSaving] = useState(false);
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const save = async () => {
     if (!form.notes.trim()) { toast.error("Add a note"); return; }
     setSaving(true);
@@ -781,24 +782,49 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
     } catch { toast.error("Failed to log interaction"); } finally { setSaving(false); }
   };
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="log-interaction-form">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Log Interaction</h3>
-        <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="log-interaction-overlay">
+      <div className="w-full max-w-[520px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
+        style={{ background: "#161b25", border: "1px solid rgba(232, 98, 138, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(232,98,138,0.08)" }}
+        data-testid="log-interaction-form">
+        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-pink-400" />Log Interaction</h2>
+            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="log-close-btn"><X className="w-4 h-4 text-white/40" /></button>
+          </div>
+        </div>
+        <div className="p-5 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Type</label>
+              <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-type-select">
+                {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Outcome</label>
+              <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-outcome-select">
+                {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</label>
+              <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={inputStyle} data-testid="interaction-date-input" />
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Notes</label>
+            <textarea placeholder="What happened? Key takeaways..." value={form.notes} onChange={e => set("notes", e.target.value)} rows={4} className={`${inputCls} resize-none`} style={inputStyle} data-testid="interaction-notes-input" />
+          </div>
+        </div>
+        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <button onClick={onCancel} className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>Cancel</button>
+          <Button onClick={save} disabled={saving}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(232,98,138,0.4)]"
+            style={{ background: "linear-gradient(135deg, #e8628a, #d63659)" }} data-testid="save-interaction-btn">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}Log Interaction
+          </Button>
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-type-select">
-          {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t}>{t}</option>)}
-        </select>
-        <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-outcome-select">
-          {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o}>{o}</option>)}
-        </select>
-        <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-date-input" />
-      </div>
-      <textarea placeholder="What happened? Key takeaways..." value={form.notes} onChange={e => set("notes", e.target.value)} rows={3} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="interaction-notes-input" />
-      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={save} disabled={saving} data-testid="save-interaction-btn">
-        {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}Log Interaction
-      </Button>
     </div>
   );
 }
