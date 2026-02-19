@@ -417,17 +417,15 @@ export default function UniversityKnowledgeBase() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-6 pb-2" data-testid="kb-pagination">
-          <span className="text-[12px] text-white/30">
+          <span className="text-[12px] text-slate-400">
             {(page - 1) * PER_PAGE + 1}-{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
           </span>
           <div className="flex items-center gap-2">
             <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} data-testid="kb-prev-page"
-              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/40 disabled:opacity-30 transition-colors hover:text-white/60"
-              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>Prev</button>
-            <span className="text-[12px] text-white/50 px-2">{page} / {totalPages}</span>
+              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-slate-500 disabled:opacity-30 transition-colors hover:text-slate-700 bg-white border border-slate-200">Prev</button>
+            <span className="text-[12px] text-slate-500 px-2">{page} / {totalPages}</span>
             <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} data-testid="kb-next-page"
-              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white/40 disabled:opacity-30 transition-colors hover:text-white/60"
-              style={{ border: "1px solid rgba(255,255,255,0.08)" }}>Next</button>
+              className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-slate-500 disabled:opacity-30 transition-colors hover:text-slate-700 bg-white border border-slate-200">Next</button>
           </div>
         </div>
       )}
