@@ -284,7 +284,8 @@ export default function SchoolInfoPage() {
         </SectionCard>
 
         {/* ── Coaching Staff ── */}
-        <SectionCard title="Coaching Staff" icon={Users} testId="coaching-staff-section">
+        <div data-testid="coaching-staff-section">
+          <SectionHeader icon={Users} title="Coaching Staff" />
           {coaches.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {coaches.map((c, i) => (
@@ -334,7 +335,7 @@ export default function SchoolInfoPage() {
               </span>
             </div>
           )}
-        </SectionCard>
+        </div>
 
         {/* ── School Profile ── */}
         <SectionCard title="School Profile" icon={GraduationCap} testId="school-profile-section">
