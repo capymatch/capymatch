@@ -121,20 +121,20 @@ const DATE_ICONS = {
 };
 
 const DATE_ICON_BG = {
-  file: "bg-teal-900/10",
-  grad: "bg-indigo-800/10",
-  eye: "bg-slate-700/10",
-  camp: "bg-amber-800/10",
-  calendar: "bg-slate-700/10",
-  award: "bg-slate-700/10",
+  file: "bg-[#d5e8e6]",
+  grad: "bg-[#d5d8e8]",
+  eye: "bg-[#dde0e4]",
+  camp: "bg-[#e8e0cc]",
+  calendar: "bg-[#dde0e4]",
+  award: "bg-[#dde0e4]",
 };
 
 function StatusTag({ status, range }) {
-  if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded bg-gray-200 text-gray-600 font-medium">Passed</span>;
-  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 font-medium">Info</span>;
+  if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#e0e4e8", color: "#4a5568" }}>Passed</span>;
+  if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#dde0f0", color: "#3d4580" }}>Info</span>;
   const days = daysUntilDate(range);
-  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-medium">Active Now</span>;
-  return <span className="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">{days} days away</span>;
+  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#c8e6e3", color: "#1a5c56" }}>Active Now</span>;
+  return <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ backgroundColor: "#f0e4c8", color: "#7a5a1a" }}>{days} days away</span>;
 }
 
 // ── Visual Timeline Bar ──
