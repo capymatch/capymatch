@@ -632,6 +632,35 @@ export default function AdminIntegrations() {
         </div>
       </IntegrationCard>
 
+      {/* Volleyball URL Discovery */}
+      <IntegrationCard
+        icon={Globe}
+        title="Volleyball URL Finder"
+        subtitle="Discover volleyball program websites from university athletics pages"
+        status={urlDiscovery.stats?.has_website > 0}
+        statusLabel={urlDiscovery.stats?.has_website > 0 ? `${urlDiscovery.stats.has_website} found` : "Not run yet"}
+        accent="bg-orange-500/15 text-orange-400"
+      >
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <StatRow label="Schools with Volleyball URL" value={`${urlDiscovery.stats?.has_website || 0} of ${urlDiscovery.stats?.total || 0}`} />
+            <StatRow label="Missing URLs" value={urlDiscovery.stats?.missing_website || 0} />
+          </div>
+          <Button
+            onClick={discoverUrls}
+            disabled={discoveringUrls}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white gap-1.5"
+            data-testid="discover-urls-btn"
+          >
+            {discoveringUrls ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+            {discoveringUrls ? `Discovering... (${discoverProgress})` : "Find Volleyball URLs"}
+          </Button>
+          <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+            Visits each university homepage to find their athletics site, then locates the volleyball program page.
+          </p>
+        </div>
+      </IntegrationCard>
+
       {/* Coach Scraper */}
       <IntegrationCard
         icon={Search}
