@@ -106,23 +106,19 @@ async def _search_questionnaire_url(university_name, domain, website=None):
     """Use DuckDuckGo to find the recruiting questionnaire URL for a school."""
     try:
         from ddgs import DDGS
-        # Extract athletics domain from website URL
+        from urllib.parse import urlparse
         athletics_domain = None
         if website:
-            from urllib.parse import urlparse
             parsed = urlparse(website)
             athletics_domain = parsed.netloc or parsed.path.split("/")[0]
 
+        # Only search with athletics domain or academic domain — both are "trusted"
+        trusted_domains = [d for d in [athletics_domain, domain] if d]
         queries = []
         if athletics_domain:
-            queries.append(f'{athletics_domain} volleyball recruiting questionnaire')
             queries.append(f'site:{athletics_domain} recruiting questionnaire')
-        queries.append(f'"{university_name}" volleyball recruiting questionnaire form')
-
-        skip_domains = ["wikipedia", "facebook", "twitter", "instagram", "youtube", "reddit",
-                        "espn.com", "ncaa.com", "maxpreps", "niche.com", "usnews.com",
-                        "tiktok.com", "zhihu.com", "britannica", "ncsasports", "fieldlevel"]
-        questionnaire_keywords = ["questionnaire", "prospect", "recruit", "form", "interest"]
+            queries.append(f'{athletics_domain} volleyball recruiting questionnaire')
+        queries.append(f'site:{domain} volleyball recruiting questionnaire')
 
         for query in queries:
             try:
@@ -132,19 +128,10 @@ async def _search_questionnaire_url(university_name, domain, website=None):
                     if not href:
                         continue
                     lower = href.lower()
-                    if any(s in lower for s in skip_domains):
+                    # Only accept URLs from the school's own domains
+                    if not any(td in lower for td in trusted_domains):
                         continue
-                    # Prefer URLs from the athletics domain
-                    if athletics_domain and athletics_domain in lower:
-                        if any(kw in lower for kw in questionnaire_keywords):
-                            return href
-                # Second pass: any URL with questionnaire keywords
-                for r in results:
-                    href = r.get("href", "")
-                    lower = href.lower()
-                    if any(s in lower for s in skip_domains):
-                        continue
-                    if any(kw in lower for kw in ["questionnaire", "prospect-form", "recruit/form", "recruiting-form"]):
+                    if any(kw in lower for kw in ["questionnaire", "prospect", "recruit", "form", "interest"]):
                         return href
             except Exception:
                 continue
