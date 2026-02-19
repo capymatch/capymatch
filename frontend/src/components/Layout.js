@@ -610,8 +610,7 @@ export default function Layout({ user, onLogout }) {
         </main>
       </div>
 
-      {/* Guided Tour */}
-      {showTour && <Tour onComplete={() => setShowTour(false)} />}
+      {/* Guided Tour - disabled in favor of pipeline tour */}
       <AIAssistantDrawer isOpen={showAssistant} onClose={() => setShowAssistant(false)} />
       <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} feature="ai_drafts" currentTier={subscription?.tier || "basic"} />
     </div>
