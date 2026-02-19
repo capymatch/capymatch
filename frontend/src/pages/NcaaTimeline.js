@@ -256,22 +256,22 @@ export default function NcaaTimeline() {
       <div className="rounded-xl border-l-4 border p-4 sm:p-5" style={{
         backgroundColor: "var(--t-surface)",
         borderColor: "var(--t-border)",
-        borderLeftColor: currentPeriod.type === "contact" ? "#3d9e8f" :
-          currentPeriod.type === "dead" ? "#c45555" :
-          currentPeriod.type === "evaluation" ? "#5568a8" : "#d4a23c"
+        borderLeftColor: currentPeriod.type === "contact" ? "#5bb8ac" :
+          currentPeriod.type === "dead" ? "#d07070" :
+          currentPeriod.type === "evaluation" ? "#7080b8" : "#d8b050"
       }} data-testid="current-period-banner">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="w-3 h-3 rounded-full animate-pulse" style={{
-              backgroundColor: currentPeriod.type === "contact" ? "#3d9e8f" :
-                currentPeriod.type === "dead" ? "#c45555" :
-                currentPeriod.type === "evaluation" ? "#5568a8" : "#d4a23c"
+              backgroundColor: currentPeriod.type === "contact" ? "#5bb8ac" :
+                currentPeriod.type === "dead" ? "#d07070" :
+                currentPeriod.type === "evaluation" ? "#7080b8" : "#d8b050"
             }} />
             <div>
               <p className="text-[10px] uppercase tracking-wider font-bold" style={{
-                color: currentPeriod.type === "contact" ? "#2d7a6e" :
-                  currentPeriod.type === "dead" ? "#993333" :
-                  currentPeriod.type === "evaluation" ? "#3d4d88" : "#a07820"
+                color: currentPeriod.type === "contact" ? "#3a8a80" :
+                  currentPeriod.type === "dead" ? "#a04848" :
+                  currentPeriod.type === "evaluation" ? "#505890" : "#a08030"
               }}>Current Period - {division}</p>
               <p className="text-base sm:text-lg font-bold mt-0.5" style={{ color: "var(--t-text)" }}>{periodInfo.label} Period</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{periodInfo.desc}</p>
