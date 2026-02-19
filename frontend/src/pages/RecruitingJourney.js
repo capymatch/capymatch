@@ -19,7 +19,7 @@ import EmailPreviewModal from "../components/EmailPreviewModal";
    ═══════════════════════════════════════════════════════════════ */
 
 const RAIL_STAGES = [
-  { key: "added", label: "Added", color: "#e8456b" },
+  { key: "added", label: "Added", color: "#2ec4b6" },
   { key: "outreach_sent", label: "Outreach", color: "#f97316" },
   { key: "coach_replied", label: "In Conversation", color: "#eab308" },
   { key: "campus_visit", label: "Visit", color: "#22c55e" },
@@ -80,7 +80,7 @@ function ProgressRail({ rail, onStageClick }) {
   });
   const fillGradient = fillStops.length > 1
     ? `linear-gradient(90deg, ${fillStops.join(", ")})`
-    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#e8456b";
+    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#2ec4b6";
 
   return (
     <div data-testid="progress-rail">
@@ -243,13 +243,13 @@ function CommittedHero({ program }) {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[
           { left: "8%", delay: "0s", dur: "3s", color: "#fbbf24", size: 6 },
-          { left: "18%", delay: "0.4s", dur: "3.5s", color: "#e8456b", size: 5 },
+          { left: "18%", delay: "0.4s", dur: "3.5s", color: "#2ec4b6", size: 5 },
           { left: "30%", delay: "0.8s", dur: "2.8s", color: "#22c55e", size: 7 },
           { left: "45%", delay: "0.2s", dur: "3.2s", color: "#fbbf24", size: 5 },
-          { left: "58%", delay: "1s", dur: "3s", color: "#e8456b", size: 6 },
+          { left: "58%", delay: "1s", dur: "3s", color: "#2ec4b6", size: 6 },
           { left: "70%", delay: "0.6s", dur: "3.4s", color: "#22c55e", size: 4 },
           { left: "82%", delay: "0.3s", dur: "2.9s", color: "#fbbf24", size: 7 },
-          { left: "92%", delay: "0.9s", dur: "3.1s", color: "#e8456b", size: 5 },
+          { left: "92%", delay: "0.9s", dur: "3.1s", color: "#2ec4b6", size: 5 },
         ].map((p, i) => (
           <div key={i} style={{
             position: "absolute", top: 0, left: p.left,
@@ -409,7 +409,7 @@ function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup,
           <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#e8456b" }}>What's Next</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#2ec4b6" }}>What's Next</p>
           <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>{rule.title}</h3>
           <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{rule.desc}</p>
           <div className="flex gap-2 flex-wrap">
@@ -581,7 +581,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
 
       {/* AI Suggestion or Tip */}
       {isPremium ? (
-        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(232,69,107,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
+        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(46,196,182,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
           {aiSummary ? (
             <div className="space-y-1.5">
               <p className="text-[9px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1"><Sparkles className="w-3 h-3" />Next move</p>
@@ -1306,7 +1306,7 @@ export default function RecruitingJourney() {
       {/* ─── Header with Progress Rail ─── */}
       <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", padding: "0", position: "relative" }} data-testid="journey-header">
         {/* Pink accent line */}
-        <div style={{ height: 2, background: "linear-gradient(90deg, #e8456b 0%, rgba(232,69,107,0.2) 100%)" }} />
+        <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
         <div style={{ padding: "20px 24px" }}>
         <div className="flex items-start gap-3 mb-4">
           <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg transition-colors mt-0.5" style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.05)" }} data-testid="back-btn"

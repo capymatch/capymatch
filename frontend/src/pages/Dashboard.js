@@ -331,11 +331,11 @@ export default function Dashboard() {
       {/* ═══ Section 1: Greeting + Quick Pulse ═══ */}
       <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e" }} data-testid="greeting-pulse">
         {/* Pink accent line */}
-        <div style={{ height: 2, background: "linear-gradient(90deg, #e8456b 0%, rgba(232,69,107,0.2) 100%)" }} />
+        <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
         <div className="flex items-start justify-between px-6 py-5 lg:px-7 lg:py-6">
           <div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight" style={{ color: "#ffffff" }}>
-              {greeting}, <span style={{ color: "#e8456b" }}>{firstName}</span>
+              {greeting}, <span style={{ color: "#2ec4b6" }}>{firstName}</span>
             </h2>
             <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>
               {athleteName ? `Here's what's happening with ${athleteName.split(" ")[0]}'s recruiting today` : "Here's your recruiting overview for today"}
@@ -346,7 +346,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <PulseStat icon={Target} iconBg="rgba(232,69,107,0.15)" iconColor="#e8456b" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} dark onClick={() => navigate("/pipeline")} />
+          <PulseStat icon={Target} iconBg="rgba(46,196,182,0.15)" iconColor="#2ec4b6" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} dark onClick={() => navigate("/pipeline")} />
           <PulseStat icon={MessageCircle} iconBg="rgba(59,130,246,0.15)" iconColor="#60a5fa" value={`${responseRate}%`} label="Response Rate" sub={`${replied} of ${contacted} contacted`} dark />
           <PulseStat icon={Mail} iconBg="rgba(16,185,129,0.15)" iconColor="#34d399" value={repliesThisWeek.length} label="Replies This Week" sub={lastReply ? `Last: ${lastReply.university_name || ""}` : "—"} dark />
           <PulseStat icon={Clock} iconBg="rgba(245,158,11,0.15)" iconColor="#fbbf24" value={awaitingReply.length} label="Awaiting Reply" sub={awaitingReply.length > 0 ? `Oldest: ${getDaysAgo(awaitingReply.sort((a, b) => (a.last_follow_up || a.created_at || "").localeCompare(b.last_follow_up || b.created_at || ""))[0]?.last_follow_up || "")}` : "—"} dark />

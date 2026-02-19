@@ -9,7 +9,7 @@ const THEME_CSS = `
   .profile-root {
     --p-bg: #e8e7ef;
     --p-hero-bg: #ffffff;
-    --p-hero-glow: rgba(232,69,107,0.05);
+    --p-hero-glow: rgba(46,196,182,0.05);
     --p-surface: #ffffff;
     --p-surface-alt: #eeedf5;
     --p-border: rgba(0,0,0,0.08);
@@ -18,13 +18,13 @@ const THEME_CSS = `
     --p-text-secondary: #4a4a60;
     --p-text-muted: #8b8b9e;
     --p-text-faint: #b0b0c0;
-    --p-accent: #e8456b;
-    --p-accent-glow: rgba(232,69,107,0.08);
-    --p-accent-glow-strong: rgba(232,69,107,0.12);
+    --p-accent: #2ec4b6;
+    --p-accent-glow: rgba(46,196,182,0.08);
+    --p-accent-glow-strong: rgba(46,196,182,0.12);
     --p-stat-bg: #e8eaf8;
     --p-stat-border: rgba(99,102,241,0.18);
     --p-stat-highlight-bg: #fde8ed;
-    --p-stat-highlight-border: rgba(232,69,107,0.25);
+    --p-stat-highlight-border: rgba(46,196,182,0.25);
     --p-section-bg: #ffffff;
     --p-section-border: rgba(0,0,0,0.08);
     --p-section-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.10);
@@ -49,11 +49,11 @@ const THEME_CSS = `
 `;
 
 const EVENT_LIGHT_STYLES = {
-  Camp: { bg: "rgba(232,69,107,0.08)", color: "#d63b5c" },
+  Camp: { bg: "rgba(46,196,182,0.08)", color: "#d63b5c" },
   Showcase: { bg: "rgba(59,130,246,0.08)", color: "#2563eb" },
   Tournament: { bg: "rgba(217,119,6,0.08)", color: "#b45309" },
   Visit: { bg: "rgba(16,185,129,0.08)", color: "#059669" },
-  Tryout: { bg: "rgba(232,69,107,0.08)", color: "#d63b5c" },
+  Tryout: { bg: "rgba(46,196,182,0.08)", color: "#d63b5c" },
   Other: { bg: "rgba(107,114,128,0.08)", color: "#6b7280" },
 };
 
@@ -189,7 +189,7 @@ export default function PublicSchedule() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--p-bg, #f6f6f9)" }}>
-        <Loader2 className="w-8 h-8 animate-spin text-[#e8456b]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#2ec4b6]" />
       </div>
     );
   }
@@ -246,11 +246,11 @@ export default function PublicSchedule() {
                 data-testid="athlete-photo"
               />
             ) : (
-              <div className="w-52 h-64 sm:w-[280px] sm:h-[340px] rounded-[20px] bg-gradient-to-br from-[#e8456b] to-indigo-500 flex items-center justify-center shadow-lg">
+              <div className="w-52 h-64 sm:w-[280px] sm:h-[340px] rounded-[20px] bg-gradient-to-br from-[#2ec4b6] to-indigo-500 flex items-center justify-center shadow-lg">
                 <User className="w-20 h-20 text-white/70" />
               </div>
             )}
-            <div className="absolute -bottom-1.5 left-6 right-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, var(--p-accent), rgba(232,69,107,0.15))" }} />
+            <div className="absolute -bottom-1.5 left-6 right-6 h-[3px] rounded-full" style={{ background: "linear-gradient(90deg, var(--p-accent), rgba(46,196,182,0.15))" }} />
           </div>
 
           {/* Info */}
@@ -300,7 +300,7 @@ export default function PublicSchedule() {
               )}
               {profile.video_link && (
                 <a href={profile.video_link} target="_blank" rel="noopener noreferrer" data-testid="video-link"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white bg-[#e8456b] hover:brightness-110 transition-all hover:-translate-y-px shadow-sm">
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[13px] font-semibold text-white bg-[#2ec4b6] hover:brightness-110 transition-all hover:-translate-y-px shadow-sm">
                   <Play className="w-[15px] h-[15px]" /> Highlights
                 </a>
               )}
@@ -372,14 +372,14 @@ export default function PublicSchedule() {
                     <a href={`mailto:${profile.parent_email}`} title="Email Coach"
                       className="w-[40px] h-[40px] rounded-xl flex items-center justify-center transition-all group"
                       style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
-                      <Mail className="w-4 h-4 group-hover:text-[#e8456b] transition-colors" style={{ color: "var(--p-text-muted)" }} />
+                      <Mail className="w-4 h-4 group-hover:text-[#2ec4b6] transition-colors" style={{ color: "var(--p-text-muted)" }} />
                     </a>
                   )}
                   {profile.parent_phone && (
                     <a href={`tel:${profile.parent_phone}`} title="Call Coach"
                       className="w-[40px] h-[40px] rounded-xl flex items-center justify-center transition-all group"
                       style={{ background: "#f2f3f8", border: "1px solid rgba(0,0,0,0.06)" }}>
-                      <Phone className="w-4 h-4 group-hover:text-[#e8456b] transition-colors" style={{ color: "var(--p-text-muted)" }} />
+                      <Phone className="w-4 h-4 group-hover:text-[#2ec4b6] transition-colors" style={{ color: "var(--p-text-muted)" }} />
                     </a>
                   )}
                 </div>
@@ -417,7 +417,7 @@ export default function PublicSchedule() {
                     className="w-full h-full object-cover brightness-[0.65] group-hover:brightness-[0.45] transition-all duration-300"
                     onError={(e) => { e.target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; }}
                   />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full bg-[rgba(232,69,107,0.9)] backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full bg-[rgba(46,196,182,0.9)] backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Play className="w-7 h-7 text-white fill-white ml-1" />
                   </div>
                   <div className="absolute bottom-3.5 left-3.5 text-xs font-semibold text-white/80 px-3 py-1.5 rounded-lg" style={{ background: "var(--p-video-label-bg)", backdropFilter: "blur(8px)" }}>
@@ -482,7 +482,7 @@ export default function PublicSchedule() {
       >
         <div className="flex gap-2 px-4 pt-3 max-w-[500px] mx-auto">
           {profile.contact_email && (
-            <a href={`mailto:${profile.contact_email}`} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-semibold text-white bg-[#e8456b] shadow-sm">
+            <a href={`mailto:${profile.contact_email}`} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-semibold text-white bg-[#2ec4b6] shadow-sm">
               <Mail className="w-4 h-4" /> Email
             </a>
           )}

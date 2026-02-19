@@ -17,7 +17,7 @@ import UniversityLogo from "../components/UniversityLogo";
 /* ── Stage Config (Clean palette) ── */
 const STAGES = {
   overdue:          { label: "Overdue",         shortLabel: "Overdue",   icon: AlertTriangle, ring: "#dc2626",  opacity: 1 },
-  needs_outreach:   { label: "Needs Outreach",  shortLabel: "Outreach",  icon: Send,          ring: "#e8456b",  opacity: 1 },
+  needs_outreach:   { label: "Needs Outreach",  shortLabel: "Outreach",  icon: Send,          ring: "#2ec4b6",  opacity: 1 },
   waiting_on_reply: { label: "Waiting on Reply", shortLabel: "Waiting",   icon: Clock,         ring: "#f59e0b",  opacity: 1 },
   in_conversation:  { label: "In Conversation", shortLabel: "In Convo",  icon: MessageSquare, ring: "#10b981",  opacity: 1 },
   archived:         { label: "Archived",        shortLabel: "Archived",  icon: Archive,       ring: "#6b7280",  opacity: 1 },
@@ -181,7 +181,7 @@ function PipelineTour({ step, steps, onNext, onBack, onClose }) {
       <div style={tooltipStyle} className="rounded-xl shadow-2xl" data-testid="tour-tooltip">
         <div style={{ background: "#1e1e2e", borderRadius: 12, padding: "18px 20px" }}>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold" style={{ color: "#e8456b" }}>{step + 1} of {steps.length}</span>
+            <span className="text-[11px] font-semibold" style={{ color: "#2ec4b6" }}>{step + 1} of {steps.length}</span>
             <button onClick={onClose} className="text-xs" style={{ color: "#666" }}>Skip</button>
           </div>
           <h4 className="text-sm font-bold mb-1" style={{ color: "#f1f1f1" }}>{s.title}</h4>
@@ -193,7 +193,7 @@ function PipelineTour({ step, steps, onNext, onBack, onClose }) {
             <button
               onClick={isLast ? onClose : onNext}
               className="text-xs px-4 py-1.5 rounded-lg font-semibold"
-              style={{ backgroundColor: "#e8456b", color: "#fff" }}
+              style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
               data-testid="tour-next-btn"
             >
               {isLast ? "Done!" : "Next"}
@@ -215,7 +215,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const advice = getHeroAdvice(program);
 
   const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : stage === "waiting_on_reply" ? "Keeping Warm" : "Momentum";
-  const kickerColor = isUrgent ? "#f87171" : "#e8456b";
+  const kickerColor = isUrgent ? "#f87171" : "#2ec4b6";
 
   let urgencyText = "";
   if (isUrgent && program.next_action_due) {
@@ -240,7 +240,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
             {kicker}
           </span>
           {urgencyText && (
-            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: "rgba(232,69,107,0.12)" }}>
+            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: "rgba(46,196,182,0.12)" }}>
               {urgencyText}
             </span>
           )}
@@ -249,14 +249,14 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
         <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white">{program.university_name}</p>
 
         <div className="flex items-center gap-2 mb-2.5">
-          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(232,69,107,0.12)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
+          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(46,196,182,0.12)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
           {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
           {loc && <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.3)" }}>{loc}</span>}
         </div>
 
         {advice && (
-          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(232,69,107,0.06)", border: "1px solid rgba(232,69,107,0.12)", borderLeft: "3px solid #e8456b" }}>
-            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#e8456b" }} />
+          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.12)", borderLeft: "3px solid #2ec4b6" }}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} />
             <div>
               <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
               <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
@@ -268,14 +268,14 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
       <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
         {quickAction && (
           <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "#e8456b", color: "white", border: "none" }}
+            style={{ background: "#2ec4b6", color: "white", border: "none" }}
             onClick={() => onAction(program)} data-testid="hero-action-btn">
             <Send className="w-3 h-3" />{quickAction.label}
           </button>
         )}
         {!quickAction && (
           <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "#e8456b", color: "white", border: "none" }}
+            style={{ background: "#2ec4b6", color: "white", border: "none" }}
             onClick={() => navigate(`/journey/${program.program_id}`)} data-testid="hero-action-btn">
             View Journey <ChevronRight className="w-3 h-3" />
           </button>
@@ -309,7 +309,7 @@ function AllCaughtUpCard({ navigate }) {
         <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
       </div>
       <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "#e8456b", color: "white", border: "none" }}
+        style={{ background: "#2ec4b6", color: "white", border: "none" }}
         onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
         <Plus className="w-3 h-3" />Add School
       </button>
@@ -415,9 +415,9 @@ function SchoolRow({ p, navigate, matchScore, onMarkReplied }) {
           <button
             className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-colors"
             style={{
-              background: isUrgent ? "rgba(220,38,38,0.06)" : "rgba(232,69,107,0.07)",
-              color: isUrgent ? "#dc2626" : "#e8456b",
-              border: `1px solid ${isUrgent ? "rgba(220,38,38,0.08)" : "rgba(232,69,107,0.08)"}`,
+              background: isUrgent ? "rgba(220,38,38,0.06)" : "rgba(46,196,182,0.07)",
+              color: isUrgent ? "#dc2626" : "#2ec4b6",
+              border: `1px solid ${isUrgent ? "rgba(220,38,38,0.08)" : "rgba(46,196,182,0.08)"}`,
             }}
             onClick={() => navigate(`/journey/${p.program_id}`)}
             data-testid={`quick-action-${p.program_id}`}
@@ -621,8 +621,8 @@ export default function RecruitingBoard() {
       <div className="flex items-center justify-center min-h-[70vh]" data-testid="congrats-screen">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="relative inline-flex items-center justify-center mb-6">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(232,69,107,0.1)" }}>
-              <PartyPopper className="w-10 h-10" style={{ color: "#e8456b" }} />
+            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
+              <PartyPopper className="w-10 h-10" style={{ color: "#2ec4b6" }} />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#16a34a" }}>
               <CheckCircle2 className="w-4 h-4 text-white" />
@@ -635,7 +635,7 @@ export default function RecruitingBoard() {
           <p className="text-sm mb-8" style={{ color: "var(--t-text-muted)" }}>Your recruiting journey starts now.</p>
           <button
             className="inline-flex items-center gap-2 text-base font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90"
-            style={{ backgroundColor: "#e8456b", color: "white", boxShadow: "0 4px 14px rgba(232,69,107,0.3)" }}
+            style={{ backgroundColor: "#2ec4b6", color: "white", boxShadow: "0 4px 14px rgba(46,196,182,0.3)" }}
             onClick={() => firstSchool?.program_id ? navigate(`/journey/${firstSchool.program_id}`) : setShowCongrats(false)}
             data-testid="start-journey-btn"
           >
@@ -666,7 +666,7 @@ export default function RecruitingBoard() {
         <button
           onClick={() => setTourStep(0)}
           className="fixed bottom-20 right-4 z-50 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-opacity hover:opacity-80"
-          style={{ backgroundColor: "#e8456b", color: "#fff" }}
+          style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
           data-testid="tour-replay-btn"
           title="Take the tour"
         >

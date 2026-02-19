@@ -16,7 +16,7 @@ function ProgressStep({ num, label, done, current }) {
         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
           done ? "text-emerald-400" : current ? "border-[1.5px] border-teal-500 text-teal-400" : "border border-white/10 text-white/25"
         }`}
-        style={done ? { backgroundColor: "rgba(16,185,129,0.12)" } : current ? { backgroundColor: "rgba(232,69,107,0.12)" } : { backgroundColor: "var(--t-surface)" }}
+        style={done ? { backgroundColor: "rgba(16,185,129,0.12)" } : current ? { backgroundColor: "rgba(46,196,182,0.12)" } : { backgroundColor: "var(--t-surface)" }}
       >
         {done ? "✓" : num}
       </div>
@@ -62,11 +62,11 @@ function SuggestionCard({ school, onAdd, adding }) {
         </span>
         <button
           className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg border transition-all disabled:opacity-50"
-          style={{ borderColor: "#e8456b", color: "#e8456b" }}
+          style={{ borderColor: "#2ec4b6", color: "#2ec4b6" }}
           onClick={(e) => { e.stopPropagation(); onAdd(school); }}
           disabled={adding}
-          onMouseEnter={e => { if (!adding) { e.currentTarget.style.backgroundColor = "#e8456b"; e.currentTarget.style.color = "white"; }}}
-          onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#e8456b"; }}
+          onMouseEnter={e => { if (!adding) { e.currentTarget.style.backgroundColor = "#2ec4b6"; e.currentTarget.style.color = "white"; }}}
+          onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2ec4b6"; }}
           data-testid={`add-suggestion-${school.university_name}`}
         >
           {adding ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
@@ -223,12 +223,12 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         {/* Hero Content */}
         <div className="relative px-6 pt-7 pb-4 lg:px-8">
           <div className="absolute inset-0 pointer-events-none" style={{
-            background: "radial-gradient(ellipse at 20% 50%, rgba(232,69,107,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)"
+            background: "radial-gradient(ellipse at 20% 50%, rgba(46,196,182,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)"
           }} />
           <div className="relative">
             <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-4"
-              style={{ backgroundColor: "rgba(232,69,107,0.12)", color: "#e8456b" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#e8456b" }} />
+              style={{ backgroundColor: "rgba(46,196,182,0.12)", color: "#2ec4b6" }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2ec4b6" }} />
               Step {currentStep} of 4
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-2" style={{ color: "var(--t-text)" }}>
@@ -251,7 +251,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               <div className="mt-4 flex items-center gap-3">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-                  style={{ backgroundColor: "#e8456b", color: "white" }}
+                  style={{ backgroundColor: "#2ec4b6", color: "white" }}
                   onClick={() => navigate("/profile")}
                   data-testid="complete-profile-btn"
                 >
@@ -264,7 +264,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               <div className="mt-5 space-y-4">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
-                  style={{ backgroundColor: "#e8456b", color: "white" }}
+                  style={{ backgroundColor: "#2ec4b6", color: "white" }}
                   onClick={handleConnectGmail}
                   disabled={gmailConnecting}
                   data-testid="connect-gmail-btn"
@@ -301,7 +301,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           <div className="px-6 pb-4 lg:px-8 flex items-center gap-4">
             <button
               className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-              style={{ backgroundColor: "#e8456b", color: "white" }}
+              style={{ backgroundColor: "#2ec4b6", color: "white" }}
               onClick={() => navigate("/knowledge-base?from=onboarding")}
               data-testid="find-schools-btn"
             >
