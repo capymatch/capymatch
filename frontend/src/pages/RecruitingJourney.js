@@ -851,10 +851,15 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
     setSending(true);
     try {
       await api.post("/gmail/send", { to, subject, body, attachment_ids: attachments.map(a => a.file_id) });
-      toast.success("Email sent!"); onSent();
+      toast.success("Email sent!"); setShowPreview(false); onSent();
     } catch (e) { toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?"); }
     finally { setSending(false); }
   };
+  const handleReview = () => {
+    if (!to || !subject || !body) { toast.error("Fill all fields"); return; }
+    setShowPreview(true);
+  };
+  const selectedCoach = coaches.find(c => c.email === to);
   return (
     <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="email-composer">
       <div className="flex items-center justify-between">
