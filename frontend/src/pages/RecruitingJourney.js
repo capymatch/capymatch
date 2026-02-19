@@ -12,6 +12,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
+import EmailPreviewModal from "../components/EmailPreviewModal";
 
 /* ═══════════════════════════════════════════════════════════════
    CONSTANTS
