@@ -225,13 +225,9 @@ async def _run_sync():
             sync_status = {"running": False, "synced": 0, "failed": 0, "total": 0, "done": True, "error": "Download failed"}
             return
 
-        # Build lookup by domain
-        domain_lookup = _build_domain_lookup(all_scorecard)
-        # Also build lookup by name for fallback
-        name_lookup = {}
-        for s in all_scorecard:
-            n = (s.get("school.name") or "").lower()
-            name_lookup.setdefault(n, []).append(s)
+        # Build lookup by domain (exact + root)
+        exact_lookup, root_lookup = _build_domain_lookup(all_scorecard)
+        logger.info(f"Domain lookups: {len(exact_lookup)} exact, {len(root_lookup)} root domains")
 
         # Step 2: Match our volleyball schools
         sync_status["phase"] = "matching"
@@ -247,25 +243,33 @@ async def _run_sync():
             domain = uni.get("domain", "")
 
             match = None
+            method = "none"
 
-            # Strategy 1: Domain match (most reliable)
-            if domain and domain in domain_lookup:
-                match = domain_lookup[domain][0]  # Largest campus
+            # Strategy 1: Exact domain match
+            if domain and domain in exact_lookup:
+                match = exact_lookup[domain][0]
+                method = "domain_exact"
 
-            # Strategy 2: Exact name match
-            if not match and name.lower() in name_lookup:
-                candidates = name_lookup[name.lower()]
-                candidates.sort(key=lambda x: x.get("latest.student.size") or 0, reverse=True)
-                match = candidates[0]
+            # Strategy 2: Root domain match (e.g., our 'stanford.edu' matches their 'www.stanford.edu')
+            if not match and domain:
+                rd = _root_domain(domain)
+                if rd in root_lookup:
+                    match = root_lookup[rd][0]
+                    method = "domain_root"
+                elif rd in exact_lookup:
+                    match = exact_lookup[rd][0]
+                    method = "domain_root"
 
-            # Strategy 3: Fuzzy name match using _best_match
+            # Strategy 3: Best name match against ALL downloaded schools
             if not match:
-                match = _best_match(name, all_scorecard[:200])  # Search a subset to avoid O(n*m)
+                match = _best_match(name, all_scorecard)
+                if match:
+                    method = "name"
 
             if match:
                 scorecard = parse_scorecard_result(match)
                 scorecard["synced_at"] = datetime.now(timezone.utc).isoformat()
-                scorecard["match_method"] = "domain" if (domain and domain in domain_lookup) else "name"
+                scorecard["match_method"] = method
                 await db.university_knowledge_base.update_one(
                     {"university_name": name},
                     {"$set": {"scorecard": scorecard}}
