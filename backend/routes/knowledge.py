@@ -281,8 +281,9 @@ async def get_school_by_domain(domain: str, request: Request):
         tenant_id = await get_tenant_id(user)
         profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
         if profile:
-            uni["match_score"] = _compute_match(uni, profile)["score"]
-            uni["match_reasons"] = _compute_match(uni, profile)["reasons"]
+            match = _compute_match(uni, profile)
+            uni["match_score"] = match["score"]
+            uni["match_reasons"] = match["reasons"]
         else:
             uni["match_score"] = 0
             uni["match_reasons"] = []
