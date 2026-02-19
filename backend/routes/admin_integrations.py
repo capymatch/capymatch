@@ -123,6 +123,15 @@ async def get_integrations_status():
                 "total": total_universities,
             },
         },
+        "url_discovery": {
+            "stats": {
+                "has_website": await db.university_knowledge_base.count_documents({"website": {"$ne": ""}}),
+                "missing_website": await db.university_knowledge_base.count_documents(
+                    {"$or": [{"website": ""}, {"website": {"$exists": False}}]}
+                ),
+                "total": total_universities,
+            },
+        },
     }
 
 
