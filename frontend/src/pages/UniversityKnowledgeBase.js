@@ -118,7 +118,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           {school.university_name}
         </div>
         <div className="flex items-center gap-2 mb-4">
-          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold" style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#2ec4b6" }}>{school.division}</span>
+          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold" style={{ backgroundColor: "rgba(46,196,182,0.2)", color: "#2ec4b6" }}>{school.division}</span>
           <span className="text-[12px] text-white/40">{school.region} {school.conference && `· ${school.conference}`}</span>
         </div>
         {school.match_reasons?.length > 0 && (
@@ -183,7 +183,7 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
         <button onClick={() => !isOnBoard && addToBoard(uni)} disabled={adding[uni.university_name] || isOnBoard}
           data-testid={`add-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
           className="flex-1 py-2 rounded-lg text-[11px] font-bold text-center transition-all"
-          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.12)", color: "#10b981" } : { backgroundColor: "rgba(232,98,138,0.12)", color: "#2ec4b6" }}>
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.12)", color: "#10b981" } : { backgroundColor: "rgba(46,196,182,0.12)", color: "#2ec4b6" }}>
           {isOnBoard ? "On Board" : adding[uni.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
         <button onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
@@ -366,7 +366,7 @@ export default function UniversityKnowledgeBase() {
           return (
             <button key={b.id} onClick={() => handleBucketClick(b)} data-testid={`chip-${b.id}`}
               className={`px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all ${isActive ? "text-[#2ec4b6] bg-[#2ec4b6]/10 border-[#2ec4b6]/30" : "text-slate-500 bg-white border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}
-              style={{ border: `1px solid ${isActive ? "rgba(232,98,138,0.3)" : ""}` }}>
+              style={{ border: `1px solid ${isActive ? "rgba(46,196,182,0.3)" : ""}` }}>
               {b.label}
               {count > 0 && <span className="ml-1 opacity-50 font-medium">{count}</span>}
             </button>

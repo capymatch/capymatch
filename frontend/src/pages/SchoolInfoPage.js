@@ -146,7 +146,7 @@ export default function SchoolInfoPage() {
             <div className="flex flex-wrap items-center gap-2 mb-4 justify-center sm:justify-start">
               {school.division && (
                 <span className="px-3 py-1 rounded-lg text-[12px] font-bold" data-testid="school-division"
-                  style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#2ec4b6" }}>{school.division}</span>
+                  style={{ backgroundColor: "rgba(46,196,182,0.2)", color: "#2ec4b6" }}>{school.division}</span>
               )}
               {school.conference && (
                 <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
@@ -188,7 +188,7 @@ export default function SchoolInfoPage() {
                 <div className="flex flex-wrap gap-1 justify-center mt-1.5">
                   {school.match_reasons.map(r => (
                     <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
-                      style={{ backgroundColor: "rgba(232,98,138,0.1)", color: "rgba(232,98,138,0.7)", border: "1px solid rgba(232,98,138,0.15)" }}>{r}</span>
+                      style={{ backgroundColor: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.7)", border: "1px solid rgba(46,196,182,0.15)" }}>{r}</span>
                   ))}
                 </div>
               )}
