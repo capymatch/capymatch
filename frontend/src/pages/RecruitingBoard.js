@@ -675,15 +675,13 @@ export default function RecruitingBoard() {
           <div className="rounded-xl border p-3 md:p-5 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
-          <div className="flex flex-col min-h-0 [&>*]:flex-1">
-            {markRepliedProgram ? (
-              <InlineMarkReplied program={markRepliedProgram} onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }} onCancel={() => setMarkRepliedProgram(null)} />
-            ) : focusProgram ? (
-              <HeroCard program={focusProgram} onAction={handleFocusAction} onSnooze={handleSnooze} onDismiss={(p) => setMarkRepliedProgram(p)} navigate={navigate} />
-            ) : allCaughtUp ? (
-              <AllCaughtUpCard navigate={navigate} />
-            ) : null}
-          </div>
+          {markRepliedProgram ? (
+            <InlineMarkReplied program={markRepliedProgram} onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }} onCancel={() => setMarkRepliedProgram(null)} />
+          ) : focusProgram ? (
+            <HeroCard program={focusProgram} onAction={handleFocusAction} onSnooze={handleSnooze} onDismiss={(p) => setMarkRepliedProgram(p)} navigate={navigate} />
+          ) : allCaughtUp ? (
+            <AllCaughtUpCard navigate={navigate} />
+          ) : <div />}
         </div>
       )}
 
