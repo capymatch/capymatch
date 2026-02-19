@@ -1293,7 +1293,7 @@ export default function RecruitingJourney() {
       {/* ─── Inline Forms ─── */}
       {activeForm === "replied" && <div className="mt-5"><MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
       {activeForm === "log" && <div className="mt-5"><LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
-      {activeForm === "email" && <div className="mt-5"><EmailComposer coaches={coaches} programId={programId} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
+      {activeForm === "email" && <div className="mt-5"><EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} /></div>}
       {activeForm === "coach" && <div className="mt-5"><CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} /></div>}
       {activeForm === "followup" && (
         <div className="mt-5 rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
