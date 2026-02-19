@@ -276,6 +276,7 @@ export default function AdminIntegrations() {
   const email = data?.email || {};
   const scorecard = data?.scorecard || {};
   const coachScraper = data?.coach_scraper || {};
+  const urlDiscovery = data?.url_discovery || {};
 
   return (
     <div className="space-y-6 max-w-3xl" data-testid="admin-integrations-page">
