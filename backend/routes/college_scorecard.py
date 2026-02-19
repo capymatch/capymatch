@@ -139,8 +139,16 @@ def _extract_domain(url):
         return ""
 
 
+def _root_domain(host):
+    """Get the root .edu or .com domain: 'bloomington.iu.edu' -> 'iu.edu'."""
+    parts = host.split(".")
+    if len(parts) >= 2:
+        return ".".join(parts[-2:])
+    return host
+
+
 async def _download_all_scorecard(api_key):
-    """Download ALL schools from College Scorecard API. Returns dict keyed by domain."""
+    """Download ALL schools from College Scorecard API. Returns list of raw results."""
     all_schools = []
     page = 0
     per_page = 100
@@ -180,20 +188,25 @@ async def _download_all_scorecard(api_key):
 
 
 def _build_domain_lookup(scorecard_schools):
-    """Build a lookup: domain -> list of scorecard results (sorted by student size desc)."""
-    lookup = {}
+    """Build lookups: exact domain AND root domain -> list of scorecard results (sorted by student size desc)."""
+    exact = {}
+    root = {}
     for s in scorecard_schools:
         url = s.get("school.school_url", "") or ""
         domain = _extract_domain(url)
         if domain:
-            lookup.setdefault(domain, []).append(s)
-    # Sort each domain's schools by student size (largest first = main campus)
-    for domain in lookup:
-        lookup[domain].sort(
-            key=lambda x: x.get("latest.student.size") or x.get("school.student_size") or 0,
-            reverse=True
-        )
-    return lookup
+            exact.setdefault(domain, []).append(s)
+            rd = _root_domain(domain)
+            if rd != domain:
+                root.setdefault(rd, []).append(s)
+    # Sort each by student size (largest first = main campus)
+    for lookup in [exact, root]:
+        for d in lookup:
+            lookup[d].sort(
+                key=lambda x: x.get("latest.student.size") or x.get("school.student_size") or 0,
+                reverse=True
+            )
+    return exact, root
 
 
 async def _run_sync():
