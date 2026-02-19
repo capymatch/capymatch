@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { useRef } from "react";
 
 const DIV_COLORS = {
-  D1: "bg-emerald-600 text-white",
+  D1: "bg-teal-700 text-white",
   D2: "bg-blue-600 text-white",
   D3: "bg-violet-600 text-white",
   NAIA: "bg-orange-600 text-white",
@@ -111,7 +111,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                 onClick={() => addToBoard(hero)}
                 disabled={adding[hero.university_name] || isOnBoard}
                 data-testid="spotlight-add-to-board"
-                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
+                className={`flex-1 h-11 text-sm font-semibold gap-2 ${isOnBoard ? "bg-teal-700 hover:bg-teal-700 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
               >
                 {isOnBoard ? (<><span className="text-white">On Your Board</span></>) : (<><Plus className="w-4 h-4" />{adding[hero.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>
@@ -172,8 +172,8 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                     <MapPin className="w-3 h-3" /> {s.region} {s.conference && `· ${s.conference}`}
                   </div>
                   {onBoard && (
-                    <div className="mt-2 text-[11px] font-medium text-emerald-500 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> On Board
+                    <div className="mt-2 text-[11px] font-medium text-slate-500 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-500" /> On Board
                     </div>
                   )}
                 </div>

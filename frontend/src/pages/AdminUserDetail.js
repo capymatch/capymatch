@@ -119,9 +119,9 @@ export default function AdminUserDetail() {
         <StatMini label="Schools" value={stats.school_count} color="text-blue-400" />
         <StatMini label="Interactions" value={stats.interaction_count} color="text-amber-400" />
         <StatMini label="Events" value={stats.event_count} color="text-violet-400" />
-        <StatMini label="Views (7d)" value={stats.profile_views_week} color="text-emerald-400" />
+        <StatMini label="Views (7d)" value={stats.profile_views_week} color="text-teal-600" />
         <StatMini label="Views Total" value={stats.profile_views_total} color="text-teal-400" />
-        <StatMini label="Gmail" value={stats.gmail_connected ? "Yes" : "No"} color={stats.gmail_connected ? "text-emerald-400" : "text-gray-500"} />
+        <StatMini label="Gmail" value={stats.gmail_connected ? "Yes" : "No"} color={stats.gmail_connected ? "text-teal-600" : "text-gray-500"} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -234,7 +234,7 @@ function FeatureRow({ label, enabled }) {
     <div className="flex items-center justify-between py-2 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
       <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{label}</span>
       {enabled ? (
-        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <CheckCircle2 className="w-4 h-4 text-teal-600" />
       ) : (
         <XCircle className="w-4 h-4 text-gray-600" />
       )}

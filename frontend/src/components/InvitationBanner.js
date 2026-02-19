@@ -100,13 +100,13 @@ export default function InvitationBanner() {
             {expanded === inv.invite_id && (
               <div className="px-5 pb-4 space-y-2" data-testid={`invite-details-${inv.invite_id}`}>
                 <div className="flex items-start gap-2.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-teal-600 mt-1.5 flex-shrink-0" />
                   <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
                     You'll <span style={{ color: "var(--t-text-secondary)" }}>share their recruiting dashboard</span> — see and edit the same schools, pipeline, calendar, and outreach.
                   </p>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-teal-600 mt-1.5 flex-shrink-0" />
                   <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
                     You get <span style={{ color: "var(--t-text-secondary)" }}>full access to all features</span> including AI tools, analytics, and email — based on their subscription plan.
                   </p>

@@ -47,8 +47,8 @@ function HowItWorks({ isOwner }) {
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Pencil className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="w-7 h-7 rounded-lg bg-slate-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Pencil className="w-3.5 h-3.5 text-teal-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>What members can do</p>

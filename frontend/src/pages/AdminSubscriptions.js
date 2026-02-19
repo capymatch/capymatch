@@ -149,7 +149,7 @@ export default function AdminSubscriptions() {
           label="Monthly Revenue"
           value={`$${stats.mrr}`}
           sub={`${stats.plan_counts.pro} Pro + ${stats.plan_counts.premium} Premium`}
-          color="bg-emerald-600/15 text-emerald-400"
+          color="bg-teal-700/15 text-teal-600"
         />
         <StatCard
           icon={Users}
@@ -351,9 +351,9 @@ export default function AdminSubscriptions() {
                   return (
                     <div key={log.log_id} className="px-4 py-3" data-testid={`sub-log-${log.log_id}`}>
                       <div className="flex items-start gap-2.5">
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${isUpgrade ? "bg-emerald-500/15" : "bg-amber-500/15"}`}>
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${isUpgrade ? "bg-slate-500/15" : "bg-amber-500/15"}`}>
                           {isUpgrade ? (
-                            <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                            <ArrowUpRight className="w-3.5 h-3.5 text-teal-600" />
                           ) : (
                             <ArrowDownRight className="w-3.5 h-3.5 text-amber-400" />
                           )}

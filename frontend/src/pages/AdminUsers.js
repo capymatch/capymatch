@@ -14,7 +14,7 @@ const PLAN_BADGE = {
 };
 
 const STATUS_BADGE = {
-  active: "bg-emerald-500/15 text-emerald-400",
+  active: "bg-slate-500/15 text-teal-600",
   suspended: "bg-amber-500/15 text-amber-400",
   deactivated: "bg-red-500/15 text-red-400",
 };

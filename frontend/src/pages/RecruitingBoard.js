@@ -339,7 +339,7 @@ function InlineMarkReplied({ program, onSaved, onCancel }) {
         <button onClick={onCancel} className="p-1 rounded hover:opacity-70"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
       </div>
       <textarea placeholder="What did the coach say?" value={note} onChange={e => setNote(e.target.value)} rows={2}
-        className="w-full px-3 py-2 rounded-lg border text-xs resize-none outline-none focus:ring-1 focus:ring-emerald-600"
+        className="w-full px-3 py-2 rounded-lg border text-xs resize-none outline-none focus:ring-1 focus:ring-teal-700"
         style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
         data-testid="inline-replied-note" />
       <Button className="text-white text-xs w-full h-8" style={{ background: "#16a34a" }} onClick={save} disabled={saving} data-testid="inline-replied-save">

@@ -11,7 +11,7 @@ function StatCard({ icon: Icon, iconColor, iconBg, label, value, subtext, trend 
           <Icon className={`w-5 h-5 ${iconColor}`} />
         </div>
         {trend && (
-          <span className={`flex items-center gap-1 text-xs font-medium ${trend > 0 ? "text-emerald-400" : trend < 0 ? "text-red-400" : "text-gray-400"}`}>
+          <span className={`flex items-center gap-1 text-xs font-medium ${trend > 0 ? "text-teal-600" : trend < 0 ? "text-red-400" : "text-gray-400"}`}>
             {trend > 0 ? <ArrowUpRight className="w-3 h-3" /> : trend < 0 ? <ArrowDownRight className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
             {Math.abs(trend)}%
           </span>
@@ -144,7 +144,7 @@ export default function Analytics() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           <StatCard icon={Target} iconColor="text-slate-500" iconBg="bg-slate-500/15" label="Schools Tracked" value={data?.totalSchools || 0} subtext="In your pipeline" trend={12} />
           <StatCard icon={Mail} iconColor="text-blue-500" iconBg="bg-blue-500/15" label="Response Rate" value={`${data?.responseRate || 0}%`} subtext={`${data?.replied || 0} of ${data?.contacted || 0} contacted`} trend={data?.responseRate > 0 ? 8 : 0} />
-          <StatCard icon={Eye} iconColor="text-emerald-500" iconBg="bg-emerald-500/15" label="Profile Views (7d)" value={data?.views?.this_week || 0} subtext={`${data?.views?.today || 0} today`} trend={5} />
+          <StatCard icon={Eye} iconColor="text-slate-500" iconBg="bg-slate-500/15" label="Profile Views (7d)" value={data?.views?.this_week || 0} subtext={`${data?.views?.today || 0} today`} trend={5} />
           <StatCard icon={TrendingUp} iconColor="text-amber-500" iconBg="bg-amber-500/15" label="Offers Received" value={data?.offers || 0} subtext="Keep going!" trend={null} />
         </div>
 

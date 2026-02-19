@@ -123,7 +123,7 @@ const DATE_ICONS = {
 const DATE_ICON_BG = {
   file: "bg-teal-600/12",
   grad: "bg-blue-500/12",
-  eye: "bg-emerald-500/12",
+  eye: "bg-slate-500/12",
   camp: "bg-amber-500/12",
   calendar: "bg-cyan-500/12",
   award: "bg-slate-500/12",
@@ -133,7 +133,7 @@ function StatusTag({ status, range }) {
   if (status === "passed") return <span className="text-[10px] px-2 py-0.5 rounded bg-gray-500/20 text-gray-400 font-medium">Passed</span>;
   if (status === "info") return <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">Info</span>;
   const days = daysUntilDate(range);
-  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">Active Now</span>;
+  if (days <= 0) return <span className="text-[10px] px-2 py-0.5 rounded bg-slate-500/15 text-teal-600 font-medium">Active Now</span>;
   return <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">{days} days away</span>;
 }
 
@@ -173,7 +173,7 @@ function TimelineBar({ periods, division }) {
   };
 
   const textColors = {
-    contact: "text-emerald-400",
+    contact: "text-teal-600",
     dead: "text-red-400",
     evaluation: "text-blue-400",
     quiet: "text-amber-400",
@@ -246,7 +246,7 @@ export default function NcaaTimeline() {
     <div className="space-y-5" data-testid="ncaa-timeline">
       {/* Current Period Banner */}
       <div className={`rounded-xl border-l-4 border p-4 sm:p-5 ${
-        currentPeriod.type === "contact" ? "border-l-emerald-500" :
+        currentPeriod.type === "contact" ? "border-l-slate-500" :
         currentPeriod.type === "dead" ? "border-l-red-500" :
         currentPeriod.type === "evaluation" ? "border-l-blue-500" : "border-l-amber-500"
       }`} style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="current-period-banner">
@@ -259,7 +259,7 @@ export default function NcaaTimeline() {
             }`} />
             <div>
               <p className={`text-[10px] uppercase tracking-wider font-bold ${
-                currentPeriod.type === "contact" ? "text-emerald-400" :
+                currentPeriod.type === "contact" ? "text-teal-600" :
                 currentPeriod.type === "dead" ? "text-red-400" :
                 currentPeriod.type === "evaluation" ? "text-blue-400" : "text-amber-400"
               }`}>Current Period - {division}</p>

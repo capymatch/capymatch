@@ -10,7 +10,7 @@ const EVENT_COLORS = {
   Camp: "bg-teal-600",
   Showcase: "bg-blue-500",
   Tournament: "bg-amber-500",
-  Visit: "bg-emerald-500",
+  Visit: "bg-slate-500",
   Tryout: "bg-slate-500",
   Meeting: "bg-cyan-500",
   Deadline: "bg-red-500",
@@ -429,7 +429,7 @@ export default function CalendarPage() {
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-teal-600"></span><span style={{ color: "var(--t-text-muted)" }}>Camp</span></span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span><span style={{ color: "var(--t-text-muted)" }}>Tournament</span></span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span><span style={{ color: "var(--t-text-muted)" }}>Showcase</span></span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500"></span><span style={{ color: "var(--t-text-muted)" }}>Meeting</span></span>
                 </div>
                 {/* Navigation */}
@@ -500,7 +500,7 @@ export default function CalendarPage() {
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-teal-600"></span><span style={{ color: "var(--t-text-muted)" }}>Camp</span></span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span><span style={{ color: "var(--t-text-muted)" }}>Tournament</span></span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span><span style={{ color: "var(--t-text-muted)" }}>Showcase</span></span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-500"></span><span style={{ color: "var(--t-text-muted)" }}>Visit</span></span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500"></span><span style={{ color: "var(--t-text-muted)" }}>Meeting</span></span>
             </div>
           </div>
@@ -550,8 +550,8 @@ export default function CalendarPage() {
             {upcomingUserEvents.length > 0 ? (
               <div className="space-y-2">
                 {upcomingUserEvents.slice(0, 5).map((evt) => {
-                  const typeBg = { Camp: "bg-teal-600/15 text-teal-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-emerald-500/15 text-emerald-400", Tryout: "bg-slate-500/15 text-teal-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
-                  const colorBar = { Camp: "bg-teal-600", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-emerald-500", Tryout: "bg-slate-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
+                  const typeBg = { Camp: "bg-teal-600/15 text-teal-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-slate-500/15 text-teal-600", Tryout: "bg-slate-500/15 text-teal-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
+                  const colorBar = { Camp: "bg-teal-600", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-slate-500", Tryout: "bg-slate-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
                   return (
                     <div
                       key={evt.event_id}

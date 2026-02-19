@@ -14,7 +14,7 @@ function ProgressStep({ num, label, done, current }) {
     <div className="flex items-center gap-2">
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-          done ? "text-emerald-400" : current ? "border-[1.5px] border-slate-500 text-teal-400" : "border border-white/10 text-white/25"
+          done ? "text-teal-600" : current ? "border-[1.5px] border-slate-500 text-teal-400" : "border border-white/10 text-white/25"
         }`}
         style={done ? { backgroundColor: "rgba(16,185,129,0.12)" } : current ? { backgroundColor: "rgba(46,196,182,0.12)" } : { backgroundColor: "var(--t-surface)" }}
       >

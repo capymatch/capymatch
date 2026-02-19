@@ -225,7 +225,7 @@ export default function PublicSchedule() {
         title="Copy profile link"
         data-testid="share-button"
       >
-        {copied ? <Check className="w-[17px] h-[17px] text-emerald-500" /> : <Share2 className="w-[17px] h-[17px]" style={{ color: "var(--p-share-icon)" }} />}
+        {copied ? <Check className="w-[17px] h-[17px] text-slate-500" /> : <Share2 className="w-[17px] h-[17px]" style={{ color: "var(--p-share-icon)" }} />}
       </button>
 
       {/* ══════════════════════════════════════════

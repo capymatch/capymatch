@@ -82,8 +82,8 @@ export default function PaymentSuccess() {
 
         {status === "success" && (
           <div className="space-y-4" data-testid="payment-confirmed">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+            <div className="w-16 h-16 mx-auto rounded-full bg-slate-500/15 flex items-center justify-center">
+              <CheckCircle2 className="w-8 h-8 text-teal-600" />
             </div>
             <h2 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>
               Welcome to {TIER_LABELS[plan] || "your new plan"}!

@@ -8,7 +8,7 @@ import { DIVISIONS, REGIONS } from "../lib/constants";
 import { toast } from "sonner";
 
 const PLAN_COLORS = {
-  D1: "bg-emerald-500/15 text-emerald-400",
+  D1: "bg-slate-500/15 text-teal-600",
   D2: "bg-blue-500/15 text-blue-400",
   D3: "bg-violet-500/15 text-violet-400",
   NAIA: "bg-orange-500/15 text-orange-400",
@@ -20,7 +20,7 @@ function HealthBar({ health }) {
   if (!health) return null;
   const items = [
     { label: "Total", value: health.total, color: "text-white" },
-    { label: "Complete", value: health.complete_profiles, color: "text-emerald-400" },
+    { label: "Complete", value: health.complete_profiles, color: "text-teal-600" },
     { label: "No Coach", value: health.missing_coach, color: "text-teal-400" },
     { label: "No Email", value: health.missing_email, color: "text-amber-400" },
     { label: "No Coordinator", value: health.missing_coordinator, color: "text-orange-400" },
@@ -234,10 +234,10 @@ function ImportModal({ open, onClose, onImported }) {
           Upload a CSV with columns: university_name, division, conference, region, website, mascot, primary_coach, coach_email, recruiting_coordinator, coordinator_email, scholarship_type, roster_needs. Existing universities will be updated, new ones created.
         </p>
         <input type="file" accept=".csv" onChange={handleFile} className="mb-3 text-xs" data-testid="import-file-input" style={{ color: "var(--t-text)" }} />
-        {csvText && <p className="text-[10px] mb-3 text-emerald-400">{csvText.split("\n").length - 1} rows detected</p>}
+        {csvText && <p className="text-[10px] mb-3 text-teal-600">{csvText.split("\n").length - 1} rows detected</p>}
         {result && (
           <div className="mb-3 p-3 rounded-lg text-xs" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
-            <p style={{ color: "var(--t-text)" }}>Created: <span className="text-emerald-400 font-bold">{result.created}</span> | Updated: <span className="text-amber-400 font-bold">{result.updated}</span> | Errors: <span className="text-teal-400 font-bold">{result.errors?.length || 0}</span></p>
+            <p style={{ color: "var(--t-text)" }}>Created: <span className="text-teal-600 font-bold">{result.created}</span> | Updated: <span className="text-amber-400 font-bold">{result.updated}</span> | Errors: <span className="text-teal-400 font-bold">{result.errors?.length || 0}</span></p>
             {result.errors?.length > 0 && <ul className="mt-1 text-teal-400">{result.errors.slice(0, 5).map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </div>
         )}
@@ -425,7 +425,7 @@ export default function AdminUniversities() {
                       </td>
                       <td className="px-3 py-2.5">
                         {isComplete ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <CheckCircle2 className="w-4 h-4 text-teal-600" />
                         ) : (
                           <AlertTriangle className="w-4 h-4 text-amber-400" />
                         )}

@@ -63,7 +63,7 @@ export default function LandingPage() {
           >
             Own Your
             <br />
-            <span className="bg-gradient-to-r from-[#ccff00] via-[#ccff00] to-emerald-400 bg-clip-text text-transparent">Recruiting</span>
+            <span className="bg-gradient-to-r from-[#ccff00] via-[#ccff00] to-teal-600 bg-clip-text text-transparent">Recruiting</span>
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -166,7 +166,7 @@ export default function LandingPage() {
                 icon: Calendar,
                 title: "Events & Calendar",
                 desc: "Track camps, showcases, tournaments, and campus visits. Share your schedule with coaches.",
-                accent: "from-emerald-500/20 to-transparent",
+                accent: "from-slate-500/20 to-transparent",
                 iconColor: "#10b981",
               },
               {

@@ -5,7 +5,7 @@ import UniversityLogo from "../UniversityLogo";
 import { Button } from "../ui/button";
 
 const DIV_COLORS = {
-  D1: "bg-emerald-500/15 text-emerald-600",
+  D1: "bg-slate-500/15 text-teal-700",
   D2: "bg-blue-500/15 text-blue-600",
   D3: "bg-violet-500/15 text-violet-600",
   NAIA: "bg-orange-500/15 text-orange-600",
@@ -171,7 +171,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 onClick={() => addToBoard(uni)}
                 disabled={adding[uni.university_name] || isOnBoard}
                 data-testid={`expanded-add-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
-                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-emerald-600 hover:bg-emerald-600 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
+                className={`flex-1 h-10 text-sm font-semibold gap-2 ${isOnBoard ? "bg-teal-700 hover:bg-teal-700 text-white" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
               >
                 {isOnBoard ? (<><Check className="w-4 h-4" /> On Your Board</>) : (<><Plus className="w-4 h-4" />{adding[uni.university_name] ? "Adding..." : "Add to Board"}</>)}
               </Button>
@@ -229,7 +229,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
       <button
         className={`w-full py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-all duration-200 border ${
           isOnBoard
-            ? "border-emerald-500/30 text-emerald-600 bg-emerald-50/50 cursor-default"
+            ? "border-slate-500/30 text-teal-700 bg-slate-50/50 cursor-default"
             : "border-[var(--t-border)] text-[var(--t-text-secondary)] hover:border-slate-500 hover:text-teal-600 hover:bg-slate-50/50"
         }`}
         onClick={(e) => {

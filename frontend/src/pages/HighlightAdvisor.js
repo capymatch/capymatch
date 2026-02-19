@@ -130,12 +130,12 @@ export default function HighlightAdvisor() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                 <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-                  <CheckCircle className="w-4 h-4 text-emerald-400" /> Must Include
+                  <CheckCircle className="w-4 h-4 text-teal-600" /> Must Include
                 </h3>
                 <ul className="space-y-2">
                   {(advice.must_include_skills || []).map((s, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-secondary)" }}>
-                      <ChevronRight className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                      <ChevronRight className="w-3 h-3 text-teal-600 flex-shrink-0" />
                       {s}
                     </li>
                   ))}

@@ -593,7 +593,7 @@ export default function Inbox() {
                           {sender.name || sender.email}
                         </span>
                         {em.is_known_coach ? (
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500 flex-shrink-0">Coach</span>
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-500/15 text-slate-500 flex-shrink-0">Coach</span>
                         ) : (
                           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 flex-shrink-0">New</span>
                         )}

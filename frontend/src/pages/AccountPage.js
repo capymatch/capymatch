@@ -136,7 +136,7 @@ export default function AccountPage() {
                     <div key={i} className="flex items-center justify-between py-1">
                       <div className="flex items-center gap-2">
                         {feat.included ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
                         ) : (
                           <XIcon className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0" />
                         )}

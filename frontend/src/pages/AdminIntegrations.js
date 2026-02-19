@@ -11,7 +11,7 @@ import { Input } from "../components/ui/input";
 function StatusDot({ active }) {
   return (
     <span
-      className={`inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${active ? "bg-emerald-400" : "bg-zinc-500"}`}
+      className={`inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${active ? "bg-teal-600" : "bg-zinc-500"}`}
       data-testid={`status-dot-${active ? "active" : "inactive"}`}
     />
   );
@@ -43,7 +43,7 @@ function IntegrationCard({ icon: Icon, title, subtitle, status, statusLabel, acc
         </div>
         <div className="flex items-center gap-2">
           <StatusDot active={status} />
-          <span className={`text-xs font-medium ${status ? "text-emerald-400" : "text-zinc-500"}`}>{statusLabel}</span>
+          <span className={`text-xs font-medium ${status ? "text-teal-600" : "text-zinc-500"}`}>{statusLabel}</span>
         </div>
       </div>
       <div className="p-5">{children}</div>
@@ -312,7 +312,7 @@ export default function AdminIntegrations() {
         {gmail.configured ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
               <span>OAuth credentials configured</span>
             </div>
 
@@ -370,7 +370,7 @@ export default function AdminIntegrations() {
         status={stripe.connected}
         statusLabel={stripe.connected ? "Connected" : "Not configured"}
         accent="bg-violet-500/15 text-violet-400"
-        badge={stripe.connected ? { text: stripe.mode, class: stripe.is_live ? "bg-emerald-500/15 text-emerald-400" : "bg-amber-500/15 text-amber-400" } : null}
+        badge={stripe.connected ? { text: stripe.mode, class: stripe.is_live ? "bg-slate-500/15 text-teal-600" : "bg-amber-500/15 text-amber-400" } : null}
       >
         <div className="space-y-4">
           {/* Current key info */}
@@ -484,7 +484,7 @@ export default function AdminIntegrations() {
               <button
                 onClick={() => toggleEmailSetting("welcome_email", !email.settings?.welcome_email)}
                 disabled={togglingEmail === "welcome_email"}
-                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.welcome_email ? "bg-emerald-500" : "bg-zinc-600"}`}
+                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.welcome_email ? "bg-slate-500" : "bg-zinc-600"}`}
                 data-testid="toggle-welcome-email"
               >
                 <span className={`absolute top-0.5 ${email.settings?.welcome_email ? "left-[22px]" : "left-0.5"} w-5 h-5 rounded-full bg-white transition-all shadow-sm`} />
@@ -498,7 +498,7 @@ export default function AdminIntegrations() {
               <button
                 onClick={() => toggleEmailSetting("invitation_email", !email.settings?.invitation_email)}
                 disabled={togglingEmail === "invitation_email"}
-                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.invitation_email ? "bg-emerald-500" : "bg-zinc-600"}`}
+                className={`w-11 h-6 rounded-full transition-colors relative ${email.settings?.invitation_email ? "bg-slate-500" : "bg-zinc-600"}`}
                 data-testid="toggle-invitation-email"
               >
                 <span className={`absolute top-0.5 ${email.settings?.invitation_email ? "left-[22px]" : "left-0.5"} w-5 h-5 rounded-full bg-white transition-all shadow-sm`} />
@@ -668,7 +668,7 @@ export default function AdminIntegrations() {
         subtitle="Auto-scrape coaching staff names and emails from university athletics websites"
         status={coachScraper.stats?.has_coach_email > 0}
         statusLabel={coachScraper.stats?.has_coach_email > 0 ? `${coachScraper.stats.has_coach_email} found` : "Not run yet"}
-        accent="bg-emerald-500/15 text-emerald-400"
+        accent="bg-slate-500/15 text-teal-600"
       >
         <div className="space-y-4">
           <div className="space-y-1">
@@ -678,7 +678,7 @@ export default function AdminIntegrations() {
           <Button
             onClick={() => scrapeCoaches(false)}
             disabled={scrapingCoaches}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+            className="w-full bg-teal-700 hover:bg-teal-800 text-white gap-1.5"
             data-testid="coach-scrape-btn"
           >
             {scrapingCoaches ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}

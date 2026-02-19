@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 
 const DIVISION_BADGE = {
-  D1: "bg-emerald-500/20 text-emerald-400",
+  D1: "bg-slate-500/20 text-teal-600",
   D2: "bg-blue-500/20 text-blue-400",
   D3: "bg-violet-500/20 text-violet-400",
   NAIA: "bg-orange-500/20 text-orange-400",

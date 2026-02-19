@@ -153,9 +153,9 @@ function ProgressRail({ rail, onStageClick }) {
    ═══════════════════════════════════════════════════════════════ */
 function PulseIndicator({ pulse }) {
   const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
-  const dotColor = { emerald: "bg-emerald-500", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
-  const ringColor = { emerald: "border-emerald-500", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { emerald: "text-emerald-400", amber: "text-amber-400", rose: "text-teal-400", gray: "text-gray-400" }[cfg.color];
+  const dotColor = { emerald: "bg-slate-500", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
+  const ringColor = { emerald: "border-slate-500", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
+  const textColor = { emerald: "text-teal-600", amber: "text-amber-400", rose: "text-teal-400", gray: "text-gray-400" }[cfg.color];
   return (
     <div className="flex items-center gap-2" data-testid="pulse-indicator">
       <span className="relative flex h-2.5 w-2.5">
@@ -191,7 +191,7 @@ function GettingStartedChecklist({ program, coaches, timeline, profileComplete, 
             style={{ borderColor: "var(--t-border)" }}
             onClick={() => !s.done && s.action && s.action()} disabled={s.done}
             data-testid={`checklist-step-${s.key}`}>
-            <div className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${s.done ? "bg-emerald-500 border-emerald-500" : "border-[var(--t-border)]"}`}>
+            <div className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${s.done ? "bg-slate-500 border-slate-500" : "border-[var(--t-border)]"}`}>
               {s.done && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
             <div className="min-w-0">
@@ -320,7 +320,7 @@ function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
             style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="celebration-call-btn">
             <Phone className="w-3.5 h-3.5 mr-1.5" />Schedule Call
           </Button>
-          <Button variant="outline" className="text-xs h-8 px-4 border-emerald-600/30 text-emerald-400 hover:bg-emerald-600/10"
+          <Button variant="outline" className="text-xs h-8 px-4 border-teal-700/30 text-teal-600 hover:bg-teal-700/10"
             onClick={onLog} data-testid="celebration-log-btn">
             <FileText className="w-3.5 h-3.5 mr-1.5" />Log a Note
           </Button>
@@ -473,9 +473,9 @@ function ConversationBubble({ event }) {
       <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
         isRight
           ? "rounded-br-md bg-teal-800/[0.10] border-teal-700/25"
-          : "rounded-bl-md bg-emerald-600/[0.08] border-emerald-500/20"
+          : "rounded-bl-md bg-teal-700/[0.08] border-slate-500/20"
       }`}>
-        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-teal-700" : "text-emerald-500"}`}>
+        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-teal-700" : "text-slate-500"}`}>
           {isRight ? "You" : (event.coach_name || "Coach")}
         </p>
         {content && (
@@ -503,7 +503,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
   const stageLabel = BOARD_STAGE_LABELS[boardGroup] || boardGroup;
   const stageColors = {
     overdue: "bg-slate-500/12 text-teal-400", needs_outreach: "bg-amber-500/12 text-amber-400",
-    waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-emerald-500/12 text-emerald-400",
+    waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-slate-500/12 text-teal-600",
     archived: "bg-gray-500/12 text-gray-400",
   };
 
@@ -534,7 +534,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
         {signals.has_coach_reply ? (
           <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
             <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Replied</p>
-            <p className="text-sm font-bold text-emerald-400">{signals.days_since_reply === 0 ? "Today" : `${signals.days_since_reply}d ago`}</p>
+            <p className="text-sm font-bold text-teal-600">{signals.days_since_reply === 0 ? "Today" : `${signals.days_since_reply}d ago`}</p>
           </div>
         ) : (
           <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
@@ -1323,7 +1323,7 @@ export default function RecruitingJourney() {
               {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-teal-700/15 text-teal-700">{program.division}</span>}
               {matchScore && (
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                  matchScore.match_score >= 80 ? "text-emerald-400 bg-emerald-500/15 border-emerald-500/30"
+                  matchScore.match_score >= 80 ? "text-teal-600 bg-slate-500/15 border-slate-500/30"
                   : matchScore.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
                   : "text-gray-400 bg-gray-500/15 border-gray-500/30"
                 }`} data-testid="journey-match-score">
@@ -1340,7 +1340,7 @@ export default function RecruitingJourney() {
             </Button>
             <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
               className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-colors ${
-                program.is_active !== false ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-gray-500/15 text-gray-400 border-gray-500/30"
+                program.is_active !== false ? "bg-slate-500/15 text-teal-600 border-slate-500/30" : "bg-gray-500/15 text-gray-400 border-gray-500/30"
               }`} data-testid="active-toggle">
               {program.is_active !== false ? "Active" : "Inactive"}
             </button>
@@ -1488,7 +1488,7 @@ export default function RecruitingJourney() {
                       <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
                         style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
                         data-testid="coach-watch-badge-stable">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0" />Staff Stable
                       </span>
                       <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"

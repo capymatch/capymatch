@@ -104,7 +104,7 @@ export default function OutreachAnalysis() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <StatBox label="Schools Tracked" value={data.stats.total_schools} icon={Target} color="text-blue-400" />
               <StatBox label="Total Outreach" value={data.stats.total_interactions} icon={MessageCircle} color="text-teal-400" />
-              <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-emerald-400" />
+              <StatBox label="Schools Replied" value={data.stats.replied_schools} icon={CheckCircle} color="text-teal-600" />
               <StatBox label="Response Rate" value={`${data.stats.response_rate}%`} icon={TrendingUp} color="text-amber-400" />
             </div>
 
@@ -133,12 +133,12 @@ export default function OutreachAnalysis() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                   <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                     <h3 className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-                      <CheckCircle className="w-4 h-4 text-emerald-400" /> Strengths
+                      <CheckCircle className="w-4 h-4 text-teal-600" /> Strengths
                     </h3>
                     <ul className="space-y-1.5">
                       {(data.ai_insights.strengths || []).map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-                          <ArrowUpRight className="w-3.5 h-3.5 mt-0.5 text-emerald-400 flex-shrink-0" />
+                          <ArrowUpRight className="w-3.5 h-3.5 mt-0.5 text-teal-600 flex-shrink-0" />
                           <span>{s}</span>
                         </li>
                       ))}
@@ -212,7 +212,7 @@ export default function OutreachAnalysis() {
 const SEVERITY_CONFIG = {
   red: { color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/30", icon: AlertTriangle, label: "Coaching Change" },
   yellow: { color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", icon: Eye, label: "Monitor" },
-  green: { color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", icon: CheckCircle, label: "Stable" },
+  green: { color: "text-teal-600", bg: "bg-slate-500/10", border: "border-slate-500/30", icon: CheckCircle, label: "Stable" },
 };
 
 function CoachWatch({ isPremium }) {

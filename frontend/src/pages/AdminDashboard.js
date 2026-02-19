@@ -63,7 +63,7 @@ export default function AdminDashboard() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         <StatCard icon={Users} label="Total Users" value={stats.total_users} color="bg-teal-600/15 text-teal-400" onClick={() => navigate("/admin/users")} />
-        <StatCard icon={Activity} label="Active This Week" value={stats.active_users_this_week} color="bg-emerald-600/15 text-emerald-400" />
+        <StatCard icon={Activity} label="Active This Week" value={stats.active_users_this_week} color="bg-teal-700/15 text-teal-600" />
         <StatCard icon={School} label="Schools on Boards" value={stats.total_schools_on_boards} color="bg-blue-600/15 text-blue-400" />
         <StatCard icon={MessageSquare} label="Total Interactions" value={stats.total_interactions} color="bg-amber-600/15 text-amber-400" />
         <StatCard icon={Calendar} label="Total Events" value={stats.total_events} color="bg-violet-600/15 text-violet-400" />

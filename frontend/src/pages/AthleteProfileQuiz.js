@@ -203,7 +203,7 @@ export default function AthleteProfileQuiz() {
               <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>Complete!</span>
             </div>
             <div className="w-full h-[3px] rounded-full" style={{ backgroundColor: "var(--t-border)" }}>
-              <div className="h-full rounded-full bg-gradient-to-r from-teal-600 to-emerald-400" style={{ width: "100%" }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-teal-600 to-teal-600" style={{ width: "100%" }} />
             </div>
             <div className="flex gap-1.5 justify-center mt-2.5">
               {QUESTIONS.map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-teal-600" />)}
@@ -211,12 +211,12 @@ export default function AthleteProfileQuiz() {
           </div>
 
           <div className="rounded-2xl border p-10 text-center relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="quiz-complete">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-500/40 to-transparent" />
             <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl" style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(168,85,247,0.1))", boxShadow: "0 0 40px rgba(52,211,153,0.15)" }}>
               {"\uD83C\uDF89"}
             </div>
             <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
-              Your profile is <span className="bg-gradient-to-r from-emerald-400 to-teal-600 bg-clip-text text-transparent">ready!</span>
+              Your profile is <span className="bg-gradient-to-r from-teal-600 to-teal-600 bg-clip-text text-transparent">ready!</span>
             </h1>
             <p className="text-sm mb-8 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
               We've built your recruiting profile. Here's a preview of how we'll match you with programs.
@@ -242,13 +242,13 @@ export default function AthleteProfileQuiz() {
             {/* Match scores preview */}
             {matchScores.length > 0 && (
               <div className="rounded-xl border p-5 text-left" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 mb-4 flex items-center gap-1.5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-4 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />Top Matches from Your Pipeline
                 </p>
                 <div className="space-y-1">
                   {matchScores.map(m => (
                     <div key={m.program_id} className="flex items-center gap-3 py-2.5 border-b last:border-0" style={{ borderColor: "var(--t-border)" }}>
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-extrabold flex-shrink-0 ${m.match_score >= 80 ? "bg-emerald-500/10 text-emerald-400" : m.match_score >= 60 ? "bg-yellow-500/10 text-yellow-400" : "bg-gray-500/10 text-gray-400"}`}>
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-extrabold flex-shrink-0 ${m.match_score >= 80 ? "bg-slate-500/10 text-teal-600" : m.match_score >= 60 ? "bg-yellow-500/10 text-yellow-400" : "bg-gray-500/10 text-gray-400"}`}>
                         {m.match_score}%
                       </div>
                       <div className="min-w-0 flex-1">
@@ -256,7 +256,7 @@ export default function AthleteProfileQuiz() {
                         <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{m.division} {m.conference ? `\u2022 ${m.conference}` : ""} {m.region ? `\u2022 ${m.region}` : ""}</p>
                         {m.match_reasons?.length > 0 && (
                           <div className="flex gap-1 mt-1">
-                            {m.match_reasons.map(r => <span key={r} className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-medium">{r}</span>)}
+                            {m.match_reasons.map(r => <span key={r} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-500/10 text-teal-600 font-medium">{r}</span>)}
                           </div>
                         )}
                       </div>
@@ -266,7 +266,7 @@ export default function AthleteProfileQuiz() {
               </div>
             )}
 
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white mt-8 h-11 px-8 text-sm font-semibold shadow-lg shadow-emerald-500/20" onClick={() => navigate("/pipeline")} data-testid="start-recruiting-btn">
+            <Button className="bg-teal-700 hover:bg-teal-800 text-white mt-8 h-11 px-8 text-sm font-semibold shadow-lg shadow-slate-500/20" onClick={() => navigate("/pipeline")} data-testid="start-recruiting-btn">
               {"\uD83C\uDFC3"} Start Recruiting <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
             <p className="text-[11px] mt-3 cursor-pointer hover:underline" style={{ color: "var(--t-text-muted)" }} onClick={() => navigate("/settings")}>
@@ -326,8 +326,8 @@ export default function AthleteProfileQuiz() {
                 <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>See schools that fit your playing style & goals</p>
               </div>
               <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-emerald-500/10">
-                  <Clock className="w-5 h-5 text-emerald-400" />
+                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-slate-500/10">
+                  <Clock className="w-5 h-5 text-teal-600" />
                 </div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Save Time</p>
                 <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>Skip programs that aren't a good fit</p>

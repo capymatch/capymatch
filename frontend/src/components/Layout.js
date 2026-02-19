@@ -581,13 +581,13 @@ export default function Layout({ user, onLogout }) {
           <div
             className={`flex items-center justify-between px-4 lg:px-6 py-3 text-sm font-medium ${
               planEvent.isUpgrade
-                ? "bg-emerald-600/15 border-b border-emerald-500/30"
+                ? "bg-teal-700/15 border-b border-slate-500/30"
                 : "bg-amber-600/15 border-b border-amber-500/30"
             }`}
             data-testid="plan-change-banner"
           >
             <div className="flex items-center gap-2">
-              <Sparkles className={`w-4 h-4 ${planEvent.isUpgrade ? "text-emerald-400" : "text-amber-400"}`} />
+              <Sparkles className={`w-4 h-4 ${planEvent.isUpgrade ? "text-teal-600" : "text-amber-400"}`} />
               <span style={{ color: "var(--t-text)" }}>
                 Your plan was changed from <strong>{TIER_LABELS[planEvent.old_plan] || planEvent.old_plan}</strong> to <strong>{TIER_LABELS[planEvent.new_plan] || planEvent.new_plan}</strong>
               </span>

@@ -21,12 +21,12 @@ const STAGE_LABELS = {
   overdue: { label: "Overdue", color: "text-teal-400" },
   needs_outreach: { label: "Needs Outreach", color: "text-amber-400" },
   waiting_on_reply: { label: "Waiting on Reply", color: "text-blue-400" },
-  in_conversation: { label: "In Conversation", color: "text-emerald-400" },
+  in_conversation: { label: "In Conversation", color: "text-teal-600" },
   archived: { label: "Archived", color: "text-gray-400" },
 };
 
 const PULSE_LABELS = {
-  active: { label: "Active", color: "text-emerald-400", dot: "bg-emerald-500" },
+  active: { label: "Active", color: "text-teal-600", dot: "bg-slate-500" },
   cooling: { label: "Cooling", color: "text-amber-400", dot: "bg-amber-500" },
   cold: { label: "Going Cold", color: "text-teal-400", dot: "bg-slate-500" },
   neutral: { label: "New", color: "text-gray-400", dot: "bg-gray-500" },
@@ -56,10 +56,10 @@ function CompareCard({ program, isCurrent, onRemove }) {
   const stage = STAGE_LABELS[program.board_group] || STAGE_LABELS.needs_outreach;
 
   const rows = [
-    { label: "Match Score", value: program.match_score ? `${program.match_score}%` : "—", color: program.match_score >= 80 ? "text-emerald-400" : program.match_score >= 60 ? "text-amber-400" : "text-gray-400" },
+    { label: "Match Score", value: program.match_score ? `${program.match_score}%` : "—", color: program.match_score >= 80 ? "text-teal-600" : program.match_score >= 60 ? "text-amber-400" : "text-gray-400" },
     { label: "Stage", value: stage.label, color: stage.color },
     { label: "Interactions", value: signals.total_interactions || 0 },
-    { label: "Coach Reply", value: signals.has_coach_reply ? `Yes (${signals.days_since_reply}d ago)` : "—", color: signals.has_coach_reply ? "text-emerald-400" : "text-gray-500" },
+    { label: "Coach Reply", value: signals.has_coach_reply ? `Yes (${signals.days_since_reply}d ago)` : "—", color: signals.has_coach_reply ? "text-teal-600" : "text-gray-500" },
     { label: "Last Contact", value: signals.days_since_activity !== null ? `${signals.days_since_activity}d ago` : "Never" },
     { label: "Primary Coach", value: program.primary_coach || "—" },
     { label: "Priority", value: program.priority || "Medium" },
