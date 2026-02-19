@@ -115,7 +115,7 @@ function ProgressRing({ counts, total }) {
           <span className="text-[8px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <div className="flex flex-wrap md:flex-col gap-x-3 gap-y-1">
         {activeStages.map(k => (
           <div key={k} className="flex items-center gap-1.5 text-[10px]">
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
