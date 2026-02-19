@@ -154,7 +154,7 @@ async def _run_sync():
                         "api_key": api_key,
                         "school.name": name,
                         "fields": SCORECARD_FIELDS,
-                        "per_page": 5,
+                        "per_page": 20,
                     })
                     if resp.status_code == 429:
                         wait = 2 ** (attempt + 1)
