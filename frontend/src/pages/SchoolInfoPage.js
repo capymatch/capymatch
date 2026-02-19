@@ -209,7 +209,7 @@ export default function SchoolInfoPage() {
             </div>
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
               <button onClick={addToBoard} disabled={adding || school.on_board} data-testid="add-to-board-btn"
-                className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
+                className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-[10px] text-[12px] sm:text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
                 style={school.on_board
                   ? { background: "rgba(16,185,129,0.2)", color: "#10b981" }
                   : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
