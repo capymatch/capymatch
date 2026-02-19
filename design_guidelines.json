@@ -1,143 +1,127 @@
 {
-  "design_system": {
-    "identity": {
-      "name": "VolleyRecruit Pro",
-      "archetype": "The Performance Pro",
-      "vibe": "Energetic, Athletic, Focused, Digital-First",
-      "target_audience": "High School Volleyball Athletes & Families"
-    },
-    "typography": {
-      "font_family": {
-        "heading": "Barlow Condensed, sans-serif",
-        "body": "DM Sans, sans-serif",
-        "accent": "Teko, sans-serif"
-      },
-      "usage_rules": {
-        "headings": "Uppercase, tracking-tight for large titles, tracking-wide for overlines. Weight 700-900.",
-        "body": "Clean, readable, generous line-height (1.6). Weight 400-500.",
-        "numbers": "Use Barlow Condensed for stats (Match %, Rankings) to feel like a scoreboard."
+  "identity": {
+    "name": "E1",
+    "role": "Anti-AI Creative Designer",
+    "philosophy": "Fusion over Imitation. Emotion First. Content is King."
+  },
+  "project_context": {
+    "app_name": "Volleyball Recruiting CRM",
+    "theme": "Dark Mode (Sports/High-Energy)",
+    "primary_font": "Plus Jakarta Sans",
+    "key_colors": {
+      "background": "#0f1219",
+      "surface": "#161b25",
+      "brand_pink": "#e8628a",
+      "text_main": "#e2e8f0",
+      "text_muted": "#a0aec0"
+    }
+  },
+  "design_strategies": {
+    "modal_philosophy": "The 'Final Proofread' Protocol. Do not treat this as a system alert. Treat it as a physical letter review before dropping it in the mailbox.",
+    "visual_style": {
+      "glassmorphism": "Use heavy blur (backdrop-blur-xl) for the overlay to silence the background noise.",
+      "card_texture": "Matte dark surface (#161b25) with a subtle 1px border (rgba(232, 98, 138, 0.2)).",
+      "typography_hierarchy": {
+        "recipient": "Large, distinctive. 'Sending to COACH NAME'. Verify identity.",
+        "subject": "Bold, clear. No truncation.",
+        "body": "Monospace or clean sans-serif (Inter/Jakarta) with generous line-height (1.6) for readability."
       }
     },
-    "colors": {
-      "palette": {
-        "primary": {
-          "base": "#be185d",
-          "hover": "#9d174d",
-          "active": "#831843",
-          "text_contrast": "#ffffff"
-        },
-        "neutral": {
-          "light_bg": "#f8fafc",
-          "dark_bg": "#0f172a",
-          "card_light": "#ffffff",
-          "card_dark": "#1e293b",
-          "text_primary_light": "#0f172a",
-          "text_primary_dark": "#f8fafc",
-          "text_secondary_light": "#64748b",
-          "text_secondary_dark": "#94a3b8"
-        },
-        "functional": {
-          "success": "#10b981",
-          "warning": "#f59e0b",
-          "danger": "#ef4444",
-          "info": "#3b82f6"
-        },
-        "divisions": {
-          "d1": "#059669",
-          "d2": "#2563eb",
-          "d3": "#7c3aed",
-          "naia": "#ea580c",
-          "juco": "#eab308"
-        },
-        "match_score": {
-          "high": "#10b981",
-          "medium": "#f59e0b",
-          "low": "#64748b"
-        }
-      },
-      "gradients": {
-        "primary_gradient": "linear-gradient(135deg, #be185d 0%, #db2777 100%)",
-        "card_gradient_hover": "linear-gradient(180deg, rgba(190, 24, 93, 0.02) 0%, rgba(190, 24, 93, 0.05) 100%)"
-      }
-    },
-    "spacing": {
-      "container_padding": "p-4 md:p-8 lg:p-12",
-      "card_padding": "p-5",
-      "gap_default": "gap-4",
-      "gap_wide": "gap-8"
-    },
-    "radius": {
-      "card": "rounded-xl",
-      "button": "rounded-full",
-      "badge": "rounded-sm"
-    },
-    "shadows": {
-      "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-      "card_hover": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-      "floating": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+    "interaction_design": {
+      "entrance": "Scale up from 0.95 opacity 0 to 1 opacity 1 (spring physics).",
+      "hover_states": "Buttons must physically lift (-translate-y-0.5) and glow.",
+      "send_action": "The 'Commit' button. Gradient background (Pink to Red). 100% width on mobile."
     }
   },
   "components": {
-    "PageLayout": {
-      "structure": "Container > Header (Title + Search + Actions) > FilterBar > Kanban/Grid Content",
-      "guidelines": "Use a max-width container (max-w-7xl) centered. Background should be neutral-light/dark, not pure white/black."
-    },
-    "FilterBar": {
-      "style": "pill",
-      "interaction": "Horizontal scroll on mobile. Active state fills with Primary Color + White Text. Inactive is transparent with Ring border.",
-      "layout": "flex gap-2 overflow-x-auto pb-2 no-scrollbar"
-    },
-    "SchoolCard": {
-      "concept": "The 'Scouting Report' Card",
-      "structure": {
-        "header": "Left border strip indicating status color. Top row: Logo (left) + Match Score Badge (right).",
-        "body": "University Name (H3) + Conference (subtitle). Division Badge below name.",
-        "footer": "Status text (colored) + 'Journey' Action Button.",
-        "interaction": "Hover: Lift translateY(-2px) + Shadow-lg. Border color intensifies."
-      },
-      "visuals": "White/Dark-Card bg. Subtle border (border-slate-200 / border-slate-700). meaningful whitespace."
-    },
-    "Badges": {
-      "division": "Solid background, white text. Bold font. Small text-xs uppercase.",
-      "match_score": "Circular or Pill. Ring border for lower visual weight, or soft background (bg-opacity-10) with strong text."
-    },
-    "ProgressBar": {
-      "journey": "Step wizard style. Active step is filled circle, future is empty ring. Connecting lines."
+    "EmailPreviewModal": {
+      "path": "src/components/EmailPreviewModal.js",
+      "structure": [
+        {
+          "element": "Dialog",
+          "props": {
+            "open": "controlled",
+            "onOpenChange": "controlled"
+          }
+        },
+        {
+          "element": "DialogContent",
+          "classes": "bg-[#161b25] border-white/10 sm:max-w-[600px] p-0 overflow-hidden shadow-2xl"
+        },
+        {
+          "element": "HeaderSection",
+          "classes": "p-6 border-b border-white/5 bg-white/2",
+          "children": [
+            {
+              "element": "Title",
+              "text": "Review Message",
+              "classes": "text-lg font-semibold text-white tracking-tight"
+            },
+            {
+              "element": "RecipientBadge",
+              "classes": "mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e8628a]/10 text-[#e8628a] text-sm border border-[#e8628a]/20"
+            }
+          ]
+        },
+        {
+          "element": "ScrollArea",
+          "classes": "max-h-[60vh] p-6 space-y-4",
+          "children": [
+            {
+              "element": "SubjectLine",
+              "classes": "text-white/90 font-medium text-lg"
+            },
+            {
+              "element": "EmailBody",
+              "classes": "text-white/70 whitespace-pre-wrap font-sans leading-relaxed text-sm"
+            }
+          ]
+        },
+        {
+          "element": "FooterSection",
+          "classes": "p-6 bg-[#0f1219]/50 border-t border-white/5 flex items-center justify-between gap-4",
+          "children": [
+            {
+              "element": "EditButton",
+              "label": "Edit Message",
+              "variant": "ghost",
+              "classes": "text-white/50 hover:text-white hover:bg-white/5 transition-colors"
+            },
+            {
+              "element": "SendButton",
+              "label": "Confirm & Send",
+              "icon": "Send",
+              "classes": "bg-gradient-to-r from-[#e8628a] to-[#d63659] text-white hover:shadow-[0_0_20px_rgba(232,98,138,0.4)] transition-all duration-300 font-semibold px-6"
+            }
+          ]
+        }
+      ]
     }
-  },
-  "layout_strategies": {
-    "grid_system": "Responsive Masonry or Bento Grid. Mobile: 1 col. Tablet: 2 cols. Desktop: 3 or 4 cols.",
-    "group_headers": "Sticky headers when scrolling. Distinct typography (Barlow Condensed Uppercase) with pill badge count."
-  },
-  "motion": {
-    "hover_effects": "transition-all duration-300 ease-out",
-    "list_transitions": "Staggered entrance for cards. Layout LayoutGroup for smooth filtering reordering."
   },
   "assets": {
-    "icons": "Lucide React (Feather icons). Use thin strokes (1.5px) for elegance.",
-    "images": {
-      "placeholders": [
-        "https://images.unsplash.com/photo-1765109260914-de67ccbbcab3?crop=entropy&cs=srgb&fm=jpg&q=85",
-        "https://images.unsplash.com/photo-1770827401349-3499200c5e61?crop=entropy&cs=srgb&fm=jpg&q=85",
-        "https://images.unsplash.com/photo-1760131556605-7f2e63d00385?crop=entropy&cs=srgb&fm=jpg&q=85"
-      ],
-      "usage": "Use generic campus photos for card backgrounds (with heavy overlay) if no logo is present, or for page headers."
-    }
+    "icons": [
+      "Send",
+      "Edit2",
+      "User",
+      "AlertCircle"
+    ],
+    "library": "lucide-react"
   },
-  "instructions_to_main_agent": [
-    "1. IMPLEMENTATION: Create the 'My Schools' board as a single comprehensive component or set of sub-components in 'src/components/recruiting/'.",
-    "2. THEME SUPPORT: Use Tailwind 'dark:' modifiers for ALL color definitions. Ensure contrast passes in both modes.",
-    "3. DATA-TESTID: Add data-testid attributes to all interactive elements (filters, buttons, cards).",
-    "4. NO MOCK DATA IN PROD: Create a mock data file 'src/data/mockSchools.js' ONLY for demonstration if backend is not ready, but structure it for easy API replacement.",
-    "5. ACCESSIBILITY: Ensure status colors have text labels, not just color indicators.",
-    "6. MICRO-INTERACTIONS: animate the 'Journey' button on hover (e.g., arrow moves right).",
-    "7. EMPTY STATES: Design a beautiful empty state for 'No Schools Found' using a light illustration or icon."
-  ],
   "universal_guidelines": [
-    "Don't make generic centered layouts.",
-    "Create depth through layered design elements.",
-    "Use glass-morphism effects for sticky headers.",
-    "Use 2-3x more spacing than feels comfortable.",
-    "Every interaction needs micro-animations."
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition. Eg: transition: all.",
+    "All interactive and key informational elements MUST include a data-testid attribute.",
+    "Use 'sonner' for toasts."
+  ],
+  "instructions_to_main_agent": [
+    "Create a new component 'EmailPreviewModal.js' in 'src/components/'.",
+    "Use the existing 'Dialog' component from 'src/components/ui/dialog.jsx'.",
+    "Integrate this modal into the parent page (likely 'RecruitingBoard.js' or where the email send logic resides).",
+    "Ensure the modal intercepts the send action.",
+    "Use the 'ScrollArea' component for the email body if it is long.",
+    "Match the pink/red gradient from the sidebar for the primary action button."
   ]
 }
