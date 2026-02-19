@@ -862,68 +862,108 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
   };
   const selectedCoach = coaches.find(c => c.email === to);
   return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="email-composer">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Compose Email</h3>
-        <button onClick={onCancel} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
-      </div>
-      <div className="flex gap-1.5 flex-wrap items-center">
-        {canUseAIDrafts ? (
-          ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
-            <button key={t} onClick={() => draftAI(t)} disabled={drafting}
-              className="px-2 py-1 rounded-md text-[10px] font-medium bg-pink-700/15 text-pink-700 hover:bg-pink-700/25 transition-colors disabled:opacity-50" data-testid={`draft-${t}-btn`}>
-              <Sparkles className="w-3 h-3 inline mr-0.5" />{t.replace(/_/g, " ")}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="email-composer-overlay">
+      <div className="w-full max-w-[620px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
+        style={{ background: "#161b25", border: "1px solid rgba(232, 98, 138, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(232,98,138,0.08)", maxHeight: "90vh" }}
+        data-testid="email-composer">
+
+        {/* Header */}
+        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-bold text-white tracking-tight">Compose Email</h2>
+            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="composer-close-btn">
+              <X className="w-4 h-4 text-white/40" />
             </button>
-          ))
-        ) : (
-          <div className="flex items-center gap-2 w-full py-1 px-2.5 rounded-lg bg-amber-500/5 border border-amber-500/15" data-testid="ai-draft-locked">
-            <Crown className="w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
-            <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Premium</a></span>
           </div>
-        )}
-      </div>
-      {canUseAIDrafts && (
-        <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "var(--t-text-muted)" }}>
-          <AlertCircle className="w-3 h-3 flex-shrink-0" />
-          AI uses your <a href="/profile" className="text-pink-700 hover:underline">athlete profile</a> to generate emails — keep it updated for best results.
-        </p>
-      )}
-      {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-600" /><span className="text-xs" style={{ color: "var(--t-text-muted)" }}>AI is drafting...</span></div>}
-      <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-to-select">
-        <option value="">Select recipient...</option>
-        {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email}>{c.coach_name} ({c.email})</option>)}
-        <option value="_custom">Type custom email...</option>
-      </select>
-      {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />}
-      <input placeholder="Subject" value={subject} onChange={e => setSubject(e.target.value)} className={inputCls} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-subject-input" />
-      <textarea placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} rows={15} className={`${inputCls} resize-none`} style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }} data-testid="email-body-input" />
-      {/* Attachments */}
-      <div>
-        <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple className="hidden" data-testid="file-input" />
-        <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors hover:bg-[var(--t-surface-alt)]"
-          style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="attach-file-btn">
-          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
-          {uploading ? "Uploading..." : "Attach Files"}
-        </button>
-        {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {attachments.map(att => (
-              <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
-                style={{ backgroundColor: "rgba(232,69,107,0.06)", borderColor: "rgba(232,69,107,0.15)", color: "var(--t-text-secondary)" }}
-                data-testid={`attachment-${att.file_id}`}>
-                <Paperclip className="w-3 h-3 text-pink-700 flex-shrink-0" />
-                <span className="truncate max-w-[150px]">{att.filename}</span>
-                <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>({formatFileSize(att.size)})</span>
-                <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3" /></button>
+          <div className="flex gap-1.5 flex-wrap items-center">
+            {canUseAIDrafts ? (
+              ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
+                <button key={t} onClick={() => draftAI(t)} disabled={drafting}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors disabled:opacity-50"
+                  style={{ background: "rgba(232,98,138,0.1)", color: "#e8628a", border: "1px solid rgba(232,98,138,0.2)" }}
+                  data-testid={`draft-${t}-btn`}>
+                  <Sparkles className="w-3 h-3 inline mr-1" />{t.replace(/_/g, " ")}
+                </button>
+              ))
+            ) : (
+              <div className="flex items-center gap-2 w-full py-1.5 px-3 rounded-lg" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }} data-testid="ai-draft-locked">
+                <Crown className="w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
+                <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Premium</a></span>
               </div>
-            ))}
+            )}
           </div>
-        )}
+          {canUseAIDrafts && (
+            <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+              <AlertCircle className="w-3 h-3 flex-shrink-0" />
+              AI uses your <a href="/profile" className="text-pink-400 hover:underline">athlete profile</a> to generate emails.
+            </p>
+          )}
+          {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-pink-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
+        </div>
+
+        {/* Form Body */}
+        <div className="p-5 space-y-3 overflow-y-auto flex-1">
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>To</label>
+            <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={inputStyle} data-testid="email-to-select">
+              <option value="">Select recipient...</option>
+              {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email}>{c.coach_name} ({c.email})</option>)}
+              <option value="_custom">Type custom email...</option>
+            </select>
+            {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={`${inputCls} mt-2`} style={inputStyle} />}
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Subject</label>
+            <input placeholder="e.g. Introduction — Class of 2027" value={subject} onChange={e => setSubject(e.target.value)} className={inputCls} style={inputStyle} data-testid="email-subject-input" />
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Message</label>
+            <textarea placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} rows={10}
+              className={`${inputCls} resize-none`} style={inputStyle} data-testid="email-body-input" />
+          </div>
+          <div>
+            <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple className="hidden" data-testid="file-input" />
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors hover:bg-white/5"
+              style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}
+              data-testid="attach-file-btn">
+              {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
+              {uploading ? "Uploading..." : "Attach Files"}
+            </button>
+            {attachments.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {attachments.map(att => (
+                  <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs"
+                    style={{ background: "rgba(232,98,138,0.06)", border: "1px solid rgba(232,98,138,0.15)", color: "rgba(255,255,255,0.6)" }}
+                    data-testid={`attachment-${att.file_id}`}>
+                    <Paperclip className="w-3 h-3 text-pink-500 flex-shrink-0" />
+                    <span className="truncate max-w-[150px]">{att.filename}</span>
+                    <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>({formatFileSize(att.size)})</span>
+                    <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3 text-white/40" /></button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <button onClick={onCancel}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}
+            data-testid="composer-cancel-btn">
+            Cancel
+          </button>
+          <Button onClick={handleReview} disabled={sending}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(232,98,138,0.4)]"
+            style={{ background: "linear-gradient(135deg, #e8628a, #d63659)" }}
+            data-testid="send-email-btn">
+            <Send className="w-4 h-4" />Review & Send{attachments.length > 0 ? ` (${attachments.length})` : ""}
+          </Button>
+        </div>
       </div>
-      <Button className="bg-pink-700 hover:bg-pink-800 text-white text-xs w-full" onClick={handleReview} disabled={sending} data-testid="send-email-btn">
-        <Send className="w-3 h-3 mr-1" />Review & Send{attachments.length > 0 ? ` (${attachments.length} file${attachments.length > 1 ? "s" : ""})` : ""}
-      </Button>
+
       {showPreview && (
         <EmailPreviewModal
           to={to}
