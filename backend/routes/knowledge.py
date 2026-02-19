@@ -113,8 +113,9 @@ async def _search_questionnaire_url(university_name, domain, website=None):
             parsed = urlparse(website if website.startswith("http") else f"https://{website}")
             athletics_domain = parsed.netloc.replace("www.", "")
 
+        import asyncio as _aio
         # Known 3rd-party questionnaire platforms schools commonly use
-        questionnaire_platforms = ["armssoftware.com", "jumpforward.com", "formstack.com"]
+        questionnaire_platforms = ["armssoftware.com", "jumpforward.com", "formstack.com", "fieldlevel.com"]
 
         school_domains = set()
         if athletics_domain:
