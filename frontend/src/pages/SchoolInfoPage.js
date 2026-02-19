@@ -173,6 +173,19 @@ export default function SchoolInfoPage() {
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
         <div className="p-6 sm:p-9 flex flex-col sm:flex-row gap-5 sm:gap-7 items-center sm:items-start">
+          {school.match_score != null && school.match_score > 0 && (
+            <div className="flex flex-col items-center order-first sm:order-last">
+              <MatchRing score={school.match_score} />
+              {school.match_reasons?.length > 0 && (
+                <div className="flex flex-wrap gap-1 justify-center mt-1.5">
+                  {school.match_reasons.map(r => (
+                    <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
+                      style={{ backgroundColor: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.7)", border: "1px solid rgba(46,196,182,0.15)" }}>{r}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <h1 className="text-2xl sm:text-[28px] font-extrabold text-white tracking-tight mb-2 leading-tight" data-testid="school-name">
               {school.university_name}
@@ -199,13 +212,6 @@ export default function SchoolInfoPage() {
                   : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
                 {school.on_board ? <><Check className="w-4 h-4" /> On Your Board</> : <><Plus className="w-4 h-4" /> {adding ? "Adding..." : "Add to Board"}</>}
               </button>
-              {coaches[0]?.email && (
-                <a href={`mailto:${coaches[0].email}`} data-testid="email-coach-hero-btn"
-                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
-                  style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <Mail className="w-4 h-4" /> Email Coach
-                </a>
-              )}
               {school.website && (
                 <a href={school.website} target="_blank" rel="noreferrer" data-testid="visit-website-btn"
                   className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
@@ -215,19 +221,6 @@ export default function SchoolInfoPage() {
               )}
             </div>
           </div>
-          {school.match_score > 0 && (
-            <div className="flex flex-col items-center">
-              <MatchRing score={school.match_score} />
-              {school.match_reasons?.length > 0 && (
-                <div className="flex flex-wrap gap-1 justify-center mt-1.5">
-                  {school.match_reasons.map(r => (
-                    <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
-                      style={{ backgroundColor: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.7)", border: "1px solid rgba(46,196,182,0.15)" }}>{r}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
