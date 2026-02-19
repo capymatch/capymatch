@@ -183,7 +183,7 @@ function TimelineBar({ periods, division }) {
     <div className="rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ncaa-timeline-bar">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <Calendar className="w-4 h-4 text-slate-500" />
+          <Calendar className="w-4 h-4 text-slate-600" />
           NCAA {division} Recruiting Calendar
         </h3>
         <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>{TIMELINE_DATA[division].season} Season</span>
@@ -299,7 +299,7 @@ export default function NcaaTimeline() {
       {/* Key NCAA Dates */}
       <div className="rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="key-ncaa-dates">
         <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <AlertCircle className="w-4 h-4 text-slate-500" />
+          <AlertCircle className="w-4 h-4 text-slate-600" />
           Key NCAA Dates & Deadlines
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -308,7 +308,7 @@ export default function NcaaTimeline() {
             return (
               <div key={i} className="flex items-start gap-3 p-3 rounded-lg border" style={{ borderColor: "var(--t-border)", backgroundColor: "rgba(255,255,255,0.02)" }} data-testid={`key-date-${i}`}>
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${DATE_ICON_BG[date.icon] || "bg-gray-500/12"}`}>
-                  <Icon className="w-4 h-4 text-slate-500" />
+                  <Icon className="w-4 h-4 text-slate-600" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{date.name}</p>
