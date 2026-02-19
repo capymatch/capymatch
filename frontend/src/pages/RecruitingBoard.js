@@ -128,6 +128,87 @@ function ProgressRing({ counts, total }) {
   );
 }
 
+
+/* ═══ Custom Pipeline Tour ═══ */
+function PipelineTour({ step, steps, onNext, onBack, onClose }) {
+  const [pos, setPos] = useState(null);
+
+  useEffect(() => {
+    if (step < 0 || step >= steps.length) { setPos(null); return; }
+    const el = document.querySelector(steps[step].target);
+    if (!el) { setPos(null); return; }
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      setPos({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    };
+    setTimeout(update, 300);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [step, steps]);
+
+  if (step < 0 || step >= steps.length || !pos) return null;
+  const s = steps[step];
+  const isLast = step === steps.length - 1;
+
+  // Position tooltip below or above target
+  const tooltipBelow = pos.top < window.innerHeight / 2;
+  const tooltipStyle = {
+    position: "fixed",
+    zIndex: 10002,
+    left: Math.max(12, Math.min(pos.left, window.innerWidth - 340)),
+    maxWidth: 320,
+    ...(tooltipBelow
+      ? { top: pos.top + pos.height + 12 }
+      : { bottom: window.innerHeight - pos.top + 12 }),
+  };
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-[10000]"
+        style={{ background: "rgba(0,0,0,0.55)", pointerEvents: "auto" }}
+        onClick={onClose}
+      />
+      {/* Spotlight cutout */}
+      <div
+        className="fixed z-[10001] rounded-xl transition-all duration-300"
+        style={{
+          top: pos.top - 6, left: pos.left - 6,
+          width: pos.width + 12, height: pos.height + 12,
+          boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)",
+          pointerEvents: "none",
+        }}
+      />
+      {/* Tooltip */}
+      <div style={tooltipStyle} className="rounded-xl shadow-2xl" data-testid="tour-tooltip">
+        <div style={{ background: "#1e1e2e", borderRadius: 12, padding: "18px 20px" }}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-semibold" style={{ color: "#e8456b" }}>{step + 1} of {steps.length}</span>
+            <button onClick={onClose} className="text-xs" style={{ color: "#666" }}>Skip</button>
+          </div>
+          <h4 className="text-sm font-bold mb-1" style={{ color: "#f1f1f1" }}>{s.title}</h4>
+          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#aaa" }}>{s.content}</p>
+          <div className="flex items-center gap-2 justify-end">
+            {step > 0 && (
+              <button onClick={onBack} className="text-xs px-3 py-1.5 rounded-lg" style={{ color: "#999" }}>Back</button>
+            )}
+            <button
+              onClick={isLast ? onClose : onNext}
+              className="text-xs px-4 py-1.5 rounded-lg font-semibold"
+              style={{ backgroundColor: "#e8456b", color: "#fff" }}
+              data-testid="tour-next-btn"
+            >
+              {isLast ? "Done!" : "Next"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 /* ═══ Dark + Pink Hero Card ═══ */
 function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   if (!program) return null;
