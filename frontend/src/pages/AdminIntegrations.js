@@ -338,7 +338,7 @@ export default function AdminIntegrations() {
                       size="sm"
                       onClick={() => disconnectGmail(u.user_id)}
                       disabled={disconnecting === u.user_id}
-                      className="text-xs text-teal-400 hover:text-slate-300 hover:bg-slate-500/10 gap-1"
+                      className="text-xs text-teal-600 hover:text-slate-300 hover:bg-slate-500/10 gap-1"
                       data-testid={`gmail-disconnect-${u.user_id}`}
                     >
                       {disconnecting === u.user_id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
@@ -356,7 +356,7 @@ export default function AdminIntegrations() {
           </div>
         ) : (
           <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
-            <XCircle className="w-3.5 h-3.5 text-teal-400" />
+            <XCircle className="w-3.5 h-3.5 text-teal-600" />
             <span>Gmail OAuth credentials not configured. Add GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET to .env</span>
           </div>
         )}
@@ -436,7 +436,7 @@ export default function AdminIntegrations() {
         subtitle="Claude Sonnet via Emergent LLM Key — powers email drafts, outreach insights, and highlight advice"
         status={ai.connected}
         statusLabel={ai.connected ? "Active" : "Not configured"}
-        accent="bg-slate-500/15 text-teal-400"
+        accent="bg-slate-500/15 text-teal-600"
       >
         <div className="space-y-1">
           {ai.connected ? (
@@ -448,7 +448,7 @@ export default function AdminIntegrations() {
             </>
           ) : (
             <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
-              <XCircle className="w-3.5 h-3.5 text-teal-400" />
+              <XCircle className="w-3.5 h-3.5 text-teal-600" />
               <span>Emergent LLM Key not configured. Add EMERGENT_LLM_KEY to .env</span>
             </div>
           )}

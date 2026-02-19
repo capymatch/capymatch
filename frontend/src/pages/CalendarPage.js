@@ -550,7 +550,7 @@ export default function CalendarPage() {
             {upcomingUserEvents.length > 0 ? (
               <div className="space-y-2">
                 {upcomingUserEvents.slice(0, 5).map((evt) => {
-                  const typeBg = { Camp: "bg-teal-600/15 text-teal-400", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-slate-500/15 text-teal-600", Tryout: "bg-slate-500/15 text-teal-400", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
+                  const typeBg = { Camp: "bg-teal-600/15 text-teal-600", Showcase: "bg-blue-500/15 text-blue-400", Tournament: "bg-amber-500/15 text-amber-400", Visit: "bg-slate-500/15 text-teal-600", Tryout: "bg-slate-500/15 text-teal-600", Meeting: "bg-cyan-500/15 text-cyan-400", Deadline: "bg-red-500/15 text-red-400", Other: "bg-gray-500/15 text-gray-400" };
                   const colorBar = { Camp: "bg-teal-600", Showcase: "bg-blue-500", Tournament: "bg-amber-500", Visit: "bg-slate-500", Tryout: "bg-slate-500", Meeting: "bg-cyan-500", Deadline: "bg-red-500", Other: "bg-gray-500" };
                   return (
                     <div
@@ -572,7 +572,7 @@ export default function CalendarPage() {
                   );
                 })}
                 {upcomingUserEvents.length > 5 && (
-                  <button className="w-full text-sm text-slate-500 hover:text-teal-400 transition-colors pt-2">
+                  <button className="w-full text-sm text-slate-500 hover:text-teal-600 transition-colors pt-2">
                     View all {upcomingUserEvents.length} events →
                   </button>
                 )}

@@ -224,7 +224,7 @@ export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "
         <div className="px-4 pb-3 md:px-6 md:pb-5">
           {loading ? (
             <div className="text-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-teal-400 mx-auto mb-3" />
+              <Loader2 className="w-6 h-6 animate-spin text-teal-600 mx-auto mb-3" />
               <p className="text-sm" style={{ color: dark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>Loading plans...</p>
             </div>
           ) : (

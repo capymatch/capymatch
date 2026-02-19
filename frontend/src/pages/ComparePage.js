@@ -18,7 +18,7 @@ const RAIL_STAGES = [
 ];
 
 const STAGE_LABELS = {
-  overdue: { label: "Overdue", color: "text-teal-400" },
+  overdue: { label: "Overdue", color: "text-teal-600" },
   needs_outreach: { label: "Needs Outreach", color: "text-amber-400" },
   waiting_on_reply: { label: "Waiting on Reply", color: "text-blue-400" },
   in_conversation: { label: "In Conversation", color: "text-teal-600" },
@@ -28,7 +28,7 @@ const STAGE_LABELS = {
 const PULSE_LABELS = {
   active: { label: "Active", color: "text-teal-600", dot: "bg-slate-500" },
   cooling: { label: "Cooling", color: "text-amber-400", dot: "bg-amber-500" },
-  cold: { label: "Going Cold", color: "text-teal-400", dot: "bg-slate-500" },
+  cold: { label: "Going Cold", color: "text-teal-600", dot: "bg-slate-500" },
   neutral: { label: "New", color: "text-gray-400", dot: "bg-gray-500" },
 };
 

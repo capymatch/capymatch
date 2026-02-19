@@ -118,7 +118,7 @@ function OAuthCallback({ onAuth }) {
           <div className="text-white/50 text-xs mb-3">{errorMsg}</div>
           <button
             onClick={() => navigate("/login", { replace: true })}
-            className="text-teal-400 text-xs underline hover:text-slate-300"
+            className="text-teal-600 text-xs underline hover:text-slate-300"
           >
             Back to login
           </button>

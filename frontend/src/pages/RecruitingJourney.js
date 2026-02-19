@@ -155,7 +155,7 @@ function PulseIndicator({ pulse }) {
   const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
   const dotColor = { emerald: "bg-slate-500", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
   const ringColor = { emerald: "border-slate-500", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { emerald: "text-teal-600", amber: "text-amber-400", rose: "text-teal-400", gray: "text-gray-400" }[cfg.color];
+  const textColor = { emerald: "text-teal-600", amber: "text-amber-400", rose: "text-teal-600", gray: "text-gray-400" }[cfg.color];
   return (
     <div className="flex items-center gap-2" data-testid="pulse-indicator">
       <span className="relative flex h-2.5 w-2.5">
@@ -502,7 +502,7 @@ function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraf
   const boardGroup = program.board_group;
   const stageLabel = BOARD_STAGE_LABELS[boardGroup] || boardGroup;
   const stageColors = {
-    overdue: "bg-slate-500/12 text-teal-400", needs_outreach: "bg-amber-500/12 text-amber-400",
+    overdue: "bg-slate-500/12 text-teal-600", needs_outreach: "bg-amber-500/12 text-amber-400",
     waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-slate-500/12 text-teal-600",
     archived: "bg-gray-500/12 text-gray-400",
   };
@@ -759,7 +759,7 @@ function CoachForm({ initial, programId, onSave, onCancel }) {
         data-testid="coach-form">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><User className="w-4 h-4 text-teal-400" />{initial ? "Edit Coach" : "Add Coach"}</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><User className="w-4 h-4 text-teal-600" />{initial ? "Edit Coach" : "Add Coach"}</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="coach-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -817,7 +817,7 @@ function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
         data-testid="log-interaction-form">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-teal-400" />Log Interaction</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-teal-600" />Log Interaction</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="log-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -950,7 +950,7 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
           {canUseAIDrafts && (
             <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
               <AlertCircle className="w-3 h-3 flex-shrink-0" />
-              AI uses your <a href="/profile" className="text-teal-400 hover:underline">athlete profile</a> to generate emails.
+              AI uses your <a href="/profile" className="text-teal-600 hover:underline">athlete profile</a> to generate emails.
             </p>
           )}
           {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-slate-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
@@ -1055,7 +1055,7 @@ function FollowUpScheduler({ program, onSaved, onCancel }) {
         data-testid="followup-scheduler">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Clock className="w-4 h-4 text-teal-400" />Schedule Follow-up</h2>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Clock className="w-4 h-4 text-teal-600" />Schedule Follow-up</h2>
             <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="followup-close-btn"><X className="w-4 h-4 text-white/40" /></button>
           </div>
         </div>
@@ -1533,7 +1533,7 @@ export default function RecruitingJourney() {
                         <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
                       </div>
                     </div>
-                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-400 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
+                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-600 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
                     {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
                   </div>
                 ))}

@@ -21,7 +21,7 @@ function HealthBar({ health }) {
   const items = [
     { label: "Total", value: health.total, color: "text-white" },
     { label: "Complete", value: health.complete_profiles, color: "text-teal-600" },
-    { label: "No Coach", value: health.missing_coach, color: "text-teal-400" },
+    { label: "No Coach", value: health.missing_coach, color: "text-teal-600" },
     { label: "No Email", value: health.missing_email, color: "text-amber-400" },
     { label: "No Coordinator", value: health.missing_coordinator, color: "text-orange-400" },
   ];
@@ -34,7 +34,7 @@ function HealthBar({ health }) {
         </div>
       ))}
       <div className="rounded-lg border px-3 py-2 min-w-[100px]" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <p className="text-lg font-bold text-teal-400">{health.completeness_pct}%</p>
+        <p className="text-lg font-bold text-teal-600">{health.completeness_pct}%</p>
         <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Data Health</p>
       </div>
     </div>
@@ -237,8 +237,8 @@ function ImportModal({ open, onClose, onImported }) {
         {csvText && <p className="text-[10px] mb-3 text-teal-600">{csvText.split("\n").length - 1} rows detected</p>}
         {result && (
           <div className="mb-3 p-3 rounded-lg text-xs" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>
-            <p style={{ color: "var(--t-text)" }}>Created: <span className="text-teal-600 font-bold">{result.created}</span> | Updated: <span className="text-amber-400 font-bold">{result.updated}</span> | Errors: <span className="text-teal-400 font-bold">{result.errors?.length || 0}</span></p>
-            {result.errors?.length > 0 && <ul className="mt-1 text-teal-400">{result.errors.slice(0, 5).map((e, i) => <li key={i}>{e}</li>)}</ul>}
+            <p style={{ color: "var(--t-text)" }}>Created: <span className="text-teal-600 font-bold">{result.created}</span> | Updated: <span className="text-amber-400 font-bold">{result.updated}</span> | Errors: <span className="text-teal-600 font-bold">{result.errors?.length || 0}</span></p>
+            {result.errors?.length > 0 && <ul className="mt-1 text-teal-600">{result.errors.slice(0, 5).map((e, i) => <li key={i}>{e}</li>)}</ul>}
           </div>
         )}
         <div className="flex justify-end gap-2">
@@ -400,7 +400,7 @@ export default function AdminUniversities() {
                     <tr key={u.university_name} className="border-b transition-colors hover:bg-white/[0.02]" style={{ borderColor: "rgba(255,255,255,0.04)" }} data-testid={`uni-row-${u.university_name}`}>
                       <td className="px-4 py-2.5">
                         <div className="flex items-center gap-2">
-                          <GraduationCap className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                          <GraduationCap className="w-4 h-4 text-teal-600 flex-shrink-0" />
                           <span className="font-medium text-[13px] truncate max-w-[200px]" style={{ color: "var(--t-text)" }}>{u.university_name}</span>
                         </div>
                       </td>

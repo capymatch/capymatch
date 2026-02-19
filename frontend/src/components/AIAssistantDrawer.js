@@ -179,7 +179,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center pt-8 px-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500/15 to-violet-600/15 flex items-center justify-center mb-4">
-                    <Sparkles className="w-7 h-7 text-teal-400" />
+                    <Sparkles className="w-7 h-7 text-teal-600" />
                   </div>
                   <h4 className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>Ask me anything</h4>
                   <p className="text-xs text-center mb-6" style={{ color: "var(--t-text-muted)" }}>
@@ -222,7 +222,7 @@ export default function AIAssistantDrawer({ isOpen, onClose }) {
                 <div className="flex justify-start">
                   <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ backgroundColor: "var(--t-surface)" }}>
                     <div className="flex items-center gap-2">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-400" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-600" />
                       <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>Thinking...</span>
                     </div>
                   </div>

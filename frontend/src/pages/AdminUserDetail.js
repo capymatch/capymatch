@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  pro: "bg-slate-500/15 text-teal-400 border-slate-500/20",
+  pro: "bg-slate-500/15 text-teal-600 border-slate-500/20",
   premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
@@ -91,13 +91,13 @@ export default function AdminUserDetail() {
   return (
     <div className="space-y-5" data-testid="admin-user-detail">
       {/* Back */}
-      <button onClick={() => navigate("/admin/users")} className="flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-teal-400" style={{ color: "var(--t-text-muted)" }} data-testid="admin-back-to-users">
+      <button onClick={() => navigate("/admin/users")} className="flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-teal-600" style={{ color: "var(--t-text-muted)" }} data-testid="admin-back-to-users">
         <ArrowLeft className="w-3.5 h-3.5" /> Back to Users
       </button>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="w-14 h-14 rounded-xl bg-teal-600/15 flex items-center justify-center text-teal-400 text-xl font-bold flex-shrink-0">
+        <div className="w-14 h-14 rounded-xl bg-teal-600/15 flex items-center justify-center text-teal-600 text-xl font-bold flex-shrink-0">
           {(tenant?.athlete_name || user?.name || "?").charAt(0).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
@@ -120,7 +120,7 @@ export default function AdminUserDetail() {
         <StatMini label="Interactions" value={stats.interaction_count} color="text-amber-400" />
         <StatMini label="Events" value={stats.event_count} color="text-violet-400" />
         <StatMini label="Views (7d)" value={stats.profile_views_week} color="text-teal-600" />
-        <StatMini label="Views Total" value={stats.profile_views_total} color="text-teal-400" />
+        <StatMini label="Views Total" value={stats.profile_views_total} color="text-teal-600" />
         <StatMini label="Gmail" value={stats.gmail_connected ? "Yes" : "No"} color={stats.gmail_connected ? "text-teal-600" : "text-gray-500"} />
       </div>
 
@@ -128,7 +128,7 @@ export default function AdminUserDetail() {
         {/* Manage Subscription */}
         <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-            <Shield className="w-4 h-4 text-teal-400" /> Manage Account
+            <Shield className="w-4 h-4 text-teal-600" /> Manage Account
           </h3>
           <div className="space-y-4">
             <div>
@@ -192,7 +192,7 @@ export default function AdminUserDetail() {
             {recent_interactions.map((ix, i) => (
               <div key={ix.interaction_id || i} className="flex items-center gap-3 py-2.5 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
                 <div className="w-7 h-7 rounded-lg bg-teal-600/10 flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-3.5 h-3.5 text-teal-400" />
+                  <MessageSquare className="w-3.5 h-3.5 text-teal-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium truncate" style={{ color: "var(--t-text)" }}>

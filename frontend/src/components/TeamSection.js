@@ -37,7 +37,7 @@ function HowItWorks({ isOwner }) {
               </div>
               <div className="flex gap-3">
                 <div className="w-7 h-7 rounded-lg bg-slate-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <UserPlus className="w-3.5 h-3.5 text-teal-400" />
+                  <UserPlus className="w-3.5 h-3.5 text-teal-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>How to invite</p>
@@ -62,7 +62,7 @@ function HowItWorks({ isOwner }) {
             <>
               <div className="flex gap-3">
                 <div className="w-7 h-7 rounded-lg bg-slate-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Users className="w-3.5 h-3.5 text-teal-400" />
+                  <Users className="w-3.5 h-3.5 text-teal-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>You are a Member</p>
@@ -95,14 +95,14 @@ function BasicPlanUpgradeCard() {
     <div className="rounded-xl border border-dashed p-5" style={{ borderColor: "rgba(244,63,94,0.25)", backgroundColor: "rgba(244,63,94,0.03)" }} data-testid="team-upgrade-card">
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center flex-shrink-0">
-          <Users className="w-5 h-5 text-teal-400" />
+          <Users className="w-5 h-5 text-teal-600" />
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>
             Want to collaborate with a parent, advisor, or teammate?
           </p>
           <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--t-text-muted)" }}>
-            Upgrade to <span className="text-teal-400 font-medium">Pro</span> to invite 1 collaborator who gets full access to your recruiting dashboard — they can add schools, manage your pipeline, and help with outreach. <span className="text-amber-400 font-medium">Premium</span> gives you unlimited team members.
+            Upgrade to <span className="text-teal-600 font-medium">Pro</span> to invite 1 collaborator who gets full access to your recruiting dashboard — they can add schools, manage your pipeline, and help with outreach. <span className="text-amber-400 font-medium">Premium</span> gives you unlimited team members.
           </p>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -273,7 +273,7 @@ export default function TeamSection() {
               <p className="text-xs truncate" style={{ color: "var(--t-text-muted)" }}>{m.email}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-500/10 text-teal-400">
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-500/10 text-teal-600">
                 Member
               </span>
               {isOwner && (
@@ -359,7 +359,7 @@ export default function TeamSection() {
               <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>
                 Your {tierLabel} plan is at its team limit. Upgrade for more members.
               </p>
-              <span className="flex items-center gap-1 text-xs font-semibold text-teal-400">
+              <span className="flex items-center gap-1 text-xs font-semibold text-teal-600">
                 Upgrade <ArrowUpRight className="w-3 h-3" />
               </span>
             </div>

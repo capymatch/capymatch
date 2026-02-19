@@ -75,7 +75,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                         <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Head Coach</div>
                       </div>
                       {uni.coach_email && (
-                        <a href={`mailto:${uni.coach_email}`} className="text-slate-500 hover:text-teal-400" data-testid="expanded-coach-email">
+                        <a href={`mailto:${uni.coach_email}`} className="text-slate-500 hover:text-teal-600" data-testid="expanded-coach-email">
                           <Mail className="w-4 h-4" />
                         </a>
                       )}
@@ -91,7 +91,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                         <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Recruiting Coordinator</div>
                       </div>
                       {uni.coordinator_email && (
-                        <a href={`mailto:${uni.coordinator_email}`} className="text-slate-500 hover:text-teal-400">
+                        <a href={`mailto:${uni.coordinator_email}`} className="text-slate-500 hover:text-teal-600">
                           <Mail className="w-4 h-4" />
                         </a>
                       )}

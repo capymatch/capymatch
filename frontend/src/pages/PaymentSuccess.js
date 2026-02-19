@@ -104,7 +104,7 @@ export default function PaymentSuccess() {
         {status === "failed" && (
           <div className="space-y-4" data-testid="payment-failed">
             <div className="w-16 h-16 mx-auto rounded-full bg-slate-500/15 flex items-center justify-center">
-              <XCircle className="w-8 h-8 text-teal-400" />
+              <XCircle className="w-8 h-8 text-teal-600" />
             </div>
             <h2 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>
               Payment Not Completed

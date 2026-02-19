@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: { bg: "bg-zinc-500/15 text-zinc-400 border-zinc-500/20", icon: Zap },
-  pro: { bg: "bg-slate-500/15 text-teal-400 border-slate-500/20", icon: Sparkles },
+  pro: { bg: "bg-slate-500/15 text-teal-600 border-slate-500/20", icon: Sparkles },
   premium: { bg: "bg-amber-500/15 text-amber-400 border-amber-500/20", icon: Crown },
 };
 
@@ -162,7 +162,7 @@ export default function AdminSubscriptions() {
           label="Paid Users"
           value={stats.plan_counts.pro + stats.plan_counts.premium}
           sub={`${stats.total_users > 0 ? Math.round(((stats.plan_counts.pro + stats.plan_counts.premium) / stats.total_users) * 100) : 0}% conversion`}
-          color="bg-teal-600/15 text-teal-400"
+          color="bg-teal-600/15 text-teal-600"
         />
         <StatCard
           icon={TrendingUp}
@@ -267,11 +267,11 @@ export default function AdminSubscriptions() {
                               className="flex items-center gap-2.5 cursor-pointer"
                               onClick={() => navigate(`/admin/users/${u.user_id}`)}
                             >
-                              <div className="w-8 h-8 rounded-full bg-teal-600/15 flex items-center justify-center text-teal-400 text-xs font-bold flex-shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-teal-600/15 flex items-center justify-center text-teal-600 text-xs font-bold flex-shrink-0">
                                 {(u.athlete_name || u.name || "?").charAt(0).toUpperCase()}
                               </div>
                               <div className="min-w-0">
-                                <p className="text-xs font-medium truncate hover:text-teal-400 transition-colors" style={{ color: "var(--t-text)" }}>{u.athlete_name || u.name}</p>
+                                <p className="text-xs font-medium truncate hover:text-teal-600 transition-colors" style={{ color: "var(--t-text)" }}>{u.athlete_name || u.name}</p>
                                 <p className="text-[10px] truncate" style={{ color: "var(--t-text-muted)" }}>{u.email}</p>
                               </div>
                             </div>
@@ -332,7 +332,7 @@ export default function AdminSubscriptions() {
         {/* Audit Log - 1 col */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-            <Clock className="w-4 h-4 text-teal-400" /> Recent Changes
+            <Clock className="w-4 h-4 text-teal-600" /> Recent Changes
           </h3>
           <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="sub-audit-log">
             {logs.length === 0 ? (

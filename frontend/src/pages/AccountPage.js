@@ -54,7 +54,7 @@ export default function AccountPage() {
                 {subscription.tier === "premium" ? (
                   <Crown className="w-5 h-5 text-amber-400" />
                 ) : subscription.tier === "pro" ? (
-                  <Sparkles className="w-5 h-5 text-teal-400" />
+                  <Sparkles className="w-5 h-5 text-teal-600" />
                 ) : (
                   <Zap className="w-5 h-5 text-zinc-400" />
                 )}

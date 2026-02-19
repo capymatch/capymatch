@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const PLAN_BADGE = {
   basic: "bg-gray-500/15 text-gray-400 border-gray-500/20",
-  pro: "bg-slate-500/15 text-teal-400 border-slate-500/20",
+  pro: "bg-slate-500/15 text-teal-600 border-slate-500/20",
   premium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
 };
 
@@ -186,7 +186,7 @@ export default function AdminUsers() {
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-teal-600/15 flex items-center justify-center text-teal-400 text-xs font-bold flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-teal-600/15 flex items-center justify-center text-teal-600 text-xs font-bold flex-shrink-0">
                           {(u.name || u.athlete_name || "?").charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium text-[13px] truncate" style={{ color: "var(--t-text)" }}>

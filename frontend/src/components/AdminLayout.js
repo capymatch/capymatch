@@ -35,7 +35,7 @@ export default function AdminLayout() {
         <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-teal-600/20 flex items-center justify-center">
-              <Shield className="w-4.5 h-4.5 text-teal-400" strokeWidth={2} />
+              <Shield className="w-4.5 h-4.5 text-teal-600" strokeWidth={2} />
             </div>
             <div>
               <span className="font-semibold text-sm text-white block leading-tight">Admin Panel</span>
@@ -70,7 +70,7 @@ export default function AdminLayout() {
                 className={({ isActive }) =>
                   `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all ${
                     isActive
-                      ? "bg-teal-600/15 text-teal-400"
+                      ? "bg-teal-600/15 text-teal-600"
                       : "text-white/60 hover:bg-white/5 hover:text-white/80"
                   }`
                 }
