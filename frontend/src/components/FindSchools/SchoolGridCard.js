@@ -177,8 +177,8 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
               </Button>
               {uni.domain && (
                 <Button variant="outline" className="h-10 gap-2 text-sm" style={{ borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}
-                  onClick={() => window.open(`https://${uni.domain}`, "_blank")}>
-                  <ExternalLink className="w-4 h-4" /> Website
+                  onClick={() => navigate(`/school/${uni.domain}`)} data-testid={`view-details-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
+                  <ArrowRight className="w-4 h-4" /> Details
                 </Button>
               )}
               <Button variant="outline" className="h-10 w-10 p-0" style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}
