@@ -107,12 +107,12 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
   if (!school) return null;
   const isOnBoard = boardSchools.has(school.university_name);
   return (
-    <div className="flex rounded-2xl overflow-hidden mb-7 border border-[#2ec4b6]/12" data-testid="top-match-banner">
-      <div className="flex-1 p-7" style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 100%)" }}>
+    <div className="flex flex-col sm:flex-row rounded-2xl overflow-hidden mb-7 border border-[#2ec4b6]/12" data-testid="top-match-banner">
+      <div className="flex-1 p-5 sm:p-7" style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 100%)" }}>
         <div className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#2ec4b6] mb-2.5 flex items-center gap-1.5">
           <Sparkles className="w-3 h-3" /> Your #1 Match
         </div>
-        <div className="text-[22px] font-extrabold text-white mb-2 tracking-tight leading-tight cursor-pointer hover:text-[#2ec4b6] transition-colors"
+        <div className="text-lg sm:text-[22px] font-extrabold text-white mb-2 tracking-tight leading-tight cursor-pointer hover:text-[#2ec4b6] transition-colors"
           onClick={() => school.domain && navigate(`/school/${school.domain}`)} data-testid="top-match-name">
           {school.university_name}
         </div>
@@ -121,7 +121,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           <span className="text-[12px] text-white/40">{school.region} {school.conference && `· ${school.conference}`}</span>
         </div>
         {school.match_reasons?.length > 0 && (
-          <div className="rounded-xl p-3.5" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
+          <div className="rounded-xl p-3 sm:p-3.5" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
             <div className="text-[11px] font-bold text-white/60 mb-1">Why this school?</div>
             <div className="text-[12px] text-white/40 leading-relaxed">
               Strong match across {school.match_reasons.join(", ").toLowerCase()}. This program aligns well with your recruiting profile and preferences.
@@ -129,11 +129,13 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           </div>
         )}
       </div>
-      <div className="w-[240px] flex flex-col items-center justify-center p-7 gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
-        <div className="text-[48px] font-extrabold text-[#2ec4b6] leading-none">{school.match_score}%</div>
-        <div className="text-[11px] text-white/35 uppercase tracking-[1px] font-semibold -mt-2">Match Score</div>
+      <div className="sm:w-[240px] flex flex-row sm:flex-col items-center justify-center p-4 sm:p-7 gap-3 sm:gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
+        <div className="flex sm:flex-col items-center gap-2 sm:gap-0">
+          <div className="text-[36px] sm:text-[48px] font-extrabold text-[#2ec4b6] leading-none">{school.match_score}%</div>
+          <div className="text-[10px] sm:text-[11px] text-white/35 uppercase tracking-[1px] font-semibold sm:-mt-2">Match Score</div>
+        </div>
         {school.match_reasons?.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-center">
+          <div className="hidden sm:flex flex-wrap gap-1 justify-center">
             {school.match_reasons.map(r => (
               <span key={r} className="text-[10px] px-2 py-0.5 rounded-md text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}>{r}</span>
             ))}
@@ -141,7 +143,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
         )}
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
           data-testid="top-match-add-btn"
-          className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all"
+          className="flex-1 sm:flex-none sm:w-full py-2.5 px-4 sm:px-0 rounded-xl text-[13px] font-bold text-white transition-all"
           style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
           {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
