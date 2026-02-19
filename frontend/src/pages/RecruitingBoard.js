@@ -189,7 +189,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
         )}
       </div>
 
-      <div className="flex flex-col gap-1.5 flex-shrink-0" style={{ minWidth: 130 }}>
+      <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
         {quickAction && (
           <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
             style={{ background: "#e8456b", color: "white", border: "none" }}
