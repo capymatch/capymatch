@@ -253,11 +253,13 @@ export default function NcaaTimeline() {
   return (
     <div className="space-y-5" data-testid="ncaa-timeline">
       {/* Current Period Banner */}
-      <div className={`rounded-xl border-l-4 border p-4 sm:p-5 ${
-        currentPeriod.type === "contact" ? "border-l-teal-700" :
-        currentPeriod.type === "dead" ? "border-l-red-600" :
-        currentPeriod.type === "evaluation" ? "border-l-indigo-600" : "border-l-amber-600"
-      }`} style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="current-period-banner">
+      <div className="rounded-xl border-l-4 border p-4 sm:p-5" style={{
+        backgroundColor: "var(--t-surface)",
+        borderColor: "var(--t-border)",
+        borderLeftColor: currentPeriod.type === "contact" ? "#4a9e96" :
+          currentPeriod.type === "dead" ? "#c45a5a" :
+          currentPeriod.type === "evaluation" ? "#5a6aad" : "#c4a040"
+      }} data-testid="current-period-banner">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className={`w-3 h-3 rounded-full animate-pulse ${
