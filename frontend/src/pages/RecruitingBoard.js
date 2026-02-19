@@ -172,7 +172,7 @@ function PipelineTour({ step, steps, onNext, onBack, onClose }) {
         className="fixed z-[10001] rounded-xl transition-all duration-300"
         style={{
           top: pos.top - 6, left: pos.left - 6,
-          width: pos.width + 12, height: pos.height + 12,
+          width: pos.width + 12, height: Math.min(pos.height + 12, window.innerHeight - pos.top + 6),
           boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)",
           pointerEvents: "none",
         }}
