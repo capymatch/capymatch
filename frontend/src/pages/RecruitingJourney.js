@@ -815,7 +815,8 @@ function EmailComposer({ coaches, programId, universityName, onSent, onCancel })
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef(null);
-  const inputCls = "w-full px-2.5 py-1.5 rounded-lg border text-xs outline-none focus:ring-1 focus:ring-pink-600";
+  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-pink-600 transition-colors";
+  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
   const draftAI = async (type) => {
     if (!canUseAIDrafts) return;
     setDrafting(true);
