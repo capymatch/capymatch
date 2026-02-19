@@ -262,17 +262,17 @@ export default function NcaaTimeline() {
       }} data-testid="current-period-banner">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className={`w-3 h-3 rounded-full animate-pulse ${
-              currentPeriod.type === "contact" ? "bg-teal-700" :
-              currentPeriod.type === "dead" ? "bg-red-600" :
-              currentPeriod.type === "evaluation" ? "bg-indigo-600" : "bg-amber-600"
-            }`} />
+            <div className="w-3 h-3 rounded-full animate-pulse" style={{
+              backgroundColor: currentPeriod.type === "contact" ? "#4a9e96" :
+                currentPeriod.type === "dead" ? "#c45a5a" :
+                currentPeriod.type === "evaluation" ? "#5a6aad" : "#c4a040"
+            }} />
             <div>
-              <p className={`text-[10px] uppercase tracking-wider font-bold ${
-                currentPeriod.type === "contact" ? "text-teal-800" :
-                currentPeriod.type === "dead" ? "text-red-700" :
-                currentPeriod.type === "evaluation" ? "text-indigo-700" : "text-amber-700"
-              }`}>Current Period - {division}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold" style={{
+                color: currentPeriod.type === "contact" ? "#1a5c56" :
+                  currentPeriod.type === "dead" ? "#8b2020" :
+                  currentPeriod.type === "evaluation" ? "#2d3570" : "#7a5a1a"
+              }}>Current Period - {division}</p>
               <p className="text-base sm:text-lg font-bold mt-0.5" style={{ color: "var(--t-text)" }}>{periodInfo.label} Period</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{periodInfo.desc}</p>
             </div>
