@@ -153,6 +153,37 @@ export default function AdminIntegrations() {
     }
   };
 
+  const discoverUrls = async () => {
+    setDiscoveringUrls(true);
+    try {
+      const res = await api.post("/admin/coach-scraper/discover-urls");
+      if (res.data.status === "already_running") {
+        toast.info("Discovery already in progress...");
+      } else {
+        toast.success(`Discovery started — ${res.data.missing} schools to check (${res.data.already_have} already have URLs)`);
+      }
+      const poll = setInterval(async () => {
+        try {
+          const status = await api.get("/admin/coach-scraper/discover-urls/status");
+          const d = status.data;
+          setDiscoverProgress(`${d.found + d.failed} / ${d.total}`);
+          if (d.done || !d.running) {
+            clearInterval(poll);
+            setDiscoveringUrls(false);
+            setDiscoverProgress("");
+            if (d.found > 0) {
+              toast.success(`Discovery complete — ${d.found} URLs found, ${d.failed} not found`);
+            }
+            fetchIntegrations();
+          }
+        } catch { clearInterval(poll); setDiscoveringUrls(false); setDiscoverProgress(""); }
+      }, 5000);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Discovery failed");
+      setDiscoveringUrls(false);
+    }
+  };
+
   const saveResendKey = async () => {
     if (!resendKey.trim()) return;
     setSavingResend(true);
