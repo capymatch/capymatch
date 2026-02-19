@@ -4,7 +4,7 @@ import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import {
   ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
-  MessageSquare, Video, Users, Sparkles, Loader2, ChevronDown, ChevronUp,
+  MessageSquare, Video, Users, User, Sparkles, Loader2, ChevronDown, ChevronUp,
   Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
   Heart, Target, AlertCircle, CheckCircle2, FileText, Zap, Lock, Crown,
   GitCompare, ChevronRight, Paperclip, Dumbbell, Trophy, MessageCircle, Info
