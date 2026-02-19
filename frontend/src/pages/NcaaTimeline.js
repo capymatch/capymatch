@@ -165,10 +165,10 @@ function TimelineBar({ periods, division }) {
   }, [periods]);
 
   const barColors = {
-    contact: "bg-emerald-500/25 border border-emerald-500/30",
-    dead: "bg-red-500/20 border border-red-500/25",
-    evaluation: "bg-blue-500/20 border border-blue-500/25",
-    quiet: "bg-amber-500/15 border border-amber-500/25",
+    contact: "bg-teal-600/15 border border-teal-600/20",
+    dead: "bg-red-500/12 border border-red-500/20",
+    evaluation: "bg-blue-500/12 border border-blue-500/20",
+    quiet: "bg-amber-500/10 border border-amber-500/20",
     gap: "bg-transparent",
   };
 
