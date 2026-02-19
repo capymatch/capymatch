@@ -671,11 +671,11 @@ export default function RecruitingBoard() {
 
       {/* Top: Ring + Hero */}
       {total > 0 && (
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr]">
-          <div className="rounded-xl border p-3 md:p-4 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-stretch">
+          <div className="rounded-xl border p-3 md:p-4 flex items-center justify-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
-          <div>
+          <div className="flex flex-col min-h-0">
             {markRepliedProgram ? (
               <InlineMarkReplied program={markRepliedProgram} onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }} onCancel={() => setMarkRepliedProgram(null)} />
             ) : focusProgram ? (
