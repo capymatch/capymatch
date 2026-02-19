@@ -587,7 +587,7 @@ async def _run_discover():
                     logger.warning(f"URL discovery failed for {name}: {e}")
                     discover_status["failed"] += 1
 
-                await asyncio.sleep(0.3)
+                await asyncio.sleep(1)  # Rate limit for DuckDuckGo search
 
     except Exception as e:
         logger.error(f"URL discovery task error: {e}")
