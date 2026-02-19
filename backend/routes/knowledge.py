@@ -132,9 +132,14 @@ async def _search_questionnaire_url(university_name, domain, website=None):
                     if not any(td in lower for td in trusted_domains):
                         continue
                     if any(kw in lower for kw in ["questionnaire", "prospect", "recruit", "form", "interest"]):
-                        return href
+                        # Prioritize volleyball-specific URLs
+                        if any(vk in lower for vk in ["volleyball", "women", "wvb"]):
+                            return href
+                        candidates.append(href)
             except Exception:
                 continue
+        # Return best non-volleyball-specific candidate if no volleyball one found
+        return candidates[0] if candidates else None
     except Exception as e:
         logger.warning(f"Questionnaire search failed for {university_name}: {e}")
     return None
