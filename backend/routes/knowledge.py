@@ -6,6 +6,7 @@ from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_school_limit
 import uuid
 import os
+import re
 import httpx
 import logging
 
