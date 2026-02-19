@@ -6,7 +6,7 @@ import UniversityLogo from "../components/UniversityLogo";
 import { toast } from "sonner";
 import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
-  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen
+  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone
 } from "lucide-react";
 
 /* ── Match Ring (dark hero) ── */
