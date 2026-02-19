@@ -468,3 +468,114 @@ async def scrape_one(request: Request):
     )
 
     return {"found": True, "url": result["url"], "coaches": result["coaches"]}
+
+
+# ═══ Volleyball URL Discovery ═══
+
+VOLLEYBALL_PATHS = [
+    "/sports/womens-volleyball",
+    "/sports/volleyball",
+    "/sports/wvball",
+    "/sports/w-volley",
+    "/sports/wvb",
+]
+
+discover_status = {"running": False, "found": 0, "failed": 0, "total": 0, "done": True}
+
+
+async def _discover_volleyball_url(http_client, domain):
+    """Find the volleyball program URL for a school by discovering its athletics domain."""
+    # Step 1: Try direct patterns on known athletics subdomains
+    bases = [f"https://athletics.{domain}", f"https://{domain}"]
+    for base in bases:
+        for path in VOLLEYBALL_PATHS:
+            url = f"{base}{path}"
+            try:
+                resp = await http_client.get(url, headers=HEADERS, follow_redirects=True, timeout=8)
+                if resp.status_code == 200 and "volleyball" in resp.text.lower():
+                    return str(resp.url).rstrip("/")
+            except Exception:
+                continue
+
+    # Step 2: Discover athletics domain from main university page
+    ath_domains = await discover_athletics_domain(http_client, domain)
+    for ath_base in ath_domains:
+        for path in VOLLEYBALL_PATHS:
+            url = f"{ath_base}{path}"
+            try:
+                resp = await http_client.get(url, headers=HEADERS, follow_redirects=True, timeout=8)
+                if resp.status_code == 200 and "volleyball" in resp.text.lower():
+                    return str(resp.url).rstrip("/")
+            except Exception:
+                continue
+
+    return None
+
+
+async def _run_discover():
+    """Background task to discover volleyball URLs for all schools missing them."""
+    global discover_status
+    try:
+        universities = await db.university_knowledge_base.find(
+            {"$or": [{"website": ""}, {"website": {"$exists": False}}]},
+            {"_id": 0, "university_name": 1, "domain": 1}
+        ).to_list(2000)
+
+        discover_status["total"] = len(universities)
+        if not universities:
+            discover_status.update({"running": False, "done": True})
+            return
+
+        async with httpx.AsyncClient() as http_client:
+            for uni in universities:
+                domain = uni.get("domain", "")
+                name = uni.get("university_name", "")
+                if not domain:
+                    discover_status["failed"] += 1
+                    continue
+
+                try:
+                    url = await _discover_volleyball_url(http_client, domain)
+                    if url:
+                        await db.university_knowledge_base.update_one(
+                            {"university_name": name},
+                            {"$set": {"website": url}}
+                        )
+                        discover_status["found"] += 1
+                    else:
+                        discover_status["failed"] += 1
+                except Exception as e:
+                    logger.warning(f"URL discovery failed for {name}: {e}")
+                    discover_status["failed"] += 1
+
+                await asyncio.sleep(0.3)
+
+    except Exception as e:
+        logger.error(f"URL discovery task error: {e}")
+    finally:
+        discover_status["running"] = False
+        discover_status["done"] = True
+
+
+@router.post("/discover-urls")
+async def start_discover():
+    """Start background discovery of volleyball program URLs."""
+    global discover_status
+    if discover_status["running"]:
+        return {"status": "already_running", **discover_status}
+
+    already_have = await db.university_knowledge_base.count_documents({"website": {"$ne": ""}})
+    missing = await db.university_knowledge_base.count_documents(
+        {"$or": [{"website": ""}, {"website": {"$exists": False}}]}
+    )
+
+    discover_status = {"running": True, "found": 0, "failed": 0, "total": missing, "done": False}
+    asyncio.create_task(_run_discover())
+
+    return {"status": "started", "already_have": already_have, "missing": missing}
+
+
+@router.get("/discover-urls/status")
+async def get_discover_status():
+    """Get URL discovery progress."""
+    return discover_status
