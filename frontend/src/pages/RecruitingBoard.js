@@ -671,7 +671,7 @@ export default function RecruitingBoard() {
 
       {/* Top: Ring + Hero */}
       {total > 0 && (
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-stretch">
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-start">
           <div className="rounded-xl border p-3 md:px-24 md:py-6 flex items-center justify-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
             <ProgressRing counts={counts} total={total} />
           </div>
