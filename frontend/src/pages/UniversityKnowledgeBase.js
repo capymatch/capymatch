@@ -400,8 +400,8 @@ export default function UniversityKnowledgeBase() {
       {/* School Grid / List */}
       {filtered.length === 0 ? (
         <div className="text-center py-16" data-testid="no-results">
-          <Search className="w-10 h-10 mx-auto mb-3 text-white/10" />
-          <p className="text-sm font-medium text-white/30">No universities found matching your filters</p>
+          <Search className="w-10 h-10 mx-auto mb-3 text-slate-200" />
+          <p className="text-sm font-medium text-slate-400">No universities found matching your filters</p>
           <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto text-[#e8628a] transition-colors hover:opacity-80">
             <RotateCcw className="w-3.5 h-3.5" /> Reset filters
           </button>
