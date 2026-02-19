@@ -126,14 +126,16 @@ function PipelineTour({ step, steps, onNext, onBack, onClose }) {
     if (step < 0 || step >= steps.length) { setPos(null); return; }
     const el = document.querySelector(steps[step].target);
     if (!el) { setPos(null); return; }
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
     const update = () => {
       const rect = el.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) { setPos(null); return; }
       setPos({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
     };
-    setTimeout(update, 300);
+    const t1 = setTimeout(update, 500);
+    const t2 = setTimeout(update, 800);
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    return () => { clearTimeout(t1); clearTimeout(t2); window.removeEventListener("resize", update); };
   }, [step, steps]);
 
   if (step < 0 || step >= steps.length || !pos) return null;
