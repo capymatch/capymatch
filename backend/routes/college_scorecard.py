@@ -52,6 +52,47 @@ def parse_scorecard_result(r):
     }
 
 
+def _name_similarity(query, candidate):
+    """Score how well a Scorecard name matches our university name. Higher = better."""
+    q = query.lower().strip()
+    c = candidate.lower().strip()
+    # Exact match
+    if q == c:
+        return 100
+    # One contains the other (e.g. "Indiana University" in "Indiana University-Bloomington")
+    if q in c:
+        return 90 - (len(c) - len(q))  # Prefer shorter overshoot
+    if c in q:
+        return 85 - (len(q) - len(c))
+    # Word overlap
+    q_words = set(q.replace("-", " ").replace("–", " ").split())
+    c_words = set(c.replace("-", " ").replace("–", " ").split())
+    common = q_words & c_words
+    filler = {"university", "of", "the", "at", "and", "&", "college", "state"}
+    meaningful_common = common - filler
+    meaningful_q = q_words - filler
+    if not meaningful_q:
+        return len(common) * 10
+    return int((len(meaningful_common) / len(meaningful_q)) * 80)
+
+
+def _best_match(name, results):
+    """Find the best matching school from Scorecard results."""
+    if not results:
+        return None
+    scored = []
+    for r in results:
+        sc_name = r.get("school.name", "")
+        score = _name_similarity(name, sc_name)
+        scored.append((score, r))
+    scored.sort(key=lambda x: -x[0])
+    best_score, best = scored[0]
+    # Require at least a reasonable match (>40) to avoid wrong school
+    if best_score > 40:
+        return best
+    return None
+
+
 @router.get("/search")
 async def search_school(name: str):
     """Search College Scorecard for a school by name."""
