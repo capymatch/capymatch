@@ -172,7 +172,7 @@ async def get_school_by_domain(domain: str, request: Request):
 
     # Auto-fetch questionnaire URL if missing
     if not uni.get("questionnaire_url"):
-        q_url = await _search_questionnaire_url(uni.get("university_name", ""), domain)
+        q_url = await _search_questionnaire_url(uni.get("university_name", ""), domain, uni.get("website"))
         if q_url:
             uni["questionnaire_url"] = q_url
             await db.university_knowledge_base.update_one(
