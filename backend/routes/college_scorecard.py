@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api/admin/integrations/scorecard")
 SCORECARD_BASE = "https://api.data.gov/ed/collegescorecard/v1/schools"
 SCORECARD_FIELDS = ",".join([
     "id", "school.name", "school.city", "school.state", "school.school_url",
-    "school.student_size", "school.Carnegie_basic",
+    "school.student_size", "school.Carnegie_basic", "latest.student.size",
     "latest.admissions.admission_rate.overall",
     "latest.admissions.sat_scores.average.overall",
     "latest.admissions.act_scores.midpoint.cumulative",
