@@ -277,12 +277,17 @@ export default function NcaaTimeline() {
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{periodInfo.desc}</p>
             </div>
           </div>
-          <div className={`px-3 py-1.5 rounded-lg text-xs font-semibold border self-start sm:self-auto flex-shrink-0 ${
-            currentPeriod.type === "contact" ? "bg-teal-100 text-teal-800 border-teal-200" :
-            currentPeriod.type === "dead" ? "bg-red-100 text-red-800 border-red-200" :
-            currentPeriod.type === "evaluation" ? "bg-indigo-100 text-indigo-800 border-indigo-200" :
-            "bg-amber-100 text-amber-800 border-amber-200"
-          }`} data-testid="days-remaining-badge">
+          <div className="px-3 py-1.5 rounded-lg text-xs font-semibold border self-start sm:self-auto flex-shrink-0" style={{
+            backgroundColor: currentPeriod.type === "contact" ? "#c8e6e3" :
+              currentPeriod.type === "dead" ? "#e8c8c8" :
+              currentPeriod.type === "evaluation" ? "#c8cee8" : "#e8dcc8",
+            color: currentPeriod.type === "contact" ? "#1a5c56" :
+              currentPeriod.type === "dead" ? "#8b2020" :
+              currentPeriod.type === "evaluation" ? "#2d3570" : "#7a5a1a",
+            borderColor: currentPeriod.type === "contact" ? "#a8d5d1" :
+              currentPeriod.type === "dead" ? "#e0b8b8" :
+              currentPeriod.type === "evaluation" ? "#b8c0e0" : "#e0d4b0"
+          }} data-testid="days-remaining-badge">
             {daysRemaining} days remaining
           </div>
         </div>
