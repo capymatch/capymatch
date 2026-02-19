@@ -129,21 +129,21 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           </div>
         )}
       </div>
-      <div className="sm:w-[240px] flex flex-col items-center justify-center p-4 sm:p-7 gap-3 sm:gap-4 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
-        <div className="flex sm:flex-col items-center gap-2 sm:gap-0">
+      <div className="sm:w-[280px] flex flex-col items-center justify-center p-5 sm:p-7 gap-4 sm:gap-5 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
+        <div className="flex sm:flex-col items-center gap-2 sm:gap-1">
           <div className="text-[36px] sm:text-[48px] font-extrabold text-[#2ec4b6] leading-none">{school.match_score}%</div>
-          <div className="text-[10px] sm:text-[11px] text-white/35 uppercase tracking-[1px] font-semibold sm:-mt-2">Match Score</div>
+          <div className="text-[10px] sm:text-[11px] text-white/35 uppercase tracking-[1px] font-semibold">Match Score</div>
         </div>
         {school.match_reasons?.length > 0 && (
-          <div className="hidden sm:flex flex-wrap gap-1 justify-center">
+          <div className="hidden sm:grid grid-cols-2 gap-1.5 w-full">
             {school.match_reasons.map(r => (
-              <span key={r} className="text-[10px] px-2 py-0.5 rounded-md text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}>{r}</span>
+              <span key={r} className="text-[10px] px-2 py-1 rounded-md text-white/40 text-center" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}>{r}</span>
             ))}
           </div>
         )}
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
           data-testid="top-match-add-btn"
-          className="w-full sm:flex-none sm:w-full py-2.5 px-4 sm:px-0 rounded-xl text-[13px] font-bold text-white transition-all"
+          className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all"
           style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
           {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
