@@ -26,6 +26,7 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import SchoolInfoPage from "./pages/SchoolInfoPage";
 import LoginPage from "./pages/LoginPage";
 import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
@@ -164,6 +165,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="compare" element={<ComparePage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="knowledge-base" element={<UniversityKnowledgeBase />} />
+        <Route path="school/:domain" element={<SchoolInfoPage />} />
         <Route path="programs/:programId" element={<ProgramDetail />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="outreach-analysis" element={<OutreachAnalysis />} />
