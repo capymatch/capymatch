@@ -645,7 +645,7 @@ export default function RecruitingBoard() {
       {/* Chips + Filters */}
       {total > 0 && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2 overflow-x-auto">
+          <div className="flex items-center gap-2 overflow-x-auto" data-testid="filter-chips">
             <FilterChips counts={counts} total={total} active={activeFilter} onFilter={setActiveFilter} />
             <div className="flex items-center gap-2 ml-auto flex-shrink-0">
               <button onClick={() => setShowFilters(!showFilters)}
