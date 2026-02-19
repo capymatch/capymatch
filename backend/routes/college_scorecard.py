@@ -58,13 +58,13 @@ def _name_similarity(query, candidate):
     c = candidate.lower().strip()
     if q == c:
         return 100
-    # Our name is a prefix/substring of the candidate (e.g. "Indiana University" in "Indiana University-Bloomington")
     c_normalized = c.replace("-", " ").replace("–", " ")
     q_normalized = q.replace("-", " ").replace("–", " ")
+    # Our name is a prefix/substring of the candidate — all campus variants score equally
     if q_normalized in c_normalized:
-        return 95 - min(len(c) - len(q), 20)
+        return 90
     if c_normalized in q_normalized:
-        return 90 - min(len(q) - len(c), 20)
+        return 85
     # Word overlap
     q_words = set(q_normalized.split())
     c_words = set(c_normalized.split())
