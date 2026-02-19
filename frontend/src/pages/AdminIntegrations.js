@@ -535,17 +535,22 @@ export default function AdminIntegrations() {
             </div>
           )}
 
-          {/* Sync button */}
+          {/* Sync buttons */}
           {scorecard.connected && (
-            <Button
-              onClick={syncScorecard}
-              disabled={syncingScorecard}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
-              data-testid="scorecard-sync-btn"
-            >
-              {syncingScorecard ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-              {syncingScorecard ? `Syncing... (${syncProgress})` : "Sync All Schools"}
-            </Button>
+            <div className="space-y-2">
+              <Button
+                onClick={() => syncScorecard(true)}
+                disabled={syncingScorecard}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                data-testid="scorecard-sync-btn"
+              >
+                {syncingScorecard ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                {syncingScorecard ? `Syncing... (${syncProgress})` : "Rebuild All (Domain Match)"}
+              </Button>
+              <p className="text-[11px] text-center" style={{ color: "var(--t-text-muted)" }}>
+                Downloads all Scorecard data and matches by domain for 100% accuracy
+              </p>
+            </div>
           )}
 
           {/* Update key form */}
