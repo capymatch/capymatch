@@ -97,17 +97,17 @@ function ProgressRing({ counts, total }) {
     : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
 
   return (
-    <div className="flex flex-row md:flex-col items-center gap-3 md:gap-4" data-testid="progress-ring">
-      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[160px] md:h-[160px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
-        <div className="w-[76px] h-[76px] md:w-[128px] md:h-[128px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
-          <span className="text-xl md:text-3xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[9px] md:text-xs" style={{ color: "var(--t-text-muted)" }}>schools</span>
+    <div className="flex flex-row md:flex-col items-center gap-3 md:gap-5" data-testid="progress-ring">
+      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[200px] md:h-[200px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
+        <div className="w-[76px] h-[76px] md:w-[164px] md:h-[164px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
+          <span className="text-xl md:text-4xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
+          <span className="text-[9px] md:text-sm" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
       </div>
-      <div className="flex flex-wrap md:flex-col gap-x-3 gap-y-1">
+      <div className="flex flex-wrap md:flex-col gap-x-3 gap-y-1.5">
         {activeStages.map(k => (
-          <div key={k} className="flex items-center gap-1.5 text-[10px] md:text-xs">
-            <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
+          <div key={k} className="flex items-center gap-1.5 text-[10px] md:text-sm">
+            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
             <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{counts[k]}</span>
             <span style={{ color: "var(--t-text-muted)" }}>{STAGES[k].shortLabel}</span>
           </div>
