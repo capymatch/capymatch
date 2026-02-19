@@ -6,7 +6,7 @@ import UniversityLogo from "../components/UniversityLogo";
 import { toast } from "sonner";
 import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
-  Check, Loader2, Lock
+  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen
 } from "lucide-react";
 
 /* ── Match Ring (dark hero) ── */
@@ -27,25 +27,38 @@ function MatchRing({ score }) {
   );
 }
 
-/* ── Reusable Section Card ── */
-function SectionCard({ title, children, testId }) {
+/* ── Stat Card (dark mockup layout, light theme) ── */
+function StatCard({ value, label, subtitle, accent }) {
+  const isEmpty = !value && value !== 0;
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6" data-testid={testId}>
-      <h3 className="text-[15px] font-bold text-slate-800 mb-4">{title}</h3>
-      {children}
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 flex flex-col items-center text-center" data-testid={`stat-card-${label?.replace(/\s+/g, '-').toLowerCase()}`}>
+      <div className={`text-[26px] sm:text-[30px] font-black tracking-tight leading-none mb-2 ${
+        isEmpty ? "text-slate-300" : accent ? "text-[#2ec4b6]" : "text-slate-800"
+      }`}>
+        {isEmpty ? "N/A" : value}
+      </div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-0.5">{label}</div>
+      {subtitle && <div className="text-[11px] text-slate-400/80">{subtitle}</div>}
     </div>
   );
 }
 
-/* ── Stat Cell ── */
-function StatCell({ value, label }) {
-  const isEmpty = !value && value !== 0;
+/* ── Section Header ── */
+function SectionHeader({ icon: Icon, title, testId }) {
   return (
-    <div className="text-center sm:text-left">
-      <div className={`text-[20px] sm:text-[22px] font-extrabold tracking-tight ${isEmpty ? "text-slate-300" : "text-slate-800"}`}>
-        {isEmpty ? "N/A" : value}
-      </div>
-      <div className="text-[11px] text-slate-400 mt-0.5">{label}</div>
+    <div className="flex items-center gap-2 mb-4" data-testid={testId}>
+      {Icon && <Icon className="w-4 h-4 text-[#2ec4b6]" />}
+      <h3 className="text-[13px] font-bold uppercase tracking-[0.1em] text-slate-500">{title}</h3>
+    </div>
+  );
+}
+
+/* ── Reusable Section Card ── */
+function SectionCard({ title, icon, children, testId }) {
+  return (
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6" data-testid={testId}>
+      {title && <SectionHeader icon={icon} title={title} />}
+      {children}
     </div>
   );
 }
@@ -54,12 +67,12 @@ function StatCell({ value, label }) {
 function OverviewField({ label, value, isLink, gated }) {
   return (
     <div>
-      <div className="text-[11px] text-slate-400 mb-1">{label}</div>
+      <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 mb-1.5">{label}</div>
       {gated ? (
-        <span className="text-[13px] text-blue-400 cursor-pointer hover:underline">Subscribe to view</span>
+        <span className="text-[13px] text-[#2ec4b6] cursor-pointer hover:underline font-medium">Subscribe to view</span>
       ) : isLink && value ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
-          className="text-[13px] text-blue-500 font-medium hover:underline inline-flex items-center gap-1">
+          className="text-[13px] text-[#2ec4b6] font-semibold hover:underline inline-flex items-center gap-1">
           Visit website <ExternalLink className="w-3 h-3" />
         </a>
       ) : (
@@ -67,6 +80,29 @@ function OverviewField({ label, value, isLink, gated }) {
       )}
     </div>
   );
+}
+
+/* ── Helpers ── */
+function selectivityLabel(rate) {
+  if (rate == null) return null;
+  if (rate < 0.15) return "Highly selective";
+  if (rate < 0.30) return "Selective";
+  if (rate < 0.60) return "Moderate";
+  return "Open admission";
+}
+
+function sizeLabel(size) {
+  if (size == null) return null;
+  if (size < 2000) return "Small";
+  if (size < 10000) return "Medium-sized";
+  return "Large";
+}
+
+function gradLabel(rate) {
+  if (rate == null) return null;
+  if (rate > 0.75) return "Excellent";
+  if (rate > 0.50) return "Good";
+  return "Fair";
 }
 
 export default function SchoolInfoPage() {
@@ -132,7 +168,7 @@ export default function SchoolInfoPage() {
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
-      {/* ══════ DARK Hero Card (UNTOUCHED) ══════ */}
+      {/* ══════ DARK Hero Card ══════ */}
       <div className="rounded-[20px] overflow-hidden mb-6 border border-white/[0.06]"
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
@@ -197,14 +233,43 @@ export default function SchoolInfoPage() {
         </div>
       </div>
 
-      {/* ══════ LIGHT Sections Below ══════ */}
+      {/* ══════ KEY STATISTICS — Card Row ══════ */}
+      <div className="mb-6" data-testid="key-statistics-section">
+        <SectionHeader icon={Activity} title="Key Statistics" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatCard
+            value={fmtMoney(sc.tuition_out_of_state)}
+            label="Tuition"
+            subtitle="Out-of-state"
+          />
+          <StatCard
+            value={fmtPct(sc.admission_rate)}
+            label="Acceptance Rate"
+            subtitle={selectivityLabel(sc.admission_rate)}
+            accent={sc.admission_rate != null && sc.admission_rate < 0.30}
+          />
+          <StatCard
+            value={sc.student_size ? Number(sc.student_size).toLocaleString() : null}
+            label="Undergrads"
+            subtitle={sizeLabel(sc.student_size)}
+          />
+          <StatCard
+            value={fmtPct(sc.graduation_rate)}
+            label="Graduation Rate"
+            subtitle={gradLabel(sc.graduation_rate)}
+            accent={sc.graduation_rate != null && sc.graduation_rate > 0.50}
+          />
+        </div>
+      </div>
+
+      {/* ══════ LIGHT Sections ══════ */}
       <div className="flex flex-col gap-5">
 
         {/* ── Program Overview ── */}
-        <SectionCard title="Program Overview" testId="program-overview-section">
+        <SectionCard title="Program Overview" icon={BookOpen} testId="program-overview-section">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b border-slate-100">
             <OverviewField label="Division" value={
-              school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-blue-200 text-blue-700 bg-blue-50">{divLabel[school.division] || school.division}</span> : "—"
+              school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-[#2ec4b6]/20 text-[#2ec4b6] bg-[#2ec4b6]/5">{divLabel[school.division] || school.division}</span> : "—"
             } />
             <OverviewField label="Conference" value={school.conference || "—"} />
             <OverviewField label="Program Website" value={school.website} isLink />
@@ -219,12 +284,12 @@ export default function SchoolInfoPage() {
         </SectionCard>
 
         {/* ── Coaching Staff ── */}
-        <SectionCard title="Coaching Staff" testId="coaching-staff-section">
+        <SectionCard title="Coaching Staff" icon={Users} testId="coaching-staff-section">
           {coaches.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
               {coaches.map((c, i) => (
-                <div key={i} className="rounded-lg border border-slate-200 p-4 flex gap-3 items-start"
-                  style={{ borderLeft: "3px solid #e8c55a" }}
+                <div key={i} className="rounded-lg border border-slate-200/80 p-4 flex gap-3 items-start"
+                  style={{ borderLeft: "3px solid #2ec4b6" }}
                   data-testid={`coach-card-${i}`}>
                   <div className="flex-1 min-w-0">
                     <div className="text-[12px] font-bold text-slate-800">{c.title || "Coach"}</div>
@@ -242,74 +307,73 @@ export default function SchoolInfoPage() {
             <p className="text-[13px] text-slate-400 mb-4">No coaching staff data available.</p>
           )}
           {!hasCoachAccess && (
-            <div className="rounded-lg px-4 py-3 flex items-center gap-2.5" data-testid="coach-subscribe-banner"
-              style={{ backgroundColor: "#fef9e7", border: "1px solid #f5e6a3" }}>
-              <Lock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+            <div className="rounded-lg px-4 py-3 flex items-center gap-2.5 bg-[#2ec4b6]/5 border border-[#2ec4b6]/15" data-testid="coach-subscribe-banner">
+              <Lock className="w-4 h-4 text-[#2ec4b6] flex-shrink-0" />
               <span className="text-[13px] text-slate-600">
-                <button onClick={() => navigate("/settings")} className="text-blue-500 font-semibold hover:underline">Subscribe</button>
-                {" "}to view the coaching staff for this program, along with their contact information.
+                <button onClick={() => navigate("/settings")} className="text-[#2ec4b6] font-semibold hover:underline">Subscribe</button>
+                {" "}to view coaching staff contact information.
               </span>
             </div>
           )}
         </SectionCard>
 
         {/* ── School Profile ── */}
-        <SectionCard title="School Profile" testId="school-profile-section">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-            <StatCell value={fmtPct(sc.graduation_rate)} label="Graduation Rate" />
-            <StatCell value={fmtPct(sc.retention_rate)} label="Retention Rate" />
-            <StatCell value={fmtRatio(sc.student_faculty_ratio)} label="Student-Faculty Ratio" />
-            <StatCell value={sc.student_size ? Number(sc.student_size).toLocaleString() : null} label="Undergrad Students" />
+        <SectionCard title="School Profile" icon={GraduationCap} testId="school-profile-section">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <StatCard value={fmtPct(sc.graduation_rate)} label="Graduation Rate" subtitle={gradLabel(sc.graduation_rate)} accent={sc.graduation_rate > 0.50} />
+            <StatCard value={fmtPct(sc.retention_rate)} label="Retention Rate" />
+            <StatCard value={fmtRatio(sc.student_faculty_ratio)} label="Student-Faculty Ratio" />
+            <StatCard value={sc.student_size ? Number(sc.student_size).toLocaleString() : null} label="Undergrad Students" subtitle={sizeLabel(sc.student_size)} />
           </div>
         </SectionCard>
 
         {/* ── Admissions ── */}
-        <SectionCard title="Admissions" testId="admissions-section">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-4">
-            <StatCell value={sc.avg_gpa || null} label="Average GPA" />
-            <StatCell value={sc.act_midpoint ? String(sc.act_midpoint) : null} label="ACT" />
-            <StatCell value={sc.sat_avg ? String(sc.sat_avg) : null} label="SAT" />
-            <StatCell value={fmtPct(sc.admission_rate)} label="Acceptance Rate" />
+        <SectionCard title="Admissions" icon={BookOpen} testId="admissions-section">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <StatCard value={sc.avg_gpa || null} label="Average GPA" />
+            <StatCard value={sc.act_midpoint ? String(sc.act_midpoint) : null} label="ACT" />
+            <StatCard value={sc.sat_avg ? String(sc.sat_avg) : null} label="SAT" />
+            <StatCard value={fmtPct(sc.admission_rate)} label="Acceptance Rate" subtitle={selectivityLabel(sc.admission_rate)} accent={sc.admission_rate != null && sc.admission_rate < 0.30} />
           </div>
           {sc.test_requirements && (
             <div className="pt-3 border-t border-slate-100">
-              <div className="text-[11px] text-slate-400 mb-1">Test Requirements</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 mb-1">Test Requirements</div>
               <div className="text-[13px] text-slate-600 leading-relaxed">{sc.test_requirements}</div>
             </div>
           )}
         </SectionCard>
 
         {/* ── Financial ── */}
-        <SectionCard title="Financial" testId="financial-section">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            <StatCell value={fmtMoney(sc.tuition_out_of_state)} label="Out-of-State Tuition" />
-            <StatCell value={fmtMoney(sc.tuition_in_state)} label="In-State Tuition" />
-            <StatCell value={fmtMoney(sc.median_debt)} label="Median Debt at Graduation" />
-            <StatCell value={fmtMoney(sc.monthly_loan_payment)} label="Monthly Loan Payment" />
-            <StatCell value={fmtMoney(sc.median_earnings)} label="Median Earnings" />
+        <SectionCard title="Financial" icon={DollarSign} testId="financial-section">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <StatCard value={fmtMoney(sc.tuition_out_of_state)} label="Out-of-State Tuition" />
+            <StatCard value={fmtMoney(sc.tuition_in_state)} label="In-State Tuition" />
+            <StatCard value={fmtMoney(sc.median_debt)} label="Median Debt" subtitle="At graduation" />
+            <StatCard value={fmtMoney(sc.monthly_loan_payment)} label="Monthly Loan" subtitle="After graduation" />
+            <StatCard value={fmtMoney(sc.median_earnings)} label="Median Earnings" subtitle="After graduation" accent />
           </div>
         </SectionCard>
 
-        {/* ── School Details (legacy fallback) ── */}
+        {/* ── Additional Details ── */}
         {(school.mascot || school.scholarship_type || school.region) && (
           <SectionCard title="Additional Details" testId="additional-details-section">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {school.region && (
-                <div>
-                  <div className="text-[11px] text-slate-400 mb-1">Location</div>
-                  <div className="text-[13px] font-semibold text-slate-700">{school.region}</div>
+                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Location</div>
+                  <div className="text-[15px] font-bold text-slate-800">{school.region}</div>
                 </div>
               )}
               {school.mascot && (
-                <div>
-                  <div className="text-[11px] text-slate-400 mb-1">Mascot</div>
-                  <div className="text-[13px] font-semibold text-slate-700">{school.mascot}</div>
+                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Mascot</div>
+                  <div className="text-[15px] font-bold text-slate-800">{school.mascot}</div>
                 </div>
               )}
               {school.scholarship_type && (
-                <div>
-                  <div className="text-[11px] text-slate-400 mb-1">Scholarship</div>
-                  <div className="text-[13px] font-semibold text-slate-700">{school.scholarship_type}</div>
+                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Scholarship</div>
+                  <div className="text-[15px] font-bold text-slate-800">{school.scholarship_type}</div>
                 </div>
               )}
             </div>
