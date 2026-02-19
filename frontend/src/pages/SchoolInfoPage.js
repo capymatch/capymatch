@@ -17,10 +17,10 @@ function MatchRing({ score }) {
     <div className="text-center flex-shrink-0" data-testid="match-score-ring">
       <svg width="100" height="100" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-        <circle cx="50" cy="50" r={r} fill="none" stroke="#e8628a" strokeWidth="6"
+        <circle cx="50" cy="50" r={r} fill="none" stroke="#2ec4b6" strokeWidth="6"
           strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
           transform="rotate(-90 50 50)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-        <text x="50" y="46" textAnchor="middle" fill="#e8628a" fontSize="24" fontWeight="800">{score}%</text>
+        <text x="50" y="46" textAnchor="middle" fill="#2ec4b6" fontSize="24" fontWeight="800">{score}%</text>
         <text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" letterSpacing="1">MATCH</text>
       </svg>
     </div>
@@ -104,7 +104,7 @@ export default function SchoolInfoPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-6 h-6 text-[#e8628a] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#2ec4b6] animate-spin" />
       </div>
     );
   }
@@ -128,7 +128,7 @@ export default function SchoolInfoPage() {
     <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" data-testid="school-info-page">
       {/* Back link */}
       <button onClick={() => navigate(-1)} data-testid="back-button"
-        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#e8628a] transition-colors">
+        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#2ec4b6] transition-colors">
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
@@ -146,7 +146,7 @@ export default function SchoolInfoPage() {
             <div className="flex flex-wrap items-center gap-2 mb-4 justify-center sm:justify-start">
               {school.division && (
                 <span className="px-3 py-1 rounded-lg text-[12px] font-bold" data-testid="school-division"
-                  style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#e8628a" }}>{school.division}</span>
+                  style={{ backgroundColor: "rgba(232,98,138,0.2)", color: "#2ec4b6" }}>{school.division}</span>
               )}
               {school.conference && (
                 <span className="px-3 py-1 rounded-lg text-[12px] font-semibold"
@@ -162,7 +162,7 @@ export default function SchoolInfoPage() {
                 className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
                 style={school.on_board
                   ? { background: "rgba(16,185,129,0.2)", color: "#10b981" }
-                  : { background: "linear-gradient(135deg, #e8628a, #d63659)" }}>
+                  : { background: "linear-gradient(135deg, #2ec4b6, #d63659)" }}>
                 {school.on_board ? <><Check className="w-4 h-4" /> On Your Board</> : <><Plus className="w-4 h-4" /> {adding ? "Adding..." : "Add to Board"}</>}
               </button>
               {coaches[0]?.email && (
@@ -230,7 +230,7 @@ export default function SchoolInfoPage() {
                     <div className="text-[12px] font-bold text-slate-800">{c.title || "Coach"}</div>
                     <div className="text-[13px] text-slate-500 mt-0.5">{c.name}</div>
                     {hasCoachAccess && c.email && (
-                      <a href={`mailto:${c.email}`} className="text-[11px] text-[#e8628a] hover:underline mt-1.5 inline-flex items-center gap-1">
+                      <a href={`mailto:${c.email}`} className="text-[11px] text-[#2ec4b6] hover:underline mt-1.5 inline-flex items-center gap-1">
                         <Mail className="w-3 h-3" /> {c.email}
                       </a>
                     )}
