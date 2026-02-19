@@ -164,13 +164,7 @@ async def _run_sync():
                         break
 
                     results = resp.json().get("results", [])
-                    match = None
-                    for r in results:
-                        if r.get("school.name", "").lower() == name.lower():
-                            match = r
-                            break
-                    if not match and results:
-                        match = results[0]
+                    match = _best_match(name, results)
 
                     if match:
                         scorecard = parse_scorecard_result(match)
