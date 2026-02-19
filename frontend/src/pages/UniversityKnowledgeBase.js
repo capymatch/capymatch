@@ -94,8 +94,7 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
             Apply Filters {activeCount > 0 && `(${activeCount})`}
           </button>
           <button onClick={onClear} data-testid="filter-clear-btn"
-            className="w-full py-2.5 rounded-xl text-[12px] font-semibold text-white/40 mt-2 transition-colors hover:text-white/60"
-            style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+            className="w-full py-2.5 rounded-xl text-[12px] font-semibold text-slate-400 mt-2 transition-colors hover:text-slate-600 border border-slate-200">
             Clear All
           </button>
         </div>
