@@ -340,28 +340,77 @@ def _parse_scorecard(r):
 
 
 def _compute_match(uni, profile):
-    """Quick match score between a university and athlete profile."""
-    score, total, reasons = 0, 100, []
-    pref_div = (profile.get("division") or "").lower()
-    prog_div = (uni.get("division") or "").lower()
-    if pref_div and prog_div and (pref_div in prog_div or prog_div in pref_div):
-        score += 30
-        reasons.append("Division")
+    """Match score — mirrors get_suggested_schools logic exactly."""
+    score = 0
+    reasons = []
+    pref_division = (profile.get("division") or "").upper()
     pref_regions = profile.get("regions") or []
-    region = uni.get("region", "")
-    if region and (region in pref_regions or "open" in [r.lower() for r in pref_regions]):
-        score += 25
-        reasons.append("Location")
-    for pr in (profile.get("priorities") or []):
-        pr_l = pr.lower()
-        if "academ" in pr_l and prog_div in ("d1", "d2"):
-            score += 10; reasons.append("Academics")
-        elif "athlet" in pr_l and "d1" in prog_div:
-            score += 10; reasons.append("Athletics")
-        elif "scholarship" in pr_l and prog_div in ("d1", "d2", "naia"):
-            score += 10; reasons.append("Scholarship")
-    pct = min(round(score / total * 100), 99)
-    return {"score": pct, "reasons": list(set(reasons))}
+    pref_priorities = profile.get("priorities") or []
+    pref_size = profile.get("school_size") or ""
+
+    school_div = (uni.get("division") or "").upper()
+    school_region = uni.get("region") or ""
+
+    region_aliases = {
+        "West Coast": ["West"], "West": ["West"],
+        "Mountain West": ["West", "Central"],
+        "Southwest": ["South", "South Central"],
+        "South": ["South", "South Central", "Southeast"],
+        "South Central": ["South", "South Central"],
+        "Northeast": ["Northeast", "East", "Atlantic"],
+        "East": ["East", "Atlantic", "Northeast"],
+        "Atlantic": ["Atlantic", "East"],
+        "Southeast": ["Southeast", "South"],
+        "Midwest": ["Midwest", "Great Lakes", "Central"],
+        "Central": ["Central", "Midwest"],
+        "Great Lakes": ["Great Lakes", "Midwest"],
+    }
+
+    if pref_division and school_div:
+        if pref_division == school_div:
+            score += 40
+            reasons.append("Division Match")
+        elif (pref_division == "D1" and school_div == "D2") or (pref_division == "D2" and school_div in ("D1", "D3")):
+            score += 15
+
+    if pref_regions:
+        matched = False
+        for pref_r in pref_regions:
+            aliases = region_aliases.get(pref_r, [pref_r])
+            if school_region in aliases or school_region == pref_r:
+                matched = True
+                break
+        if matched:
+            score += 30
+            reasons.append("Preferred Region")
+        else:
+            score += 5
+
+    for pr in pref_priorities:
+        pr_lower = pr.lower()
+        if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
+            score += 8
+            if "Academics" not in reasons:
+                reasons.append("Academics")
+        elif "athlet" in pr_lower and school_div == "D1":
+            score += 8
+            if "Athletics" not in reasons:
+                reasons.append("Athletics")
+        elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
+            score += 8
+            if "Scholarship" not in reasons:
+                reasons.append("Scholarship")
+
+    if pref_size:
+        if pref_size == "Large (15K+)" and school_div == "D1":
+            score += 5
+        elif pref_size == "Medium (5K-15K)" and school_div in ("D2", "D3"):
+            score += 5
+        elif pref_size == "Small (<5K)" and school_div in ("D3", "NAIA"):
+            score += 5
+
+    pct = min(round(score), 99) if score > 20 else 0
+    return {"score": pct, "reasons": reasons}
 
 
 @router.get("/knowledge-base/filters")
