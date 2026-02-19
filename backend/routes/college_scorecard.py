@@ -81,18 +81,20 @@ def _best_match(name, results):
     """Find the best matching school from Scorecard results."""
     if not results:
         return None
-    scored = []
+    best_sim = 0
+    best_size = 0
+    best = None
     for r in results:
         sc_name = r.get("school.name", "")
         sim = _name_similarity(name, sc_name)
-        # Use student_size as tiebreaker — larger campus = more likely the main one
+        if sim < 40:
+            continue
         size = r.get("latest.student.size") or r.get("school.student_size") or 0
-        scored.append((sim, size, r))
-    scored.sort(key=lambda x: (-x[0], -x[1]))
-    best_sim, _, best = scored[0]
-    if best_sim > 40:
-        return best
-    return None
+        if sim > best_sim or (sim == best_sim and size > best_size):
+            best_sim = sim
+            best_size = size
+            best = r
+    return best
 
 
 @router.get("/search")
