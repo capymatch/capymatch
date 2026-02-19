@@ -11,7 +11,6 @@ import {
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
 import { FirstReplyCelebration } from "../components/FirstReplyCelebration";
-import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Pulse Stat ── */
 function PulseStat({ icon: Icon, iconBg, iconColor, value, label, sub, dark, onClick }) {
