@@ -4,10 +4,10 @@ import { Calendar, Clock, AlertCircle, FileText, GraduationCap, Award, Eye, Tent
 const DIVISIONS = ["D1", "D2", "D3", "NAIA"];
 
 const PERIOD_TYPES = {
-  contact: { label: "Contact", color: "bg-teal-600/10 border-teal-600/20 text-teal-700", dot: "bg-teal-600/40", desc: "Coaches can call, text, and email you directly" },
-  dead: { label: "Dead", color: "bg-red-500/10 border-red-500/20 text-red-400", dot: "bg-red-500/40", desc: "No in-person or off-campus contact allowed" },
-  evaluation: { label: "Evaluation", color: "bg-blue-500/10 border-blue-500/20 text-blue-500", dot: "bg-blue-500/40", desc: "Coaches can watch you compete but can't contact you off-campus" },
-  quiet: { label: "Quiet", color: "bg-amber-500/10 border-amber-500/20 text-amber-500", dot: "bg-amber-500/35", desc: "Limited contact — coaches can only talk to you on campus" },
+  contact: { label: "Contact", color: "bg-teal-900/15 border-teal-900/20 text-teal-900", dot: "bg-teal-800", desc: "Coaches can call, text, and email you directly" },
+  dead: { label: "Dead", color: "bg-red-800/15 border-red-800/20 text-red-800", dot: "bg-red-700", desc: "No in-person or off-campus contact allowed" },
+  evaluation: { label: "Evaluation", color: "bg-indigo-800/15 border-indigo-800/20 text-indigo-800", dot: "bg-indigo-700", desc: "Coaches can watch you compete but can't contact you off-campus" },
+  quiet: { label: "Quiet", color: "bg-amber-800/15 border-amber-800/20 text-amber-800", dot: "bg-amber-700", desc: "Limited contact — coaches can only talk to you on campus" },
 };
 
 const MONTHS = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
@@ -121,12 +121,12 @@ const DATE_ICONS = {
 };
 
 const DATE_ICON_BG = {
-  file: "bg-teal-600/12",
-  grad: "bg-blue-500/12",
-  eye: "bg-slate-500/12",
-  camp: "bg-amber-500/12",
-  calendar: "bg-cyan-500/12",
-  award: "bg-slate-500/12",
+  file: "bg-teal-900/10",
+  grad: "bg-indigo-800/10",
+  eye: "bg-slate-700/10",
+  camp: "bg-amber-800/10",
+  calendar: "bg-slate-700/10",
+  award: "bg-slate-700/10",
 };
 
 function StatusTag({ status, range }) {
@@ -165,18 +165,18 @@ function TimelineBar({ periods, division }) {
   }, [periods]);
 
   const barColors = {
-    contact: "bg-teal-600/15 border border-teal-600/20",
-    dead: "bg-red-500/12 border border-red-500/20",
-    evaluation: "bg-blue-500/12 border border-blue-500/20",
-    quiet: "bg-amber-500/10 border border-amber-500/20",
-    gap: "bg-transparent",
+    contact: "bg-teal-800/25 border border-teal-800/20",
+    dead: "bg-red-700/25 border border-red-700/20",
+    evaluation: "bg-indigo-700/25 border border-indigo-700/20",
+    quiet: "bg-amber-700/25 border border-amber-700/20",
+    gap: "bg-gray-100",
   };
 
   const textColors = {
-    contact: "text-teal-600",
-    dead: "text-red-400",
-    evaluation: "text-blue-400",
-    quiet: "text-amber-400",
+    contact: "text-teal-900",
+    dead: "text-red-800",
+    evaluation: "text-indigo-800",
+    quiet: "text-amber-800",
   };
 
   return (
