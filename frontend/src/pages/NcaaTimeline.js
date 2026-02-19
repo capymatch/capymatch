@@ -229,7 +229,7 @@ function TimelineBar({ periods, division }) {
       <div className="flex gap-3 sm:gap-5 flex-wrap pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
         {Object.entries(PERIOD_TYPES).map(([key, val]) => (
           <div key={key} className="flex items-center gap-1.5">
-            <div className={`w-2.5 h-2.5 rounded-sm ${val.dot}`} />
+            <div className="w-2.5 h-2.5 rounded-sm" style={val.dotStyle} />
             <span className="text-[10px] sm:text-[11px]" style={{ color: "var(--t-text-muted)" }}>{val.label}</span>
           </div>
         ))}
