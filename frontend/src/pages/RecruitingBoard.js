@@ -621,6 +621,29 @@ export default function RecruitingBoard() {
 
   return (
     <div data-testid="recruiting-board" className="flex flex-col gap-4">
+      <Joyride
+        steps={tourSteps}
+        run={runTour}
+        continuous
+        showSkipButton
+        showProgress
+        callback={handleTourCallback}
+        styles={tourStyles}
+        locale={{ back: "Back", close: "Got it", last: "Done!", next: "Next", skip: "Skip tour" }}
+        floaterProps={{ disableAnimation: true }}
+      />
+      {/* Tour replay button */}
+      {total > 0 && !runTour && (
+        <button
+          onClick={() => setRunTour(true)}
+          className="fixed bottom-20 right-4 z-50 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-opacity hover:opacity-80"
+          style={{ backgroundColor: "#e8456b", color: "#fff" }}
+          data-testid="tour-replay-btn"
+          title="Take the tour"
+        >
+          ?
+        </button>
+      )}
       {/* Empty Board */}
       {total === 0 && <EmptyBoardState onSchoolAdded={fetchPrograms} />}
 
