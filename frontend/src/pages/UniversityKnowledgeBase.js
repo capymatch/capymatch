@@ -387,12 +387,13 @@ export default function UniversityKnowledgeBase() {
 
       {/* Results Header */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[12px] text-slate-400" data-testid="results-count">Showing {filtered.length.toLocaleString()} schools</span>
+        <span className="text-[12px]" style={{ color: "var(--t-text-muted)" }} data-testid="results-count">Showing {filtered.length.toLocaleString()} schools</span>
         <div className="flex gap-1" data-testid="view-toggle">
           {[{ mode: "grid", Icon: LayoutGrid }, { mode: "list", Icon: List }].map(({ mode, Icon }) => (
             <button key={mode} onClick={() => setViewMode(mode)} data-testid={`view-${mode}-btn`}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all border ${viewMode === mode ? "bg-slate-100 border-slate-300" : "bg-white border-slate-200"}`}>
-              <Icon className={`w-[15px] h-[15px] ${viewMode === mode ? "text-slate-600" : "text-slate-300"}`} />
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+              style={{ backgroundColor: viewMode === mode ? "var(--t-surface-alt)" : "var(--t-surface)", border: `1px solid ${viewMode === mode ? "var(--t-border-strong)" : "var(--t-border)"}` }}>
+              <Icon className="w-[15px] h-[15px]" style={{ color: viewMode === mode ? "var(--t-text-secondary)" : "var(--t-text-muted)" }} />
             </button>
           ))}
         </div>
