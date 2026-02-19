@@ -30,7 +30,7 @@ const RAIL_STAGES = [
 const PULSE_CONFIG = {
   active:  { color: "teal", label: "Active",     desc: "Recent activity" },
   cooling: { color: "amber",   label: "Cooling",    desc: "7+ days since contact" },
-  cold:    { color: "rose",    label: "Going Cold",  desc: "14+ days, needs action" },
+  cold:    { color: "gray",    label: "Going Cold",  desc: "14+ days, needs action" },
   neutral: { color: "gray",    label: "New",         desc: "No activity yet" },
 };
 
@@ -153,9 +153,9 @@ function ProgressRail({ rail, onStageClick }) {
    ═══════════════════════════════════════════════════════════════ */
 function PulseIndicator({ pulse }) {
   const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
-  const dotColor = { teal: "bg-teal-700", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
-  const ringColor = { teal: "border-teal-700", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { teal: "text-teal-600", amber: "text-amber-400", rose: "text-teal-600", gray: "text-gray-400" }[cfg.color];
+  const dotColor = { teal: "bg-teal-700", amber: "bg-amber-500", gray: "bg-gray-500" }[cfg.color];
+  const ringColor = { teal: "border-teal-700", amber: "border-amber-500", gray: "border-gray-500" }[cfg.color];
+  const textColor = { teal: "text-teal-600", amber: "text-amber-400", gray: "text-gray-400" }[cfg.color];
   return (
     <div className="flex items-center gap-2" data-testid="pulse-indicator">
       <span className="relative flex h-2.5 w-2.5">
