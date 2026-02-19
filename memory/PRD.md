@@ -73,8 +73,9 @@ High School Volleyball Athletes & Families
 
 ## Prioritized Backlog
 
-### P0 — Coach Scraper
+### P0 — Completed
 - ~~Build Coach Contact Scraper~~ — DONE
+- ~~Fix Progress Ring Size on Pipeline Desktop View~~ — DONE (Feb 19, 2026)
 
 ### P1 — Upcoming
 - Separate Girls/Boys Volleyball data architecture
