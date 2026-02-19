@@ -414,87 +414,49 @@ export default function RecruitingBoard() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCongrats, setShowCongrats] = useState(false);
-  const [runTour, setRunTour] = useState(false);
+  const [tourStep, setTourStep] = useState(-1);
 
   const tourSteps = [
     {
       target: '[data-testid="progress-section"]',
-      content: "This is your Pipeline Overview — it shows how many schools you're tracking and where each one stands in the recruiting process.",
-      placement: "bottom",
-      disableBeacon: true,
+      title: "Pipeline Overview",
+      content: "This shows how many schools you're tracking and where each one stands in the recruiting process.",
     },
     {
       target: '[data-testid="hero-card"]',
-      content: "Your #1 Priority — we'll always surface the most important action you need to take right now. No guessing, just do this next.",
-      placement: "bottom",
+      title: "Your #1 Priority",
+      content: "We surface the most important action you need to take right now. No guessing — just do this next.",
     },
     {
       target: '[data-testid="filter-chips"]',
-      content: "Filter by Stage — quickly see all schools in Outreach, Waiting, Replied, or any stage. The numbers update as you progress.",
-      placement: "bottom",
+      title: "Filter by Stage",
+      content: "Quickly see all schools in Outreach, Waiting, Replied, or any stage. Numbers update as you progress.",
     },
     {
       target: '[data-testid="school-list"]',
-      content: "Your School List — every school you're tracking lives here. Click any school to see its full journey, log emails, and track responses.",
-      placement: "top",
+      title: "Your School List",
+      content: "Every school you're tracking lives here. Click any school to see its full journey and log activity.",
     },
     {
       target: '[data-testid="add-school-btn"]',
-      content: "Add more schools anytime from our database of 1,000+ volleyball programs with coach contacts and school data.",
-      placement: "left",
+      title: "Add Schools",
+      content: "Browse 1,000+ volleyball programs with coach contacts, school stats, and more.",
     },
   ];
-
-  const tourStyles = {
-    options: {
-      arrowColor: "#1e1e2e",
-      backgroundColor: "#1e1e2e",
-      primaryColor: "#e8456b",
-      textColor: "#f1f1f1",
-      overlayColor: "rgba(0, 0, 0, 0.6)",
-      zIndex: 10000,
-    },
-    tooltip: {
-      borderRadius: 12,
-      padding: "20px 24px",
-      fontSize: 14,
-    },
-    tooltipContent: {
-      padding: "8px 0 0",
-      lineHeight: 1.6,
-    },
-    buttonNext: {
-      backgroundColor: "#e8456b",
-      borderRadius: 8,
-      fontSize: 13,
-      padding: "8px 18px",
-    },
-    buttonBack: {
-      color: "#999",
-      fontSize: 13,
-    },
-    buttonSkip: {
-      color: "#666",
-      fontSize: 12,
-    },
-  };
 
   // Auto-start tour on first visit
   useEffect(() => {
     if (total > 0 && !loading) {
       const hasSeenTour = localStorage.getItem("pipeline_tour_done");
       if (!hasSeenTour) {
-        setTimeout(() => setRunTour(true), 800);
+        setTimeout(() => setTourStep(0), 800);
       }
     }
   }, [total, loading]);
 
-  const handleTourCallback = (data) => {
-    const { status } = data;
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      setRunTour(false);
-      localStorage.setItem("pipeline_tour_done", "true");
-    }
+  const closeTour = () => {
+    setTourStep(-1);
+    localStorage.setItem("pipeline_tour_done", "true");
   };
 
   useEffect(() => {
