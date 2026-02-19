@@ -79,7 +79,7 @@ function getQuickAction(stage) {
 
 /* ═══ Progress Ring ═══ */
 function ProgressRing({ counts, total }) {
-  const size = 80, thickness = 10;
+  const size = 64, thickness = 8;
   const activeStages = STAGE_ORDER.filter(k => (counts[k] || 0) > 0);
 
   // Build conic-gradient stops
@@ -100,23 +100,22 @@ function ProgressRing({ counts, total }) {
     : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
 
   return (
-    <div className="flex flex-row md:flex-col items-center gap-3" data-testid="progress-ring">
-      <div style={{
+    <div className="flex items-center gap-4" data-testid="progress-ring">
+      <div className="flex-shrink-0" style={{
         width: size, height: size, borderRadius: "50%",
         background: gradient,
         display: "flex", alignItems: "center", justifyContent: "center",
-        position: "relative"
       }}>
         <div style={{
           width: size - thickness * 2, height: size - thickness * 2,
           borderRadius: "50%", backgroundColor: "var(--t-surface, #fff)",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
         }}>
-          <span className="text-xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[9px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
+          <span className="text-lg font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
+          <span className="text-[8px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
       </div>
-      <div className="flex flex-col gap-1 w-full">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         {activeStages.map(k => (
           <div key={k} className="flex items-center gap-1.5 text-[10px]">
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
