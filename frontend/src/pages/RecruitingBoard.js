@@ -79,10 +79,9 @@ function getQuickAction(stage) {
 
 /* ═══ Progress Ring ═══ */
 function ProgressRing({ counts, total }) {
-  const size = 64, thickness = 8;
+  const size = 80, thickness = 10;
   const activeStages = STAGE_ORDER.filter(k => (counts[k] || 0) > 0);
 
-  // Build conic-gradient stops
   const gradientStops = [];
   let accumulated = 0;
   activeStages.forEach(k => {
@@ -90,7 +89,6 @@ function ProgressRing({ counts, total }) {
     gradientStops.push(`${STAGES[k].ring} ${accumulated}% ${accumulated + pct}%`);
     accumulated += pct;
   });
-  // Fill remaining with border color
   if (accumulated < 100) {
     gradientStops.push(`var(--t-border, #e5e7eb) ${accumulated}% 100%`);
   }
@@ -111,8 +109,8 @@ function ProgressRing({ counts, total }) {
           borderRadius: "50%", backgroundColor: "var(--t-surface, #fff)",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
         }}>
-          <span className="text-lg font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[8px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
+          <span className="text-xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
+          <span className="text-[9px]" style={{ color: "var(--t-text-muted)" }}>schools</span>
         </div>
       </div>
       <div className="flex flex-wrap md:flex-col gap-x-3 gap-y-1">
