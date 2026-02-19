@@ -256,37 +256,32 @@ export default function NcaaTimeline() {
       <div className="rounded-xl border-l-4 border p-4 sm:p-5" style={{
         backgroundColor: "var(--t-surface)",
         borderColor: "var(--t-border)",
-        borderLeftColor: currentPeriod.type === "contact" ? "#4a9e96" :
-          currentPeriod.type === "dead" ? "#c45a5a" :
-          currentPeriod.type === "evaluation" ? "#5a6aad" : "#c4a040"
+        borderLeftColor: currentPeriod.type === "contact" ? "#3d9e8f" :
+          currentPeriod.type === "dead" ? "#c45555" :
+          currentPeriod.type === "evaluation" ? "#5568a8" : "#d4a23c"
       }} data-testid="current-period-banner">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="w-3 h-3 rounded-full animate-pulse" style={{
-              backgroundColor: currentPeriod.type === "contact" ? "#4a9e96" :
-                currentPeriod.type === "dead" ? "#c45a5a" :
-                currentPeriod.type === "evaluation" ? "#5a6aad" : "#c4a040"
+              backgroundColor: currentPeriod.type === "contact" ? "#3d9e8f" :
+                currentPeriod.type === "dead" ? "#c45555" :
+                currentPeriod.type === "evaluation" ? "#5568a8" : "#d4a23c"
             }} />
             <div>
               <p className="text-[10px] uppercase tracking-wider font-bold" style={{
-                color: currentPeriod.type === "contact" ? "#1a5c56" :
-                  currentPeriod.type === "dead" ? "#8b2020" :
-                  currentPeriod.type === "evaluation" ? "#2d3570" : "#7a5a1a"
+                color: currentPeriod.type === "contact" ? "#2d7a6e" :
+                  currentPeriod.type === "dead" ? "#993333" :
+                  currentPeriod.type === "evaluation" ? "#3d4d88" : "#a07820"
               }}>Current Period - {division}</p>
               <p className="text-base sm:text-lg font-bold mt-0.5" style={{ color: "var(--t-text)" }}>{periodInfo.label} Period</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{periodInfo.desc}</p>
             </div>
           </div>
-          <div className="px-3 py-1.5 rounded-lg text-xs font-semibold border self-start sm:self-auto flex-shrink-0" style={{
-            backgroundColor: currentPeriod.type === "contact" ? "#c8e6e3" :
-              currentPeriod.type === "dead" ? "#e8c8c8" :
-              currentPeriod.type === "evaluation" ? "#c8cee8" : "#e8dcc8",
-            color: currentPeriod.type === "contact" ? "#1a5c56" :
-              currentPeriod.type === "dead" ? "#8b2020" :
-              currentPeriod.type === "evaluation" ? "#2d3570" : "#7a5a1a",
-            borderColor: currentPeriod.type === "contact" ? "#a8d5d1" :
-              currentPeriod.type === "dead" ? "#e0b8b8" :
-              currentPeriod.type === "evaluation" ? "#b8c0e0" : "#e0d4b0"
+          <div className="px-3 py-1.5 rounded-lg text-xs font-semibold self-start sm:self-auto flex-shrink-0" style={{
+            backgroundColor: currentPeriod.type === "contact" ? "#3d9e8f" :
+              currentPeriod.type === "dead" ? "#c45555" :
+              currentPeriod.type === "evaluation" ? "#5568a8" : "#d4a23c",
+            color: "#ffffff"
           }} data-testid="days-remaining-badge">
             {daysRemaining} days remaining
           </div>
