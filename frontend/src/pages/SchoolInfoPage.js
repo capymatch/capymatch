@@ -266,7 +266,8 @@ export default function SchoolInfoPage() {
       <div className="flex flex-col gap-5">
 
         {/* ── Program Overview ── */}
-        <SectionCard title="Program Overview" icon={BookOpen} testId="program-overview-section">
+        <div data-testid="program-overview-section">
+          <SectionHeader icon={BookOpen} title="Program Overview" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b border-slate-100">
             <OverviewField label="Division" value={
               school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-[#2ec4b6]/20 text-[#2ec4b6] bg-[#2ec4b6]/5">{divLabel[school.division] || school.division}</span> : "—"
@@ -281,7 +282,7 @@ export default function SchoolInfoPage() {
             <OverviewField label="Instagram" gated={!hasCoachAccess} value={school.instagram_url} isLink />
             <OverviewField label="Facebook" gated={!hasCoachAccess} value={school.facebook_url} isLink />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── Coaching Staff ── */}
         <div data-testid="coaching-staff-section">
