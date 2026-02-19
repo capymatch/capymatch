@@ -107,6 +107,17 @@ async def get_school_by_domain(domain: str, request: Request):
     uni = await db.university_knowledge_base.find_one({"domain": domain}, {"_id": 0})
     if not uni:
         raise HTTPException(status_code=404, detail="University not found")
+
+    # Auto-fetch scorecard data if missing
+    if not uni.get("scorecard") or not uni["scorecard"].get("synced_at"):
+        scorecard = await _fetch_scorecard_for_school(uni)
+        if scorecard:
+            uni["scorecard"] = scorecard
+            await db.university_knowledge_base.update_one(
+                {"domain": domain},
+                {"$set": {"scorecard": scorecard}}
+            )
+
     try:
         user = await get_current_user(request)
         tenant_id = await get_tenant_id(user)
@@ -126,6 +137,66 @@ async def get_school_by_domain(domain: str, request: Request):
         uni["match_reasons"] = []
         uni["on_board"] = False
     return uni
+
+
+async def _fetch_scorecard_for_school(uni):
+    """Fetch College Scorecard data on-demand for a single university."""
+    api_key = os.environ.get("COLLEGE_SCORECARD_API_KEY", "")
+    if not api_key:
+        return None
+    domain = uni.get("domain", "")
+    name = uni.get("university_name", "")
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            # Try by domain first
+            if domain:
+                resp = await client.get(SCORECARD_BASE, params={
+                    "api_key": api_key, "school.school_url": domain,
+                    "fields": SCORECARD_FIELDS, "per_page": 3
+                })
+                if resp.status_code == 200:
+                    results = resp.json().get("results", [])
+                    if results:
+                        return _parse_scorecard(results[0])
+            # Fallback: search by name
+            if name:
+                resp = await client.get(SCORECARD_BASE, params={
+                    "api_key": api_key, "school.name": name,
+                    "fields": SCORECARD_FIELDS, "per_page": 5
+                })
+                if resp.status_code == 200:
+                    results = resp.json().get("results", [])
+                    name_lower = name.lower()
+                    for r in results:
+                        if r.get("school.name", "").lower() == name_lower:
+                            return _parse_scorecard(r)
+                    if results:
+                        return _parse_scorecard(results[0])
+    except Exception as e:
+        logger.warning(f"Scorecard fetch failed for {name}: {e}")
+    return None
+
+
+def _parse_scorecard(r):
+    """Parse a single College Scorecard API result into our schema."""
+    return {
+        "scorecard_id": r.get("id"),
+        "city": r.get("school.city"),
+        "state": r.get("school.state"),
+        "student_size": r.get("latest.student.size") or r.get("school.student_size"),
+        "admission_rate": r.get("latest.admissions.admission_rate.overall"),
+        "sat_avg": r.get("latest.admissions.sat_scores.average.overall"),
+        "act_midpoint": r.get("latest.admissions.act_scores.midpoint.cumulative"),
+        "graduation_rate": r.get("latest.completion.completion_rate_4yr_100nt"),
+        "retention_rate": r.get("latest.student.retention_rate.four_year.full_time"),
+        "student_faculty_ratio": r.get("latest.student.demographics.student_faculty_ratio"),
+        "tuition_in_state": r.get("latest.cost.tuition.in_state"),
+        "tuition_out_of_state": r.get("latest.cost.tuition.out_of_state"),
+        "avg_net_price": r.get("latest.cost.avg_net_price.overall"),
+        "median_debt": r.get("latest.aid.median_debt.completers.overall"),
+        "median_earnings": r.get("latest.earnings.10_yrs_after_entry.median"),
+        "synced_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 def _compute_match(uni, profile):
