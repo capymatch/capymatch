@@ -27,43 +27,42 @@ function MatchRing({ score }) {
 
 function BentoCard({ value, label, sub, pink }) {
   return (
-    <div className="rounded-[14px] p-4 text-center transition-colors border border-white/[0.06] hover:border-[#e8628a]/15"
-      style={{ backgroundColor: "#161b25" }} data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-      <div className={`text-[22px] sm:text-[26px] font-extrabold mb-1 tracking-tight ${pink ? "text-[#e8628a]" : "text-white"}`}>{value}</div>
-      <div className="text-[10px] text-white/35 uppercase tracking-[1px] font-semibold">{label}</div>
-      {sub && <div className="text-[11px] text-white/25 mt-1">{sub}</div>}
+    <div className="rounded-[14px] p-4 text-center transition-colors border border-slate-200 hover:border-[#e8628a]/30 bg-white"
+      data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className={`text-[22px] sm:text-[26px] font-extrabold mb-1 tracking-tight ${pink ? "text-[#e8628a]" : "text-slate-800"}`}>{value}</div>
+      <div className="text-[10px] text-slate-400 uppercase tracking-[1px] font-semibold">{label}</div>
+      {sub && <div className="text-[11px] text-slate-300 mt-1">{sub}</div>}
     </div>
   );
 }
 
 function CoachCard({ coach, onEmail }) {
   return (
-    <div className="rounded-[14px] p-5 flex gap-3.5 items-start border border-white/[0.06] hover:border-[#e8628a]/15 transition-colors"
-      style={{ backgroundColor: "#161b25" }} data-testid={`coach-card-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}>
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(232,98,138,0.1)" }}>
+    <div className="rounded-[14px] p-5 flex gap-3.5 items-start border border-slate-200 hover:border-[#e8628a]/30 transition-colors bg-white"
+      data-testid={`coach-card-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}>
+      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#e8628a]/10">
         <User className="w-5 h-5 text-[#e8628a]" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-bold text-white">{coach.name}</div>
-        <div className="text-[11px] text-white/35 mb-2.5">{coach.title || "Coach"}</div>
+        <div className="text-[14px] font-bold text-slate-800">{coach.name}</div>
+        <div className="text-[11px] text-slate-400 mb-2.5">{coach.title || "Coach"}</div>
         <div className="flex flex-col gap-1">
           {coach.email && (
-            <div className="flex items-center gap-1.5 text-[12px] text-white/50">
-              <Mail className="w-3.5 h-3.5 text-white/25 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
+              <Mail className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
               <a href={`mailto:${coach.email}`} className="text-[#e8628a] hover:underline truncate">{coach.email}</a>
             </div>
           )}
           {coach.phone && (
-            <div className="flex items-center gap-1.5 text-[12px] text-white/50">
-              <Phone className="w-3.5 h-3.5 text-white/25 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
+              <Phone className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
               {coach.phone}
             </div>
           )}
         </div>
         {coach.email && (
           <button onClick={() => onEmail(coach)} data-testid={`email-coach-${coach.name?.replace(/\s+/g, "-").toLowerCase()}`}
-            className="mt-3 px-3.5 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors"
-            style={{ backgroundColor: "rgba(232,98,138,0.1)", color: "#e8628a", border: "1px solid rgba(232,98,138,0.2)" }}>
+            className="mt-3 px-3.5 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors bg-[#e8628a]/10 text-[#e8628a] border border-[#e8628a]/20 hover:bg-[#e8628a]/20">
             <Mail className="w-3 h-3" /> Send Email
           </button>
         )}
@@ -74,13 +73,13 @@ function CoachCard({ coach, onEmail }) {
 
 function DetailRow({ label, value, isLink }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-b-0">
-      <span className="text-[12px] text-white/40 font-medium">{label}</span>
+    <div className="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-b-0">
+      <span className="text-[12px] text-slate-400 font-medium">{label}</span>
       {isLink ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
           className="text-[13px] text-[#e8628a] font-semibold hover:underline truncate max-w-[200px]">{value.replace(/^https?:\/\//, "")}</a>
       ) : (
-        <span className="text-[13px] text-white font-semibold">{value}</span>
+        <span className="text-[13px] text-slate-700 font-semibold">{value}</span>
       )}
     </div>
   );
@@ -152,14 +151,14 @@ export default function SchoolInfoPage() {
   };
 
   return (
-    <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" style={{ background: "#0f1219", minHeight: "100vh" }} data-testid="school-info-page">
+    <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" data-testid="school-info-page">
       {/* Back link */}
       <button onClick={() => navigate(-1)} data-testid="back-button"
-        className="inline-flex items-center gap-1.5 text-[12px] text-white/35 font-semibold mb-5 pt-6 hover:text-[#e8628a] transition-colors">
+        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#e8628a] transition-colors">
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
-      {/* Hero Header */}
+      {/* ── DARK Hero Card ── */}
       <div className="rounded-[20px] overflow-hidden mb-6 border border-white/[0.06]"
         style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 60%, #2a1a2e 100%)" }}
         data-testid="school-hero">
@@ -224,10 +223,10 @@ export default function SchoolInfoPage() {
         </div>
       </div>
 
-      {/* Key Statistics */}
+      {/* ── LIGHT: Key Statistics ── */}
       {hasScorecardStats && (
         <div className="mb-7" data-testid="key-statistics-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
             <Activity className="w-3.5 h-3.5 text-[#e8628a]" /> Key Statistics
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -239,11 +238,11 @@ export default function SchoolInfoPage() {
         </div>
       )}
 
-      {/* Two-Column: Coaches + School Details */}
+      {/* ── LIGHT: Coaches + School Details ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {coaches.length > 0 && (
           <div data-testid="coaching-staff-section">
-            <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
+            <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
               <Users className="w-3.5 h-3.5 text-[#e8628a]" /> Coaching Staff
             </div>
             <div className="flex flex-col gap-2.5">
@@ -255,10 +254,10 @@ export default function SchoolInfoPage() {
         )}
 
         <div data-testid="school-details-section">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-white/30 mb-3.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase text-slate-400 mb-3.5">
             <Info className="w-3.5 h-3.5 text-[#e8628a]" /> School Details
           </div>
-          <div className="rounded-[14px] p-5 border border-white/[0.06]" style={{ backgroundColor: "#161b25" }}>
+          <div className="rounded-[14px] p-5 border border-slate-200 bg-white">
             {school.region && <DetailRow label="Location" value={school.region} />}
             {school.division && <DetailRow label="Division" value={divFull[school.division] || school.division} />}
             {school.conference && <DetailRow label="Conference" value={school.conference} />}
