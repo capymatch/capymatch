@@ -157,7 +157,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                   className="min-w-[200px] p-4 rounded-lg border flex-shrink-0 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
                   style={{
                     backgroundColor: "var(--t-surface)",
-                    borderColor: onBoard ? "var(--t-emerald, #10b981)" : "var(--t-border)",
+                    borderColor: onBoard ? "var(--t-teal, #0d9488)" : "var(--t-border)",
                     boxShadow: "var(--t-shadow, 0 1px 3px rgba(0,0,0,0.06))",
                   }}
                   onClick={() => !onBoard && !adding[s.university_name] && addToBoard(s)}

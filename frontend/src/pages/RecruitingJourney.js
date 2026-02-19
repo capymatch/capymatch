@@ -28,7 +28,7 @@ const RAIL_STAGES = [
 ];
 
 const PULSE_CONFIG = {
-  active:  { color: "emerald", label: "Active",     desc: "Recent activity" },
+  active:  { color: "teal", label: "Active",     desc: "Recent activity" },
   cooling: { color: "amber",   label: "Cooling",    desc: "7+ days since contact" },
   cold:    { color: "rose",    label: "Going Cold",  desc: "14+ days, needs action" },
   neutral: { color: "gray",    label: "New",         desc: "No activity yet" },
@@ -36,8 +36,8 @@ const PULSE_CONFIG = {
 
 const CONV_CONFIG = {
   email_sent:     { side: "right", color: "teal",   label: "Email sent" },
-  email_received: { side: "left",  color: "emerald", label: "Email received" },
-  coach_reply:    { side: "left",  color: "emerald", label: "Coach replied" },
+  email_received: { side: "left",  color: "teal", label: "Email received" },
+  coach_reply:    { side: "left",  color: "teal", label: "Coach replied" },
   phone_call:     { side: "right", color: "teal",   label: "Phone call" },
   video_call:     { side: "right", color: "cyan",   label: "Video call" },
   text_message:   { side: "right", color: "teal",   label: "Text message" },
@@ -153,9 +153,9 @@ function ProgressRail({ rail, onStageClick }) {
    ═══════════════════════════════════════════════════════════════ */
 function PulseIndicator({ pulse }) {
   const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
-  const dotColor = { emerald: "bg-slate-500", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
-  const ringColor = { emerald: "border-slate-500", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { emerald: "text-teal-600", amber: "text-amber-400", rose: "text-teal-600", gray: "text-gray-400" }[cfg.color];
+  const dotColor = { teal: "bg-teal-700", amber: "bg-amber-500", rose: "bg-slate-500", gray: "bg-gray-500" }[cfg.color];
+  const ringColor = { teal: "border-teal-700", amber: "border-amber-500", rose: "border-slate-500", gray: "border-gray-500" }[cfg.color];
+  const textColor = { teal: "text-teal-600", amber: "text-amber-400", rose: "text-teal-600", gray: "text-gray-400" }[cfg.color];
   return (
     <div className="flex items-center gap-2" data-testid="pulse-indicator">
       <span className="relative flex h-2.5 w-2.5">
