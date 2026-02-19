@@ -4,10 +4,10 @@ import { Calendar, Clock, AlertCircle, FileText, GraduationCap, Award, Eye, Tent
 const DIVISIONS = ["D1", "D2", "D3", "NAIA"];
 
 const PERIOD_TYPES = {
-  contact: { label: "Contact", dot: "bg-[#3d9e8f]", desc: "Coaches can call, text, and email you directly", dotStyle: { backgroundColor: "#3d9e8f" } },
-  dead: { label: "Dead", dot: "bg-[#c45555]", desc: "No in-person or off-campus contact allowed", dotStyle: { backgroundColor: "#c45555" } },
-  evaluation: { label: "Evaluation", dot: "bg-[#5568a8]", desc: "Coaches can watch you compete but can't contact you off-campus", dotStyle: { backgroundColor: "#5568a8" } },
-  quiet: { label: "Quiet", dot: "bg-[#d4a23c]", desc: "Limited contact — coaches can only talk to you on campus", dotStyle: { backgroundColor: "#d4a23c" } },
+  contact: { label: "Contact", desc: "Coaches can call, text, and email you directly", dotStyle: { backgroundColor: "#5bb8ac" } },
+  dead: { label: "Dead", desc: "No in-person or off-campus contact allowed", dotStyle: { backgroundColor: "#d07070" } },
+  evaluation: { label: "Evaluation", desc: "Coaches can watch you compete but can't contact you off-campus", dotStyle: { backgroundColor: "#7080b8" } },
+  quiet: { label: "Quiet", desc: "Limited contact — coaches can only talk to you on campus", dotStyle: { backgroundColor: "#d8b050" } },
 };
 
 const MONTHS = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
