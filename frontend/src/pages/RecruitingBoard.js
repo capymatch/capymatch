@@ -527,13 +527,13 @@ export default function RecruitingBoard() {
 
   // Auto-start tour on first visit
   useEffect(() => {
-    if (total > 0 && !loading) {
+    if (groupedData.total > 0 && !loading) {
       const hasSeenTour = localStorage.getItem("pipeline_tour_done");
       if (!hasSeenTour) {
         setTimeout(() => setTourStep(0), 800);
       }
     }
-  }, [total, loading]);
+  }, [groupedData.total, loading]);
 
   const closeTour = () => {
     setTourStep(-1);
