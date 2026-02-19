@@ -339,17 +339,19 @@ export default function SchoolInfoPage() {
         </div>
 
         {/* ── School Profile ── */}
-        <SectionCard title="School Profile" icon={GraduationCap} testId="school-profile-section">
+        <div data-testid="school-profile-section">
+          <SectionHeader icon={GraduationCap} title="School Profile" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <StatCard value={fmtPct(sc.graduation_rate)} label="Graduation Rate" subtitle={gradLabel(sc.graduation_rate)} accent={sc.graduation_rate > 0.50} />
             <StatCard value={fmtPct(sc.retention_rate)} label="Retention Rate" />
             <StatCard value={fmtRatio(sc.student_faculty_ratio)} label="Student-Faculty Ratio" />
             <StatCard value={sc.student_size ? Number(sc.student_size).toLocaleString() : null} label="Undergrad Students" subtitle={sizeLabel(sc.student_size)} />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── Admissions ── */}
-        <SectionCard title="Admissions" icon={BookOpen} testId="admissions-section">
+        <div data-testid="admissions-section">
+          <SectionHeader icon={BookOpen} title="Admissions" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
             <StatCard value={sc.avg_gpa || null} label="Average GPA" />
             <StatCard value={sc.act_midpoint ? String(sc.act_midpoint) : null} label="ACT" />
@@ -362,10 +364,11 @@ export default function SchoolInfoPage() {
               <div className="text-[13px] text-slate-600 leading-relaxed">{sc.test_requirements}</div>
             </div>
           )}
-        </SectionCard>
+        </div>
 
         {/* ── Financial ── */}
-        <SectionCard title="Financial" icon={DollarSign} testId="financial-section">
+        <div data-testid="financial-section">
+          <SectionHeader icon={DollarSign} title="Financial" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <StatCard value={fmtMoney(sc.tuition_out_of_state)} label="Out-of-State Tuition" />
             <StatCard value={fmtMoney(sc.tuition_in_state)} label="In-State Tuition" />
@@ -373,11 +376,12 @@ export default function SchoolInfoPage() {
             <StatCard value={fmtMoney(sc.monthly_loan_payment)} label="Monthly Loan" subtitle="After graduation" />
             <StatCard value={fmtMoney(sc.median_earnings)} label="Median Earnings" subtitle="After graduation" accent />
           </div>
-        </SectionCard>
+        </div>
 
         {/* ── Additional Details ── */}
         {(school.mascot || school.scholarship_type || school.region) && (
-          <SectionCard title="Additional Details" testId="additional-details-section">
+          <div data-testid="additional-details-section">
+            <SectionHeader title="Additional Details" />
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {school.region && (
                 <div className="rounded-xl border border-slate-200/80 bg-white p-4">
@@ -398,7 +402,7 @@ export default function SchoolInfoPage() {
                 </div>
               )}
             </div>
-          </SectionCard>
+          </div>
         )}
       </div>
     </div>
