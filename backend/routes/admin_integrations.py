@@ -233,7 +233,7 @@ async def update_resend_key(request: Request):
         f.writelines(new_lines)
 
     masked = f"re_...{new_key[-6:]}" if len(new_key) > 10 else "Set"
-    logger.info(f"Resend key updated")
+    logger.info("Resend key updated")
     return {"ok": True, "key_masked": masked}
 
 
