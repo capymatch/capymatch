@@ -155,7 +155,7 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
   const loc = program.location || program.city_state || "";
 
   return (
-    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="hero-card">
+    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2.5 mb-1.5">
           <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
