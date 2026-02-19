@@ -7,10 +7,10 @@ const DIVISIONS = ["D1", "D2", "D3", "NAIA"];
    Mid-lightness, moderate saturation. Bars feel "printed", not "glowing".
    Each hue is semantically distinct at a glance.                          */
 const COLORS = {
-  contact:    { bar: "#4DB8A4", text: "#1B6B5E", tint: "#EAF6F3", tintBorder: "#C2E4DD" },
-  dead:       { bar: "#CD7B78", text: "#7A3836", tint: "#F8EDED", tintBorder: "#E4C4C3" },
-  evaluation: { bar: "#7E8FBD", text: "#3E4D7A", tint: "#EDEFFA", tintBorder: "#C4CAE0" },
-  quiet:      { bar: "#D1A94E", text: "#7A6420", tint: "#F8F2E0", tintBorder: "#E4D8A8" },
+  contact:    { bar: "#6ECEC0", text: "#1B6B5E", tint: "#EAF6F3", tintBorder: "#C2E4DD" },
+  dead:       { bar: "#E09494", text: "#7A3836", tint: "#F8EDED", tintBorder: "#E4C4C3" },
+  evaluation: { bar: "#96A4D0", text: "#3E4D7A", tint: "#EDEFFA", tintBorder: "#C4CAE0" },
+  quiet:      { bar: "#E4C06A", text: "#7A6420", tint: "#F8F2E0", tintBorder: "#E4D8A8" },
 };
 
 const PERIOD_TYPES = {
