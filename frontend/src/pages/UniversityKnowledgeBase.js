@@ -370,8 +370,8 @@ export default function UniversityKnowledgeBase() {
           const count = bucketCounts[b.id];
           return (
             <button key={b.id} onClick={() => handleBucketClick(b)} data-testid={`chip-${b.id}`}
-              className={`px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all ${isActive ? "text-[#e8628a] border-[#e8628a]/30" : "text-white/45 border-white/[0.06] hover:text-white/70 hover:border-white/12"}`}
-              style={{ backgroundColor: isActive ? "rgba(232,98,138,0.15)" : "rgba(255,255,255,0.04)", border: `1px solid ${isActive ? "rgba(232,98,138,0.3)" : "rgba(255,255,255,0.06)"}` }}>
+              className={`px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all ${isActive ? "text-[#e8628a] bg-[#e8628a]/10 border-[#e8628a]/30" : "text-slate-500 bg-white border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}
+              style={{ border: `1px solid ${isActive ? "rgba(232,98,138,0.3)" : ""}` }}>
               {b.label}
               {count > 0 && <span className="ml-1 opacity-50 font-medium">{count}</span>}
             </button>
