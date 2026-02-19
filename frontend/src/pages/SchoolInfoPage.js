@@ -11,7 +11,7 @@ import {
 /* ── Match Ring (dark hero) ── */
 function MatchRing({ score }) {
   const r = 44, c = 2 * Math.PI * r;
-  const offset = c - (score / 100) * c;
+  const offset = c - ((score || 0) / 100) * c;
   return (
     <div className="text-center flex-shrink-0" data-testid="match-score-ring">
       <svg width="100" height="100" viewBox="0 0 100 100">
@@ -19,8 +19,8 @@ function MatchRing({ score }) {
         <circle cx="50" cy="50" r={r} fill="none" stroke="#2ec4b6" strokeWidth="6"
           strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
           transform="rotate(-90 50 50)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-        <text x="50" y="46" textAnchor="middle" fill="#2ec4b6" fontSize="24" fontWeight="800">{score}%</text>
-        <text x="50" y="60" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" letterSpacing="1">MATCH</text>
+        <text x="50" y="50" textAnchor="middle" dominantBaseline="central" fill="#2ec4b6" fontSize="24" fontWeight="800">{score || 0}%</text>
+        <text x="50" y="68" textAnchor="middle" dominantBaseline="central" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" letterSpacing="1">MATCH</text>
       </svg>
     </div>
   );
