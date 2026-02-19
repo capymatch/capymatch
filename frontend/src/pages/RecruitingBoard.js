@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import Joyride, { STATUS } from "react-joyride";
 import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
