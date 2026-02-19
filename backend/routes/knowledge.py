@@ -103,7 +103,7 @@ async def add_to_board(request: Request):
 
 
 async def _search_questionnaire_url(university_name, domain, website=None):
-    """Use DuckDuckGo to find the recruiting questionnaire URL for a school."""
+    """Use DuckDuckGo to find the volleyball recruiting questionnaire URL for a school."""
     try:
         from ddgs import DDGS
         from urllib.parse import urlparse
@@ -116,69 +116,101 @@ async def _search_questionnaire_url(university_name, domain, website=None):
         # Known 3rd-party questionnaire platforms schools commonly use
         questionnaire_platforms = ["armssoftware.com", "jumpforward.com", "formstack.com"]
 
-        # Build trusted domains list for this school
         school_domains = set()
         if athletics_domain:
             school_domains.add(athletics_domain)
         if domain:
             school_domains.add(domain)
 
-        # Use school name for a broader, more accurate search
-        short_name = university_name.split("–")[0].split("-")[0].strip() if university_name else domain
-        queries = [
-            f'"{short_name}" women volleyball recruiting questionnaire',
-            f'"{short_name}" volleyball prospect questionnaire form',
-        ]
+        # Build a search-friendly name that won't match sibling schools
+        # e.g. "UCLA" not "University of California", "Ohio State" not "Ohio"
+        search_name = university_name or ""
+        # Try to get the most specific part after a dash/separator
+        for sep in ["–", "—", " - "]:
+            if sep in search_name:
+                parts = search_name.split(sep)
+                # Use last part if it's a short acronym like "UCLA", else use full name
+                last = parts[-1].strip()
+                if len(last) <= 6 and last.isupper():
+                    search_name = last
+                else:
+                    search_name = university_name
+                break
+
+        queries = []
         if athletics_domain:
-            queries.insert(0, f'site:{athletics_domain} volleyball recruiting questionnaire')
+            queries.append(f"site:{athletics_domain} volleyball recruiting questionnaire")
+        queries.append(f'"{search_name}" women\'s volleyball recruiting questionnaire')
+        queries.append(f'"{search_name}" volleyball prospect questionnaire')
 
         scored = []  # list of (score, url)
+        seen_urls = set()
 
         for query in queries:
             try:
                 results = list(DDGS().text(query, max_results=8, region="us-en"))
                 for r in results:
                     href = r.get("href", "")
-                    if not href or "bing.com/aclick" in href:
+                    if not href or "bing.com/aclick" in href or href in seen_urls:
                         continue
+                    seen_urls.add(href)
+
                     title = (r.get("title") or "").lower()
                     body = (r.get("body") or "").lower()
                     url_lower = href.lower()
-                    combined = f"{url_lower} {title} {body}"
 
-                    # Skip results clearly from a different school
-                    if not any(sd in url_lower for sd in school_domains) and \
-                       not any(qp in url_lower for qp in questionnaire_platforms):
+                    # Must be from school domain or known questionnaire platform
+                    from_school = any(sd in url_lower for sd in school_domains)
+                    from_platform = any(qp in url_lower for qp in questionnaire_platforms)
+                    if not from_school and not from_platform:
                         continue
 
-                    score = 0
-
-                    # Must have questionnaire/form signal in title, body, or URL
+                    # Questionnaire signal — check title and URL (not body, too noisy)
+                    title_url = f"{url_lower} {title}"
                     q_keywords = ["questionnaire", "prospect form", "prospect-form",
-                                  "prospective student", "recruiting form", "recruit info",
-                                  "recruiting information"]
-                    if any(kw in combined for kw in q_keywords):
-                        score += 40
-                    else:
-                        continue  # Skip if no questionnaire signal at all
+                                  "prospect_form", "prospective student-athlete",
+                                  "prospective-student-athlete", "recruiting information",
+                                  "recruiting form", "recruit-form"]
+                    has_q_signal = any(kw in title_url for kw in q_keywords)
+                    if not has_q_signal:
+                        continue
 
-                    # Volleyball mention
-                    if any(vk in combined for vk in ["volleyball", "wvb", "w-vball"]):
+                    score = 40  # base score for having questionnaire signal
+
+                    # Volleyball in title or URL (strong signal)
+                    if any(vk in title_url for vk in ["volleyball", "wvb", "w-vball"]):
                         score += 30
 
-                    # From school's own domain (high trust)
-                    if any(sd in url_lower for sd in school_domains):
-                        score += 20
+                    # Penalize other sports showing up in title
+                    other_sports = ["track", "field", "soccer", "basketball", "baseball",
+                                    "softball", "swimming", "tennis", "golf", "football",
+                                    "lacrosse", "hockey", "wrestling", "gymnast", "rowing"]
+                    if any(sp in title for sp in other_sports):
+                        score -= 40
 
-                    # From known questionnaire platform (high trust)
-                    if any(qp in url_lower for qp in questionnaire_platforms):
+                    # Penalize beach volleyball (different sport)
+                    if "beach" in title_url:
+                        score -= 25
+
+                    # Penalize men's volleyball when women's is what we want
+                    if "men's volleyball" in title and "women" not in title:
+                        score -= 30
+
+                    # Bonus: women's specific
+                    if "women" in title_url:
+                        score += 10
+
+                    # Bonus: from school's own domain
+                    if from_school:
                         score += 15
 
-                    # Women's specific (vs men's)
-                    if "women" in combined or "girl" in combined:
+                    # Bonus: from known questionnaire platform
+                    if from_platform:
                         score += 10
-                    if "men's volleyball" in combined and "women" not in combined:
-                        score -= 20
+
+                    # Bonus: questionnaire is in the title (not just URL)
+                    if "questionnaire" in title:
+                        score += 10
 
                     scored.append((score, href))
             except Exception:
@@ -186,7 +218,9 @@ async def _search_questionnaire_url(university_name, domain, website=None):
 
         if scored:
             scored.sort(key=lambda x: x[0], reverse=True)
-            return scored[0][1]
+            best_score, best_url = scored[0]
+            if best_score >= 40:
+                return best_url
         return None
     except Exception as e:
         logger.warning(f"Questionnaire search failed for {university_name}: {e}")
