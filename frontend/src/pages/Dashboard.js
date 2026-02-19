@@ -39,7 +39,6 @@ function ActionRow({ domain, school, detail, badge, badgeBg, badgeColor, onClick
       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
     >
-      <UniversityLogo domain={domain} name={school} size={36} />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate" style={{ color: "var(--t-text)" }}>{school}</p>
         <p className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{detail}</p>
@@ -71,7 +70,6 @@ function SpotlightCard({ program, onClick }) {
       data-testid={`spotlight-${program.program_id}`}
     >
       <div className="flex items-center gap-3 mb-3">
-        <UniversityLogo domain={program.domain} name={program.university_name} size={40} />
         <div className="min-w-0">
           <p className="text-sm font-bold truncate" style={{ color: "var(--t-text)" }}>{program.university_name}</p>
           <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{program.division || "—"}{program.conference ? ` · ${program.conference}` : ""}</p>
