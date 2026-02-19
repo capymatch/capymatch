@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { MapPin, Building2, User, Mail, Plus, ExternalLink, X, Check, Sparkles, ChevronDown, GraduationCap, DollarSign, Users, Award, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { MapPin, Building2, User, Mail, Plus, ExternalLink, X, Check, Sparkles, ChevronDown, GraduationCap, DollarSign, Users, Award, BarChart3, ArrowRight } from "lucide-react";
 import UniversityLogo from "../UniversityLogo";
 import { Button } from "../ui/button";
 
