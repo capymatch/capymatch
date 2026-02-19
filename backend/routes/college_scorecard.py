@@ -229,13 +229,7 @@ async def sync_one_school(request: Request):
         raise HTTPException(status_code=502, detail="College Scorecard API error")
 
     results = resp.json().get("results", [])
-    match = None
-    for r in results:
-        if r.get("school.name", "").lower() == name.lower():
-            match = r
-            break
-    if not match and results:
-        match = results[0]
+    match = _best_match(name, results)
 
     if not match:
         raise HTTPException(status_code=404, detail=f"No scorecard data found for {name}")
