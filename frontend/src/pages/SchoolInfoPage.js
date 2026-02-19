@@ -217,7 +217,7 @@ export default function SchoolInfoPage() {
               </button>
               {school.website && (
                 <a href={school.website} target="_blank" rel="noreferrer" data-testid="visit-website-btn"
-                  className="px-5 py-2.5 rounded-[10px] text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-[10px] text-[12px] sm:text-[13px] font-bold inline-flex items-center gap-1.5 transition-all"
                   style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   <ExternalLink className="w-4 h-4" /> Visit Website
                 </a>
