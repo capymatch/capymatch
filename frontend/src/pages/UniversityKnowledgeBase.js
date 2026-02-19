@@ -339,19 +339,21 @@ export default function UniversityKnowledgeBase() {
     <div data-testid="knowledge-base" className="max-w-[1280px] mx-auto">
       {/* Search + Filter Toggle */}
       <div className="flex gap-2.5 items-center mb-5" data-testid="search-row">
-        <div className="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-[14px] bg-white border border-slate-200">
-          <Search className="w-[18px] h-[18px] text-slate-300 flex-shrink-0" />
+        <div className="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-[14px]" style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
+          <Search className="w-[18px] h-[18px] flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setActiveBucket("all"); }}
             placeholder={`Search ${universities.length.toLocaleString()} colleges by name...`}
-            className="flex-1 bg-transparent border-none outline-none text-[14px] text-slate-700 placeholder:text-slate-300"
+            className="flex-1 bg-transparent border-none outline-none text-[14px]"
+            style={{ color: "var(--t-text)", "--tw-placeholder-opacity": 1 }}
             data-testid="kb-search"
           />
-          <span className="text-[11px] text-slate-300 whitespace-nowrap">{filtered.length.toLocaleString()}</span>
+          <span className="text-[11px] whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>{filtered.length.toLocaleString()}</span>
         </div>
         <button onClick={() => setFiltersOpen(true)} data-testid="filter-toggle-btn"
-          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold text-slate-500 transition-all hover:border-[#2ec4b6]/30 hover:text-[#2ec4b6] bg-white border border-slate-200">
+          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold transition-all hover:border-[#2ec4b6]/30 hover:text-[#2ec4b6]"
+          style={{ color: "var(--t-text-secondary)", backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
           <Filter className="w-4 h-4" />
           Filters
           {activeFilterCount > 0 && (
@@ -367,8 +369,10 @@ export default function UniversityKnowledgeBase() {
           const count = bucketCounts[b.id];
           return (
             <button key={b.id} onClick={() => handleBucketClick(b)} data-testid={`chip-${b.id}`}
-              className={`px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all ${isActive ? "text-[#2ec4b6] bg-[#2ec4b6]/10 border-[#2ec4b6]/30" : "text-slate-500 bg-white border-slate-200 hover:text-slate-700 hover:border-slate-300"}`}
-              style={{ border: `1px solid ${isActive ? "rgba(46,196,182,0.3)" : ""}` }}>
+              className="px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all"
+              style={isActive
+                ? { color: "#2ec4b6", backgroundColor: "rgba(46,196,182,0.1)", border: "1px solid rgba(46,196,182,0.3)" }
+                : { color: "var(--t-text-secondary)", backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
               {b.label}
               {count > 0 && <span className="ml-1 opacity-50 font-medium">{count}</span>}
             </button>
