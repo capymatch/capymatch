@@ -84,12 +84,13 @@ def _best_match(name, results):
     scored = []
     for r in results:
         sc_name = r.get("school.name", "")
-        score = _name_similarity(name, sc_name)
-        scored.append((score, r))
-    scored.sort(key=lambda x: -x[0])
-    best_score, best = scored[0]
-    # Require at least a reasonable match (>40) to avoid wrong school
-    if best_score > 40:
+        sim = _name_similarity(name, sc_name)
+        # Use student_size as tiebreaker — larger campus = more likely the main one
+        size = r.get("school.student_size") or 0
+        scored.append((sim, size, r))
+    scored.sort(key=lambda x: (-x[0], -x[1]))
+    best_sim, _, best = scored[0]
+    if best_sim > 40:
         return best
     return None
 
