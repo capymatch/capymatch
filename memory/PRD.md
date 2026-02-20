@@ -20,23 +20,23 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 14. Private per-school notes
 15. Automated follow-up system
 16. Dashboard redesign for daily actions
-17. University logos for Knowledge Base
-18. External API for school data (College Scorecard)
-19. Coach contact scraping from university websites
-20. Email preview/confirmation before sending
-21. "Find Schools" page redesign
-22. Dedicated single-school detail page
-23. Recruiting Questionnaire URL auto-discovery on School Info pages
+17. External API for school data (College Scorecard)
+18. Coach contact scraping from university websites
+19. Email preview/confirmation before sending
+20. "Find Schools" page redesign
+21. Dedicated single-school detail page
+22. Recruiting Questionnaire URL auto-discovery on School Info pages
 
 ## What's Been Implemented
 - **School Info Page**: Card-based layout with stats, coach cards, and scorecard data
 - **Find Schools Redesign**: Dark-themed UI with smart chips, filters, grid/list views
-- **School Sorting**: By match percentage descending
-- **Global Color Palette**: Pink replaced with teal/navy palette across entire light theme
-- **NCAA Timeline Color Fix**: Centralized COLORS system with mid-tone palette
-- **School Info Page Redesign**: Card-based stat sections, Key Statistics hero row, teal accent coaching staff cards
+- **Global Color Palette**: Pink replaced with teal/navy palette across entire app
+- **School Info Page Redesign**: Card-based stat sections, Key Statistics hero row
 - **Subscription Pricing Redesign**: 3-card layout (Starter/Pro/Premium)
-- **Recruiting Questionnaire URL Discovery** (Feb 2026): Auto-discovers volleyball recruiting questionnaire URLs via DuckDuckGo search with scoring system. Caches results in DB. Displays "Fill out questionnaire" link on SchoolInfoPage. Supports school domains and 3rd-party platforms (armssoftware.com, fieldlevel.com, etc.)
+- **Recruiting Questionnaire URL Discovery** (Feb 2026): Background bulk job pre-fetching for 1000+ schools
+- **App-Wide Dark Mode**: Unified CSS variables, sidebar fix, button contrast fixes
+- **Performance**: Parallel API fetches, cached questionnaire data
+- **RecruitingJourney.js Refactoring** (Feb 20, 2026): Extracted 15 components into `/components/journey/` — reduced from 1561 to 428 lines. All modals (Email, Log, Reply, Follow-up, Coach), helper components, and constants extracted. 100% test pass rate.
 
 ## Key Architecture
 - Frontend: React + Tailwind + shadcn/ui
@@ -45,12 +45,32 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - AI: Claude Sonnet 4.5 via Emergent LLM Key
 - External: College Scorecard API, DuckDuckGo Search, BeautifulSoup/lxml scraping
 
+## Component Structure
+```
+/components/journey/
+├── constants.js          (RAIL_STAGES, PULSE_CONFIG, CONV_CONFIG, etc.)
+├── ProgressRail.js       (Stage dots with animated fill)
+├── PulseIndicator.js     (Hot/Warm/Neutral status)
+├── GettingStartedChecklist.js (5-step onboarding)
+├── CommittedHero.js      (Celebration card)
+├── CelebrationHero.js    (Coach reply celebration)
+├── NextStepCard.js       (Rule-based suggestions)
+├── ConversationBubble.js (Timeline chat bubbles)
+├── AtAGlanceCard.js      (Right sidebar stats)
+├── StageLogModal.js      (Stage transition notes)
+├── FloatingActionBar.js  (Bottom action buttons)
+├── CoachForm.js          (Add/edit coach modal)
+├── LogInteractionForm.js (Log interaction modal)
+├── EmailComposer.js      (Email send modal)
+├── FollowUpScheduler.js  (Schedule follow-up modal)
+├── MarkAsRepliedModal.js (Mark coach reply modal)
+└── index.js              (Barrel exports)
+```
+
 ## Known Issues
-- NCAA Timeline page colors unresolved (user paused, P1)
-- Pipeline Tour tooltip disappears on off-screen elements (P2, VERIFICATION PENDING)
+- NCAA Timeline page colors unresolved (user paused)
 
 ## Upcoming Tasks (P1)
-- Refactor RecruitingJourney.js (extract 5 modals)
 - Separate Girls/Boys volleyball data
 - Camp/Tournament ROI tracker
 - Email templates & bulk outreach
