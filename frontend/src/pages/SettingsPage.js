@@ -349,6 +349,14 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+
+      {/* Gmail Consent Modal */}
+      {showConsentModal && (
+        <GmailConsentModal
+          onConsent={handleConsentAndConnect}
+          onCancel={() => setShowConsentModal(false)}
+        />
+      )}
     </div>
   );
 }
