@@ -109,20 +109,25 @@ def categorize_program(program: dict) -> str:
 def compute_journey_rail(program: dict) -> dict:
     """
     Compute the 6-stage journey rail for a program.
-    Stages: added, outreach_sent, coach_replied, campus_visit, offer, committed
+    Stages: added, outreach, in_conversation, campus_visit, offer, committed
     Auto-detects stages from signals/interactions. Manual override only marks that single stage.
     Returns stages (each independently T/F), active (last completed), line_fill (last consecutive from left).
     """
     signals = program.get("signals", {})
     manual_stage = program.get("journey_stage", "")
     
-    RAIL_STAGES = ["added", "outreach_sent", "coach_replied", "campus_visit", "offer", "committed"]
+    # Map legacy stage names to current names
+    LEGACY_MAP = {"outreach_sent": "outreach", "coach_replied": "in_conversation"}
+    if manual_stage in LEGACY_MAP:
+        manual_stage = LEGACY_MAP[manual_stage]
+    
+    RAIL_STAGES = ["added", "outreach", "in_conversation", "campus_visit", "offer", "committed"]
     
     # Auto-detect stages independently from data
     stages = {
         "added": True,
-        "outreach_sent": signals.get("outreach_count", 0) > 0,
-        "coach_replied": signals.get("has_coach_reply", False),
+        "outreach": signals.get("outreach_count", 0) > 0,
+        "in_conversation": signals.get("has_coach_reply", False),
         "campus_visit": False,  # Only set via manual override
         "offer": False,         # Only set via manual override
         "committed": False,     # Only set via manual override
