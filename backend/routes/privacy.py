@@ -126,6 +126,7 @@ async def delete_account(request: Request):
         ("events", {"tenant_id": tenant_id}),
         ("notifications", {"tenant_id": tenant_id}),
         ("inbound_contacts", {"tenant_id": tenant_id}),
+        ("sent_email_log", {"tenant_id": tenant_id}),
         ("privacy_preferences", {"tenant_id": tenant_id}),
         ("coach_watch_alerts", {"tenant_id": tenant_id}),
         ("tenants", {"tenant_id": tenant_id}),
