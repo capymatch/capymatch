@@ -257,20 +257,17 @@ export default function EmptyBoardState({ onSchoolAdded }) {
             )}
             {profileDone && !gmailConnected && (
               <div className="mt-6 space-y-4">
-                <button
-                  className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
+                <a
+                  className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 no-underline"
                   style={{ backgroundColor: "#2ec4b6", color: "white" }}
-                  onClick={handleConnectGmail}
-                  disabled={gmailConnecting}
+                  href={gmailConnectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   data-testid="connect-gmail-btn"
                 >
-                  {gmailConnecting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Mail className="w-4 h-4" />
-                  )}
-                  {gmailConnecting ? "Connecting..." : "Connect Gmail"} <ChevronRight className="w-4 h-4" />
-                </button>
+                  <Mail className="w-4 h-4" />
+                  Connect Gmail <ChevronRight className="w-4 h-4" />
+                </a>
                 <div className="flex items-start gap-3 rounded-lg px-4 py-3" style={{ backgroundColor: "var(--t-surface-alt, rgba(255,255,255,0.03))" }}>
                   <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--t-text-muted)" }} />
                   <div>
