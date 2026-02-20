@@ -347,7 +347,7 @@ export default function Layout({ user, onLogout }) {
       <div className="flex-1 flex flex-col min-w-0 relative">
         {/* Top Header */}
         <header 
-          className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 border-b backdrop-blur-xl"
+          className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 border-b backdrop-blur-xl relative z-50"
           style={{ backgroundColor: "var(--t-header-bg)", borderColor: "var(--t-border)" }}
         >
           <div className="flex items-center gap-3" data-testid="header-page-title">
