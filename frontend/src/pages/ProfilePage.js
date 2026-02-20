@@ -180,7 +180,7 @@ export default function ProfilePage() {
   };
 
   const athleteSummary = [profile.athlete_name, profile.graduation_year && `Class of ${profile.graduation_year}`, profile.position].filter(Boolean).join(" · ") || "Not started";
-  const measSummary = [profile.standing_reach && `${profile.standing_reach} reach`, profile.approach_touch && `${profile.approach_touch} approach`, profile.gpa && `${profile.gpa} GPA`].filter(Boolean).join(" · ") || "Not started";
+  const measSummary = [profile.standing_reach && `${profile.standing_reach} reach`, profile.approach_touch && `${profile.approach_touch} approach`, profile.gpa && `${profile.gpa} GPA`, profile.sat_score && `${profile.sat_score} SAT`, profile.act_score && `${profile.act_score} ACT`].filter(Boolean).join(" · ") || "Not started";
   const teamSummary = [profile.club_team, profile.high_school, [profile.city, profile.state].filter(Boolean).join(", ")].filter(Boolean).join(" · ") || "Not started";
   const mediaSummary = profile.bio ? "Bio added" : "Missing bio — coaches love reading your story";
   const contactSummary = [profile.contact_email, profile.parent_name && `Coach ${profile.parent_name}`].filter(Boolean).join(" · ") || "Not started";
