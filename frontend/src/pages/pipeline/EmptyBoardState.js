@@ -199,7 +199,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         </div>
 
         {/* Hero Content */}
-        <div className="relative px-6 pt-10 pb-8 lg:px-8 lg:pt-12 lg:pb-10">
+        <div className="relative px-6 pt-7 pb-12 lg:px-8 lg:pb-14">
           <div className="absolute inset-0 pointer-events-none" style={{
             background: "radial-gradient(ellipse at 20% 50%, rgba(46,196,182,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)"
           }} />
