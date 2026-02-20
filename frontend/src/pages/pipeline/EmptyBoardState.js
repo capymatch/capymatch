@@ -239,7 +239,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               </div>
             )}
             {profileDone && !gmailConnected && (
-              <div className="mt-5 space-y-4">
+              <div className="mt-6 space-y-4">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
                   style={{ backgroundColor: "#2ec4b6", color: "white" }}
