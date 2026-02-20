@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../lib/api";
 import {
   Sparkles, ChevronRight,
-  Plus, Loader2, Mail, CheckCircle2, Shield
+  Plus, Loader2, Mail, CheckCircle2, Shield, PartyPopper
 } from "lucide-react";
 import { toast } from "sonner";
 
