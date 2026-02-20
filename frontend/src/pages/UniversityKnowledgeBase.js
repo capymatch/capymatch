@@ -355,15 +355,24 @@ export default function UniversityKnowledgeBase() {
   })();
   const curatedNames = new Set(curatedTop15.map(s => s.university_name));
 
-  // Sort by match score desc (schools with scores first), then alphabetically
+  // Only top 5 suggestions get visible match scores
+  const top5Names = new Set(suggestions.slice(0, 5).map(s => s.university_name));
+
+  // Sort: top 5 first (by score), then rest alphabetically
   let filtered = [...universities].sort((a, b) => {
-    const sa = suggestionMap[a.university_name]?.match_score || 0;
-    const sb = suggestionMap[b.university_name]?.match_score || 0;
-    if (sb !== sa) return sb - sa;
+    const aTop5 = top5Names.has(a.university_name);
+    const bTop5 = top5Names.has(b.university_name);
+    if (aTop5 && !bTop5) return -1;
+    if (!aTop5 && bTop5) return 1;
+    if (aTop5 && bTop5) {
+      const sa = suggestionMap[a.university_name]?.match_score || 0;
+      const sb = suggestionMap[b.university_name]?.match_score || 0;
+      return sb - sa;
+    }
     return a.university_name.localeCompare(b.university_name);
   });
-  if (activeBucket === "foryou") {
-    filtered = filtered.filter(u => curatedNames.has(u.university_name));
+  if (activeBucket === "dream") {
+    filtered = filtered.filter(u => u.division === "D1");
   } else if (activeBucket === "strong") {
     filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
