@@ -116,6 +116,9 @@ export default function ProfilePage() {
   const saveTimer = useRef(null);
   const profileRef = useRef(profile);
   profileRef.current = profile;
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const fromOnboarding = searchParams.get("from") === "onboarding";
 
   useEffect(() => {
     Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
