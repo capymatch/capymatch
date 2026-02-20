@@ -132,7 +132,12 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
           <div className="rounded-xl p-3 sm:p-3.5" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
             <div className="text-[11px] font-bold text-white/60 mb-1">Why this school?</div>
             <div className="text-[12px] text-white/40 leading-relaxed">
-              Strong match across {school.match_reasons.join(", ").toLowerCase()}. This program aligns well with your recruiting profile and preferences.
+              {school.match_reasons.some(r => ["Strong Academic Fit", "Good Academic Fit"].includes(r))
+                ? `Strong match across ${school.match_reasons.join(", ").toLowerCase()}. This program aligns well with your recruiting profile and preferences.`
+                : school.match_reasons.some(r => ["Slight Reach", "Reach", "High Reach"].includes(r))
+                ? `Matches your preferences in ${school.match_reasons.filter(r => !["Slight Reach", "Reach", "High Reach"].includes(r)).join(", ").toLowerCase()}, but is an academic reach based on your test scores.`
+                : `Matches your preferences in ${school.match_reasons.join(", ").toLowerCase()}.`
+              }
             </div>
           </div>
         )}
@@ -144,9 +149,17 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
         </div>
         {school.match_reasons?.length > 0 && (
           <div className="hidden sm:grid grid-cols-2 gap-1.5 w-full">
-            {school.match_reasons.map(r => (
-              <span key={r} className="text-[10px] px-2 py-1 rounded-md text-white/40 text-center" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" }}>{r}</span>
-            ))}
+            {school.match_reasons.map(r => {
+              const isReach = ["Reach", "High Reach"].includes(r);
+              const isSlightReach = r === "Slight Reach";
+              return (
+                <span key={r} className={`text-[10px] px-2 py-1 rounded-md text-center ${
+                  isReach ? "text-red-400 bg-red-900/20 border-red-800/30" :
+                  isSlightReach ? "text-amber-400 bg-amber-900/20 border-amber-800/30" :
+                  "text-white/40"
+                }`} style={(!isReach && !isSlightReach) ? { backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.06)" } : { border: "1px solid" }}>{r}</span>
+              );
+            })}
           </div>
         )}
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
