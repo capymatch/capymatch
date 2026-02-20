@@ -57,6 +57,7 @@ app.include_router(scorecard_router)
 app.include_router(coach_scraper_router)
 app.include_router(team_router)
 app.include_router(notes_router)
+app.include_router(inbound_contacts_router)
 
 
 # ─── Stripe Webhook (must be outside router prefix) ───
