@@ -761,10 +761,7 @@ export default function RecruitingBoard() {
       )}
       {/* Empty Board */}
       {total === 0 && (
-        <>
-          <EmptyBoardState onSchoolAdded={fetchPrograms} />
-          <SuggestedSchoolsSection navigate={navigate} onSchoolAdded={fetchPrograms} boardNames={boardNames} />
-        </>
+        <EmptyBoardState onSchoolAdded={fetchPrograms} />
       )}
 
       {/* Top: Ring + Hero */}
