@@ -49,13 +49,10 @@ export default function SettingsPage() {
 
   const handleConsentAndConnect = async () => {
     setShowConsentModal(false);
-    const authWindow = window.open('about:blank', '_blank');
     try {
       await api.put("/privacy/preferences", { gmail_consent_given: true });
-      const res = await api.get("/gmail/connect?return_to=/settings");
-      authWindow.location.href = res.data.auth_url;
+      window.open(`${process.env.REACT_APP_BACKEND_URL}/api/gmail/connect?return_to=/settings`, '_blank');
     } catch {
-      if (authWindow) authWindow.close();
       toast.error("Failed to start Gmail connection");
     }
   };

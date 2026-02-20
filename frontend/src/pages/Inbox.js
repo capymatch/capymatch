@@ -459,15 +459,9 @@ export default function Inbox() {
     setShowCompose(true);
   };
 
-  const handleConnect = async () => {
-    const authWindow = window.open('about:blank', '_blank');
-    try {
-      const res = await api.get("/gmail/connect");
-      authWindow.location.href = res.data.auth_url;
-    } catch {
-      if (authWindow) authWindow.close();
-      toast.error("Failed to start Gmail connection");
-    }
+  const handleConnect = () => {
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/gmail/connect?return_to=/inbox`;
+    window.open(url, '_blank');
   };
 
   // ─── Not Connected State ───
