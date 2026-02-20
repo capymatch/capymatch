@@ -266,6 +266,16 @@ export default function ProfilePage() {
           <Field testId="field-wingspan" label="Wingspan" value={profile.wingspan} onChange={v => updateField("wingspan", v)} />
           <Field testId="field-gpa" label="GPA" value={profile.gpa} onChange={v => updateField("gpa", v)} coachVisible />
         </div>
+        <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--t-border)" }}>
+          <div className="flex items-center gap-1.5 mb-2">
+            <EyeOff className="w-3 h-3" style={{ color: "#ef4444" }} />
+            <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#ef4444" }}>Private — Coaches cannot see these</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            <Field testId="field-sat-score" label="SAT Score" value={profile.sat_score} onChange={v => updateField("sat_score", v ? parseInt(v) || v : "")} placeholder="e.g. 1200" type="number" privateField />
+            <Field testId="field-act-score" label="ACT Score" value={profile.act_score} onChange={v => updateField("act_score", v ? parseInt(v) || v : "")} placeholder="e.g. 28" type="number" privateField />
+          </div>
+        </div>
       </SectionCard>
 
       {/* Section: Team & Location */}
