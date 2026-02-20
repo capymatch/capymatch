@@ -328,6 +328,33 @@ export default function UniversityKnowledgeBase() {
   const suggestionMap = {};
   suggestions.forEach(s => { suggestionMap[s.university_name] = s; });
 
+  // Curate Top 15: smart mix of strong fits, reach schools, and safe schools
+  const curatedTop15 = (() => {
+    if (!suggestions.length) return [];
+    const strong = [];
+    const reach = [];
+    const safe = [];
+    suggestions.forEach(s => {
+      const r = s.match_reasons || [];
+      if (r.includes("Strong Academic Fit") || r.includes("Good Academic Fit")) {
+        strong.push(s);
+      } else if (r.includes("Reach") || r.includes("High Reach")) {
+        reach.push(s);
+      } else {
+        safe.push(s);
+      }
+    });
+    const picks = [];
+    picks.push(...strong.slice(0, 8));
+    picks.push(...reach.slice(0, 4));
+    picks.push(...safe.slice(0, 3));
+    const remaining = [...strong.slice(8), ...reach.slice(4), ...safe.slice(3)];
+    while (picks.length < 15 && remaining.length > 0) picks.push(remaining.shift());
+    picks.sort((a, b) => b.match_score - a.match_score);
+    return picks.slice(0, 15);
+  })();
+  const curatedNames = new Set(curatedTop15.map(s => s.university_name));
+
   // Sort by match score desc (schools with scores first), then alphabetically
   let filtered = [...universities].sort((a, b) => {
     const sa = suggestionMap[a.university_name]?.match_score || 0;
@@ -335,7 +362,9 @@ export default function UniversityKnowledgeBase() {
     if (sb !== sa) return sb - sa;
     return a.university_name.localeCompare(b.university_name);
   });
-  if (activeBucket === "strong") {
+  if (activeBucket === "foryou") {
+    filtered = filtered.filter(u => curatedNames.has(u.university_name));
+  } else if (activeBucket === "strong") {
     filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
 
