@@ -341,9 +341,7 @@ export default function SettingsPage() {
           <button
             data-testid="replay-tour-btn"
             onClick={() => {
-              localStorage.removeItem("tour_completed");
               localStorage.removeItem("pipeline_tour_done");
-              localStorage.setItem("show_tour", "true");
               window.location.href = "/board";
             }}
             className="flex items-center gap-1.5 px-3 lg:px-4 py-2 text-xs lg:text-sm rounded-xl font-medium text-white bg-teal-600 hover:bg-teal-700 transition-colors"
