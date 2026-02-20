@@ -136,7 +136,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         profileData.athlete_name = dashRes.data.athlete_name;
       }
       setProfile(profileData);
-      setSuggestions(sugRes.data?.suggestions || []);
+      setSuggestions((sugRes.data?.suggestions || []).slice(0, 15));
       setGmailConnected(gmailRes.data?.connected || false);
     }).finally(() => setLoading(false));
   }, []);
