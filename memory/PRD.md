@@ -47,6 +47,7 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - Auth: Emergent-managed Google Auth + JWT
 - AI: Claude Sonnet 4.5 via Emergent LLM Key
 - External: College Scorecard API, DuckDuckGo Search, BeautifulSoup/lxml scraping
+- Security: Fernet encryption for Gmail tokens, bcrypt for passwords, HTTPS
 
 ## Component Structure
 ```
