@@ -342,6 +342,7 @@ export default function SettingsPage() {
             data-testid="replay-tour-btn"
             onClick={() => {
               localStorage.removeItem("tour_completed");
+              localStorage.removeItem("pipeline_tour_done");
               localStorage.setItem("show_tour", "true");
               window.location.href = "/board";
             }}
