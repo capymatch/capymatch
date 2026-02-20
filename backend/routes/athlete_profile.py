@@ -329,10 +329,15 @@ def _compute_suggestion_match(school, profile):
             else:
                 score += per_priority * 0.3
 
-    # Academic fit (20 pts) — uses scorecard data when available
+    # Academic fit (20 pts) — uses scorecard data when available, division benchmarks as fallback
     total_weight += 20
     academic_score = 0
     academic_checks = 0
+
+    # Division-typical benchmarks for fallback scoring
+    DIV_SAT_BENCH = {"D1": 1150, "D2": 1050, "D3": 1100, "NAIA": 1000}
+    DIV_ACT_BENCH = {"D1": 25, "D2": 22, "D3": 24, "NAIA": 22}
+    DIV_GPA_BENCH = {"D1": 3.2, "D2": 2.9, "D3": 3.1, "NAIA": 2.8}
 
     if user_gpa:
         academic_checks += 1
@@ -348,49 +353,54 @@ def _compute_suggestion_match(school, profile):
             else:
                 academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
         else:
-            if school_div in ("D3", "NAIA"):
+            bench_gpa = DIV_GPA_BENCH.get(school_div, 3.0)
+            diff = user_gpa - bench_gpa
+            if diff >= 0.5:
+                academic_score += 1.0
+            elif diff >= 0:
                 academic_score += 0.8
-            elif school_div == "D2":
-                academic_score += 0.7 if user_gpa >= 2.8 else 0.4
+            elif diff >= -0.3:
+                academic_score += 0.5
+            elif diff >= -0.7:
+                academic_score += 0.3
             else:
-                academic_score += 0.7 if user_gpa >= 3.0 else 0.4
+                academic_score += 0.1
 
     if user_sat:
         academic_checks += 1
         sat_avg = scorecard.get("sat_avg")
-        if sat_avg:
-            diff = user_sat - sat_avg
-            if diff >= 0:
-                academic_score += 1.0
-            elif diff >= -100:
-                academic_score += 0.7
-            elif diff >= -200:
-                academic_score += 0.3
-            else:
-                academic_score += 0.1
-        else:
+        if not sat_avg:
+            sat_avg = DIV_SAT_BENCH.get(school_div, 1100)
+        diff = user_sat - sat_avg
+        if diff >= 100:
+            academic_score += 1.0
+        elif diff >= 0:
+            academic_score += 0.85
+        elif diff >= -100:
             academic_score += 0.6
+        elif diff >= -200:
+            academic_score += 0.3
+        elif diff >= -300:
+            academic_score += 0.15
+        else:
+            academic_score += 0.05
 
     if user_act:
         academic_checks += 1
         act_mid = scorecard.get("act_midpoint")
-        if act_mid:
-            diff = user_act - act_mid
-            if diff >= 0:
-                academic_score += 1.0
-            elif diff >= -3:
-                academic_score += 0.7
-            elif diff >= -6:
-                academic_score += 0.3
-            else:
-                academic_score += 0.1
+        if not act_mid:
+            act_mid = DIV_ACT_BENCH.get(school_div, 24)
+        diff = user_act - act_mid
+        if diff >= 3:
+            academic_score += 1.0
+        elif diff >= 0:
+            academic_score += 0.85
+        elif diff >= -3:
+            academic_score += 0.55
+        elif diff >= -6:
+            academic_score += 0.25
         else:
-            if school_div == "D1":
-                academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
-            elif school_div == "D2":
-                academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
-            else:
-                academic_score += 0.8
+            academic_score += 0.05
 
     if academic_checks > 0:
         avg_academic = academic_score / academic_checks
