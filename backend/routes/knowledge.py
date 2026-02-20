@@ -374,17 +374,17 @@ def _compute_match(uni, profile):
         "Great Lakes": ["Great Lakes", "Midwest"],
     }
 
-    # Division match (30 pts)
-    total_weight += 30
+    # Division match (20 pts)
+    total_weight += 20
     if pref_divisions_upper and school_div:
         if school_div in pref_divisions_upper:
-            score += 30
+            score += 20
             reasons.append("Division Match")
         elif any(("D1" in pd and school_div == "D2") or ("D2" in pd and school_div in ("D1", "D3")) for pd in pref_divisions_upper):
-            score += 12
+            score += 8
 
-    # Region match (25 pts)
-    total_weight += 25
+    # Region match (20 pts)
+    total_weight += 20
     if pref_regions:
         matched = False
         for pref_r in pref_regions:
@@ -393,14 +393,14 @@ def _compute_match(uni, profile):
                 matched = True
                 break
         if matched:
-            score += 25
+            score += 20
             reasons.append("Preferred Region")
         else:
-            score += 5
+            score += 4
 
-    # Priority alignment (25 pts)
-    total_weight += 25
-    per_priority = 25 / max(len(pref_priorities), 1)
+    # Priority alignment (20 pts)
+    total_weight += 20
+    per_priority = 20 / max(len(pref_priorities), 1)
     for pr in pref_priorities:
         pr_lower = pr.lower()
         if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
@@ -437,8 +437,8 @@ def _compute_match(uni, profile):
             else:
                 score += per_priority * 0.3
 
-    # Academic fit (20 pts) — uses scorecard data when available, division benchmarks as fallback
-    total_weight += 20
+    # Academic fit (40 pts) — uses scorecard data when available, division benchmarks as fallback
+    total_weight += 40
     academic_score = 0
     academic_checks = 0
 
@@ -511,7 +511,7 @@ def _compute_match(uni, profile):
 
     if academic_checks > 0:
         avg_academic = academic_score / academic_checks
-        score += round(avg_academic * 20)
+        score += round(avg_academic * 40)
         if avg_academic >= 0.7:
             reasons.append("Academic Fit")
 
