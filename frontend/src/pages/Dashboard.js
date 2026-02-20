@@ -235,6 +235,7 @@ export default function Dashboard() {
   const [gmailConnected, setGmailConnected] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [spotlightExpanded, setSpotlightExpanded] = useState(false);
+  const [inboundContacts, setInboundContacts] = useState([]);
   const { subscription } = useSubscription();
   const navigate = useNavigate();
 
