@@ -133,7 +133,7 @@ export default function AthleteProfileQuiz() {
     setAnswers(p => ({ ...p, [q.id]: allValues }));
   };
 
-  const canProceed = isIntro ? true : (q?.type === "single" ? !!current : (current?.length || 0) > 0);
+  const canProceed = isIntro ? true : (q?.type === "single" ? !!current : q?.type === "input_group" ? !!(current?.gpa || current?.act_score || current?.sat_score) : (current?.length || 0) > 0);
 
   const next = () => {
     if (isIntro) {
