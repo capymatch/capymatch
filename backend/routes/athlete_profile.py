@@ -82,10 +82,16 @@ async def get_match_scores(request: Request):
         "Horizon": "Midwest", "GLVC": "Midwest", "South Central": "Southwest",
     }
 
-    pref_division = (profile.get("division") or "").lower()
+    pref_divisions = profile.get("division") or []
+    # Handle legacy single-value division field
+    if isinstance(pref_divisions, str):
+        pref_divisions = [pref_divisions] if pref_divisions else []
+    pref_divisions_lower = [d.lower() for d in pref_divisions]
     pref_regions = profile.get("regions") or []
     pref_priorities = profile.get("priorities") or []
-    pref_size = profile.get("school_size") or ""
+    user_gpa = profile.get("gpa")
+    user_act = profile.get("act_score")
+    user_sat = profile.get("sat_score")
 
     scores = []
     for p in programs:
@@ -96,14 +102,12 @@ async def get_match_scores(request: Request):
         # Division match (30 pts)
         total_weight += 30
         prog_div = (p.get("division") or "").lower()
-        if pref_division and prog_div:
-            if pref_division in prog_div or prog_div in pref_division:
+        if pref_divisions_lower and prog_div:
+            if any(pd in prog_div or prog_div in pd for pd in pref_divisions_lower):
                 score += 30
-                match_reasons.append("Division")
-            elif "d1" in pref_division and "d2" in prog_div:
-                score += 10
-            elif "d2" in pref_division and "d1" in prog_div:
-                score += 15
+                match_reasons.append("Division Match")
+            elif any(("d1" in pd and "d2" in prog_div) or ("d2" in pd and "d1" in prog_div) for pd in pref_divisions_lower):
+                score += 12
 
         # Region match (25 pts)
         total_weight += 25
@@ -112,20 +116,18 @@ async def get_match_scores(request: Request):
             region_name = p.get("region") or conference_regions.get(conf, "")
             if region_name in pref_regions or "open" in [r.lower() for r in pref_regions]:
                 score += 25
-                match_reasons.append("Location")
+                match_reasons.append("Preferred Region")
             elif region_name:
-                # Partial credit for adjacent regions
                 score += 8
 
-        # Priority alignment (30 pts)
-        total_weight += 30
+        # Priority alignment (25 pts)
+        total_weight += 25
         priority_score = 0
-        per_priority = 30 / max(len(pref_priorities), 1)
+        per_priority = 25 / max(len(pref_priorities), 1)
 
         for pr in pref_priorities:
             pr_lower = pr.lower()
             if "academ" in pr_lower:
-                # Strong academic programs generally in D1/D2
                 if prog_div and ("d1" in prog_div or "d2" in prog_div):
                     priority_score += per_priority
                     if "Academics" not in match_reasons:
@@ -160,17 +162,52 @@ async def get_match_scores(request: Request):
 
         score += priority_score
 
-        # School size match (15 pts)
-        total_weight += 15
-        if pref_size:
-            # Approximate - give partial credit since we don't have exact enrollment
-            score += 8  # Assume moderate match without exact data
-            if pref_size == "Large (15K+)" and "d1" in prog_div:
-                score += 7
-            elif pref_size == "Medium (5K-15K)" and ("d2" in prog_div or "d3" in prog_div):
-                score += 7
-            elif pref_size == "Small (<5K)" and ("d3" in prog_div or "naia" in prog_div):
-                score += 7
+        # Academic fit (20 pts) — based on GPA/ACT/SAT vs school admission data
+        total_weight += 20
+        academic_score = 0
+        academic_checks = 0
+        uni_data = p.get("scorecard_data") or {}
+
+        if user_gpa and uni_data.get("acceptance_rate") is not None:
+            academic_checks += 1
+            accept_rate = uni_data["acceptance_rate"]
+            if accept_rate >= 70:
+                academic_score += 1.0  # Open admission — easy fit
+            elif accept_rate >= 50:
+                academic_score += 0.85 if user_gpa >= 3.0 else 0.5
+            elif accept_rate >= 30:
+                academic_score += 0.9 if user_gpa >= 3.3 else 0.5 if user_gpa >= 2.8 else 0.2
+            else:
+                academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
+
+        if user_sat and uni_data.get("sat_avg"):
+            academic_checks += 1
+            diff = user_sat - uni_data["sat_avg"]
+            if diff >= 0:
+                academic_score += 1.0
+            elif diff >= -100:
+                academic_score += 0.7
+            elif diff >= -200:
+                academic_score += 0.3
+            else:
+                academic_score += 0.1
+
+        if user_act:
+            academic_checks += 1
+            # Estimate using division as proxy if no school-specific data
+            if "d1" in prog_div:
+                academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
+            elif "d2" in prog_div:
+                academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
+            else:
+                academic_score += 0.8
+
+        if academic_checks > 0:
+            avg_academic = academic_score / academic_checks
+            pts = round(avg_academic * 20)
+            score += pts
+            if avg_academic >= 0.7:
+                match_reasons.append("Academic Fit")
 
         # Calculate percentage
         pct = round((score / total_weight) * 100) if total_weight > 0 else 0
