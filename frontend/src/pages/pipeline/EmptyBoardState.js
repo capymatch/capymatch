@@ -292,28 +292,22 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         )}
       </div>
 
-      {/* ═══ AI Suggested Schools ═══ */}
+      {/* ═══ Top Matches Grid ═══ */}
       {profileDone && gmailConnected && suggestions.length > 0 && (
-        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="ai-suggestions">
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(168,85,247,0.12)" }}>
-                <Sparkles className="w-4 h-4" style={{ color: "#a855f7" }} strokeWidth={2} />
+        <div data-testid="ai-suggestions">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#2ec4b6]" />
+                <span className="text-[14px] font-bold" style={{ color: "var(--t-text)" }}>Top matches for you</span>
               </div>
-              <div>
-                <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-                  {firstName ? `Matched for ${firstName}` : "Matched for You"}
-                </h3>
-                <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                  Based on your profile{divPref ? `: ${divPref}` : ""}{regionPref ? ` · ${regionPref}` : ""}
-                </p>
-              </div>
+              <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Based on your profile and preferences. Scores reflect academic realism.</p>
             </div>
-            <button onClick={() => navigate("/knowledge-base?tab=recommended")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="view-all-matches-btn">
-              View all matches <ChevronRight className="w-3 h-3" />
+            <button onClick={() => navigate("/knowledge-base")} className="text-[11px] font-medium" style={{ color: "#2ec4b6" }} data-testid="see-all-schools">
+              See all schools
             </button>
           </div>
-          <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {suggestions.map(s => (
               <SuggestionCard
                 key={s.university_name}
@@ -322,12 +316,6 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 adding={addingSchool === s.university_name}
               />
             ))}
-          </div>
-          <div className="flex items-center justify-center gap-2 px-5 py-3.5 border-t" style={{ borderColor: "var(--t-border)" }}>
-            <CheckCircle className="w-3.5 h-3.5" style={{ color: "#10b981" }} />
-            <span className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-              Families using Recruiting HQ track an average of 12 schools and send their first coach email within 48 hours.
-            </span>
           </div>
         </div>
       )}
