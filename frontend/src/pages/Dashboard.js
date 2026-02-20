@@ -246,13 +246,15 @@ export default function Dashboard() {
       api.get("/interactions"),
       api.get("/athlete-profile").catch(() => ({ data: {} })),
       api.get("/gmail/status").catch(() => ({ data: { connected: false } })),
+      api.get("/inbound-contacts").catch(() => ({ data: { contacts: [] } })),
     ])
-      .then(([progRes, evtRes, intRes, profRes, gmailRes]) => {
+      .then(([progRes, evtRes, intRes, profRes, gmailRes, inboundRes]) => {
         setPrograms(progRes.data || []);
         setEvents(evtRes.data || []);
         setInteractions(Array.isArray(intRes.data) ? intRes.data : []);
         setProfile(profRes.data);
         setGmailConnected(gmailRes.data?.connected || false);
+        setInboundContacts(inboundRes.data?.contacts || []);
       })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
