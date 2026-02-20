@@ -186,7 +186,7 @@ export default function LoginPage({ onAuth }) {
                 disabled={loading}
                 data-testid="auth-submit-btn"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #6b1530 0%, #a83262 50%, #d4577e 100%)" }}
+                style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #2ec4b6 100%)" }}
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
