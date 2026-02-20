@@ -5,7 +5,7 @@ export function GettingStartedChecklist({ program, coaches, timeline, profileCom
   const navigate = useNavigate();
   const steps = [
     { key: "added", label: `Add ${program.university_name} to your pipeline`, desc: `School added on ${new Date(program.created_at || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, done: true, action: null },
-    { key: "profile", label: "Complete your athlete profile", desc: "Name, position, height, grad year, and video link — AI uses this for emails", done: profileComplete, action: () => navigate("/profile") },
+    { key: "profile", label: "Complete your athlete profile", desc: "Name, position, height, grad year, and video link — AI uses this for emails", done: profileComplete, action: () => navigate(`/profile?from=journey&school=${encodeURIComponent(program.university_name)}&pid=${program.program_id}`) },
     { key: "coach", label: "Add the head coach's contact info", desc: "Find their name and email on the school's volleyball staff page", done: coaches.some(c => c.email), action: onAddCoach },
     { key: "notes", label: "Write a note about why you like this school", desc: "Personal notes help you compare schools later — only you can see them", done: notesCount > 0, action: onOpenNotes },
     { key: "email", label: "Send your first introduction email", desc: "Make a great first impression with a personalized intro", done: timeline.length > 0, action: onSendEmail },
