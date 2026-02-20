@@ -231,6 +231,178 @@ async def get_match_scores(request: Request):
     return {"scores": scores, "profile_exists": True}
 
 
+def _compute_suggestion_match(school, profile):
+    """Weighted match score for suggested schools — uses school-specific academic data."""
+    score = 0
+    total_weight = 0
+    reasons = []
+
+    pref_divisions = profile.get("division") or []
+    if isinstance(pref_divisions, str):
+        pref_divisions = [pref_divisions] if pref_divisions else []
+    pref_divisions_upper = [d.upper() for d in pref_divisions]
+    pref_regions = profile.get("regions") or []
+    pref_priorities = profile.get("priorities") or []
+    user_gpa = profile.get("gpa")
+    user_act = profile.get("act_score")
+    user_sat = profile.get("sat_score")
+
+    school_div = (school.get("division") or "").upper()
+    school_region = school.get("region") or ""
+    scorecard = school.get("scorecard") or {}
+
+    region_aliases = {
+        "West Coast": ["West"], "West": ["West"],
+        "Mountain West": ["West", "Central"],
+        "Southwest": ["South", "South Central"],
+        "South": ["South", "South Central", "Southeast"],
+        "South Central": ["South", "South Central"],
+        "Northeast": ["Northeast", "East", "Atlantic"],
+        "East": ["East", "Atlantic", "Northeast"],
+        "Atlantic": ["Atlantic", "East"],
+        "Southeast": ["Southeast", "South"],
+        "Midwest": ["Midwest", "Great Lakes", "Central"],
+        "Central": ["Central", "Midwest"],
+        "Great Lakes": ["Great Lakes", "Midwest"],
+    }
+
+    # Division match (30 pts)
+    total_weight += 30
+    if pref_divisions_upper and school_div:
+        if school_div in pref_divisions_upper:
+            score += 30
+            reasons.append("Division Match")
+        elif any(("D1" in pd and school_div == "D2") or ("D2" in pd and school_div in ("D1", "D3")) for pd in pref_divisions_upper):
+            score += 12
+
+    # Region match (25 pts)
+    total_weight += 25
+    if pref_regions:
+        matched = False
+        for pref_r in pref_regions:
+            aliases = region_aliases.get(pref_r, [pref_r])
+            if school_region in aliases or school_region == pref_r:
+                matched = True
+                break
+        if matched:
+            score += 25
+            reasons.append("Preferred Region")
+        else:
+            score += 5
+
+    # Priority alignment (25 pts)
+    total_weight += 25
+    per_priority = 25 / max(len(pref_priorities), 1)
+    for pr in pref_priorities:
+        pr_lower = pr.lower()
+        if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
+            score += per_priority
+            if "Academics" not in reasons:
+                reasons.append("Academics")
+        elif "athlet" in pr_lower:
+            if school_div == "D1":
+                score += per_priority
+                if "Athletics" not in reasons:
+                    reasons.append("Athletics")
+            elif school_div == "D2":
+                score += per_priority * 0.6
+        elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
+            score += per_priority
+            if "Scholarship" not in reasons:
+                reasons.append("Scholarship")
+        elif "location" in pr_lower:
+            for pref_r in pref_regions:
+                aliases = region_aliases.get(pref_r, [pref_r])
+                if school_region in aliases or school_region == pref_r:
+                    score += per_priority
+                    break
+        elif "campus" in pr_lower or "culture" in pr_lower:
+            score += per_priority * 0.5
+        elif "coach" in pr_lower:
+            score += per_priority * 0.5
+        elif "conference" in pr_lower:
+            if school.get("conference"):
+                score += per_priority * 0.7
+        elif "playing" in pr_lower or "roster" in pr_lower:
+            if school_div in ("D2", "D3", "NAIA"):
+                score += per_priority
+            else:
+                score += per_priority * 0.3
+
+    # Academic fit (20 pts) — uses scorecard data when available
+    total_weight += 20
+    academic_score = 0
+    academic_checks = 0
+
+    if user_gpa:
+        academic_checks += 1
+        accept_rate = scorecard.get("admission_rate")
+        if accept_rate is not None:
+            accept_pct = accept_rate * 100 if accept_rate <= 1 else accept_rate
+            if accept_pct >= 70:
+                academic_score += 1.0
+            elif accept_pct >= 50:
+                academic_score += 0.85 if user_gpa >= 3.0 else 0.5
+            elif accept_pct >= 30:
+                academic_score += 0.9 if user_gpa >= 3.3 else 0.5 if user_gpa >= 2.8 else 0.2
+            else:
+                academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
+        else:
+            if school_div in ("D3", "NAIA"):
+                academic_score += 0.8
+            elif school_div == "D2":
+                academic_score += 0.7 if user_gpa >= 2.8 else 0.4
+            else:
+                academic_score += 0.7 if user_gpa >= 3.0 else 0.4
+
+    if user_sat:
+        academic_checks += 1
+        sat_avg = scorecard.get("sat_avg")
+        if sat_avg:
+            diff = user_sat - sat_avg
+            if diff >= 0:
+                academic_score += 1.0
+            elif diff >= -100:
+                academic_score += 0.7
+            elif diff >= -200:
+                academic_score += 0.3
+            else:
+                academic_score += 0.1
+        else:
+            academic_score += 0.6
+
+    if user_act:
+        academic_checks += 1
+        act_mid = scorecard.get("act_midpoint")
+        if act_mid:
+            diff = user_act - act_mid
+            if diff >= 0:
+                academic_score += 1.0
+            elif diff >= -3:
+                academic_score += 0.7
+            elif diff >= -6:
+                academic_score += 0.3
+            else:
+                academic_score += 0.1
+        else:
+            if school_div == "D1":
+                academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
+            elif school_div == "D2":
+                academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
+            else:
+                academic_score += 0.8
+
+    if academic_checks > 0:
+        avg_academic = academic_score / academic_checks
+        score += round(avg_academic * 20)
+        if avg_academic >= 0.7:
+            reasons.append("Academic Fit")
+
+    pct = round((score / total_weight) * 100) if total_weight > 0 else 0
+    pct = min(pct, 99)
+    return {"score": pct, "reasons": reasons}
+
+
 @router.get("/suggested-schools")
 async def get_suggested_schools(request: Request):
     user = await get_current_user(request)
@@ -247,88 +419,13 @@ async def get_suggested_schools(request: Request):
 
     all_schools = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
 
-    pref_divisions = profile.get("division") or []
-    if isinstance(pref_divisions, str):
-        pref_divisions = [pref_divisions] if pref_divisions else []
-    pref_divisions_upper = [d.upper() for d in pref_divisions]
-    pref_regions = profile.get("regions") or []
-    pref_priorities = profile.get("priorities") or []
-    pref_size = profile.get("school_size") or ""
-
-    region_aliases = {
-        "West Coast": ["West"],
-        "West": ["West"],
-        "Mountain West": ["West", "Central"],
-        "Southwest": ["South", "South Central"],
-        "South": ["South", "South Central", "Southeast"],
-        "South Central": ["South", "South Central"],
-        "Northeast": ["Northeast", "East", "Atlantic"],
-        "East": ["East", "Atlantic", "Northeast"],
-        "Atlantic": ["Atlantic", "East"],
-        "Southeast": ["Southeast", "South"],
-        "Midwest": ["Midwest", "Great Lakes", "Central"],
-        "Central": ["Central", "Midwest"],
-        "Great Lakes": ["Great Lakes", "Midwest"],
-    }
-
     suggestions = []
     for school in all_schools:
         if school["university_name"] in existing_names:
             continue
 
-        score = 0
-        reasons = []
-        school_div = (school.get("division") or "").upper()
-        school_region = school.get("region") or ""
-
-        if pref_divisions_upper and school_div:
-            if school_div in pref_divisions_upper:
-                score += 40
-                reasons.append("Division Match")
-            elif any(("D1" in pd and school_div == "D2") or ("D2" in pd and school_div in ("D1", "D3")) for pd in pref_divisions_upper):
-                score += 15
-
-        if pref_regions:
-            matched = False
-            for pref_r in pref_regions:
-                aliases = region_aliases.get(pref_r, [pref_r])
-                if school_region in aliases or school_region == pref_r:
-                    matched = True
-                    break
-            if matched:
-                score += 30
-                reasons.append("Preferred Region")
-            else:
-                score += 5
-
-        for pr in pref_priorities:
-            pr_lower = pr.lower()
-            if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
-                score += 8
-                if "Academics" not in reasons:
-                    reasons.append("Academics")
-            elif "athlet" in pr_lower:
-                if school_div == "D1":
-                    score += 8
-                    if "Athletics" not in reasons:
-                        reasons.append("Athletics")
-                elif school_div == "D2":
-                    score += 5
-            elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
-                score += 8
-                if "Scholarship" not in reasons:
-                    reasons.append("Scholarship")
-
-        if pref_size:
-            if pref_size == "Large (15K+)" and school_div == "D1":
-                score += 5
-            elif pref_size == "Medium (5K-15K)" and school_div in ("D2", "D3"):
-                score += 5
-            elif pref_size == "Small (<5K)" and school_div in ("D3", "NAIA"):
-                score += 5
-
-        if score > 20:
-            pct = min(round(score), 99)
+        match = _compute_suggestion_match(school, profile)
+        if match["score"] > 20:
             suggestions.append({
                 "university_name": school.get("university_name"),
                 "division": school.get("division"),
@@ -337,8 +434,8 @@ async def get_suggested_schools(request: Request):
                 "website": school.get("website"),
                 "domain": school.get("domain"),
                 "mascot": school.get("mascot"),
-                "match_score": pct,
-                "match_reasons": reasons,
+                "match_score": match["score"],
+                "match_reasons": match["reasons"],
             })
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
