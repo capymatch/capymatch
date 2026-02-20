@@ -173,6 +173,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="highlight-advisor" element={<HighlightAdvisor />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="privacy" element={<PrivacyPolicyPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
       </Route>
