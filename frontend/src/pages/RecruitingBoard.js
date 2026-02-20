@@ -857,6 +857,11 @@ export default function RecruitingBoard() {
           No schools in {STAGES[activeFilter]?.label || activeFilter}
         </div>
       )}
+
+      {/* Top 15 Suggested Schools */}
+      {total > 0 && (
+        <SuggestedSchoolsSection navigate={navigate} onSchoolAdded={fetchPrograms} boardNames={boardNames} />
+      )}
     </div>
   );
 }
