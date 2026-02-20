@@ -274,10 +274,6 @@ export default function UniversityKnowledgeBase() {
       toast.success(`${uni.university_name} added to your board`);
       setSuggestions(prev => prev.filter(s => s.university_name !== uni.university_name));
       setBoardSchools(prev => new Set([...prev, uni.university_name]));
-      if (!localStorage.getItem("tour_completed")) {
-        localStorage.setItem("show_tour", "true");
-        window.dispatchEvent(new Event("trigger_tour"));
-      }
       if (fromOnboarding) navigate("/pipeline?congrats=true");
     } catch (err) {
       const detail = err.response?.data?.detail;
