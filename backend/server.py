@@ -222,8 +222,8 @@ async def check_coach_replies():
 # ─── Background Task: Inbound Coach Contact Scanner ───
 
 async def scan_inbound_contacts():
-    """Background task that scans for inbound coach emails every 2 hours."""
-    from routes.inbound_contacts import scan_inbound_for_user
+    """Background task that scans for inbound coach emails and sent emails every 2 hours."""
+    from routes.inbound_contacts import scan_inbound_for_user, scan_sent_emails_for_user
 
     while True:
         try:
@@ -244,8 +244,12 @@ async def scan_inbound_contacts():
                     if new_count > 0:
                         logger.info(f"Inbound scan: Added {new_count} new school(s) for user {user_id}")
 
+                    sent_count = await scan_sent_emails_for_user(user_id, tenant_id)
+                    if sent_count > 0:
+                        logger.info(f"Sent scan: Logged {sent_count} sent email(s) for user {user_id}")
+
                 except Exception as e:
-                    logger.error(f"Inbound scan error for user {user_id}: {e}")
+                    logger.error(f"Email scan error for user {user_id}: {e}")
                     continue
 
         except asyncio.CancelledError:
