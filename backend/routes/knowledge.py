@@ -607,3 +607,108 @@ async def start_bulk_discover():
 async def get_bulk_discover_status():
     """Check progress of bulk questionnaire discovery."""
     return _bulk_status
+
+
+# ═══ Bulk Scorecard + GPA Enrichment ═══
+_enrich_status = {"running": False, "processed": 0, "scorecard_filled": 0, "gpa_filled": 0, "failed": 0, "total": 0}
+
+
+async def _extract_gpa_from_search(school_name):
+    """Search for a school's average incoming GPA via DuckDuckGo and extract it."""
+    try:
+        query = f"{school_name} average GPA incoming freshmen admitted students"
+        async with httpx.AsyncClient(timeout=15) as client:
+            resp = await client.get("https://html.duckduckgo.com/html/", params={"q": query},
+                                    headers={"User-Agent": "Mozilla/5.0"}, follow_redirects=True)
+            if resp.status_code != 200:
+                return None
+            text = resp.text
+            # Extract GPA values from search snippets (look for patterns like "3.5 GPA", "GPA of 3.5", "average GPA is 3.50")
+            patterns = [
+                r'(?:average|avg|mean|median)[\s\w]*?GPA[\s\w]*?(?:is|of|was|:)?\s*(\d\.\d{1,2})',
+                r'GPA[\s\w]*?(?:is|of|was|:)?\s*(\d\.\d{1,2})',
+                r'(\d\.\d{1,2})\s*(?:GPA|grade point)',
+                r'(?:average|avg|mean|median)\s+(?:weighted|unweighted)?\s*GPA\s*(?:is|of|was|:)?\s*(\d\.\d{1,2})',
+            ]
+            for pattern in patterns:
+                matches = re.findall(pattern, text, re.IGNORECASE)
+                for m in matches:
+                    gpa = float(m)
+                    if 2.0 <= gpa <= 4.0:
+                        return gpa
+    except Exception as e:
+        logger.warning(f"GPA search failed for {school_name}: {e}")
+    return None
+
+
+async def _bulk_enrich_schools():
+    """Background task: fetch College Scorecard data and scrape average GPA for all schools."""
+    global _enrich_status
+    _enrich_status = {"running": True, "processed": 0, "scorecard_filled": 0, "gpa_filled": 0, "failed": 0, "total": 0}
+
+    all_schools = await db.university_knowledge_base.find(
+        {}, {"_id": 0, "domain": 1, "university_name": 1, "scorecard": 1}
+    ).to_list(5000)
+
+    _enrich_status["total"] = len(all_schools)
+    logger.info(f"Bulk enrichment started for {len(all_schools)} schools")
+
+    for school in all_schools:
+        domain = school.get("domain", "")
+        name = school.get("university_name", "")
+        scorecard = school.get("scorecard") or {}
+        updates = {}
+
+        try:
+            # Step 1: Fetch College Scorecard data if missing
+            if not scorecard.get("synced_at"):
+                new_scorecard = await _fetch_scorecard_for_school(school)
+                if new_scorecard:
+                    scorecard = new_scorecard
+                    updates["scorecard"] = new_scorecard
+                    _enrich_status["scorecard_filled"] += 1
+
+            # Step 2: Scrape average GPA if not already present
+            if not scorecard.get("avg_gpa"):
+                gpa = await _extract_gpa_from_search(name)
+                if gpa:
+                    if "scorecard" not in updates:
+                        updates["scorecard"] = scorecard
+                    updates["scorecard"]["avg_gpa"] = gpa
+                    _enrich_status["gpa_filled"] += 1
+
+            if updates:
+                await db.university_knowledge_base.update_one(
+                    {"domain": domain}, {"$set": updates}
+                )
+
+        except Exception as e:
+            _enrich_status["failed"] += 1
+            logger.warning(f"Enrichment failed for {name}: {e}")
+
+        _enrich_status["processed"] += 1
+
+        if _enrich_status["processed"] % 50 == 0:
+            logger.info(f"Enrich progress: {_enrich_status['processed']}/{_enrich_status['total']} "
+                        f"(scorecard: {_enrich_status['scorecard_filled']}, gpa: {_enrich_status['gpa_filled']})")
+
+        # Throttle: 3s between schools to respect rate limits
+        await asyncio.sleep(3)
+
+    _enrich_status["running"] = False
+    logger.info(f"Bulk enrichment complete: scorecard={_enrich_status['scorecard_filled']}, gpa={_enrich_status['gpa_filled']}")
+
+
+@router.post("/knowledge-base/bulk-enrich")
+async def start_bulk_enrich(request: Request):
+    """Trigger bulk College Scorecard + GPA enrichment for all schools."""
+    if _enrich_status["running"]:
+        return {"status": "already_running", **_enrich_status}
+    asyncio.create_task(_bulk_enrich_schools())
+    return {"status": "started", "message": "Bulk enrichment started in background"}
+
+
+@router.get("/knowledge-base/bulk-enrich-status")
+async def get_bulk_enrich_status():
+    """Check progress of bulk enrichment."""
+    return _enrich_status
