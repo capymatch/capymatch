@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
-import { Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles } from "lucide-react";
+import { Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles, Shield, Download, Trash2, Eye, ExternalLink } from "lucide-react";
 import api, { BACKEND_URL } from "../lib/api";
 import { toast } from "sonner";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import TeamSection from "../components/TeamSection";
+import GmailConsentModal from "../components/GmailConsentModal";
 
 export default function SettingsPage() {
   const [theme, setTheme] = useState("dark");
   const [gmailStatus, setGmailStatus] = useState(null);
   const [gmailLoading, setGmailLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [privacyPrefs, setPrivacyPrefs] = useState({ inbound_email_scanning: true });
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [exporting, setExporting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const gmailResult = searchParams.get("gmail");
