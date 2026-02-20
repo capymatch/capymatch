@@ -226,7 +226,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               }
             </p>
             {!profileDone && (
-              <div className="mt-4 flex items-center gap-3">
+              <div className="mt-6 flex items-center gap-3">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
                   style={{ backgroundColor: "#2ec4b6", color: "white" }}
