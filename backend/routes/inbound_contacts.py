@@ -96,7 +96,6 @@ async def scan_inbound_for_user(user_id: str, tenant_id: str):
         headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
         from_raw = headers.get("From", "")
         subject = headers.get("Subject", "")
-        date_str = headers.get("Date", "")
 
         # Extract email address from "Name <email>" format
         from_lower = from_raw.lower()
