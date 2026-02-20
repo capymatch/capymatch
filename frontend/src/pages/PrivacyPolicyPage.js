@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
         "Your name, email, and phone number to create your account",
         "Athletic profile info (position, graduation year, GPA, test scores) to match you with schools",
         "Schools you're interested in and your recruiting activity (emails sent, interactions logged)",
-        "If you connect Gmail: email metadata (sender, subject line) to detect coach replies \u2014 we never read email content",
+        "If you connect Gmail: email metadata (sender, subject line) to detect coach replies — we never read email content",
       ],
     },
     {
