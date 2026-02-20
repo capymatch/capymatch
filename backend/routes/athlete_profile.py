@@ -27,13 +27,14 @@ async def save_recruiting_profile(request: Request):
 
     profile = {
         "tenant_id": tenant_id,
-        "position": body.get("position"),
-        "division": body.get("division"),
+        "position": body.get("position", []),
+        "division": body.get("division", []),
         "priorities": body.get("priorities", []),
         "regions": body.get("regions", []),
-        "school_size": body.get("school_size"),
+        "gpa": body.get("gpa"),
+        "act_score": body.get("act_score"),
+        "sat_score": body.get("sat_score"),
         "academic_interests": body.get("academic_interests"),
-        "scholarship_priority": body.get("scholarship_priority"),
         "questionnaire_completed": True,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
