@@ -3,7 +3,8 @@ import { Activity, ArrowRight, Mail, Sparkles, BarChart3, Calendar, Eye, Shield,
 export default function LandingPage() {
   const handleLogin = () => {
     const redirectUrl = window.location.origin + "/";
-    try { window.top.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`; } catch { window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`; }
+    const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    const a = document.createElement('a'); a.href = authUrl; a.target = '_top'; document.body.appendChild(a); a.click(); a.remove();
   };
 
   return (
