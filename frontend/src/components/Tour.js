@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { X, ArrowRight, ArrowLeft, Rocket } from "lucide-react";
+import api from "../lib/api";
 
 const TOUR_STEPS = [
   {
