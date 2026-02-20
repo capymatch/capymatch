@@ -344,6 +344,11 @@ def _compute_suggestion_match(school, profile):
     if user_gpa:
         school_avg_gpa = scorecard.get("avg_gpa")
         if school_avg_gpa:
+            try:
+                school_avg_gpa = float(school_avg_gpa)
+            except (ValueError, TypeError):
+                school_avg_gpa = None
+        if school_avg_gpa:
             # Best case: compare directly against school's published average GPA
             diff = user_gpa - school_avg_gpa
             if diff >= 0.3:
