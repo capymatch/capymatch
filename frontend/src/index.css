@@ -167,6 +167,9 @@
 ::-webkit-scrollbar-thumb { background: var(--t-border-strong); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--t-text-muted); }
 * { scrollbar-width: thin; scrollbar-color: var(--t-border-strong) transparent; }
+.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+.dark * { scrollbar-color: rgba(255,255,255,0.15) transparent; }
 
 /* Horizontal scroll for tables */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
