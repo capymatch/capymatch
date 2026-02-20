@@ -119,6 +119,9 @@ export default function ProfilePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const fromOnboarding = searchParams.get("from") === "onboarding";
+  const fromJourney = searchParams.get("from") === "journey";
+  const journeySchool = searchParams.get("school");
+  const journeyPid = searchParams.get("pid");
   const [showGateModal, setShowGateModal] = useState(false);
   const [pendingNav, setPendingNav] = useState(null);
 
