@@ -420,6 +420,20 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* ═══ Inbound Coach Contacts ═══ */}
+      {inboundContacts.length > 0 && (
+        <div className="space-y-3" data-testid="inbound-contacts-section">
+          {inboundContacts.map(c => (
+            <InboundContactCard
+              key={c.contact_id}
+              contact={c}
+              onDismiss={dismissInboundContact}
+              onView={(programId) => navigate(`/journey/${programId}`)}
+            />
+          ))}
+        </div>
+      )}
+
       {/* ═══ Section 2: Today's Actions ═══ */}
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="todays-actions">
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
