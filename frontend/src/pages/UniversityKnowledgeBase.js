@@ -249,7 +249,7 @@ export default function UniversityKnowledgeBase() {
   const [filterDivision, setFilterDivision] = useState("");
   const [filterRegion, setFilterRegion] = useState("");
   const [filterConference, setFilterConference] = useState("");
-  const [activeBucket, setActiveBucket] = useState("all");
+  const [activeBucket, setActiveBucket] = useState("foryou");
 
   const [adding, setAdding] = useState({});
   const [viewMode, setViewMode] = useState("grid");
