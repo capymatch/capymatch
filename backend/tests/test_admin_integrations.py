@@ -191,7 +191,7 @@ class TestStripeCheckoutRegression:
             f"{BASE_URL}/api/stripe/checkout",
             json={
                 "plan": "pro",
-                "origin_url": "https://match-boards.preview.emergentagent.com/settings"
+                "origin_url": "https://school-match-1.preview.emergentagent.com/settings"
             }
         )
         
