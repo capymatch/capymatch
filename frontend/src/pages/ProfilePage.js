@@ -413,16 +413,14 @@ export default function ProfilePage() {
       </div>
 
       {/* Desktop: Split-screen */}
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6">
-        <div>{editPanel}</div>
-        <div>
-          <div className="sticky top-0" style={{ paddingTop: "0.25rem" }}>
-            <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
-              <Monitor className="w-3.5 h-3.5" /> Coach's View — Live Preview
-            </div>
-            <div className="rounded-2xl overflow-y-auto shadow-lg" style={{ border: "1px solid var(--t-border)", maxHeight: "calc(100vh - 5rem)" }}>
-              <ProfilePreview profile={profile} />
-            </div>
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6" style={{ height: "calc(100vh - 5rem)" }}>
+        <div className="overflow-y-auto pr-2" style={{ scrollbarWidth: "thin" }}>{editPanel}<div className="h-8" /></div>
+        <div className="overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+          <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5 sticky top-0 py-1" style={{ color: "var(--t-text-muted)", backgroundColor: "var(--t-bg, #f5f5f5)", zIndex: 1 }}>
+            <Monitor className="w-3.5 h-3.5" /> Coach's View — Live Preview
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-lg" style={{ border: "1px solid var(--t-border)" }}>
+            <ProfilePreview profile={profile} />
           </div>
         </div>
       </div>
