@@ -460,11 +460,12 @@ export default function Inbox() {
   };
 
   const handleConnect = async () => {
+    const authWindow = window.open('about:blank', '_blank');
     try {
       const res = await api.get("/gmail/connect");
-      const url = res.data.auth_url;
-      window.open(url, '_blank');
+      authWindow.location.href = res.data.auth_url;
     } catch {
+      if (authWindow) authWindow.close();
       toast.error("Failed to start Gmail connection");
     }
   };
