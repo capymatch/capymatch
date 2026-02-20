@@ -32,18 +32,20 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 15. College Scorecard API integration
 16. Coach contact scraping
 17. Email preview/confirmation
-18. Find Schools page with match scoring
+18. Find Schools page with match scoring (differentiated 44%-99%)
 19. Dedicated school detail page
 20. Onboarding questionnaire and matching logic
 21. Automated inbound email logging (Gmail scanning)
 22. Automated sent email logging
 23. Security & Privacy overhaul (encryption, consent, data controls)
 24. Product tour (backend-stored, one-time)
+25. **Private SAT/ACT scores** — editable on Profile page, used for match scoring, hidden from coaches and public endpoints
 
 ## Recently Fixed (Feb 20, 2026)
-- **P0 FIXED**: "Find Schools" page showing no matches — `suggested-schools` endpoint crashed on list-type division field
-- **P1 FIXED**: ProgressRail visual bug — stage keys mismatched between backend and frontend. Aligned and migrated DB data
-- **IMPROVED**: Match scoring algorithm — replaced simple additive scoring (everything 86%) with weighted 100-point algorithm using school-specific academic data (admission rate, SAT avg, ACT midpoint). Scores now range 44%-99%. Premium users see scores for all 1053 schools. "Strong Match (80%+)" filter now shows 213 schools
+- **P0 FIXED**: "Find Schools" no matches bug — division stored as list caused crash
+- **P1 FIXED**: ProgressRail stage key mismatch between backend/frontend
+- **IMPROVED**: Match scoring — weighted 100-point algorithm with academic data, scores range 44%-99%
+- **ADDED**: Private SAT/ACT fields on Profile page with coach-visibility controls
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors unresolved (on hold unless requested)
