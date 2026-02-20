@@ -1,1137 +1,28 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import {
-  ArrowLeft, Send, Mail, Phone, Calendar, MapPin, Star,
-  MessageSquare, Video, Users, User, Sparkles, Loader2, ChevronDown, ChevronUp,
-  Plus, Clock, Edit2, Trash2, Save, X, ExternalLink, GraduationCap,
-  Heart, Target, AlertCircle, CheckCircle2, FileText, Zap, Lock, Crown,
-  GitCompare, ChevronRight, Paperclip, Dumbbell, Trophy, MessageCircle, Info
+  ArrowLeft, Mail, Phone, Clock, Target,
+  MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
+  Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
-import EmailPreviewModal from "../components/EmailPreviewModal";
+import {
+  ProgressRail, PulseIndicator, GettingStartedChecklist,
+  CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
+  AtAGlanceCard, StageLogModal, FloatingActionBar,
+  CoachForm, LogInteractionForm, EmailComposer,
+  FollowUpScheduler, MarkAsRepliedModal, STAGE_LABELS,
+} from "../components/journey";
 
-/* ═══════════════════════════════════════════════════════════════
-   CONSTANTS
-   ═══════════════════════════════════════════════════════════════ */
-
-const RAIL_STAGES = [
-  { key: "added", label: "Added", color: "#2ec4b6" },
-  { key: "outreach_sent", label: "Outreach", color: "#f97316" },
-  { key: "coach_replied", label: "In Conversation", color: "#eab308" },
-  { key: "campus_visit", label: "Visit", color: "#22c55e" },
-  { key: "offer", label: "Offer", color: "#10b981" },
-  { key: "committed", label: "Committed", color: "#fbbf24" },
-];
-
-const PULSE_CONFIG = {
-  active:  { color: "teal", label: "Active",     desc: "Recent activity" },
-  cooling: { color: "amber",   label: "Cooling",    desc: "7+ days since contact" },
-  cold:    { color: "gray",    label: "Going Cold",  desc: "14+ days, needs action" },
-  neutral: { color: "gray",    label: "New",         desc: "No activity yet" },
-};
-
-const CONV_CONFIG = {
-  email_sent:     { side: "right", color: "teal",   label: "Email sent" },
-  email_received: { side: "left",  color: "teal", label: "Email received" },
-  coach_reply:    { side: "left",  color: "teal", label: "Coach replied" },
-  phone_call:     { side: "right", color: "teal",   label: "Phone call" },
-  video_call:     { side: "right", color: "cyan",   label: "Video call" },
-  text_message:   { side: "right", color: "teal",   label: "Text message" },
-  camp:           { side: "center", color: "orange", label: "Camp" },
-  camp_meeting:   { side: "center", color: "orange", label: "Camp" },
-  visit:          { side: "center", color: "teal",   label: "Campus visit" },
-  campus_visit:   { side: "center", color: "teal",   label: "Campus visit" },
-  showcase:       { side: "center", color: "yellow", label: "Showcase" },
-  meeting:        { side: "center", color: "indigo", label: "Meeting" },
-  note:           { side: "right", color: "gray",   label: "Note" },
-  interaction:    { side: "right", color: "gray",   label: "Interaction" },
-  other:          { side: "right", color: "gray",   label: "Other" },
-};
-
-const BOARD_STAGE_LABELS = {
-  overdue: "Overdue", needs_outreach: "Needs Outreach",
-  waiting_on_reply: "Waiting on Reply", in_conversation: "In Conversation", archived: "Archived",
-};
-
-/* ═══════════════════════════════════════════════════════════════
-   PROGRESS RAIL
-   ═══════════════════════════════════════════════════════════════ */
-function ProgressRail({ rail, onStageClick }) {
-  if (!rail) return null;
-  const stages = rail.stages || {};
-  const active = rail.active;
-  const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === (rail.line_fill || active));
-  const TOTAL = RAIL_STAGES.length;
-  const DOT = 14;
-  const DOT_ACTIVE = 18;
-  // Track runs from center of first dot to center of last dot
-  // With flex:1, each item center is at (i+0.5)/TOTAL of container width
-  const halfStep = 100 / (TOTAL * 2); // ~8.33%
-  const fillScale = lineFillIdx > 0 ? lineFillIdx / (TOTAL - 1) : 0;
-
-  // Build gradient stops for the fill line from completed stage colors
-  const fillStops = RAIL_STAGES.slice(0, lineFillIdx + 1).map((s, i) => {
-    const pct = TOTAL === 1 ? 50 : (i / (TOTAL - 1)) * 100;
-    return `${s.color} ${pct}%`;
-  });
-  const fillGradient = fillStops.length > 1
-    ? `linear-gradient(90deg, ${fillStops.join(", ")})`
-    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#2ec4b6";
-
-  return (
-    <div data-testid="progress-rail">
-      <style>{`
-        @keyframes railPulseRing {
-          0% { transform: scale(1); opacity: 0.4; }
-          100% { transform: scale(2); opacity: 0; }
-        }
-      `}</style>
-      {/* Rail track row */}
-      <div style={{ position: "relative", height: DOT_ACTIVE + 8, display: "flex", alignItems: "center" }}>
-        {/* Background track */}
-        <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: "translateY(-50%)", height: 2, background: "rgba(255,255,255,0.06)", zIndex: 0 }} />
-        {/* Filled track — gradient across completed stages */}
-        {fillScale > 0 && (
-          <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: fillGradient, zIndex: 0, transition: "transform 0.5s ease" }} />
-        )}
-        {/* Dots */}
-        {RAIL_STAGES.map((s) => {
-          const completed = stages[s.key];
-          const isActive = s.key === active;
-          const size = isActive ? DOT_ACTIVE : DOT;
-          const stageColor = s.color;
-          return (
-            <button key={s.key} onClick={() => onStageClick(s.key)}
-              data-testid={`rail-stage-${s.key}`}
-              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0, position: "relative", zIndex: 1 }}>
-              <div style={{ position: "relative", width: size, height: size }}>
-                <div style={{
-                  width: size, height: size, borderRadius: "50%",
-                  border: `2px solid ${completed || isActive ? stageColor : "rgba(255,255,255,0.1)"}`,
-                  background: completed || isActive ? stageColor : "#1e1e2e",
-                  boxShadow: isActive ? `0 0 12px ${stageColor}66` : completed ? `0 0 8px ${stageColor}26` : "none",
-                  transition: "all 0.3s",
-                }} />
-                {isActive && (
-                  <div style={{
-                    position: "absolute", top: -4, left: -4, right: -4, bottom: -4,
-                    borderRadius: "50%", border: `2px solid ${stageColor}`,
-                    animation: "railPulseRing 2s ease-out infinite",
-                    pointerEvents: "none",
-                  }} />
-                )}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-      {/* Labels */}
-      <div style={{ display: "flex", marginTop: 6 }}>
-        {RAIL_STAGES.map((s) => {
-          const completed = stages[s.key];
-          const isActive = s.key === active;
-          return (
-            <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
-              <span style={{
-                fontSize: 10, fontWeight: isActive ? 700 : completed ? 600 : 500,
-                color: isActive ? s.color : completed ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.2)",
-              }}>{s.label}</span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PULSE INDICATOR
-   ═══════════════════════════════════════════════════════════════ */
-function PulseIndicator({ pulse }) {
-  const cfg = PULSE_CONFIG[pulse] || PULSE_CONFIG.neutral;
-  const dotColor = { teal: "bg-teal-700", amber: "bg-amber-500", gray: "bg-gray-500" }[cfg.color];
-  const ringColor = { teal: "border-teal-700", amber: "border-amber-500", gray: "border-gray-500" }[cfg.color];
-  const textColor = { teal: "text-teal-600", amber: "text-amber-400", gray: "text-gray-400" }[cfg.color];
-  return (
-    <div className="flex items-center gap-2" data-testid="pulse-indicator">
-      <span className="relative flex h-2.5 w-2.5">
-        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-40 ${dotColor}`} />
-        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor}`} />
-      </span>
-      <span className={`text-[11px] font-semibold ${textColor}`}>{cfg.label}</span>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   GETTING STARTED CHECKLIST
-   ═══════════════════════════════════════════════════════════════ */
-function GettingStartedChecklist({ program, coaches, timeline, profileComplete, notesCount, onAddCoach, onSendEmail, onOpenNotes }) {
-  const navigate = useNavigate();
-  const steps = [
-    { key: "added", label: `Add ${program.university_name} to your pipeline`, desc: `School added on ${new Date(program.created_at || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`, done: true, action: null },
-    { key: "profile", label: "Complete your athlete profile", desc: "Name, position, height, grad year, and video link — AI uses this for emails", done: profileComplete, action: () => navigate("/profile") },
-    { key: "coach", label: "Add the head coach's contact info", desc: "Find their name and email on the school's volleyball staff page", done: coaches.some(c => c.email), action: onAddCoach },
-    { key: "notes", label: "Write a note about why you like this school", desc: "Personal notes help you compare schools later — only you can see them", done: notesCount > 0, action: onOpenNotes },
-    { key: "email", label: "Send your first introduction email", desc: "Make a great first impression with a personalized intro", done: timeline.length > 0, action: onSendEmail },
-  ];
-  const doneCount = steps.filter(s => s.done).length;
-
-  return (
-    <div className="rounded-2xl border p-5 sm:p-6" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="getting-started-checklist">
-      <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>Start your {program.university_name} journey</h3>
-      <p className="text-xs mb-5" style={{ color: "var(--t-text-muted)" }}>Complete these steps to kickstart your recruiting relationship</p>
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {steps.map(s => (
-          <button key={s.key} className={`w-full flex items-center gap-3.5 p-3.5 rounded-xl border transition-all text-left ${s.done ? "opacity-50" : "hover:border-teal-700/30 hover:bg-[var(--t-surface-alt)]"}`}
-            style={{ borderColor: "var(--t-border)" }}
-            onClick={() => !s.done && s.action && s.action()} disabled={s.done}
-            data-testid={`checklist-step-${s.key}`}>
-            <div className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${s.done ? "bg-slate-500 border-slate-500" : "border-[var(--t-border)]"}`}>
-              {s.done && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-            </div>
-            <div className="min-w-0">
-              <p className={`text-sm font-medium ${s.done ? "line-through" : ""}`} style={{ color: "var(--t-text)" }}>{s.label}</p>
-              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{s.desc}</p>
-            </div>
-            {!s.done && s.action && <ChevronRight className="w-4 h-4 ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />}
-          </button>
-        ))}
-      </div>
-      <div className="flex items-center gap-3 mt-4 pt-4 border-t" style={{ borderColor: "var(--t-border)" }}>
-        <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--t-surface-alt)" }}>
-          <div className="h-full rounded-full bg-teal-700 transition-all duration-500" style={{ width: `${(doneCount / steps.length) * 100}%` }} />
-        </div>
-        <span className="text-[11px] font-semibold text-teal-700">{doneCount} of {steps.length}</span>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   COMMITTED HERO — celebratory card when athlete commits
-   ═══════════════════════════════════════════════════════════════ */
-function CommittedHero({ program }) {
-  return (
-    <div className="rounded-2xl border relative overflow-hidden"
-      style={{
-        borderColor: "rgba(251,191,36,0.3)",
-        background: "linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(16,185,129,0.06) 40%, var(--t-surface) 100%)",
-      }}
-      data-testid="committed-hero">
-      {/* Animated confetti dots */}
-      <style>{`
-        @keyframes confettiFall {
-          0% { transform: translateY(-12px) rotate(0deg); opacity: 0; }
-          10% { opacity: 1; }
-          100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        @keyframes heroGlow {
-          0%, 100% { box-shadow: 0 0 30px rgba(251,191,36,0.08); }
-          50% { box-shadow: 0 0 50px rgba(251,191,36,0.15); }
-        }
-      `}</style>
-      {/* Confetti particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[
-          { left: "8%", delay: "0s", dur: "3s", color: "#fbbf24", size: 6 },
-          { left: "18%", delay: "0.4s", dur: "3.5s", color: "#2ec4b6", size: 5 },
-          { left: "30%", delay: "0.8s", dur: "2.8s", color: "#22c55e", size: 7 },
-          { left: "45%", delay: "0.2s", dur: "3.2s", color: "#fbbf24", size: 5 },
-          { left: "58%", delay: "1s", dur: "3s", color: "#2ec4b6", size: 6 },
-          { left: "70%", delay: "0.6s", dur: "3.4s", color: "#22c55e", size: 4 },
-          { left: "82%", delay: "0.3s", dur: "2.9s", color: "#fbbf24", size: 7 },
-          { left: "92%", delay: "0.9s", dur: "3.1s", color: "#2ec4b6", size: 5 },
-        ].map((p, i) => (
-          <div key={i} style={{
-            position: "absolute", top: 0, left: p.left,
-            width: p.size, height: p.size, borderRadius: i % 2 === 0 ? "50%" : "1px",
-            backgroundColor: p.color,
-            animation: `confettiFall ${p.dur} ${p.delay} ease-in infinite`,
-          }} />
-        ))}
-      </div>
-      {/* Glow ring behind text */}
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%)" }} />
-      {/* Content */}
-      <div className="relative p-6 sm:p-8 text-center">
-        <div className="text-4xl mb-3">&#127942;</div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
-          style={{
-            background: "linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24)",
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            animation: "shimmer 3s linear infinite",
-          }}>
-          Committed
-        </p>
-        <h2 className="text-xl sm:text-2xl font-extrabold mb-2" style={{ color: "var(--t-text)" }}>
-          {program.university_name}
-        </h2>
-        <p className="text-sm mb-1" style={{ color: "var(--t-text-secondary)" }}>
-          The hard work paid off. Congratulations!
-        </p>
-        <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-          This is a moment to celebrate with your family.
-        </p>
-        {/* Gold accent line */}
-        <div className="mx-auto mt-5 h-px w-24"
-          style={{ background: "linear-gradient(90deg, transparent, #fbbf24, transparent)" }} />
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CELEBRATION HERO (In Conversation)
-   ═══════════════════════════════════════════════════════════════ */
-function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
-  const coachName = coaches?.[0]?.coach_name || "The coach";
-  const signals = program.signals || {};
-  const daysAgo = signals.days_since_reply;
-  const timeText = daysAgo === 0 ? "today" : daysAgo === 1 ? "yesterday" : `${daysAgo} days ago`;
-
-  return (
-    <div className="rounded-2xl border p-5 sm:p-6 text-center relative overflow-hidden"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(16,185,129,0.2)", background: "linear-gradient(135deg, rgba(16,185,129,0.04), var(--t-surface) 60%)" }}
-      data-testid="celebration-hero">
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%)" }} />
-      <div className="relative">
-        <div className="text-3xl mb-2">&#127881;</div>
-        <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>{coachName} is interested!</h3>
-        <p className="text-xs mb-4 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
-          Replied {timeText} — keep the momentum going:
-        </p>
-        <div className="flex gap-2.5 justify-center flex-wrap">
-          <Button className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-8 px-4 shadow-md" onClick={onEmail} data-testid="celebration-email-btn">
-            <Mail className="w-3.5 h-3.5 mr-1.5" />Send Thank You
-          </Button>
-          <Button variant="outline" className="text-xs h-8 px-4" onClick={onCall}
-            style={{ color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }} data-testid="celebration-call-btn">
-            <Phone className="w-3.5 h-3.5 mr-1.5" />Schedule Call
-          </Button>
-          <Button variant="outline" className="text-xs h-8 px-4 border-teal-700/30 text-teal-600 hover:bg-teal-700/10"
-            onClick={onLog} data-testid="celebration-log-btn">
-            <FileText className="w-3.5 h-3.5 mr-1.5" />Log a Note
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   NEXT STEP CARD — rule-based suggestions after recent activity
-   ═══════════════════════════════════════════════════════════════ */
-const NEXT_STEP_RULES = {
-  camp: {
-    icon: Dumbbell, iconColor: "#f97316", iconBg: "rgba(249,115,22,0.12)",
-    title: "How did the camp go?",
-    desc: "Log your experience and follow up with the coach while it's fresh.",
-    actions: ["email", "log", "followup"],
-  },
-  camp_meeting: {
-    icon: Dumbbell, iconColor: "#f97316", iconBg: "rgba(249,115,22,0.12)",
-    title: "How did the camp go?",
-    desc: "Log your experience and follow up with the coach while it's fresh.",
-    actions: ["email", "log", "followup"],
-  },
-  campus_visit: {
-    icon: MapPin, iconColor: "#22c55e", iconBg: "rgba(34,197,94,0.12)",
-    title: "Great visit! What's next?",
-    desc: "Send a thank you note and express your continued interest.",
-    actions: ["email", "log"],
-  },
-  phone_call: {
-    icon: Phone, iconColor: "#3b82f6", iconBg: "rgba(59,130,246,0.12)",
-    title: "Nice call! Follow up.",
-    desc: "Send a thank you email to keep the conversation going.",
-    actions: ["email", "followup"],
-  },
-  video_call: {
-    icon: Video, iconColor: "#8b5cf6", iconBg: "rgba(139,92,246,0.12)",
-    title: "Good chat! Keep the momentum.",
-    desc: "Send a follow-up email summarizing key takeaways.",
-    actions: ["email", "followup"],
-  },
-  email_sent: {
-    icon: Send, iconColor: "#0d9488", iconBg: "rgba(46,196,182,0.12)",
-    title: "Email sent! A 14-day follow-up has been set.",
-    desc: "We'll remind you if you don't hear back. In the meantime, keep logging your activities.",
-    actions: ["log"],
-  },
-  showcase: {
-    icon: Trophy, iconColor: "#fbbf24", iconBg: "rgba(251,191,36,0.12)",
-    title: "How was the showcase?",
-    desc: "Reach out to coaches you connected with while you're on their radar.",
-    actions: ["email", "log"],
-  },
-  text_message: {
-    icon: MessageCircle, iconColor: "#06b6d4", iconBg: "rgba(6,182,212,0.12)",
-    title: "Keep the conversation going.",
-    desc: "Consider scheduling a call or setting a follow-up.",
-    actions: ["followup", "log"],
-  },
-};
-
-const ACTION_BUTTONS = {
-  email:    { label: "Email Coach",        icon: Mail,     testId: "nextstep-email" },
-  log:      { label: "Log Notes",          icon: FileText, testId: "nextstep-log" },
-  followup: { label: "Schedule Follow-up", icon: Clock,    testId: "nextstep-followup" },
-};
-
-function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFollowup, onDismiss }) {
-  const evtType = (latestEvent?.event_type || latestEvent?.type || "").toLowerCase().replace(/\s+/g, "_");
-  const rule = NEXT_STEP_RULES[evtType];
-  if (!rule) return null;
-
-  const actionHandlers = { email: onEmail, log: onLog, followup: onFollowup };
-
-  return (
-    <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ borderColor: "rgba(46,196,182,0.3)", background: "#1e1e2e" }}
-      data-testid="next-step-card">
-      <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: "rgba(255,255,255,0.35)" }}
-        data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-          style={{ backgroundColor: rule.iconBg }}>
-          <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#2ec4b6" }}>What's Next</p>
-          <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>{rule.title}</h3>
-          <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{rule.desc}</p>
-          <div className="flex gap-2 flex-wrap">
-            {rule.actions.map(key => {
-              const btn = ACTION_BUTTONS[key];
-              const Icon = btn.icon;
-              return (
-                <Button key={key} size="sm" variant={key === rule.actions[0] ? "default" : "outline"}
-                  className={`text-xs h-8 px-3 ${key === rule.actions[0] ? "bg-teal-700 hover:bg-teal-800 text-white shadow-md" : ""}`}
-                  style={key !== rule.actions[0] ? { color: "rgba(255,255,255,0.6)", borderColor: "rgba(255,255,255,0.1)" } : undefined}
-                  onClick={actionHandlers[key]} data-testid={btn.testId}>
-                  <Icon className="w-3.5 h-3.5 mr-1.5" />{btn.label}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   CONVERSATION TIMELINE
-   ═══════════════════════════════════════════════════════════════ */
-function ConversationBubble({ event }) {
-  const [expanded, setExpanded] = useState(false);
-  const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
-  const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
-  const formatDate = (d) => {
-    try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
-    catch { return d; }
-  };
-  const content = event.content || event.notes || "";
-  const hasLong = content.length > 150;
-
-  // Milestone (center)
-  if (cfg.side === "center") {
-    return (
-      <div className="flex justify-center my-2" data-testid="conv-milestone">
-        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-          <div className={`w-7 h-7 rounded-lg flex items-center justify-center bg-${cfg.color}-500/10`}>
-            {evtType === "camp" || evtType === "camp_meeting" ? <span className="text-base">🏋️</span>
-            : evtType === "visit" || evtType === "campus_visit" ? <MapPin className={`w-3.5 h-3.5 text-${cfg.color}-400`} />
-            : <Star className={`w-3.5 h-3.5 text-${cfg.color}-400`} />}
-          </div>
-          <div>
-            <p className="text-xs font-semibold" style={{ color: "var(--t-text)" }}>{event.title || cfg.label}</p>
-            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Chat bubble — left (coach) or right (you)
-  const isRight = cfg.side === "right";
-  return (
-    <div className={`flex ${isRight ? "justify-end" : "justify-start"} my-1`} data-testid={`conv-bubble-${isRight ? "right" : "left"}`}>
-      <div className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-3 border ${
-        isRight
-          ? "rounded-br-md bg-teal-800/[0.10] border-teal-700/25"
-          : "rounded-bl-md bg-teal-700/[0.08] border-slate-500/20"
-      }`}>
-        <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-teal-700" : "text-slate-500"}`}>
-          {isRight ? "You" : (event.coach_name || "Coach")}
-        </p>
-        {content && (
-          <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-            {hasLong && !expanded ? (
-              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-teal-700 text-[10px] mt-1 font-medium">Show more</button></>
-            ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-teal-700 text-[10px] mt-1 font-medium">Show less</button></>
-            ) : <p>{content}</p>}
-          </div>
-        )}
-        {!content && <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{event.title || cfg.label}</p>}
-        <p className="text-[10px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)} &middot; {cfg.label}</p>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   AT A GLANCE SIDEBAR
-   ═══════════════════════════════════════════════════════════════ */
-function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId, onDraftEmail, onAddCoach, onScheduleFollowup }) {
-  const signals = program.signals || {};
-  const boardGroup = program.board_group;
-  const stageLabel = BOARD_STAGE_LABELS[boardGroup] || boardGroup;
-  const stageColors = {
-    overdue: "bg-slate-500/12 text-teal-600", needs_outreach: "bg-amber-500/12 text-amber-400",
-    waiting_on_reply: "bg-blue-500/12 text-blue-400", in_conversation: "bg-slate-500/12 text-teal-600",
-    archived: "bg-gray-500/12 text-gray-400",
-  };
-
-  // AI summary
-  const [aiSummary, setAiSummary] = useState(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-
-  const generateAI = async () => {
-    if (!isPremium) return;
-    setAiLoading(true);
-    try {
-      const res = await api.post("/ai/journey-summary", { program_id: programId });
-      setAiSummary(res.data);
-    } catch { toast.error("Failed to generate insights"); }
-    finally { setAiLoading(false); }
-  };
-
-  return (
-    <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", display: "flex", flexDirection: "column", gap: "14px" }} data-testid="at-a-glance">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>At a Glance</h3>
-        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${stageColors[boardGroup] || stageColors.needs_outreach}`}>{stageLabel}</span>
-      </div>
-
-      {/* Key stats */}
-      <div className="grid grid-cols-2 gap-2">
-        {signals.has_coach_reply ? (
-          <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Replied</p>
-            <p className="text-sm font-bold text-teal-600">{signals.days_since_reply === 0 ? "Today" : `${signals.days_since_reply}d ago`}</p>
-          </div>
-        ) : (
-          <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Outreach</p>
-            <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{signals.outreach_count || 0} sent</p>
-          </div>
-        )}
-        <div className="p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Events</p>
-          <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{signals.total_interactions || 0}</p>
-        </div>
-      </div>
-
-      {/* Primary Coach */}
-      {coaches.length > 0 ? (
-        <div className="flex items-center gap-3 p-2.5 rounded-lg border" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-          <div className="w-8 h-8 rounded-lg bg-teal-700/15 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-bold text-teal-700">{coaches[0].coach_name?.split(" ").map(w => w[0]).join("").slice(0, 2)}</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold truncate" style={{ color: "var(--t-text)" }}>{coaches[0].coach_name}</p>
-            {coaches[0].email && <p className="text-[10px] text-teal-700 truncate">{coaches[0].email}</p>}
-            {!coaches[0].email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{coaches[0].role}</p>}
-          </div>
-          {coaches.length > 1 && <span className="text-[10px] ml-auto flex-shrink-0" style={{ color: "var(--t-text-muted)" }}>+{coaches.length - 1}</span>}
-        </div>
-      ) : (
-        <button onClick={onAddCoach} className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-dashed text-xs transition-colors hover:border-teal-700/30"
-          style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }} data-testid="glance-add-coach">
-          <Plus className="w-3.5 h-3.5" /> Add coach contact
-        </button>
-      )}
-
-      {/* Follow-up */}
-      {program.next_action_due && (
-        <div className="p-2.5 rounded-lg bg-orange-500/8 border border-orange-500/15">
-          <div className="flex items-center gap-1.5">
-            <AlertCircle className="w-3 h-3 text-orange-400" />
-            <span className="text-[11px] font-medium text-orange-300">Follow-up: {new Date(program.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-          </div>
-          {program.next_action && <p className="text-[10px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{program.next_action}</p>}
-        </div>
-      )}
-
-      {/* AI Suggestion or Tip */}
-      {isPremium ? (
-        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(46,196,182,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
-          {aiSummary ? (
-            <div className="space-y-1.5">
-              <p className="text-[9px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1"><Sparkles className="w-3 h-3" />Next move</p>
-              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{aiSummary.suggested_action}</p>
-              <button onClick={generateAI} disabled={aiLoading} className="text-[10px] text-purple-400 font-medium flex items-center gap-1 disabled:opacity-50">
-                {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Refresh
-              </button>
-            </div>
-          ) : (
-            <button onClick={generateAI} disabled={aiLoading} className="w-full flex items-center gap-2 text-left disabled:opacity-50" data-testid="glance-ai-generate">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
-              <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                {aiLoading ? "Analyzing..." : "Get AI-powered next step"}
-              </span>
-              {aiLoading && <Loader2 className="w-3 h-3 animate-spin text-purple-400 ml-auto" />}
-            </button>
-          )}
-        </div>
-      ) : !isBasic ? (
-        <div className="rounded-lg p-2.5 border" style={{ borderColor: "rgba(168,85,247,0.12)" }}>
-          <div className="flex items-center gap-2">
-            <Crown className="w-3 h-3 text-amber-400/70 flex-shrink-0" />
-            <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>AI insights</span>
-            <a href="/account" className="ml-auto text-[10px] font-semibold text-purple-400 hover:text-purple-300">Upgrade</a>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Show more: coaches list, key dates, schedule followup */}
-      <button onClick={() => setShowMore(!showMore)} className="w-full text-[10px] font-medium flex items-center justify-center gap-1 pt-1"
-        style={{ color: "var(--t-text-muted)" }} data-testid="glance-show-more">
-        {showMore ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-        {showMore ? "Show less" : "More details"}
-      </button>
-
-      {showMore && (
-        <div className="space-y-3 pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
-          {/* All Coaches */}
-          {coaches.length > 1 && (
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>All Coaches</p>
-              {coaches.map(c => (
-                <div key={c.coach_id} className="flex items-center gap-2 py-1.5">
-                  <Users className="w-3 h-3 text-teal-700 flex-shrink-0" />
-                  <span className="text-[11px]" style={{ color: "var(--t-text-secondary)" }}>{c.coach_name} — {c.role}</span>
-                </div>
-              ))}
-            </div>
-          )}
-          {/* Schedule Follow-up */}
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Schedule Follow-up</p>
-            <FollowUpScheduler program={program} onSaved={onScheduleFollowup} />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   STAGE LOG MODAL — requires note when manually advancing stages
-   ═══════════════════════════════════════════════════════════════ */
-const STAGE_LABELS = { added: "Added", outreach: "Outreach", in_conversation: "In Conversation", campus_visit: "Visit", offer: "Offer", committed: "Committed" };
-
-function StageLogModal({ stageKey, currentStage, universityName, onConfirm, onCancel }) {
-  const [note, setNote] = useState("");
-  const [saving, setSaving] = useState(false);
-  const newLabel = STAGE_LABELS[stageKey] || stageKey;
-  const fromLabel = STAGE_LABELS[currentStage] || currentStage || "—";
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!note.trim()) return;
-    setSaving(true);
-    await onConfirm(note.trim());
-    setSaving(false);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="stage-log-modal">
-      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
-      <div className="relative w-full max-w-md mx-4 rounded-2xl border p-6"
-        style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-            Log progress: <span className="text-teal-700">{newLabel}</span>
-          </h3>
-          <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/5">
-            <X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-          </button>
-        </div>
-        {/* Stage transition badge */}
-        <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-          <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{fromLabel}</span>
-          <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-          <span className="text-xs font-semibold text-teal-700">{newLabel}</span>
-        </div>
-        <p className="text-xs mb-4" style={{ color: "var(--t-text-muted)" }}>
-          What happened with {universityName}? This will be added to the timeline.
-        </p>
-        <form onSubmit={handleSubmit}>
-          <textarea value={note} onChange={e => setNote(e.target.value)}
-            placeholder={`e.g. "Had a great campus visit, met Coach Williams..."`}
-            className="w-full bg-[var(--t-bg)] border rounded-xl px-4 py-3 text-sm outline-none focus:ring-1 focus:ring-teal-600 resize-none leading-relaxed"
-            style={{ borderColor: "var(--t-border)", color: "var(--t-text)" }} rows={3} autoFocus
-            data-testid="stage-log-textarea" />
-          <div className="flex justify-end gap-2 mt-4">
-            <Button type="button" variant="ghost" size="sm" onClick={onCancel}
-              className="text-xs h-8 px-4" style={{ color: "var(--t-text-muted)" }}>Cancel</Button>
-            <Button type="submit" size="sm" disabled={saving || !note.trim()}
-              className="bg-teal-700 hover:bg-teal-800 text-white text-xs h-8 px-4"
-              data-testid="stage-log-submit">
-              {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : null}
-              Save &amp; Update
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FLOATING ACTION BAR
-   ═══════════════════════════════════════════════════════════════ */
-function FloatingActionBar({ onEmail, onLog, onReplied, onFollowup, isBasic, activeAction }) {
-  const btnBase = "flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors";
-  const btnActive = "bg-teal-600 text-white font-semibold hover:bg-teal-700";
-  const btnInactive = "hover:bg-[var(--t-surface-alt)]";
-  return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-1.5 rounded-2xl border shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-      style={{ background: "rgba(22,27,37,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderColor: "var(--t-border)" }}
-      data-testid="floating-action-bar">
-      <button className={`${btnBase} ${activeAction === "email" ? btnActive : btnInactive}`}
-        style={activeAction !== "email" ? { color: "var(--t-text-secondary)" } : undefined}
-        onClick={onEmail} disabled={isBasic} data-testid="fab-email">
-        <Mail className="w-3.5 h-3.5" />Email
-      </button>
-      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
-      <button className={`${btnBase} ${activeAction === "log" ? btnActive : btnInactive}`}
-        style={activeAction !== "log" ? { color: "var(--t-text-secondary)" } : undefined}
-        onClick={onLog} data-testid="fab-log">
-        <FileText className="w-3.5 h-3.5" />Log
-      </button>
-      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
-      <button className={`${btnBase} ${activeAction === "replied" ? btnActive : btnInactive}`}
-        style={activeAction !== "replied" ? { color: "var(--t-text-secondary)" } : undefined}
-        onClick={onReplied} data-testid="fab-replied">
-        <CheckCircle2 className="w-3.5 h-3.5" />Mark as Replied
-      </button>
-      <div className="w-px h-6" style={{ background: "var(--t-border)" }} />
-      <button className={`${btnBase} ${activeAction === "followup" ? btnActive : btnInactive}`}
-        style={activeAction !== "followup" ? { color: "var(--t-text-secondary)" } : undefined}
-        onClick={onFollowup} data-testid="fab-followup">
-        <Clock className="w-3.5 h-3.5" />Follow-up
-      </button>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   EXISTING FORM COMPONENTS (kept from original)
-   ═══════════════════════════════════════════════════════════════ */
-
-function CoachForm({ initial, programId, onSave, onCancel }) {
-  const [form, setForm] = useState(initial || { coach_name: "", role: "Head Coach", email: "", phone: "", notes: "" });
-  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
-  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="coach-form-overlay">
-      <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
-        data-testid="coach-form">
-        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><User className="w-4 h-4 text-teal-600" />{initial ? "Edit Coach" : "Add Coach"}</h2>
-            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="coach-close-btn"><X className="w-4 h-4 text-white/40" /></button>
-          </div>
-        </div>
-        <div className="p-5 space-y-3">
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Coach Name</label>
-            <input placeholder="e.g. John Smith" value={form.coach_name} onChange={e => set("coach_name", e.target.value)} className={inputCls} style={inputStyle} data-testid="coach-name-input" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Role</label>
-            <select value={form.role} onChange={e => set("role", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="coach-role-select">
-              {["Head Coach", "Associate Head Coach", "Assistant Coach", "Recruiting Coordinator", "Director of Operations"].map(r => <option key={r} style={{ background: "#1e2230", color: "#e2e8f0" }}>{r}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Email</label>
-            <input placeholder="coach@university.edu" value={form.email} onChange={e => set("email", e.target.value)} className={inputCls} style={inputStyle} data-testid="coach-email-input" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Phone</label>
-            <input placeholder="(555) 123-4567" value={form.phone} onChange={e => set("phone", e.target.value)} className={inputCls} style={inputStyle} data-testid="coach-phone-input" />
-          </div>
-        </div>
-        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onCancel} className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>Cancel</button>
-          <Button onClick={() => onSave({ ...form, program_id: programId })}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }} data-testid="save-coach-btn">
-            <Save className="w-4 h-4" />Save Coach
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LogInteractionForm({ programId, universityName, onSaved, onCancel }) {
-  const [form, setForm] = useState({ type: "Phone Call", notes: "", outcome: "Positive", date_time: new Date().toISOString().slice(0, 16) });
-  const [saving, setSaving] = useState(false);
-  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
-  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
-  const save = async () => {
-    if (!form.notes.trim()) { toast.error("Add a note"); return; }
-    setSaving(true);
-    try {
-      await api.post("/interactions", { program_id: programId, university_name: universityName, type: form.type, notes: form.notes, outcome: form.outcome, date_time: form.date_time });
-      toast.success("Interaction logged"); onSaved();
-    } catch { toast.error("Failed to log interaction"); } finally { setSaving(false); }
-  };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="log-interaction-overlay">
-      <div className="w-full max-w-[520px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
-        data-testid="log-interaction-form">
-        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><FileText className="w-4 h-4 text-teal-600" />Log Interaction</h2>
-            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="log-close-btn"><X className="w-4 h-4 text-white/40" /></button>
-          </div>
-        </div>
-        <div className="p-5 space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Type</label>
-              <select value={form.type} onChange={e => set("type", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-type-select">
-                {["Phone Call", "Video Call", "Text Message", "Camp", "Campus Visit", "Showcase", "Other"].map(t => <option key={t} style={{ background: "#1e2230", color: "#e2e8f0" }}>{t}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Outcome</label>
-              <select value={form.outcome} onChange={e => set("outcome", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-outcome-select">
-                {["Positive", "Neutral", "No Response", "Negative"].map(o => <option key={o} style={{ background: "#1e2230", color: "#e2e8f0" }}>{o}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</label>
-              <input type="datetime-local" value={form.date_time} onChange={e => set("date_time", e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="interaction-date-input" />
-            </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Notes</label>
-            <textarea placeholder="What happened? Key takeaways..." value={form.notes} onChange={e => set("notes", e.target.value)} rows={4} className={`${inputCls} resize-none`} style={inputStyle} data-testid="interaction-notes-input" />
-          </div>
-        </div>
-        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onCancel} className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>Cancel</button>
-          <Button onClick={save} disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }} data-testid="save-interaction-btn">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}Log Interaction
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EmailComposer({ coaches, programId, universityName, onSent, onCancel }) {
-  const { subscription } = useSubscription();
-  const canUseAIDrafts = subscription?.tier === "premium";
-  const [to, setTo] = useState(coaches?.[0]?.email || "");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const [sending, setSending] = useState(false);
-  const [drafting, setDrafting] = useState(false);
-  const [attachments, setAttachments] = useState([]); // { file_id, filename, size }
-  const [uploading, setUploading] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const fileInputRef = useRef(null);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
-  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
-  const draftAI = async (type) => {
-    if (!canUseAIDrafts) return;
-    setDrafting(true);
-    try {
-      const res = await api.post("/ai/draft-email", { program_id: programId, email_type: type });
-      setSubject(res.data.subject || ""); setBody(res.data.body || "");
-      if (res.data.coach_email) setTo(res.data.coach_email);
-      toast.success("AI draft ready");
-    } catch (e) {
-      if (e.response?.data?.detail?.error === "subscription_limit") return;
-      toast.error("Failed to generate draft");
-    } finally { setDrafting(false); }
-  };
-  const handleFileSelect = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setUploading(true);
-    try {
-      for (const file of files) {
-        if (file.size > 10 * 1024 * 1024) { toast.error(`${file.name} is too large (max 10MB)`); continue; }
-        const form = new FormData();
-        form.append("file", file);
-        const res = await api.post("/gmail/upload-attachment", form, { headers: { "Content-Type": "multipart/form-data" } });
-        setAttachments(prev => [...prev, res.data]);
-      }
-    } catch (err) { toast.error("Failed to upload file"); }
-    finally { setUploading(false); if (fileInputRef.current) fileInputRef.current.value = ""; }
-  };
-  const removeAttachment = (fileId) => setAttachments(prev => prev.filter(a => a.file_id !== fileId));
-  const formatFileSize = (bytes) => bytes < 1024 ? `${bytes}B` : bytes < 1048576 ? `${(bytes / 1024).toFixed(1)}KB` : `${(bytes / 1048576).toFixed(1)}MB`;
-  const send = async () => {
-    if (!to || !subject || !body) { toast.error("Fill all fields"); return; }
-    setSending(true);
-    try {
-      await api.post("/gmail/send", { to, subject, body, attachment_ids: attachments.map(a => a.file_id) });
-      toast.success("Email sent!"); setShowPreview(false); onSent();
-    } catch (e) { toast.error(e?.response?.data?.detail || "Failed to send. Is Gmail connected?"); }
-    finally { setSending(false); }
-  };
-  const handleReview = () => {
-    if (!to || !subject || !body) { toast.error("Fill all fields"); return; }
-    setShowPreview(true);
-  };
-  const selectedCoach = coaches.find(c => c.email === to);
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="email-composer-overlay">
-      <div className="w-full max-w-[620px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)", maxHeight: "90vh" }}
-        data-testid="email-composer">
-
-        {/* Header */}
-        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-white tracking-tight">Compose Email</h2>
-            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="composer-close-btn">
-              <X className="w-4 h-4 text-white/40" />
-            </button>
-          </div>
-          <div className="flex gap-1.5 flex-wrap items-center">
-            {canUseAIDrafts ? (
-              ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
-                <button key={t} onClick={() => draftAI(t)} disabled={drafting}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors disabled:opacity-50"
-                  style={{ background: "rgba(46,196,182,0.1)", color: "#2ec4b6", border: "1px solid rgba(46,196,182,0.2)" }}
-                  data-testid={`draft-${t}-btn`}>
-                  <Sparkles className="w-3 h-3 inline mr-1" />{t.replace(/_/g, " ")}
-                </button>
-              ))
-            ) : (
-              <div className="flex items-center gap-2 w-full py-1.5 px-3 rounded-lg" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }} data-testid="ai-draft-locked">
-                <Crown className="w-3.5 h-3.5 text-amber-400/70 flex-shrink-0" />
-                <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>AI email drafts require <a href="/account" className="text-purple-400 hover:underline font-medium">Premium</a></span>
-              </div>
-            )}
-          </div>
-          {canUseAIDrafts && (
-            <p className="text-[10px] flex items-center gap-1 mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
-              <AlertCircle className="w-3 h-3 flex-shrink-0" />
-              AI uses your <a href="/profile" className="text-teal-600 hover:underline">athlete profile</a> to generate emails.
-            </p>
-          )}
-          {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-slate-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
-        </div>
-
-        {/* Form Body */}
-        <div className="p-5 space-y-3 overflow-y-auto flex-1">
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>To</label>
-            <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="email-to-select">
-              <option value="" style={{ background: "#1e2230", color: "#94a3b8" }}>Select recipient...</option>
-              {coaches.filter(c => c.email).map(c => <option key={c.coach_id} value={c.email} style={{ background: "#1e2230", color: "#e2e8f0" }}>{c.coach_name} ({c.email})</option>)}
-              <option value="_custom" style={{ background: "#1e2230", color: "#e2e8f0" }}>Type custom email...</option>
-            </select>
-            {to === "_custom" && <input placeholder="coach@university.edu" onChange={e => setTo(e.target.value)} className={`${inputCls} mt-2`} style={inputStyle} />}
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Subject</label>
-            <input placeholder="e.g. Introduction — Class of 2027" value={subject} onChange={e => setSubject(e.target.value)} className={inputCls} style={inputStyle} data-testid="email-subject-input" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Message</label>
-            <textarea placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} rows={10}
-              className={`${inputCls} resize-none`} style={inputStyle} data-testid="email-body-input" />
-          </div>
-          <div>
-            <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple className="hidden" data-testid="file-input" />
-            <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors hover:bg-white/5"
-              style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}
-              data-testid="attach-file-btn">
-              {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
-              {uploading ? "Uploading..." : "Attach Files"}
-            </button>
-            {attachments.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {attachments.map(att => (
-                  <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs"
-                    style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.15)", color: "rgba(255,255,255,0.6)" }}
-                    data-testid={`attachment-${att.file_id}`}>
-                    <Paperclip className="w-3 h-3 text-slate-500 flex-shrink-0" />
-                    <span className="truncate max-w-[150px]">{att.filename}</span>
-                    <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>({formatFileSize(att.size)})</span>
-                    <button onClick={() => removeAttachment(att.file_id)} className="ml-0.5 p-0.5 rounded hover:bg-white/10"><X className="w-3 h-3 text-white/40" /></button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onCancel}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5"
-            style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}
-            data-testid="composer-cancel-btn">
-            Cancel
-          </button>
-          <Button onClick={handleReview} disabled={sending}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}
-            data-testid="send-email-btn">
-            <Send className="w-4 h-4" />Review & Send{attachments.length > 0 ? ` (${attachments.length})` : ""}
-          </Button>
-        </div>
-      </div>
-
-      {showPreview && (
-        <EmailPreviewModal
-          to={to}
-          subject={subject}
-          body={body}
-          attachments={attachments}
-          coachName={selectedCoach?.coach_name}
-          universityName={universityName}
-          onEdit={() => setShowPreview(false)}
-          onConfirm={send}
-          onClose={() => setShowPreview(false)}
-          sending={sending}
-        />
-      )}
-    </div>
-  );
-}
-
-function FollowUpScheduler({ program, onSaved, onCancel }) {
-  const [date, setDate] = useState(program.next_action_due || "");
-  const [action, setAction] = useState(program.next_action || "");
-  const [saving, setSaving] = useState(false);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
-  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
-  const save = async () => {
-    setSaving(true);
-    try { await api.put(`/programs/${program.program_id}`, { next_action_due: date, next_action: action }); toast.success("Follow-up scheduled"); onSaved(); }
-    catch { toast.error("Failed to save"); } finally { setSaving(false); }
-  };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="followup-overlay">
-      <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
-        data-testid="followup-scheduler">
-        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Clock className="w-4 h-4 text-teal-600" />Schedule Follow-up</h2>
-            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="followup-close-btn"><X className="w-4 h-4 text-white/40" /></button>
-          </div>
-        </div>
-        <div className="p-5 space-y-3">
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</label>
-            <input type="date" value={date} onChange={e => setDate(e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="followup-date-input" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Next Action</label>
-            <input placeholder="e.g. Send follow-up email" value={action} onChange={e => setAction(e.target.value)} className={inputCls} style={inputStyle} data-testid="followup-action-input" />
-          </div>
-        </div>
-        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onCancel} className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>Cancel</button>
-          <Button onClick={save} disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }} data-testid="save-followup-btn">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Clock className="w-4 h-4" />}Set Reminder
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MarkAsRepliedModal({ programId, onSaved, onCancel }) {
-  const [note, setNote] = useState("");
-  const [saving, setSaving] = useState(false);
-  const inputCls = "w-full px-3 py-2 rounded-lg border text-sm outline-none focus:ring-1 focus:ring-teal-600 transition-colors";
-  const inputStyle = { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)", color: "#e2e8f0" };
-  const save = async () => {
-    if (!note.trim()) { toast.error("Please describe what the coach said"); return; }
-    setSaving(true);
-    try { await api.post(`/programs/${programId}/mark-replied`, { note: note.trim() }); toast.success("Coach reply logged to timeline"); onSaved(); }
-    catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
-  };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="mark-replied-overlay">
-      <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)" }}
-        data-testid="mark-replied-modal">
-        <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2"><Mail className="w-4 h-4 text-green-400" />Mark as Replied</h2>
-            <button onClick={onCancel} className="p-1 rounded-lg hover:bg-white/10 transition-colors" data-testid="replied-close-btn"><X className="w-4 h-4 text-white/40" /></button>
-          </div>
-        </div>
-        <div className="p-5 space-y-3">
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Describe what the coach said or shared. This gets logged to your timeline.</p>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>Coach Response</label>
-            <textarea placeholder="e.g. Coach Smith replied and invited me to their summer camp..." value={note} onChange={e => setNote(e.target.value)} rows={4} className={`${inputCls} resize-none`} style={inputStyle} data-testid="mark-replied-note" />
-          </div>
-        </div>
-        <div className="p-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: "rgba(15,18,25,0.5)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <button onClick={onCancel} className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-white/5" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>Cancel</button>
-          <Button onClick={save} disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(74,222,128,0.3)]"
-            style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)" }} data-testid="save-replied-btn">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}Log Coach Reply
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MAIN JOURNEY PAGE
-   ═══════════════════════════════════════════════════════════════ */
 export default function RecruitingJourney() {
   const { programId } = useParams();
   const navigate = useNavigate();
   const { subscription } = useSubscription();
-  const isBasic = false; // Starter now has all Pro features
+  const isBasic = false;
   const isPremium = subscription?.tier === "premium";
 
   const [program, setProgram] = useState(null);
@@ -1144,8 +35,7 @@ export default function RecruitingJourney() {
   const [notesOpen, setNotesOpen] = useState(false);
   const [coachWatchAlert, setCoachWatchAlert] = useState(null);
 
-  // Form visibility
-  const [activeForm, setActiveForm] = useState(null); // 'email' | 'log' | 'replied' | 'coach' | 'followup'
+  const [activeForm, setActiveForm] = useState(null);
   const [editCoach, setEditCoach] = useState(null);
 
   const closeForm = () => { setActiveForm(null); setEditCoach(null); };
@@ -1157,7 +47,6 @@ export default function RecruitingJourney() {
 
   const fetchData = useCallback(async () => {
     try {
-      // Run ALL independent API calls in parallel
       const [progRes, journeyRes, coachRes, profRes, notesRes, msRes] = await Promise.allSettled([
         api.get(`/programs/${programId}`),
         api.get(`/programs/${programId}/journey`),
@@ -1172,24 +61,19 @@ export default function RecruitingJourney() {
       setProgram(progRes.value.data);
       setTimeline(journeyRes.value.data.timeline || []);
       setCoaches(coachRes.status === "fulfilled" ? (coachRes.value.data || []) : []);
-      // Profile
       if (profRes.status === "fulfilled") {
         const p = profRes.value.data;
         const filled = [p.athlete_name, p.position, p.height, p.grad_year, p.video_link].filter(Boolean);
         setProfileComplete(filled.length >= 5);
       } else { setProfileComplete(false); }
-      // Notes
       if (notesRes.status === "fulfilled") {
         setNotesCount((notesRes.value.data.pinned?.length || 0) + (notesRes.value.data.recent?.length || 0));
       } else { setNotesCount(0); }
-      // Match scores
       if (msRes.status === "fulfilled" && msRes.value.data?.scores) {
         const found = msRes.value.data.scores.find(s => s.program_id === programId);
         if (found) setMatchScore(found);
       }
-      // Show the page immediately, then load coach watch in background
       setLoading(false);
-      // Coach watch depends on university_name — fire after core data
       if (!isBasic) {
         try {
           const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.value.data.university_name)}`);
@@ -1236,29 +120,25 @@ export default function RecruitingJourney() {
   const handleStageClick = async (stageKey) => {
     const currentManual = program.journey_stage || "";
     if (currentManual === stageKey) {
-      // Undo: user clicks the same stage they manually set → clear override
       await updateProgram({ journey_stage: "" });
       const res = await api.get(`/programs/${programId}`);
       setProgram(res.data);
     } else {
-      // Show modal to require a note
       setPendingStage(stageKey);
     }
   };
 
   const confirmStageChange = async (note) => {
     if (!pendingStage) return;
-    const fromLabel = STAGE_LABELS[rail?.active] || rail?.active || "—";
+    const fromLabel = STAGE_LABELS[rail?.active] || rail?.active || "\u2014";
     const toLabel = STAGE_LABELS[pendingStage] || pendingStage;
     try {
-      // Update stage
       await updateProgram({ journey_stage: pendingStage });
-      // Log a timeline entry with transition info
       await api.post("/interactions", {
         program_id: programId,
         type: "Stage Update",
         notes: note,
-        outcome: `${fromLabel} → ${toLabel}`,
+        outcome: `${fromLabel} \u2192 ${toLabel}`,
       });
       const res = await api.get(`/programs/${programId}`);
       setProgram(res.data);
@@ -1267,7 +147,6 @@ export default function RecruitingJourney() {
     setPendingStage(null);
   };
 
-  // Next Step card dismiss state (must be before early returns)
   const [nextStepDismissed, setNextStepDismissed] = useState(null);
   const [showJourneyDetails, setShowJourneyDetails] = useState(false);
 
@@ -1284,18 +163,15 @@ export default function RecruitingJourney() {
   const isCommitted = rail?.stages?.committed === true;
   const checklistComplete = profileComplete && coaches.some(c => c.email) && timeline.length > 0 && notesCount > 0;
   const isNewSchool = !checklistComplete && !isCommitted;
-  // Only show celebration if the most recent timeline event is a coach reply
   const latestIsCoachReply = timeline.length > 0 && ["email_received", "coach_reply"].includes(
     (timeline[0]?.event_type || timeline[0]?.type || "").toLowerCase().replace(/\s+/g, "_")
   );
   const isInConversation = !isCommitted && boardGroup === "in_conversation" && latestIsCoachReply;
 
-  // Next Step card: show when there's activity, not a new school, not showing celebration or committed
   const latestEvent = timeline[0] || null;
   const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
     && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
-  // Overdue follow-up detection
   const nextDue = program.next_action_due || "";
   const today = new Date().toISOString().split("T")[0];
   const isFollowUpOverdue = !isCommitted && nextDue && nextDue <= today;
@@ -1303,9 +179,8 @@ export default function RecruitingJourney() {
 
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
-      {/* ─── Header with Progress Rail ─── */}
+      {/* Header with Progress Rail */}
       <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", padding: "0", position: "relative" }} data-testid="journey-header">
-        {/* Pink accent line */}
         <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
         <div style={{ padding: "20px 24px" }}>
         <div className="flex items-start gap-3 mb-4">
@@ -1330,7 +205,7 @@ export default function RecruitingJourney() {
                   <Target className="w-3 h-3" /> {matchScore.match_score}% Match
                 </span>
               )}
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` \u00b7 ${program.region}` : ""} \u00b7 {timeline.length} events</span>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -1346,7 +221,6 @@ export default function RecruitingJourney() {
             </button>
           </div>
         </div>
-        {/* Progress Rail */}
         <ProgressRail rail={rail} onStageClick={handleStageClick} />
         </div>
       </div>
@@ -1357,11 +231,10 @@ export default function RecruitingJourney() {
           onConfirm={confirmStageChange} onCancel={() => setPendingStage(null)} />
       )}
 
-      {/* ─── Contextual Hero: Committed / Checklist / Celebration / Nothing ─── */}
+      {/* Contextual Hero */}
       {isCommitted ? (
         <div className="mt-5">
           <CommittedHero program={program} />
-          {/* Toggle to reveal the full journey */}
           <button onClick={() => setShowJourneyDetails(prev => !prev)}
             className="mx-auto mt-5 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-medium transition-colors hover:bg-[var(--t-surface-alt)]"
             style={{ color: "var(--t-text-muted)", borderColor: "var(--t-border)" }}
@@ -1382,9 +255,8 @@ export default function RecruitingJourney() {
         </div>
       ) : null}
 
-      {/* ─── Below-hero content: hidden by default when committed ─── */}
+      {/* Below-hero content */}
       {(!isCommitted || showJourneyDetails) && (<>
-      {/* ─── Overdue Follow-up Card ─── */}
       {isFollowUpOverdue && !activeForm && (
         <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
           data-testid="overdue-followup-card">
@@ -1396,7 +268,7 @@ export default function RecruitingJourney() {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: "#f97316" }}>Follow-up due</p>
               <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-                Time to follow up{daysOverdue > 0 ? ` — ${daysOverdue} day${daysOverdue === 1 ? "" : "s"} overdue` : ""}
+                Time to follow up{daysOverdue > 0 ? ` \u2014 ${daysOverdue} day${daysOverdue === 1 ? "" : "s"} overdue` : ""}
               </h3>
               <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>
                 Send a follow-up to {program.university_name} to stay on their radar.
@@ -1417,7 +289,7 @@ export default function RecruitingJourney() {
           </div>
         </div>
       )}
-      {/* ─── Next Step Card (rule-based) — only if no overdue follow-up ─── */}
+
       {!isFollowUpOverdue && showNextStep && !activeForm && (
         <div className="mt-5">
           <NextStepCard latestEvent={latestEvent} universityName={program.university_name}
@@ -1427,23 +299,21 @@ export default function RecruitingJourney() {
         </div>
       )}
 
-      {/* ─── Inline Forms ─── */}
+      {/* Inline Forms */}
       {activeForm === "replied" && <MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "log" && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "email" && <EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "coach" && <CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} />}
       {activeForm === "followup" && <FollowUpScheduler program={program} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
 
-      {/* ─── Main Grid: Conversation + At a Glance ─── */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
-        {/* Conversation Timeline */}
         <div className="lg:col-span-2">
           <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="conversation-timeline">
             <div className="mb-5">
               <h2 className="text-base font-bold tracking-wide" style={{ color: "var(--t-text)" }}>Timeline</h2>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Every email, reply, and interaction — all in one place</p>
             </div>
-
             {timeline.length === 0 ? (
               <div className="text-center py-10">
                 <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: "var(--t-text-muted)" }} />
@@ -1458,12 +328,10 @@ export default function RecruitingJourney() {
           </div>
         </div>
 
-        {/* At a Glance Sidebar */}
         <div className="lg:col-span-1">
           <AtAGlanceCard program={program} coaches={coaches} isPremium={isPremium} isBasic={isBasic}
             programId={programId} onDraftEmail={openEmail} onAddCoach={openCoach} onScheduleFollowup={() => fetchData()} />
 
-          {/* Coach management (below At a Glance) */}
           {coaches.length > 0 ? (
             <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
               <div className="flex items-center justify-between mb-3">
@@ -1501,7 +369,6 @@ export default function RecruitingJourney() {
                   <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-teal-700" /></button>
                 </div>
               </div>
-              {/* Coach Watch Alert Detail */}
               {coachWatchAlert && (
                 <div className="p-2.5 rounded-lg mb-3" data-testid="coach-watch-alert-detail"
                   style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
@@ -1544,11 +411,11 @@ export default function RecruitingJourney() {
       </div>
       </>)}
 
-      {/* ─── Floating Action Bar ─── */}
+      {/* Floating Action Bar */}
       <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
         onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} activeAction={activeForm} />
 
-      {/* ─── Personal Notes Sidebar ─── */}
+      {/* Notes Sidebar */}
       <NotesSidebar programId={programId} universityName={program.university_name}
         externalOpen={notesOpen} onExternalClose={() => setNotesOpen(false)}
         onNoteChange={() => {
