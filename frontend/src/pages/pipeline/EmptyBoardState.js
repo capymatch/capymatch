@@ -180,8 +180,6 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   const filledCount = essentialFields.filter(Boolean).length;
   const profileDone = filledCount >= 5; // 5 of 6 essential fields
   const currentStep = !profileDone ? 1 : !gmailConnected ? 2 : 3;
-  const divPref = profile?.division || "";
-  const regionPref = (profile?.regions || []).join(", ") || "";
 
   return (
     <div className="flex flex-col gap-5" data-testid="empty-board-state">
