@@ -38,7 +38,7 @@ class TestFindSchoolsBugFix:
         The bug was: division stored as list, but code called .upper() on it causing crash.
         Fix: Now handles both list and string for division field.
         """
-        resp = requests.get(f"{BASE_URL}/api/suggested-schools", headers=self.headers)
+        resp = self.session.get(f"{BASE_URL}/api/suggested-schools")
         assert resp.status_code == 200, f"Failed: {resp.status_code} - {resp.text}"
         
         data = resp.json()
@@ -67,7 +67,7 @@ class TestFindSchoolsBugFix:
         REGRESSION: GET /api/recruiting-profile returns profile with questionnaire_completed=true.
         The user douglas@yeslms.com has completed the questionnaire with division=['D1', 'D2'].
         """
-        resp = requests.get(f"{BASE_URL}/api/recruiting-profile", headers=self.headers)
+        resp = self.session.get(f"{BASE_URL}/api/recruiting-profile")
         assert resp.status_code == 200, f"Failed: {resp.status_code} - {resp.text}"
         
         data = resp.json()
@@ -95,7 +95,7 @@ class TestFindSchoolsBugFix:
         """
         REGRESSION: GET /api/knowledge-base should return 1053 schools.
         """
-        resp = requests.get(f"{BASE_URL}/api/knowledge-base", headers=self.headers)
+        resp = self.session.get(f"{BASE_URL}/api/knowledge-base")
         assert resp.status_code == 200, f"Failed: {resp.status_code} - {resp.text}"
         
         data = resp.json()
@@ -121,22 +121,28 @@ class TestFindSchoolsBugFix:
         
         NOT: outreach_sent, coach_replied (old keys)
         """
-        # First get user's programs
-        programs_resp = requests.get(f"{BASE_URL}/api/programs", headers=self.headers)
-        assert programs_resp.status_code == 200, f"Failed to get programs: {programs_resp.text}"
+        # First, add a school to the board to test journey_rail
+        add_resp = self.session.post(f"{BASE_URL}/api/knowledge-base/add-to-board", json={
+            "university_name": "University of Georgia"
+        })
         
-        programs = programs_resp.json()
-        if isinstance(programs, dict):
-            programs = programs.get("programs", [])
+        if add_resp.status_code == 400 and "already on" in add_resp.text.lower():
+            # School already on board, get it from programs list
+            programs_resp = self.session.get(f"{BASE_URL}/api/programs")
+            assert programs_resp.status_code == 200
+            programs = programs_resp.json()
+            if isinstance(programs, list) and len(programs) > 0:
+                program_id = programs[0].get("program_id")
+            else:
+                pytest.skip("No programs found for user - cannot test journey_rail")
+        else:
+            assert add_resp.status_code == 200, f"Failed to add school: {add_resp.text}"
+            program_id = add_resp.json().get("program_id")
         
-        if not programs:
-            pytest.skip("No programs found for user - cannot test journey_rail")
+        assert program_id, "Program ID not found"
         
-        # Get details for first program
-        program_id = programs[0].get("program_id")
-        assert program_id, f"Program missing program_id: {programs[0]}"
-        
-        detail_resp = requests.get(f"{BASE_URL}/api/programs/{program_id}", headers=self.headers)
+        # Get details for the program
+        detail_resp = self.session.get(f"{BASE_URL}/api/programs/{program_id}")
         assert detail_resp.status_code == 200, f"Failed to get program details: {detail_resp.text}"
         
         program = detail_resp.json()
@@ -168,19 +174,28 @@ class TestFindSchoolsBugFix:
         print(f"✓ journey_rail.stages has correct keys: {list(stages.keys())}")
         print(f"  Active stage: {active}")
         print(f"  Stages: {stages}")
+        
+        # Clean up: delete the test program
+        self.session.delete(f"{BASE_URL}/api/programs/{program_id}")
     
     def test_programs_list_has_signals(self):
         """
         Verify programs list includes interaction signals for board grouping.
         """
-        resp = requests.get(f"{BASE_URL}/api/programs", headers=self.headers)
+        # First, add a school to ensure user has programs
+        add_resp = self.session.post(f"{BASE_URL}/api/knowledge-base/add-to-board", json={
+            "university_name": "University of Florida"
+        })
+        
+        # Get programs list
+        resp = self.session.get(f"{BASE_URL}/api/programs")
         assert resp.status_code == 200, f"Failed: {resp.status_code} - {resp.text}"
         
         programs = resp.json()
         if isinstance(programs, dict):
             programs = programs.get("programs", programs.get("groups", {}).get("needs_outreach", []))
         
-        if not programs:
+        if not programs or len(programs) == 0:
             pytest.skip("No programs found for user")
         
         # Check first program has required fields
@@ -192,6 +207,12 @@ class TestFindSchoolsBugFix:
         assert "board_group" in program, f"Missing board_group: {program.keys()}"
         
         print(f"✓ Programs have signals and board_group fields")
+        
+        # Clean up: delete the test program
+        if add_resp.status_code == 200:
+            program_id = add_resp.json().get("program_id")
+            if program_id:
+                self.session.delete(f"{BASE_URL}/api/programs/{program_id}")
 
 
 class TestProgressRailStageKeyMigration:
