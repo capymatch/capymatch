@@ -83,3 +83,4 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - App Naming
 - Multi-sport capability
 - Family Collaboration Roles (read-only parent/viewer)
+- Inbound Coach Contact Flow enhancements (non-.edu matching, notification preferences)
