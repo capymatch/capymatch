@@ -33,7 +33,7 @@ function MatchRing({ score }) {
 function StatCard({ value, label, subtitle, accent }) {
   const isEmpty = !value && value !== 0;
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 flex flex-col items-center text-center" data-testid={`stat-card-${label?.replace(/\s+/g, '-').toLowerCase()}`}>
+    <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5 flex flex-col items-center text-center" data-testid={`stat-card-${label?.replace(/\s+/g, '-').toLowerCase()}`}>
       <div className={`text-[26px] sm:text-[30px] font-black tracking-tight leading-none mb-2 ${
         isEmpty ? "text-slate-300" : accent ? "text-[#2ec4b6]" : "text-slate-800"
       }`}>
@@ -58,7 +58,7 @@ function SectionHeader({ icon: Icon, title, testId }) {
 /* ── Reusable Section Card ── */
 function SectionCard({ title, icon, children, testId }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6" data-testid={testId}>
+    <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5 sm:p-6" data-testid={testId}>
       {title && <SectionHeader icon={icon} title={title} />}
       {children}
     </div>
@@ -283,7 +283,7 @@ export default function SchoolInfoPage() {
           {coaches.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {coaches.map((c, i) => (
-                <div key={i} className="rounded-xl border border-slate-200/80 bg-white p-5" data-testid={`coach-card-${i}`}>
+                <div key={i} className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5" data-testid={`coach-card-${i}`}>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
                       <User className="w-5 h-5 text-[#2ec4b6]" />
@@ -353,19 +353,19 @@ export default function SchoolInfoPage() {
             <SectionHeader title="Additional Details" />
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {school.region && (
-                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Location</div>
                   <div className="text-[15px] font-bold text-slate-800">{school.region}</div>
                 </div>
               )}
               {school.mascot && (
-                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Mascot</div>
                   <div className="text-[15px] font-bold text-slate-800">{school.mascot}</div>
                 </div>
               )}
               {school.scholarship_type && (
-                <div className="rounded-xl border border-slate-200/80 bg-white p-4">
+                <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Scholarship</div>
                   <div className="text-[15px] font-bold text-slate-800">{school.scholarship_type}</div>
                 </div>
