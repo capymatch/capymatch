@@ -50,7 +50,7 @@ function SectionHeader({ icon: Icon, title, testId }) {
   return (
     <div className="flex items-center gap-2 mb-4" data-testid={testId}>
       {Icon && <Icon className="w-4 h-4 text-[#2ec4b6]" />}
-      <h3 className="text-[13px] font-bold uppercase tracking-[0.1em] text-slate-500">{title}</h3>
+      <h3 className="text-[13px] font-bold uppercase tracking-[0.1em]" style={{ color: "var(--t-text-muted)" }}>{title}</h3>
     </div>
   );
 }
