@@ -40,6 +40,7 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - **Onboarding Quiz Overhaul** (Feb 20, 2026): Multi-select Position/Division, GPA/ACT/SAT inputs, updated matching algorithms.
 - **Inbound Coach Contact Detection** (Feb 20, 2026): Background task (every 2hrs) scans Gmail for emails from .edu domains, matches against Knowledge Base, auto-adds schools to pipeline with coach entry + interaction log + notification. Dashboard celebration card "A Coach Found You!" with View/Dismiss. Manual scan endpoint available.
 - **Security & Privacy Overhaul** (Feb 20, 2026): Gmail consent modal with recruiting email suggestion, inbound scanning toggle, Gmail token encryption at rest (Fernet), data export (GDPR/CCPA), account deletion, Privacy Policy page with parent-friendly language.
+- **Sent Email Auto-Logging** (Feb 20, 2026): Background scanner (every 2hrs) checks Gmail Sent folder for emails to known coaches, auto-logs them as interactions in the journey timeline. Also updates school status from "Not Contacted" to "Contacted". Manual scan endpoint available.
 
 ## Key Architecture
 - Frontend: React + Tailwind + shadcn/ui
