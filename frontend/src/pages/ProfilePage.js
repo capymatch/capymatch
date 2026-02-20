@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil } from "lucide-react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil, ArrowRight } from "lucide-react";
 import { ProfilePreview } from "../components/ProfilePreview";
 import api from "../lib/api";
 import { toast } from "sonner";
