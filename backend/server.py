@@ -374,7 +374,7 @@ If no changes found, return []"""
 
 @app.on_event("startup")
 async def startup_event():
-    global reply_check_task, coach_watch_task
+    global reply_check_task, coach_watch_task, inbound_scan_task
     
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
@@ -384,13 +384,17 @@ async def startup_event():
     coach_watch_task = asyncio.create_task(coach_watch_weekly_scan())
     logger.info("Started background task: Coach Watch (runs weekly)")
 
+    # Start background task for inbound coach contact scanning
+    inbound_scan_task = asyncio.create_task(scan_inbound_contacts())
+    logger.info("Started background task: inbound coach contact scanner (runs every 2 hours)")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    global reply_check_task, coach_watch_task
+    global reply_check_task, coach_watch_task, inbound_scan_task
     
     # Cancel background tasks
-    for task in [reply_check_task, coach_watch_task]:
+    for task in [reply_check_task, coach_watch_task, inbound_scan_task]:
         if task:
             task.cancel()
             try:
