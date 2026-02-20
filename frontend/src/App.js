@@ -136,14 +136,30 @@ function OnboardingGate({ children }) {
 
   useEffect(() => {
     let cancelled = false;
-    api.get("/recruiting-profile").then(res => {
-      if (cancelled) return;
-      if (!res.data?.questionnaire_completed) {
-        navigate("/onboarding", { replace: true });
-      } else {
-        setChecked(true);
-      }
-    }).catch(() => { if (!cancelled) setChecked(true); });
+    let retries = 0;
+
+    const checkProfile = () => {
+      api.get("/recruiting-profile").then(res => {
+        if (cancelled) return;
+        if (!res.data?.questionnaire_completed) {
+          navigate("/onboarding", { replace: true });
+        } else {
+          setChecked(true);
+        }
+      }).catch(() => {
+        if (cancelled) return;
+        // Retry once after a short delay (handles OAuth session timing)
+        if (retries < 1) {
+          retries++;
+          setTimeout(checkProfile, 1000);
+        } else {
+          // After retry, redirect to onboarding as safe default
+          navigate("/onboarding", { replace: true });
+        }
+      });
+    };
+
+    checkProfile();
     return () => { cancelled = true; };
   }, [navigate]);
 
