@@ -273,7 +273,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
                   style={{ backgroundColor: "#2ec4b6", color: "white" }}
-                  onClick={handleConnectGmail}
+                  onClick={() => setShowConsentModal(true)}
                   disabled={gmailConnecting}
                   data-testid="connect-gmail-btn"
                 >
