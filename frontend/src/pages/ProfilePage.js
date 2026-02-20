@@ -419,6 +419,43 @@ export default function ProfilePage() {
       </div>
 
       <div className="h-8" />
+
+      {/* Gentle gate modal — shown when navigating away with incomplete profile during onboarding */}
+      {blocker.state === "blocked" && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" data-testid="onboarding-gate-modal">
+          <div className="rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl" style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(245,158,11,0.12)" }}>
+                <AlertCircle className="w-5 h-5" style={{ color: "#f59e0b" }} />
+              </div>
+              <div>
+                <h3 className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}>Profile isn't complete yet</h3>
+                <p className="text-[12px] mt-1" style={{ color: "var(--t-text-muted)" }}>
+                  Finish your profile so coaches can find you and we can match you with the right schools.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => blocker.proceed()}
+                className="px-4 py-2 rounded-lg text-[12px] font-medium border transition-colors"
+                style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}
+                data-testid="gate-skip-btn"
+              >
+                Skip for now
+              </button>
+              <button
+                onClick={() => blocker.reset()}
+                className="px-4 py-2 rounded-lg text-[12px] font-bold transition-colors"
+                style={{ backgroundColor: "#2ec4b6", color: "white" }}
+                data-testid="gate-complete-profile-btn"
+              >
+                Complete Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
