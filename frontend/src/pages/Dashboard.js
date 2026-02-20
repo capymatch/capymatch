@@ -161,6 +161,68 @@ function EventCard({ event, onClick }) {
   );
 }
 
+/* ── Inbound Coach Contact Card ── */
+function InboundContactCard({ contact, onDismiss, onView }) {
+  return (
+    <div
+      data-testid={`inbound-contact-${contact.contact_id}`}
+      className="relative rounded-xl overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, #0f2027 0%, #0d3b3a 50%, #1a3a2a 100%)",
+        border: "1px solid rgba(46,196,182,0.3)",
+      }}
+    >
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full" style={{ background: "radial-gradient(circle, rgba(46,196,182,0.15) 0%, transparent 70%)" }} />
+        <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)" }} />
+      </div>
+      <div className="relative px-6 py-5">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
+              <Inbox className="w-5 h-5" style={{ color: "#2ec4b6" }} />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "#2ec4b6" }}>A Coach Found You!</p>
+              <p className="text-lg font-extrabold mt-0.5" style={{ color: "#ffffff" }}>{contact.university_name}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => onDismiss(contact.contact_id)}
+            className="p-1.5 rounded-lg transition-colors hover:bg-white/10"
+            style={{ color: "rgba(255,255,255,0.4)" }}
+            data-testid={`dismiss-inbound-${contact.contact_id}`}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>
+          <span className="font-semibold" style={{ color: "#ffffff" }}>{contact.coach_name}</span> emailed you
+          {contact.email_subject ? `: "${contact.email_subject}"` : ""}. 
+          We've added this school to your board automatically.
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onView(contact.program_id)}
+            className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:scale-[1.02]"
+            style={{ background: "#2ec4b6", color: "#ffffff" }}
+            data-testid={`view-inbound-${contact.contact_id}`}
+          >
+            View School & Respond
+          </button>
+          <button
+            onClick={() => onDismiss(contact.contact_id)}
+            className="px-4 py-2.5 rounded-lg text-sm font-medium transition-colors hover:bg-white/10"
+            style={{ color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════ */
 /* ── Dashboard ── */
 /* ══════════════════════════════════════════ */
