@@ -41,8 +41,9 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 24. Product tour (backend-stored, one-time)
 
 ## Recently Fixed (Feb 20, 2026)
-- **P0 FIXED**: "Find Schools" page showing no matches after questionnaire - `suggested-schools` endpoint crashed on list-type division field. Fixed to handle both string and list.
-- **P1 FIXED**: ProgressRail visual bug - stage keys mismatched between backend (`outreach_sent`/`coach_replied`) and frontend (`outreach`/`in_conversation`). Aligned keys and migrated DB data.
+- **P0 FIXED**: "Find Schools" page showing no matches — `suggested-schools` endpoint crashed on list-type division field
+- **P1 FIXED**: ProgressRail visual bug — stage keys mismatched between backend and frontend. Aligned and migrated DB data
+- **IMPROVED**: Match scoring algorithm — replaced simple additive scoring (everything 86%) with weighted 100-point algorithm using school-specific academic data (admission rate, SAT avg, ACT midpoint). Scores now range 44%-99%. Premium users see scores for all 1053 schools. "Strong Match (80%+)" filter now shows 213 schools
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors unresolved (on hold unless requested)
