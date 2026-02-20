@@ -63,7 +63,7 @@ export default function RecruitingJourney() {
       setCoaches(coachRes.status === "fulfilled" ? (coachRes.value.data || []) : []);
       if (profRes.status === "fulfilled") {
         const p = profRes.value.data;
-        const filled = [p.athlete_name, p.position, p.height, p.grad_year, p.video_link].filter(Boolean);
+        const filled = [p.athlete_name, p.position, p.height, p.graduation_year, p.video_link].filter(Boolean);
         setProfileComplete(filled.length >= 5);
       } else { setProfileComplete(false); }
       if (notesRes.status === "fulfilled") {
