@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar Active State - Color Options</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #fff; padding: 40px; }
+  h1 { font-size: 22px; margin-bottom: 8px; font-weight: 700; }
+  p.sub { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1100px; }
+  .option { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+  .option-header { padding: 14px 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+  .sidebar { width: 100%; padding: 20px 16px; }
+  .sidebar-item { padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.45); }
+  .sidebar-item .dot { width: 18px; height: 18px; border-radius: 5px; background: rgba(255,255,255,0.08); }
+  .sidebar-item.active .dot { background: currentColor; opacity: 0.3; }
+
+  /* Option 1: Teal (matches accent) */
+  .opt1 .sidebar-bg { background: #141922; }
+  .opt1 .option-header { background: #1a2332; color: #2ec4b6; }
+  .opt1 .tag { background: rgba(46,196,182,0.15); color: #2ec4b6; }
+  .opt1 .active { background: rgba(46,196,182,0.12); color: #2ec4b6; }
+
+  /* Option 2: Soft blue */
+  .opt2 .sidebar-bg { background: #141922; }
+  .opt2 .option-header { background: #1a2332; color: #60a5fa; }
+  .opt2 .tag { background: rgba(96,165,250,0.15); color: #60a5fa; }
+  .opt2 .active { background: rgba(96,165,250,0.1); color: #60a5fa; }
+
+  /* Option 3: Warm amber */
+  .opt3 .sidebar-bg { background: #141922; }
+  .opt3 .option-header { background: #1a2332; color: #f59e0b; }
+  .opt3 .tag { background: rgba(245,158,11,0.12); color: #f59e0b; }
+  .opt3 .active { background: rgba(245,158,11,0.1); color: #f59e0b; }
+
+  /* Option 4: Cool mint */
+  .opt4 .sidebar-bg { background: #141922; }
+  .opt4 .option-header { background: #1a2332; color: #34d399; }
+  .opt4 .tag { background: rgba(52,211,153,0.12); color: #34d399; }
+  .opt4 .active { background: rgba(52,211,153,0.1); color: #34d399; }
+
+  /* Option 5: Slate white (minimal) */
+  .opt5 .sidebar-bg { background: #141922; }
+  .opt5 .option-header { background: #1a2332; color: #e2e8f0; }
+  .opt5 .tag { background: rgba(255,255,255,0.08); color: #e2e8f0; }
+  .opt5 .active { background: rgba(255,255,255,0.08); color: #e2e8f0; }
+
+  /* Option 6: Current (pink - for comparison) */
+  .opt6 .sidebar-bg { background: #141922; }
+  .opt6 .option-header { background: #1a2332; color: #f472b6; }
+  .opt6 .tag { background: rgba(244,114,182,0.15); color: #f472b6; }
+  .opt6 .active { background: rgba(244,114,182,0.12); color: #f472b6; }
+</style>
+</head>
+<body>
+  <h1>Sidebar Active State — Color Options</h1>
+  <p class="sub">Pick a new highlight color to replace the pink. Each option shows how it looks on the dark sidebar.</p>
+
+  <div class="grid">
+    <!-- Option 1 -->
+    <div class="option opt1">
+      <div class="option-header">Option A: Teal <span class="tag">Recommended</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+
+    <!-- Option 2 -->
+    <div class="option opt2">
+      <div class="option-header">Option B: Soft Blue <span class="tag">Clean</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+
+    <!-- Option 3 -->
+    <div class="option opt3">
+      <div class="option-header">Option C: Warm Amber <span class="tag">Bold</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+
+    <!-- Option 4 -->
+    <div class="option opt4">
+      <div class="option-header">Option D: Cool Mint <span class="tag">Fresh</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+
+    <!-- Option 5 -->
+    <div class="option opt5">
+      <div class="option-header">Option E: Slate White <span class="tag">Minimal</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+
+    <!-- Option 6: Current -->
+    <div class="option opt6">
+      <div class="option-header">Current: Pink <span class="tag" style="background:rgba(244,114,182,0.15)">Replace this</span></div>
+      <div class="sidebar-bg sidebar">
+        <div class="sidebar-item"><span class="dot"></span> Dashboard</div>
+        <div class="sidebar-item"><span class="dot"></span> My Schools</div>
+        <div class="sidebar-item active"><span class="dot"></span> Find Schools</div>
+        <div class="sidebar-item"><span class="dot"></span> Calendar</div>
+        <div class="sidebar-item"><span class="dot"></span> AI Features</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
