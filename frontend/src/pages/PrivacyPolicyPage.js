@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
       title: "How We Protect It",
       items: [
         "Gmail credentials are encrypted at rest using industry-standard encryption",
-        "Passwords are hashed with bcrypt \u2014 we can never see your password",
+        "Passwords are hashed with bcrypt — we can never see your password",
         "All data is transmitted over HTTPS (TLS encrypted)",
         "We never sell, share, or trade your personal information with third parties",
       ],
