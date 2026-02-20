@@ -79,7 +79,7 @@ function OverviewField({ label, value, isLink, gated }) {
           {linkText} <ExternalLink className="w-3 h-3" />
         </a>
       ) : (
-        <div className="text-[13px] font-semibold text-slate-700">{value || "—"}</div>
+        <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{value || "—"}</div>
       )}
     </div>
   );
