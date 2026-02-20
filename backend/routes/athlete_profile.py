@@ -441,8 +441,6 @@ async def get_suggested_schools(request: Request):
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
     sub = await get_user_subscription(tenant_id)
     limit = sub.get("match_scores_limit", 3)
-    if limit == -1:
-        suggestions = suggestions[:12]
-    else:
+    if limit != -1:
         suggestions = suggestions[:limit]
     return {"suggestions": suggestions, "profile_exists": True}
