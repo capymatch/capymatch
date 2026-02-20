@@ -328,9 +328,9 @@ export default function SchoolInfoPage() {
             <StatCard value={fmtPct(sc.admission_rate)} label="Acceptance Rate" subtitle={selectivityLabel(sc.admission_rate)} accent={sc.admission_rate != null && sc.admission_rate < 0.30} />
           </div>
           {sc.test_requirements && (
-            <div className="pt-3 border-t border-slate-100">
+            <div className="pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
               <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 mb-1">Test Requirements</div>
-              <div className="text-[13px] text-slate-600 leading-relaxed">{sc.test_requirements}</div>
+              <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{sc.test_requirements}</div>
             </div>
           )}
         </div>
