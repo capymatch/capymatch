@@ -351,6 +351,11 @@ export default function UniversityKnowledgeBase() {
 
   const topMatch = suggestions[0] || null;
 
+  // Exclude hero card school from grid to avoid duplication
+  if (topMatch) {
+    filtered = filtered.filter(u => u.university_name !== topMatch.university_name);
+  }
+
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const enriched = paginated.map(u => ({
