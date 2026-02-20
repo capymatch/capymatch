@@ -97,8 +97,8 @@ export default function LoginPage({ onAuth }) {
 
         {/* ── Right: Login Card ── */}
         <div className="w-full max-w-[420px] rounded-2xl overflow-hidden shadow-xl bg-white" data-testid="login-card">
-          {/* Purple Banner */}
-          <div className="relative h-[160px] overflow-hidden" style={{ background: "linear-gradient(135deg, #6b1530 0%, #8b2252 40%, #a83262 100%)" }}>
+          {/* Banner */}
+          <div className="relative h-[160px] overflow-hidden" style={{ background: "linear-gradient(135deg, #0f2027 0%, #1a3a4a 40%, #1e4d5e 100%)" }}>
             <img src={BANNER_IMG} alt="" className="absolute inset-0 w-full h-full object-cover mix-blend-soft-light opacity-70" />
             <div className="relative z-10 p-6 pb-4 flex flex-col justify-end h-full">
               <div className="flex items-center gap-1.5 mb-2">
