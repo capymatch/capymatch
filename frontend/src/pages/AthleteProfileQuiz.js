@@ -163,14 +163,16 @@ export default function AthleteProfileQuiz() {
   const saveProfile = async () => {
     setSaving(true);
     try {
+      const academics = answers.academics || {};
       await api.post("/recruiting-profile", {
-        position: answers.position,
-        division: answers.division,
+        position: answers.position || [],
+        division: answers.division || [],
         priorities: answers.priorities || [],
         regions: answers.regions || [],
-        school_size: answers.school_size,
+        gpa: academics.gpa ? parseFloat(academics.gpa) : null,
+        act_score: academics.act_score ? parseInt(academics.act_score) : null,
+        sat_score: academics.sat_score ? parseInt(academics.sat_score) : null,
         academic_interests: answers.academic_interests,
-        scholarship_priority: answers.scholarship_priority,
       });
       const res = await api.get("/match-scores");
       setMatchScores((res.data?.scores || []).slice(0, 3));
