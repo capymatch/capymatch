@@ -57,7 +57,7 @@ export default function PrivacyPolicyPage() {
         </button>
         <div>
           <h1 className="text-xl font-bold" style={{ color: "var(--t-text)" }}>Privacy & Data Policy</h1>
-          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>How we handle your information \u2014 written in plain English</p>
+          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>How we handle your information — written in plain English</p>
         </div>
       </div>
 
