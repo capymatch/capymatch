@@ -161,10 +161,11 @@
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--t-bg); }
-::-webkit-scrollbar-thumb { background: var(--t-border-strong); border-radius: 4px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--t-border-strong); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--t-text-muted); }
+* { scrollbar-width: thin; scrollbar-color: var(--t-border-strong) transparent; }
 
 /* Horizontal scroll for tables */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
