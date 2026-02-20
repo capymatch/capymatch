@@ -10,6 +10,7 @@ from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_feature
 from models import ComposeEmail, ReplyEmail
+from encryption import encrypt_value, decrypt_value
 import os
 import uuid
 import base64
