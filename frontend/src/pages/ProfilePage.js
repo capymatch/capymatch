@@ -434,7 +434,7 @@ export default function ProfilePage() {
       <div className="h-8" />
 
       {/* Gentle gate modal — shown when navigating away with incomplete profile during onboarding */}
-      {blocker.state === "blocked" && (
+      {showGateModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" data-testid="onboarding-gate-modal">
           <div className="rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl" style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
             <div className="flex items-start gap-3 mb-4">
@@ -450,7 +450,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex gap-2 justify-end">
               <button
-                onClick={() => blocker.proceed()}
+                onClick={() => { setShowGateModal(false); if (pendingNav) navigate(pendingNav); }}
                 className="px-4 py-2 rounded-lg text-[12px] font-medium border transition-colors"
                 style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}
                 data-testid="gate-skip-btn"
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                 Skip for now
               </button>
               <button
-                onClick={() => blocker.reset()}
+                onClick={() => { setShowGateModal(false); setPendingNav(null); }}
                 className="px-4 py-2 rounded-lg text-[12px] font-bold transition-colors"
                 style={{ backgroundColor: "#2ec4b6", color: "white" }}
                 data-testid="gate-complete-profile-btn"
