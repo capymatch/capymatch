@@ -368,6 +368,8 @@ export default function UniversityKnowledgeBase() {
     filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
 
+  const topMatch = suggestions[0] || null;
+
   // In "For You" view: hero card shows #1, grid shows remaining 14 = 15 total
   if (activeBucket === "foryou" && topMatch) {
     filtered = filtered.filter(u => u.university_name !== topMatch.university_name);
@@ -380,8 +382,6 @@ export default function UniversityKnowledgeBase() {
     match_score: suggestionMap[u.university_name]?.match_score || null,
     match_reasons: suggestionMap[u.university_name]?.match_reasons || [],
   }));
-
-  const topMatch = suggestions[0] || null;
 
   // Bucket counts
   const bucketCounts = {
