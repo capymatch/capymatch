@@ -629,26 +629,37 @@ _enrich_status = {"running": False, "processed": 0, "scorecard_filled": 0, "gpa_
 async def _extract_gpa_from_search(school_name):
     """Search for a school's average incoming GPA via DuckDuckGo and extract it."""
     try:
-        query = f"{school_name} average GPA incoming freshmen admitted students"
+        query = f"{school_name} average GPA"
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.get("https://html.duckduckgo.com/html/", params={"q": query},
                                     headers={"User-Agent": "Mozilla/5.0"}, follow_redirects=True)
             if resp.status_code != 200:
                 return None
-            text = resp.text
-            # Extract GPA values from search snippets (look for patterns like "3.5 GPA", "GPA of 3.5", "average GPA is 3.50")
-            patterns = [
-                r'(?:average|avg|mean|median)[\s\w]*?GPA[\s\w]*?(?:is|of|was|:)?\s*(\d\.\d{1,2})',
-                r'GPA[\s\w]*?(?:is|of|was|:)?\s*(\d\.\d{1,2})',
-                r'(\d\.\d{1,2})\s*(?:GPA|grade point)',
-                r'(?:average|avg|mean|median)\s+(?:weighted|unweighted)?\s*GPA\s*(?:is|of|was|:)?\s*(\d\.\d{1,2})',
-            ]
-            for pattern in patterns:
-                matches = re.findall(pattern, text, re.IGNORECASE)
-                for m in matches:
-                    gpa = float(m)
-                    if 2.0 <= gpa <= 4.0:
-                        return gpa
+            # Strip HTML tags to get clean text
+            text = re.sub(r'<[^>]+>', ' ', resp.text)
+            text = re.sub(r'\s+', ' ', text)
+            # Find GPA values near "GPA" keyword with surrounding context
+            best_gpa = None
+            best_priority = 99
+            for m in re.finditer(r'.{0,60}GPA.{0,60}', text, re.IGNORECASE):
+                snippet = m.group()
+                gpas = re.findall(r'(\d\.\d{1,2})', snippet)
+                for g in gpas:
+                    val = float(g)
+                    if val < 2.0 or val > 4.0:
+                        continue
+                    # Prioritize: "Reported GPA X.XX" or "average GPA X.XX" > generic
+                    lower = snippet.lower()
+                    if "reported gpa" in lower or "average gpa" in lower or "avg gpa" in lower:
+                        priority = 1
+                    elif "gpa" in lower and ("admit" in lower or "accept" in lower or "freshman" in lower):
+                        priority = 2
+                    else:
+                        priority = 3
+                    if priority < best_priority or (priority == best_priority and best_gpa is None):
+                        best_gpa = val
+                        best_priority = priority
+            return best_gpa
     except Exception as e:
         logger.warning(f"GPA search failed for {school_name}: {e}")
     return None
