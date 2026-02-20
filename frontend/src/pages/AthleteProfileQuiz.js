@@ -379,7 +379,28 @@ export default function AthleteProfileQuiz() {
           <p className="text-sm mb-8 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{q.sub}</p>
 
           {/* Options */}
-          {q.type === "single" ? (
+          {q.type === "input_group" ? (
+            <div className="space-y-5">
+              {q.fields.map(field => (
+                <div key={field.key}>
+                  <label className="text-[10px] font-bold uppercase tracking-[0.12em] block mb-2" style={{ color: "var(--t-text-muted)" }}>{field.label}</label>
+                  <input
+                    type={field.inputType}
+                    step={field.step}
+                    min={field.min}
+                    max={field.max}
+                    placeholder={field.placeholder}
+                    value={(current || {})[field.key] || ""}
+                    onChange={e => setAnswers(p => ({ ...p, [q.id]: { ...(p[q.id] || {}), [field.key]: e.target.value } }))}
+                    className="w-full px-4 py-3 rounded-xl border text-base font-semibold outline-none focus:ring-2 focus:ring-teal-600/40 transition-all"
+                    style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                    data-testid={`input-${field.key}`}
+                  />
+                </div>
+              ))}
+              <p className="text-[11px] italic" style={{ color: "var(--t-text-muted)" }}>Fill in at least one field. Leave blank if you haven't taken a test yet.</p>
+            </div>
+          ) : q.type === "single" ? (
             <div className={`grid gap-2.5 ${q.options.length <= 4 ? "grid-cols-2" : "grid-cols-3"}`}>
               {q.options.map(opt => {
                 const isSelected = current === opt.value;
