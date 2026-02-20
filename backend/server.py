@@ -217,6 +217,42 @@ async def check_coach_replies():
             logger.error(f"Error in reply check background task: {e}")
             await asyncio.sleep(60)  # Wait a minute before retrying on error
 
+# ─── Background Task: Inbound Coach Contact Scanner ───
+
+async def scan_inbound_contacts():
+    """Background task that scans for inbound coach emails every 2 hours."""
+    from routes.inbound_contacts import scan_inbound_for_user
+
+    while True:
+        try:
+            await asyncio.sleep(7200)  # Wait 2 hours between scans
+
+            # Get all users with connected Gmail
+            gmail_tokens = await db.gmail_tokens.find({}, {"_id": 0, "user_id": 1}).to_list(1000)
+
+            for token_doc in gmail_tokens:
+                user_id = token_doc["user_id"]
+                try:
+                    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+                    if not user:
+                        continue
+                    tenant_id = user.get("tenant_id") or f"tenant_{user_id}"
+
+                    new_count = await scan_inbound_for_user(user_id, tenant_id)
+                    if new_count > 0:
+                        logger.info(f"Inbound scan: Added {new_count} new school(s) for user {user_id}")
+
+                except Exception as e:
+                    logger.error(f"Inbound scan error for user {user_id}: {e}")
+                    continue
+
+        except asyncio.CancelledError:
+            logger.info("Inbound contact scan task cancelled")
+            break
+        except Exception as e:
+            logger.error(f"Inbound contact scan background error: {e}")
+            await asyncio.sleep(300)  # Retry in 5 min on error
+
 # ─── WebSocket ───
 
 from ws_manager import manager
