@@ -9,7 +9,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
 import { toast } from "sonner";
-import Tour from "../components/Tour";
 import SubscriptionBadge from "../components/SubscriptionBadge";
 import { useSubscription } from "../lib/subscription";
 import { useTheme } from "../lib/theme";
