@@ -186,6 +186,27 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   const profileDone = filledCount >= 5; // 5 of 6 essential fields
   const currentStep = !profileDone ? 1 : !gmailConnected ? 2 : 3;
 
+  // Celebration overlay
+  if (celebrating) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-5 animate-in fade-in duration-300" data-testid="celebration-overlay">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.12)" }}>
+          <PartyPopper className="w-8 h-8" style={{ color: "#2ec4b6" }} />
+        </div>
+        <div className="text-center">
+          <h2 className="text-xl font-extrabold" style={{ color: "var(--t-text)" }}>First school added!</h2>
+          <p className="text-sm mt-2" style={{ color: "var(--t-text-muted)" }}>
+            <span className="font-semibold" style={{ color: "#2ec4b6" }}>{celebrating}</span> is now on your board.
+          </p>
+          <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>Setting up your recruiting pipeline...</p>
+        </div>
+        <div className="w-8 h-8 mt-2">
+          <Loader2 className="w-5 h-5 animate-spin mx-auto" style={{ color: "#2ec4b6" }} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-5" data-testid="empty-board-state">
 
