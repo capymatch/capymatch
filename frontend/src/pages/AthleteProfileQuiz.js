@@ -303,7 +303,7 @@ export default function AthleteProfileQuiz() {
             <h1 className="text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
               Let's Build Your <span className="bg-gradient-to-r from-slate-500 to-teal-600 bg-clip-text text-transparent">Volleyball Journey</span>
             </h1>
-            <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+            <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "#64748b" }}>
               Answer 6 quick questions so we can match you with the right volleyball programs and coaches.
             </p>
 
