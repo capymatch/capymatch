@@ -344,7 +344,7 @@ export default function Layout({ user, onLogout }) {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 relative z-10">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         {/* Top Header */}
         <header 
           className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 border-b backdrop-blur-xl"
