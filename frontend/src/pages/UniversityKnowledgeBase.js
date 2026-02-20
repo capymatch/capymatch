@@ -196,9 +196,21 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
       </div>
       {uni.match_reasons?.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3.5">
-          {uni.match_reasons.map(r => (
-            <span key={r} className="text-[10px] px-1.5 py-0.5 rounded-[5px]" style={{ color: "var(--t-text-muted)", backgroundColor: "var(--t-surface-alt)" }}>{r}</span>
-          ))}
+          {uni.match_reasons.map(r => {
+            const isReach = ["Reach", "High Reach"].includes(r);
+            const isSlightReach = r === "Slight Reach";
+            const isStrongFit = r === "Strong Academic Fit";
+            const isGoodFit = r === "Good Academic Fit";
+            return (
+              <span key={r} className={`text-[10px] px-1.5 py-0.5 rounded-[5px] ${
+                isReach ? "bg-red-100 text-red-700" :
+                isSlightReach ? "bg-amber-100 text-amber-700" :
+                isStrongFit ? "bg-emerald-100 text-emerald-700" :
+                isGoodFit ? "bg-teal-100 text-teal-700" :
+                ""
+              }`} style={(!isReach && !isSlightReach && !isStrongFit && !isGoodFit) ? { color: "var(--t-text-muted)", backgroundColor: "var(--t-surface-alt)" } : {}}>{r}</span>
+            );
+          })}
         </div>
       )}
       <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
