@@ -18,7 +18,7 @@ export function StageLogModal({ stageKey, currentStage, universityName, onConfir
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="stage-log-modal">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center" data-testid="stage-log-modal">
       <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
       <div className="relative w-full max-w-md mx-4 rounded-2xl border p-6"
         style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
