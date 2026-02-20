@@ -16,7 +16,9 @@ export default function LoginPage({ onAuth }) {
   const handleGoogle = () => {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
     const redirectUrl = window.location.origin + '/board';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    // Use top-level navigation to avoid iframe blocking by Google
+    try { window.top.location.href = authUrl; } catch { window.location.href = authUrl; }
   };
 
   const handleSubmit = async (e) => {
