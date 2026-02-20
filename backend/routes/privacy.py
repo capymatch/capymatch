@@ -102,6 +102,7 @@ async def export_user_data(request: Request):
         "events": events,
         "notifications": notifications,
         "inbound_contacts": inbound,
+        "sent_email_log": sent_log,
     }
 
 
