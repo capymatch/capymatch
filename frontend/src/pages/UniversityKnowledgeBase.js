@@ -13,7 +13,6 @@ import { toast } from "sonner";
 const PER_PAGE = 48;
 
 const SMART_BUCKETS = [
-  { id: "foryou", label: "For You", icon: Zap },
   { id: "all", label: "All Schools", icon: LayoutGrid },
   { id: "dream", label: "Dream Schools (D1)", icon: Star, filter: { division: "D1" } },
   { id: "strong", label: "Strong Match (80%+)", icon: Target, filter: { minScore: 80 } },
