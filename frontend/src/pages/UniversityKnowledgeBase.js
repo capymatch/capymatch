@@ -440,8 +440,8 @@ export default function UniversityKnowledgeBase() {
         })}
       </div>
 
-      {/* Top Match Banner — only show outside "For You" view */}
-      {!suggestionsLoading && topMatch && activeBucket !== "foryou" && (
+      {/* Top Match Banner */}
+      {!suggestionsLoading && topMatch && (
         <TopMatchBanner school={topMatch} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} />
       )}
 
