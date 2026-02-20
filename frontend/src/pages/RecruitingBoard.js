@@ -473,6 +473,85 @@ function SectionLabel({ stage, count }) {
   );
 }
 
+/* ═══ Suggested Schools Section ═══ */
+function SuggestedSchoolsSection({ navigate, onSchoolAdded, boardNames }) {
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(null);
+
+  useEffect(() => {
+    api.get("/suggested-schools").then(res => {
+      setSuggestions((res.data?.suggestions || []).slice(0, 15));
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, []);
+
+  const addToBoard = async (school) => {
+    setAdding(school.university_name);
+    try {
+      await api.post("/programs", { university_name: school.university_name, domain: school.domain });
+      toast.success(`${school.university_name} added!`);
+      setSuggestions(prev => prev.filter(s => s.university_name !== school.university_name));
+      if (onSchoolAdded) onSchoolAdded();
+    } catch { toast.error("Failed to add school"); }
+    finally { setAdding(null); }
+  };
+
+  if (loading) return null;
+  const visible = suggestions.filter(s => !boardNames.has(s.university_name));
+  if (visible.length === 0) return null;
+
+  return (
+    <div className="mt-4" data-testid="suggested-schools-section">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#2ec4b6]" />
+            <span className="text-[14px] font-bold" style={{ color: "var(--t-text)" }}>Top matches for you</span>
+          </div>
+          <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Based on your profile and preferences. Scores reflect academic realism.</p>
+        </div>
+        <button onClick={() => navigate("/knowledge-base")} className="text-[11px] font-medium" style={{ color: "#2ec4b6" }} data-testid="see-all-schools">
+          See all schools
+        </button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        {visible.map(s => {
+          const isReach = (s.match_reasons || []).some(r => ["Reach", "High Reach"].includes(r));
+          const isSlightReach = (s.match_reasons || []).includes("Slight Reach");
+          const isStrongFit = (s.match_reasons || []).some(r => ["Strong Academic Fit", "Good Academic Fit"].includes(r));
+          const tierLabel = isReach ? "Reach" : isSlightReach ? "Slight Reach" : isStrongFit ? "Strong Fit" : null;
+          const tierColor = isReach ? "#ef4444" : isSlightReach ? "#f59e0b" : isStrongFit ? "#10b981" : null;
+          return (
+            <div key={s.university_name} className="flex items-center gap-3 rounded-lg border p-3 transition-all hover:shadow-sm"
+              style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+              data-testid={`suggestion-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-semibold text-[12px] truncate" style={{ color: "var(--t-text)" }}>{s.university_name}</span>
+                  {s.match_score && <span className="text-[11px] font-bold" style={{ color: "#2ec4b6" }}>{s.match_score}%</span>}
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  {s.division && <span className="text-[9px] font-bold px-1.5 py-px rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>{s.division}</span>}
+                  {s.conference && <span className="text-[9px]" style={{ color: "var(--t-text-muted)" }}>{s.conference}</span>}
+                  {tierLabel && <span className="text-[9px] font-semibold px-1.5 py-px rounded" style={{ color: tierColor, background: `${tierColor}10`, border: `1px solid ${tierColor}20` }}>{tierLabel}</span>}
+                </div>
+              </div>
+              <button onClick={() => addToBoard(s)} disabled={adding === s.university_name}
+                className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                style={{ background: "#2ec4b6", color: "white" }}
+                data-testid={`add-suggestion-${s.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+              >
+                {adding === s.university_name ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3 inline mr-0.5" />Add</>}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ═══ Main Board ═══ */
 export default function RecruitingBoard() {
   const [groupedData, setGroupedData] = useState({ groups: {}, counts: {}, total: 0 });
