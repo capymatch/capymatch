@@ -190,11 +190,11 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         {/* Progress Strip */}
         <div className="flex items-center gap-4 px-5 py-3 border-b overflow-x-auto" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt, var(--t-surface))" }}>
           <ProgressStep num={1} label="Create Profile" done={profileDone} current={!profileDone} />
-          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "#cbd5e1" }} />
           <ProgressStep num={2} label="Connect Gmail" done={gmailConnected} current={profileDone && !gmailConnected} />
-          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "#cbd5e1" }} />
           <ProgressStep num={3} label="Add Schools" done={false} current={profileDone && gmailConnected} />
-          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "var(--t-border)" }} />
+          <div className="w-5 h-px flex-shrink-0" style={{ backgroundColor: "#cbd5e1" }} />
           <ProgressStep num={4} label="Start Your Journey" done={false} current={false} />
         </div>
 
