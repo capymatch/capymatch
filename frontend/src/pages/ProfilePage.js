@@ -119,17 +119,30 @@ export default function ProfilePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const fromOnboarding = searchParams.get("from") === "onboarding";
+  const [showGateModal, setShowGateModal] = useState(false);
+  const [pendingNav, setPendingNav] = useState(null);
 
-  // Gentle gate: block navigation when profile is incomplete during onboarding
-  const isProfileIncomplete = profile && (() => {
+  // Gentle gate: intercept sidebar clicks when profile is incomplete during onboarding
+  useEffect(() => {
+    if (!fromOnboarding || !profile) return;
     const essential = [profile.athlete_name, profile.graduation_year, profile.position, profile.height, profile.city || profile.state];
-    return essential.filter(Boolean).length < 4;
-  })();
+    const isIncomplete = essential.filter(Boolean).length < 4;
+    if (!isIncomplete) return;
 
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      fromOnboarding && isProfileIncomplete && currentLocation.pathname !== nextLocation.pathname
-  );
+    const handler = (e) => {
+      const link = e.target.closest("a[href]");
+      if (!link) return;
+      const href = link.getAttribute("href");
+      if (!href || href.includes("/profile")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setPendingNav(href);
+      setShowGateModal(true);
+    };
+    const sidebar = document.querySelector('[data-testid="sidebar-nav"]');
+    if (sidebar) sidebar.addEventListener("click", handler, true);
+    return () => { if (sidebar) sidebar.removeEventListener("click", handler, true); };
+  }, [fromOnboarding, profile]);
 
   useEffect(() => {
     Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
