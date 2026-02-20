@@ -28,35 +28,6 @@ export default function Layout({ user, onLogout }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem("sidebar_collapsed") === "true");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [showTour, setShowTour] = useState(false);
-
-  // Check if main tour should show (backend-first, localStorage cache)
-  useEffect(() => {
-    const localDone = localStorage.getItem("tour_completed");
-    const shouldShow = localStorage.getItem("show_tour") === "true";
-    if (localDone || !shouldShow) return;
-    api.get("/user/tours").then(res => {
-      if (res.data?.main_tour) {
-        localStorage.setItem("tour_completed", "true");
-        localStorage.removeItem("show_tour");
-      } else {
-        setShowTour(true);
-      }
-    }).catch(() => {
-      setShowTour(true);
-    });
-  }, []);
-
-  // Listen for tour trigger (fired when user adds first school)
-  useEffect(() => {
-    const handler = () => {
-      if (!localStorage.getItem("tour_completed")) {
-        setShowTour(true);
-      }
-    };
-    window.addEventListener("trigger_tour", handler);
-    return () => window.removeEventListener("trigger_tour", handler);
-  }, []);
   const [showAssistant, setShowAssistant] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { planEvent, dismissPlanEvent, subscription } = useSubscription();
