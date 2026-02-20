@@ -462,7 +462,7 @@ export default function Inbox() {
   const handleConnect = async () => {
     try {
       const res = await api.get("/gmail/connect");
-      window.location.href = res.data.auth_url;
+      try { window.top.location.href = res.data.auth_url; } catch { window.location.href = res.data.auth_url; }
     } catch {
       toast.error("Failed to start Gmail connection");
     }

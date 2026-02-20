@@ -156,7 +156,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
     setGmailConnecting(true);
     try {
       const res = await api.get("/gmail/connect?return_to=/pipeline");
-      window.location.href = res.data.auth_url;
+      try { window.top.location.href = res.data.auth_url; } catch { window.location.href = res.data.auth_url; }
     } catch {
       toast.error("Failed to start Gmail connection");
       setGmailConnecting(false);

@@ -3,7 +3,7 @@ import { Activity, ArrowRight, Mail, Sparkles, BarChart3, Calendar, Eye, Shield,
 export default function LandingPage() {
   const handleLogin = () => {
     const redirectUrl = window.location.origin + "/";
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    try { window.top.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`; } catch { window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`; }
   };
 
   return (
