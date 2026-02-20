@@ -20,6 +20,13 @@ async def scan_inbound_for_user(user_id: str, tenant_id: str):
     if not creds:
         return 0
 
+    # Check if user has opted out of inbound scanning
+    prefs = await db.privacy_preferences.find_one(
+        {"tenant_id": tenant_id}, {"_id": 0}
+    )
+    if prefs and not prefs.get("inbound_email_scanning", True):
+        return 0
+
     try:
         service = get_gmail_service(creds)
     except Exception as e:
