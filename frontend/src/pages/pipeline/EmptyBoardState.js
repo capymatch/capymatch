@@ -209,7 +209,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2ec4b6" }} />
               Step {currentStep} of 4
             </div>
-            <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-2" style={{ color: "var(--t-text)" }}>
+            <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-3" style={{ color: "var(--t-text)" }}>
               {!profileDone
                 ? <>First, let's set up <span style={{ color: "#2ec4b6" }}>the athlete profile</span></>
                 : !gmailConnected
