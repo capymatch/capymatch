@@ -120,6 +120,17 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const fromOnboarding = searchParams.get("from") === "onboarding";
 
+  // Gentle gate: block navigation when profile is incomplete during onboarding
+  const isProfileIncomplete = profile && (() => {
+    const essential = [profile.athlete_name, profile.graduation_year, profile.position, profile.height, profile.city || profile.state];
+    return essential.filter(Boolean).length < 4;
+  })();
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      fromOnboarding && isProfileIncomplete && currentLocation.pathname !== nextLocation.pathname
+  );
+
   useEffect(() => {
     Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
       .then(([profRes, linkRes]) => {
