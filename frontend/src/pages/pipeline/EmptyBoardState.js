@@ -374,6 +374,12 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         </div>
       </div>
       )}
+      {showConsentModal && (
+        <GmailConsentModal
+          onConsent={handleConnectGmail}
+          onCancel={() => setShowConsentModal(false)}
+        />
+      )}
     </div>
   );
 }
