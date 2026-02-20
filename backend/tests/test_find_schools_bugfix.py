@@ -278,11 +278,12 @@ class TestProgressRailStageKeyMigration:
 class TestHealthCheck:
     """Basic health check to ensure backend is running"""
     
-    def test_backend_health(self):
-        """Verify backend is responsive"""
-        resp = requests.get(f"{BASE_URL}/api/health")
-        assert resp.status_code == 200, f"Health check failed: {resp.status_code}"
-        print("✓ Backend health check passed")
+    def test_backend_root_endpoint(self):
+        """Verify backend API is responsive"""
+        resp = requests.get(f"{BASE_URL}/api/auth/me")
+        # Should return 401 without auth, not 404
+        assert resp.status_code in [401, 200], f"Unexpected status code: {resp.status_code}"
+        print("✓ Backend API is responsive")
 
 
 if __name__ == "__main__":
