@@ -760,7 +760,12 @@ export default function RecruitingBoard() {
         </button>
       )}
       {/* Empty Board */}
-      {total === 0 && <EmptyBoardState onSchoolAdded={fetchPrograms} />}
+      {total === 0 && (
+        <>
+          <EmptyBoardState onSchoolAdded={fetchPrograms} />
+          <SuggestedSchoolsSection navigate={navigate} onSchoolAdded={fetchPrograms} boardNames={boardNames} />
+        </>
+      )}
 
       {/* Top: Ring + Hero */}
       {total > 0 && (
