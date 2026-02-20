@@ -351,9 +351,18 @@ def _compute_match(uni, profile):
     pref_divisions_upper = [d.upper() for d in pref_divisions]
     pref_regions = profile.get("regions") or []
     pref_priorities = profile.get("priorities") or []
-    user_gpa = profile.get("gpa")
-    user_act = profile.get("act_score")
-    user_sat = profile.get("sat_score")
+    try:
+        user_gpa = float(profile["gpa"]) if profile.get("gpa") else None
+    except (ValueError, TypeError):
+        user_gpa = None
+    try:
+        user_act = int(profile["act_score"]) if profile.get("act_score") else None
+    except (ValueError, TypeError):
+        user_act = None
+    try:
+        user_sat = int(profile["sat_score"]) if profile.get("sat_score") else None
+    except (ValueError, TypeError):
+        user_sat = None
 
     school_div = (uni.get("division") or "").upper()
     school_region = uni.get("region") or ""
