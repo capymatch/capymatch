@@ -35,7 +35,7 @@ function StatCard({ value, label, subtitle, accent }) {
   return (
     <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5 flex flex-col items-center text-center" data-testid={`stat-card-${label?.replace(/\s+/g, '-').toLowerCase()}`}>
       <div className={`text-[26px] sm:text-[30px] font-black tracking-tight leading-none mb-2 ${
-        isEmpty ? "text-slate-300" : accent ? "text-[#2ec4b6]" : "text-slate-800"
+        isEmpty ? "text-[var(--t-text-muted)]" : accent ? "text-[#2ec4b6]" : "text-[var(--t-text)]"
       }`}>
         {isEmpty ? "N/A" : value}
       </div>
