@@ -340,7 +340,7 @@ def _parse_scorecard(r):
 
 
 def _compute_match(uni, profile):
-    """Match score — mirrors get_match_scores logic exactly."""
+    """Match score — uses school-specific academic data from scorecard."""
     score = 0
     total_weight = 0
     reasons = []
@@ -357,6 +357,7 @@ def _compute_match(uni, profile):
 
     school_div = (uni.get("division") or "").upper()
     school_region = uni.get("region") or ""
+    scorecard = uni.get("scorecard") or {}
 
     region_aliases = {
         "West Coast": ["West"], "West": ["West"],
@@ -443,19 +444,18 @@ def _compute_match(uni, profile):
 
     if user_gpa:
         academic_checks += 1
-        # Use acceptance rate from scorecard if available
-        accept_rate = uni.get("acceptance_rate")
+        accept_rate = uni.get("acceptance_rate") or scorecard.get("admission_rate")
         if accept_rate is not None:
-            if accept_rate >= 70:
+            accept_pct = accept_rate * 100 if accept_rate <= 1 else accept_rate
+            if accept_pct >= 70:
                 academic_score += 1.0
-            elif accept_rate >= 50:
+            elif accept_pct >= 50:
                 academic_score += 0.85 if user_gpa >= 3.0 else 0.5
-            elif accept_rate >= 30:
+            elif accept_pct >= 30:
                 academic_score += 0.9 if user_gpa >= 3.3 else 0.5 if user_gpa >= 2.8 else 0.2
             else:
                 academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
         else:
-            # Fallback: use division as proxy
             if school_div in ("D3", "NAIA"):
                 academic_score += 0.8
             elif school_div == "D2":
@@ -465,7 +465,7 @@ def _compute_match(uni, profile):
 
     if user_sat:
         academic_checks += 1
-        sat_avg = uni.get("sat_avg")
+        sat_avg = uni.get("sat_avg") or scorecard.get("sat_avg")
         if sat_avg:
             diff = user_sat - sat_avg
             if diff >= 0:
@@ -481,12 +481,24 @@ def _compute_match(uni, profile):
 
     if user_act:
         academic_checks += 1
-        if school_div == "D1":
-            academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
-        elif school_div == "D2":
-            academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
+        act_mid = scorecard.get("act_midpoint")
+        if act_mid:
+            diff = user_act - act_mid
+            if diff >= 0:
+                academic_score += 1.0
+            elif diff >= -3:
+                academic_score += 0.7
+            elif diff >= -6:
+                academic_score += 0.3
+            else:
+                academic_score += 0.1
         else:
-            academic_score += 0.8
+            if school_div == "D1":
+                academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
+            elif school_div == "D2":
+                academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
+            else:
+                academic_score += 0.8
 
     if academic_checks > 0:
         avg_academic = academic_score / academic_checks
