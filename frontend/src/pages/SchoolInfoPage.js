@@ -261,7 +261,7 @@ export default function SchoolInfoPage() {
 
         {/* ── Program Overview ── */}
         <SectionCard title="Program Overview" icon={BookOpen} testId="program-overview-section">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <OverviewField label="Division" value={
               school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-[#2ec4b6]/20 text-[#2ec4b6] bg-[#2ec4b6]/5">{divLabel[school.division] || school.division}</span> : "—"
             } />
