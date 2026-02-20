@@ -37,6 +37,8 @@ Public-facing Volleyball Recruiting CRM. Redesign core features, make mobile-fri
 - **App-Wide Dark Mode**: Unified CSS variables, sidebar fix, button contrast fixes
 - **Performance**: Parallel API fetches, cached questionnaire data
 - **RecruitingJourney.js Refactoring** (Feb 20, 2026): Extracted 15 components into `/components/journey/` — reduced from 1561 to 428 lines. All modals (Email, Log, Reply, Follow-up, Coach), helper components, and constants extracted. 100% test pass rate.
+- **Onboarding Quiz Overhaul** (Feb 20, 2026): Multi-select Position/Division, GPA/ACT/SAT inputs, updated matching algorithms.
+- **Inbound Coach Contact Detection** (Feb 20, 2026): Background task (every 2hrs) scans Gmail for emails from .edu domains, matches against Knowledge Base, auto-adds schools to pipeline with coach entry + interaction log + notification. Dashboard celebration card "A Coach Found You!" with View/Dismiss. Manual scan endpoint available.
 
 ## Key Architecture
 - Frontend: React + Tailwind + shadcn/ui
