@@ -6,7 +6,7 @@ import {
   ChevronRight, Target, MessageCircle, Mail, Clock,
   Zap, Send, Sparkles, CheckCircle,
   ArrowRight, User, GraduationCap, Calendar,
-  BarChart3, Activity, ChevronDown, ChevronUp
+  BarChart3, Activity, ChevronDown, ChevronUp, X, Inbox
 } from "lucide-react";
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
