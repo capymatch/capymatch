@@ -105,7 +105,7 @@ def get_gmail_service(creds):
 # ─── OAuth Routes ───
 
 @router.get("/connect")
-async def gmail_connect(request: Request, return_to: str = "/settings"):
+async def gmail_connect(request: Request, return_to: str = "/settings", mode: str = "redirect"):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
     # Gate Gmail behind Pro+
@@ -126,7 +126,9 @@ async def gmail_connect(request: Request, return_to: str = "/settings"):
         "return_to": safe_return,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    return {"auth_url": auth_url}
+    if mode == "json":
+        return {"auth_url": auth_url}
+    return RedirectResponse(auth_url)
 
 
 @router.get("/callback")
