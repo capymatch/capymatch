@@ -6,13 +6,14 @@ import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   Search, Plus, MapPin, Check, LayoutGrid, List, Star,
   Target, MapPinned, GraduationCap, X, Filter, ExternalLink,
-  Loader2, RotateCcw, Sparkles, ArrowRight
+  Loader2, RotateCcw, Sparkles, ArrowRight, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
 const PER_PAGE = 48;
 
 const SMART_BUCKETS = [
+  { id: "foryou", label: "For You", icon: Zap },
   { id: "all", label: "All Schools", icon: LayoutGrid },
   { id: "dream", label: "Dream Schools (D1)", icon: Star, filter: { division: "D1" } },
   { id: "strong", label: "Strong Match (80%+)", icon: Target, filter: { minScore: 80 } },
