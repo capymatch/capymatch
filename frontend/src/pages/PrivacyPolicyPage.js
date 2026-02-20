@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
       icon: Mail,
       title: "Gmail Integration",
       items: [
-        "Gmail access is optional \u2014 you can use the app without it",
+        "Gmail access is optional — you can use the app without it",
         "We only read email headers (who sent it) to detect coach replies, not email content",
         "Emails are only sent when you explicitly compose and click Send",
         "You can enable/disable automatic inbound coach detection in Settings",
