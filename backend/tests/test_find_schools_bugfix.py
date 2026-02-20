@@ -220,17 +220,13 @@ class TestProgressRailStageKeyMigration:
     
     @pytest.fixture(autouse=True)
     def setup(self):
-        """Login and get auth token"""
-        login_resp = requests.post(f"{BASE_URL}/api/auth/login", json={
+        """Login and get auth session"""
+        self.session = requests.Session()
+        login_resp = self.session.post(f"{BASE_URL}/api/auth/login", json={
             "email": TEST_EMAIL,
             "password": TEST_PASSWORD
         })
         assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
-        self.token = login_resp.json().get("token") or login_resp.json().get("session_token")
-        self.headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Content-Type": "application/json"
-        }
         yield
     
     def test_update_journey_stage_uses_new_keys(self):
@@ -238,28 +234,31 @@ class TestProgressRailStageKeyMigration:
         Test that updating journey_stage uses new keys (outreach, in_conversation)
         not old keys (outreach_sent, coach_replied)
         """
-        # Get a program
-        programs_resp = requests.get(f"{BASE_URL}/api/programs", headers=self.headers)
-        assert programs_resp.status_code == 200
+        # First add a school to test with
+        add_resp = self.session.post(f"{BASE_URL}/api/knowledge-base/add-to-board", json={
+            "university_name": "Clemson University"
+        })
         
-        programs = programs_resp.json()
-        if isinstance(programs, dict):
-            programs = programs.get("programs", [])
-        
-        if not programs:
-            pytest.skip("No programs found")
-        
-        program_id = programs[0].get("program_id")
+        if add_resp.status_code == 400:
+            # If already exists, get program from list
+            programs_resp = self.session.get(f"{BASE_URL}/api/programs")
+            programs = programs_resp.json()
+            if isinstance(programs, list) and len(programs) > 0:
+                program_id = programs[0].get("program_id")
+            else:
+                pytest.skip("No programs found")
+        else:
+            assert add_resp.status_code == 200, f"Failed to add school: {add_resp.text}"
+            program_id = add_resp.json().get("program_id")
         
         # Update to 'outreach' stage (new key)
-        update_resp = requests.put(f"{BASE_URL}/api/programs/{program_id}", 
-            headers=self.headers,
+        update_resp = self.session.put(f"{BASE_URL}/api/programs/{program_id}", 
             json={"journey_stage": "outreach"}
         )
         assert update_resp.status_code == 200, f"Failed to update: {update_resp.text}"
         
         # Verify the program detail shows correct stages
-        detail_resp = requests.get(f"{BASE_URL}/api/programs/{program_id}", headers=self.headers)
+        detail_resp = self.session.get(f"{BASE_URL}/api/programs/{program_id}")
         assert detail_resp.status_code == 200
         
         program = detail_resp.json()
@@ -271,6 +270,9 @@ class TestProgressRailStageKeyMigration:
         assert stages.get("added") == True, f"'added' stage should be True (cascade): {stages}"
         
         print(f"✓ journey_stage 'outreach' correctly fills stages: {stages}")
+        
+        # Clean up
+        self.session.delete(f"{BASE_URL}/api/programs/{program_id}")
 
 
 class TestHealthCheck:
