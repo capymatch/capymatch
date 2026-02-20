@@ -137,9 +137,13 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         division: school.division,
         conference: school.conference,
       });
-      toast.success(`${school.university_name} added to your board!`);
       setSuggestions(prev => prev.filter(s => s.university_name !== school.university_name));
-      if (onSchoolAdded) onSchoolAdded();
+      setCelebrating(school.university_name);
+      // Show celebration for 2.5 seconds, then transition to pipeline
+      setTimeout(() => {
+        setCelebrating(null);
+        if (onSchoolAdded) onSchoolAdded();
+      }, 2500);
     } catch (err) {
       const msg = err?.response?.data?.detail || "Failed to add school";
       toast.error(msg);
