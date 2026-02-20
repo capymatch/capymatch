@@ -62,6 +62,41 @@ async def update_privacy_preferences(request: Request):
     return {"ok": True}
 
 
+# ─── Tour Tracking ───
+
+@router.get("/user/tours")
+async def get_tour_status(request: Request):
+    """Get which tours the user has completed."""
+    user = await get_current_user(request)
+    user_id = user["user_id"]
+
+    doc = await db.user_tours.find_one({"user_id": user_id}, {"_id": 0})
+    if not doc:
+        return {"main_tour": False, "pipeline_tour": False}
+
+    return {
+        "main_tour": doc.get("main_tour", False),
+        "pipeline_tour": doc.get("pipeline_tour", False),
+    }
+
+
+@router.post("/user/tours/{tour_name}/complete")
+async def complete_tour(tour_name: str, request: Request):
+    """Mark a tour as completed so it never shows again."""
+    user = await get_current_user(request)
+    user_id = user["user_id"]
+
+    if tour_name not in ("main_tour", "pipeline_tour"):
+        return {"ok": False, "error": "Unknown tour"}
+
+    await db.user_tours.update_one(
+        {"user_id": user_id},
+        {"$set": {tour_name: True, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True,
+    )
+    return {"ok": True}
+
+
 # ─── Data Export ───
 
 @router.get("/privacy/export-data")
