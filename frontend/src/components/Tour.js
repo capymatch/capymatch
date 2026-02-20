@@ -97,6 +97,7 @@ export default function Tour({ onComplete }) {
   const finish = () => {
     localStorage.setItem("tour_completed", "true");
     localStorage.removeItem("show_tour");
+    api.post("/user/tours/main_tour/complete").catch(() => {});
     onComplete();
   };
 
