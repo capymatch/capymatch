@@ -29,6 +29,8 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 28. **My Schools page** — "Top matches for you" grid ONLY in onboarding view; non-empty board has no suggestions section (Feb 20, 2026)
 29. **Onboarding profile flow** — "Continue to My Schools" banner on profile page when from onboarding; gentle gate modal when navigating away with incomplete profile (Feb 20, 2026)
 30. **Matching algorithm GPA fallback** — When SAT/ACT missing, uses GPA only for academic scoring; when ALL academic data missing, skips academic weight entirely so scores aren't artificially penalized (Feb 20, 2026)
+31. **Bulk school enrichment** — Background job scrapes average incoming GPA for all 1,053 schools via DuckDuckGo search + regex extraction; also backfills College Scorecard data (SAT, admission rate, etc.) (Feb 20, 2026)
+32. **GPA-aware matching** — Algorithm now prefers school's published avg_gpa for direct GPA comparison over admission-rate inference (Feb 20, 2026)
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (on hold)
