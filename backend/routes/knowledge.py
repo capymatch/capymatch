@@ -437,83 +437,93 @@ def _compute_match(uni, profile):
             else:
                 score += per_priority * 0.3
 
-    # Academic fit (40 pts) — uses scorecard data when available, division benchmarks as fallback
+    # Academic fit (40 pts) — tier-based with geometric mean so one weak metric pulls score down
     total_weight += 40
-    academic_score = 0
-    academic_checks = 0
+    metric_scores = []
 
     DIV_SAT_BENCH = {"D1": 1150, "D2": 1050, "D3": 1100, "NAIA": 1000}
     DIV_ACT_BENCH = {"D1": 25, "D2": 22, "D3": 24, "NAIA": 22}
     DIV_GPA_BENCH = {"D1": 3.2, "D2": 2.9, "D3": 3.1, "NAIA": 2.8}
 
+    # GPA tier
     if user_gpa:
-        academic_checks += 1
         accept_rate = uni.get("acceptance_rate") or scorecard.get("admission_rate")
         if accept_rate is not None:
             accept_pct = accept_rate * 100 if accept_rate <= 1 else accept_rate
             if accept_pct >= 70:
-                academic_score += 1.0
+                metric_scores.append(1.0)
             elif accept_pct >= 50:
-                academic_score += 0.85 if user_gpa >= 3.0 else 0.5
+                metric_scores.append(0.85 if user_gpa >= 3.0 else 0.4)
             elif accept_pct >= 30:
-                academic_score += 0.9 if user_gpa >= 3.3 else 0.5 if user_gpa >= 2.8 else 0.2
+                metric_scores.append(0.8 if user_gpa >= 3.3 else 0.4 if user_gpa >= 2.8 else 0.15)
             else:
-                academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
+                metric_scores.append(0.9 if user_gpa >= 3.7 else 0.4 if user_gpa >= 3.3 else 0.08)
         else:
-            bench_gpa = DIV_GPA_BENCH.get(school_div, 3.0)
-            diff = user_gpa - bench_gpa
+            bench = DIV_GPA_BENCH.get(school_div, 3.0)
+            diff = user_gpa - bench
             if diff >= 0.5:
-                academic_score += 1.0
+                metric_scores.append(1.0)
             elif diff >= 0:
-                academic_score += 0.8
+                metric_scores.append(0.8)
             elif diff >= -0.3:
-                academic_score += 0.5
+                metric_scores.append(0.45)
             elif diff >= -0.7:
-                academic_score += 0.3
+                metric_scores.append(0.2)
             else:
-                academic_score += 0.1
+                metric_scores.append(0.05)
 
+    # SAT tier
     if user_sat:
-        academic_checks += 1
         sat_avg = uni.get("sat_avg") or scorecard.get("sat_avg")
         if not sat_avg:
             sat_avg = DIV_SAT_BENCH.get(school_div, 1100)
         diff = user_sat - sat_avg
-        if diff >= 100:
-            academic_score += 1.0
-        elif diff >= 0:
-            academic_score += 0.85
-        elif diff >= -100:
-            academic_score += 0.6
-        elif diff >= -200:
-            academic_score += 0.3
-        elif diff >= -300:
-            academic_score += 0.15
+        if diff >= 50:
+            metric_scores.append(1.0)
+        elif diff >= -50:
+            metric_scores.append(0.85)
+        elif diff >= -150:
+            metric_scores.append(0.5)
+        elif diff >= -250:
+            metric_scores.append(0.2)
         else:
-            academic_score += 0.05
+            metric_scores.append(0.05)
 
+    # ACT tier
     if user_act:
-        academic_checks += 1
         act_mid = scorecard.get("act_midpoint")
         if not act_mid:
             act_mid = DIV_ACT_BENCH.get(school_div, 24)
         diff = user_act - act_mid
-        if diff >= 3:
-            academic_score += 1.0
-        elif diff >= 0:
-            academic_score += 0.85
+        if diff >= 2:
+            metric_scores.append(1.0)
+        elif diff >= -1:
+            metric_scores.append(0.85)
         elif diff >= -3:
-            academic_score += 0.55
+            metric_scores.append(0.5)
         elif diff >= -6:
-            academic_score += 0.25
+            metric_scores.append(0.2)
         else:
-            academic_score += 0.05
+            metric_scores.append(0.05)
 
-    if academic_checks > 0:
-        avg_academic = academic_score / academic_checks
-        score += round(avg_academic * 40)
-        if avg_academic >= 0.7:
-            reasons.append("Academic Fit")
+    if metric_scores:
+        product = 1.0
+        for ms in metric_scores:
+            product *= max(ms, 0.01)
+        geo_mean = product ** (1.0 / len(metric_scores))
+        academic_pts = round(geo_mean * 40)
+        score += academic_pts
+
+        if geo_mean >= 0.75:
+            reasons.append("Strong Academic Fit")
+        elif geo_mean >= 0.50:
+            reasons.append("Good Academic Fit")
+        elif geo_mean >= 0.35:
+            reasons.append("Slight Reach")
+        elif geo_mean >= 0.18:
+            reasons.append("Reach")
+        else:
+            reasons.append("High Reach")
 
     pct = round((score / total_weight) * 100) if total_weight > 0 else 0
     pct = min(pct, 99)
