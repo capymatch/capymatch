@@ -152,16 +152,15 @@ export default function EmptyBoardState({ onSchoolAdded }) {
     }
   };
 
-  const isInIframe = window.self !== window.top;
-  const appUrl = process.env.REACT_APP_BACKEND_URL;
-  const gmailConnectUrl = `${appUrl}/api/gmail/connect?return_to=/pipeline`;
-  const [copiedUrl, setCopiedUrl] = useState(false);
-
-  const handleCopyAppUrl = () => {
-    navigator.clipboard.writeText(`${appUrl}/pipeline`);
-    setCopiedUrl(true);
-    toast.success("Link copied! Open it in a new browser tab to connect Gmail.");
-    setTimeout(() => setCopiedUrl(false), 3000);
+  const handleConnectGmail = async () => {
+    setGmailConnecting(true);
+    try {
+      const res = await api.get("/gmail/connect?return_to=/pipeline");
+      window.location.href = res.data.auth_url;
+    } catch {
+      toast.error("Failed to start Gmail connection");
+      setGmailConnecting(false);
+    }
   };
 
   if (loading) {
