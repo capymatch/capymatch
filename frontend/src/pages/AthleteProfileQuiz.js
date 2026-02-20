@@ -9,9 +9,10 @@ const QUESTIONS = [
   {
     id: "position",
     emoji: "\uD83C\uDFD0",
-    title: "What position do you play?",
-    sub: "This helps us understand your playing style and match you with programs looking for your skill set.",
-    type: "single",
+    title: "What position(s) do you play?",
+    sub: "Select all that apply. This helps us understand your playing style and match you with programs looking for your skill set.",
+    type: "multi",
+    max: 6,
     options: [
       { value: "Setter", icon: "\uD83C\uDFAF", desc: "Floor general" },
       { value: "Outside Hitter", icon: "\u26A1", desc: "Primary attacker" },
@@ -24,9 +25,10 @@ const QUESTIONS = [
   {
     id: "division",
     emoji: "\uD83C\uDFC6",
-    title: "What division are you targeting?",
-    sub: "Select the competition level that best matches your goals. You can always update this later.",
-    type: "single",
+    title: "What division(s) are you targeting?",
+    sub: "Select all that interest you. You can always update this later.",
+    type: "multi",
+    max: 4,
     options: [
       { value: "D1", icon: "\uD83E\uDD47", label: "NCAA Division I", desc: "Highest competition level" },
       { value: "D2", icon: "\u26BD", label: "NCAA Division II", desc: "Competitive with scholarships" },
@@ -70,16 +72,15 @@ const QUESTIONS = [
     allowAll: true,
   },
   {
-    id: "school_size",
-    emoji: "\uD83C\uDFEB",
-    title: "What school size do you prefer?",
-    sub: "School size affects campus culture, class sizes, and the overall college experience.",
-    type: "single",
-    options: [
-      { value: "Small (<5K)", icon: "\uD83C\uDFE1", desc: "Tight-knit community, smaller classes" },
-      { value: "Medium (5K-15K)", icon: "\uD83C\uDFE2", desc: "Balanced experience" },
-      { value: "Large (15K+)", icon: "\uD83C\uDFD9\uFE0F", desc: "Big campus, more resources" },
-      { value: "No Preference", icon: "\uD83E\uDD37", desc: "Open to all sizes" },
+    id: "academics",
+    emoji: "\uD83C\uDF93",
+    title: "Tell us about your academics",
+    sub: "Your GPA, ACT, and SAT scores help us match you with schools where you'll be a strong academic fit.",
+    type: "input_group",
+    fields: [
+      { key: "gpa", label: "GPA", placeholder: "e.g. 3.5", inputType: "number", step: "0.01", min: "0", max: "5.0" },
+      { key: "act_score", label: "ACT Score", placeholder: "e.g. 28", inputType: "number", step: "1", min: "1", max: "36" },
+      { key: "sat_score", label: "SAT Score", placeholder: "e.g. 1200", inputType: "number", step: "10", min: "400", max: "1600" },
     ],
   },
   {
@@ -97,18 +98,6 @@ const QUESTIONS = [
       { value: "Liberal Arts", icon: "\uD83C\uDFA8" },
       { value: "Sciences", icon: "\uD83D\uDD2C" },
       { value: "Undecided", icon: "\uD83E\uDD14" },
-    ],
-  },
-  {
-    id: "scholarship_priority",
-    emoji: "\uD83D\uDCB0",
-    title: "How important is scholarship?",
-    sub: "This helps us understand your financial needs and match you with the right opportunities.",
-    type: "single",
-    options: [
-      { value: "Full scholarship needed", icon: "\uD83C\uDF1F", desc: "Financial aid is essential" },
-      { value: "Partial scholarship OK", icon: "\u2705", desc: "Some assistance would help" },
-      { value: "Not a major factor", icon: "\uD83D\uDC4D", desc: "Academics and fit come first" },
     ],
   },
 ];
