@@ -276,7 +276,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
 
         {/* Action — only shown on Step 3 (Add Schools) */}
         {profileDone && gmailConnected && (
-          <div className="px-6 pb-4 lg:px-8 flex items-center gap-4">
+          <div className="px-6 pb-10 lg:px-8 lg:pb-12 flex items-center gap-4">
             <button
               className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
               style={{ backgroundColor: "#2ec4b6", color: "white" }}
