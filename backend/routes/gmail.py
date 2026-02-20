@@ -57,9 +57,17 @@ async def get_gmail_credentials(user_id: str):
         return None
 
     client_id, client_secret, _, _ = _gmail_config()
+
+    # Decrypt tokens if encrypted
+    access_token = token_doc["access_token"]
+    refresh_token = token_doc.get("refresh_token")
+    if token_doc.get("encrypted"):
+        access_token = decrypt_value(access_token)
+        refresh_token = decrypt_value(refresh_token) if refresh_token else None
+
     creds = Credentials(
-        token=token_doc["access_token"],
-        refresh_token=token_doc.get("refresh_token"),
+        token=access_token,
+        refresh_token=refresh_token,
         token_uri="https://oauth2.googleapis.com/token",
         client_id=client_id,
         client_secret=client_secret,
@@ -77,8 +85,9 @@ async def get_gmail_credentials(user_id: str):
                 await db.gmail_tokens.update_one(
                     {"user_id": user_id},
                     {"$set": {
-                        "access_token": creds.token,
+                        "access_token": encrypt_value(creds.token),
                         "expires_at": creds.expiry.isoformat() if creds.expiry else None,
+                        "encrypted": True,
                     }},
                 )
             except Exception as e:
