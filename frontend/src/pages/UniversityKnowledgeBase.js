@@ -452,23 +452,10 @@ export default function UniversityKnowledgeBase() {
         <TopMatchBanner school={topMatch} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} />
       )}
 
-      {/* For You Header */}
-      {activeBucket === "foryou" && curatedTop15.length > 0 && (
-        <div className="mb-5 rounded-[14px] p-5" style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }} data-testid="foryou-header">
-          <div className="flex items-center gap-2 mb-1.5">
-            <Zap className="w-4 h-4 text-[#2ec4b6]" />
-            <span className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}>Top matches based on your profile and preferences</span>
-          </div>
-          <p className="text-[12px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
-            A curated mix of strong fits, reach schools, and safe schools — sorted by overall match score. Scores reflect division, region, priorities, and academic realism.
-          </p>
-        </div>
-      )}
-
       {/* Results Header */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-[12px]" style={{ color: "var(--t-text-muted)" }} data-testid="results-count">
-          {activeBucket === "foryou" ? `${filtered.length + (topMatch ? 1 : 0)} curated matches` : `Showing ${filtered.length.toLocaleString()} schools`}
+          Showing {filtered.length.toLocaleString()} schools
         </span>
         <div className="flex gap-1" data-testid="view-toggle">
           {[{ mode: "grid", Icon: LayoutGrid }, { mode: "list", Icon: List }].map(({ mode, Icon }) => (
