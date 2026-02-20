@@ -388,8 +388,8 @@ export default function UniversityKnowledgeBase() {
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const enriched = paginated.map(u => ({
     ...u,
-    match_score: suggestionMap[u.university_name]?.match_score || null,
-    match_reasons: suggestionMap[u.university_name]?.match_reasons || [],
+    match_score: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_score || null) : null,
+    match_reasons: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_reasons || []) : [],
   }));
 
   // Bucket counts
