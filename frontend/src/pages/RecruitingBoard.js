@@ -606,7 +606,6 @@ export default function RecruitingBoard() {
   };
 
   const { counts = {}, total = 0 } = groupedData;
-  const boardNames = new Set(allPrograms.map(p => p.university_name));
 
   if (loading) {
     return (
