@@ -312,7 +312,7 @@ export default function UniversityKnowledgeBase() {
 
   const handleBucketClick = (bucket) => {
     setActiveBucket(bucket.id);
-    if (bucket.id === "all") { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
+    if (bucket.id === "all" || bucket.id === "foryou") { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
     else if (bucket.filter?.division) { setFilterDivision(bucket.filter.division); setFilterRegion(""); setFilterConference(""); }
     else { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
     setPage(1);
@@ -321,7 +321,7 @@ export default function UniversityKnowledgeBase() {
   const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); };
   const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); };
   const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); };
-  const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setSearch(""); setActiveBucket("all"); setPage(1); };
+  const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setSearch(""); setActiveBucket("foryou"); setPage(1); };
 
   const activeFilterCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
 
