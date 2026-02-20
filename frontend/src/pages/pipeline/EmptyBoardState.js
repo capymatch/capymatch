@@ -6,6 +6,7 @@ import {
   Plus, Loader2, Mail, CheckCircle2, Shield, PartyPopper
 } from "lucide-react";
 import { toast } from "sonner";
+import GmailConsentModal from "../../components/GmailConsentModal";
 
 /* ── Progress Step ── */
 function ProgressStep({ num, label, done, current }) {
