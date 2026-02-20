@@ -214,19 +214,27 @@ export default function ProfilePage() {
   const contactSummary = [profile.contact_email, profile.parent_name && `Coach ${profile.parent_name}`].filter(Boolean).join(" · ") || "Not started";
 
   /* ── Edit Panel ── */
+  const essentialsFilled = profile && [profile.athlete_name, profile.graduation_year, profile.position, profile.height].filter(Boolean).length;
+  const canContinue = essentialsFilled >= 4;
+
   const editPanel = (
     <div data-testid="profile-edit-panel">
       {/* Onboarding banner */}
       {fromOnboarding && (
         <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(46,196,182,0.06)", borderColor: "rgba(46,196,182,0.2)" }} data-testid="onboarding-banner">
           <div>
-            <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>Fill in the essentials, then continue setup</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Changes save automatically. You can always come back to finish later.</p>
+            <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
+              {canContinue ? "Looking good! Continue when ready." : `Fill in the essentials (${essentialsFilled}/4)`}
+            </p>
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+              {canContinue ? "Your profile has the basics covered." : "Name, grad year, position, and height are required to continue."}
+            </p>
           </div>
           <button
-            onClick={() => navigate("/pipeline")}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold flex-shrink-0 transition-all hover:opacity-90"
-            style={{ backgroundColor: "#2ec4b6", color: "white" }}
+            onClick={() => canContinue && navigate("/pipeline")}
+            disabled={!canContinue}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold flex-shrink-0 transition-all"
+            style={{ backgroundColor: canContinue ? "#2ec4b6" : "#94a3b8", color: "white", cursor: canContinue ? "pointer" : "not-allowed", opacity: canContinue ? 1 : 0.6 }}
             data-testid="continue-to-my-schools-btn"
           >
             Continue to My Schools <ArrowRight className="w-3.5 h-3.5" />
