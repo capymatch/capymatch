@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, Share2, Loader2, Monitor, Pencil } from "lucide-react";
+import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil } from "lucide-react";
 import { ProfilePreview } from "../components/ProfilePreview";
 import api from "../lib/api";
 import { toast } from "sonner";
@@ -74,12 +74,13 @@ function SectionCard({ icon, iconBg, title, summary, status, statusColor, childr
 }
 
 /* ── Field Input ── */
-function Field({ label, value, onChange, placeholder, type = "text", coachVisible, colSpan, testId }) {
+function Field({ label, value, onChange, placeholder, type = "text", coachVisible, privateField, colSpan, testId }) {
   return (
     <div style={colSpan ? { gridColumn: `span ${colSpan}` } : undefined}>
       <div className="flex items-center gap-1 mb-1">
         <label className="text-[11px] font-medium" style={{ color: "var(--t-text-muted)" }}>{label}</label>
         {coachVisible && <Eye className="w-3 h-3" style={{ color: "#6366f1" }} title="Visible to coaches" />}
+        {privateField && <EyeOff className="w-3 h-3" style={{ color: "#ef4444" }} title="Private — not visible to coaches" />}
       </div>
       {type === "textarea" ? (
         <textarea data-testid={testId} className="w-full rounded-lg border px-3 py-2 text-[13px] outline-none transition-all resize-none min-h-[70px]"
