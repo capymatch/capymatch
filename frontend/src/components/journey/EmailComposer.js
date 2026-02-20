@@ -109,7 +109,7 @@ export function EmailComposer({ coaches, programId, universityName, onSent, onCa
           {drafting && <div className="flex items-center gap-2 py-2"><Loader2 className="w-4 h-4 animate-spin text-slate-500" /><span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>AI is drafting...</span></div>}
         </div>
 
-        <div className="p-5 space-y-3 overflow-y-auto flex-1">
+        <div className="p-5 space-y-3 overflow-y-auto flex-1" style={{ colorScheme: "dark" }}>
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider block mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>To</label>
             <select value={to} onChange={e => setTo(e.target.value)} className={inputCls} style={{...inputStyle, colorScheme: "dark"}} data-testid="email-to-select">
