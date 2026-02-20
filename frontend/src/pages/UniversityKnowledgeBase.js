@@ -368,6 +368,11 @@ export default function UniversityKnowledgeBase() {
     filtered = filtered.filter(u => (suggestionMap[u.university_name]?.match_score || 0) >= 80);
   }
 
+  // In "For You" view: hero card shows #1, grid shows remaining 14 = 15 total
+  if (activeBucket === "foryou" && topMatch) {
+    filtered = filtered.filter(u => u.university_name !== topMatch.university_name);
+  }
+
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const enriched = paginated.map(u => ({
