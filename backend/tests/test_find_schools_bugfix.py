@@ -22,19 +22,14 @@ class TestFindSchoolsBugFix:
     
     @pytest.fixture(autouse=True)
     def setup(self):
-        """Login and get auth token for tests"""
-        # Login to get session token
-        login_resp = requests.post(f"{BASE_URL}/api/auth/login", json={
+        """Login and get auth session (uses cookies, not token)"""
+        self.session = requests.Session()
+        login_resp = self.session.post(f"{BASE_URL}/api/auth/login", json={
             "email": TEST_EMAIL,
             "password": TEST_PASSWORD
         })
         assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
-        self.token = login_resp.json().get("token") or login_resp.json().get("session_token")
-        assert self.token, f"No token in response: {login_resp.json()}"
-        self.headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Content-Type": "application/json"
-        }
+        # Session cookies are automatically stored in self.session
         yield
     
     def test_suggested_schools_returns_suggestions_with_scores(self):
