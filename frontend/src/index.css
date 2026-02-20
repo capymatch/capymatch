@@ -125,7 +125,7 @@
     --t-hero-from: #1e2330;
     --t-hero-to: #0f1219;
     --t-sidebar-bg: #0f1219;
-    --t-sidebar-border: transparent;
+    --t-sidebar-border: rgba(255,255,255,0.08);
     --t-sidebar-brand-text: #ffffff;
     --t-sidebar-logo-bg: rgba(255,255,255,0.15);
     --t-sidebar-logo-icon: #ffffff;
