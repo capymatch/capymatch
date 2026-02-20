@@ -152,18 +152,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
     }
   };
 
-  const handleConnectGmail = async () => {
-    setGmailConnecting(true);
-    const authWindow = window.open('about:blank', '_blank');
-    try {
-      const res = await api.get("/gmail/connect?return_to=/pipeline");
-      authWindow.location.href = res.data.auth_url;
-    } catch {
-      if (authWindow) authWindow.close();
-      toast.error("Failed to start Gmail connection");
-      setGmailConnecting(false);
-    }
-  };
+  const gmailConnectUrl = `${process.env.REACT_APP_BACKEND_URL}/api/gmail/connect?return_to=/pipeline`;
 
   if (loading) {
     return (
