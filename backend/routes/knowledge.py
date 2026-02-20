@@ -449,8 +449,21 @@ def _compute_match(uni, profile):
 
     # GPA tier
     if user_gpa:
-        accept_rate = uni.get("acceptance_rate") or scorecard.get("admission_rate")
-        if accept_rate is not None:
+        school_avg_gpa = scorecard.get("avg_gpa")
+        if school_avg_gpa:
+            diff = user_gpa - school_avg_gpa
+            if diff >= 0.3:
+                metric_scores.append(1.0)
+            elif diff >= 0:
+                metric_scores.append(0.85)
+            elif diff >= -0.3:
+                metric_scores.append(0.55)
+            elif diff >= -0.6:
+                metric_scores.append(0.25)
+            else:
+                metric_scores.append(0.08)
+        elif (uni.get("acceptance_rate") or scorecard.get("admission_rate")) is not None:
+            accept_rate = uni.get("acceptance_rate") or scorecard.get("admission_rate")
             accept_pct = accept_rate * 100 if accept_rate <= 1 else accept_rate
             if accept_pct >= 70:
                 metric_scores.append(1.0)
