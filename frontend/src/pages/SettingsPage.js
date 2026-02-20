@@ -52,7 +52,10 @@ export default function SettingsPage() {
     try {
       await api.put("/privacy/preferences", { gmail_consent_given: true });
       const res = await api.get("/gmail/connect?return_to=/settings");
-      window.location.href = res.data.auth_url;
+      // Use setTimeout to ensure modal is fully unmounted before navigating
+      setTimeout(() => {
+        window.top.location.href = res.data.auth_url;
+      }, 100);
     } catch {
       toast.error("Failed to start Gmail connection");
     }
