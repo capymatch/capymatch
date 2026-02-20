@@ -53,7 +53,7 @@ export default function SettingsPage() {
       await api.put("/privacy/preferences", { gmail_consent_given: true });
       const res = await api.get("/gmail/connect?return_to=/settings");
       setTimeout(() => {
-        window.open(res.data.auth_url, '_top');
+        window.open(res.data.auth_url, '_blank');
       }, 100);
     } catch {
       toast.error("Failed to start Gmail connection");

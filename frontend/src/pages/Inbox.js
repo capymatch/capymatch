@@ -463,7 +463,7 @@ export default function Inbox() {
     try {
       const res = await api.get("/gmail/connect");
       const url = res.data.auth_url;
-      window.open(url, '_top');
+      window.open(url, '_blank');
     } catch {
       toast.error("Failed to start Gmail connection");
     }
