@@ -4,6 +4,7 @@ export function ProgressRail({ rail, onStageClick }) {
   if (!rail) return null;
   const stages = rail.stages || {};
   const active = rail.active;
+  const activeIdx = RAIL_STAGES.findIndex(s => s.key === active);
   const lineFillIdx = RAIL_STAGES.findIndex(s => s.key === (rail.line_fill || active));
   const TOTAL = RAIL_STAGES.length;
   const DOT = 14;
@@ -32,16 +33,17 @@ export function ProgressRail({ rail, onStageClick }) {
         {fillScale > 0 && (
           <div style={{ position: "absolute", left: `${halfStep}%`, right: `${halfStep}%`, top: "50%", transform: `translateY(-50%) scaleX(${fillScale})`, transformOrigin: "left", height: 2, background: fillGradient, zIndex: 0, transition: "transform 0.5s ease" }} />
         )}
-        {RAIL_STAGES.map((s) => {
-          const completed = stages[s.key];
+        {RAIL_STAGES.map((s, idx) => {
           const isActive = s.key === active;
+          const isPast = activeIdx >= 0 && idx < activeIdx;
+          const completed = stages[s.key] || isPast;
           const size = isActive ? DOT_ACTIVE : DOT;
           const stageColor = s.color;
           return (
             <button key={s.key} onClick={() => onStageClick(s.key)}
               data-testid={`rail-stage-${s.key}`}
               style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0, position: "relative", zIndex: 1 }}>
-              <div style={{ position: "relative", width: size, height: size }}>
+              <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
                 <div style={{
                   width: size, height: size, borderRadius: "50%",
                   border: `2px solid ${completed || isActive ? stageColor : "rgba(255,255,255,0.1)"}`,
@@ -63,9 +65,10 @@ export function ProgressRail({ rail, onStageClick }) {
         })}
       </div>
       <div style={{ display: "flex", marginTop: 6 }}>
-        {RAIL_STAGES.map((s) => {
-          const completed = stages[s.key];
+        {RAIL_STAGES.map((s, idx) => {
           const isActive = s.key === active;
+          const isPast = activeIdx >= 0 && idx < activeIdx;
+          const completed = stages[s.key] || isPast;
           return (
             <div key={s.key} style={{ flex: 1, textAlign: "center" }}>
               <span style={{
