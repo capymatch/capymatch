@@ -38,10 +38,19 @@ export default function SettingsPage() {
       .then((res) => setGmailStatus(res.data))
       .catch(() => setGmailStatus({ connected: false }))
       .finally(() => setGmailLoading(false));
+    api.get("/privacy/preferences")
+      .then((res) => setPrivacyPrefs(res.data))
+      .catch(() => {});
   }, []);
 
-  const handleConnectGmail = async () => {
+  const handleConnectGmail = () => {
+    setShowConsentModal(true);
+  };
+
+  const handleConsentAndConnect = async () => {
+    setShowConsentModal(false);
     try {
+      await api.put("/privacy/preferences", { gmail_consent_given: true });
       const res = await api.get("/gmail/connect?return_to=/settings");
       window.location.href = res.data.auth_url;
     } catch {
