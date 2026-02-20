@@ -26,51 +26,38 @@ function ProgressStep({ num, label, done, current }) {
   );
 }
 
-/* ── Suggestion Card ── */
+/* ── Suggestion Grid Card ── */
 function SuggestionCard({ school, onAdd, adding }) {
-  const scoreColor = school.match_score >= 80
-    ? { bg: "rgba(16,185,129,0.12)", color: "#10b981" }
-    : school.match_score >= 60
-    ? { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" }
-    : { bg: "rgba(107,114,128,0.12)", color: "#6b7280" };
+  const isReach = (school.match_reasons || []).some(r => ["Reach", "High Reach"].includes(r));
+  const isSlightReach = (school.match_reasons || []).includes("Slight Reach");
+  const isStrongFit = (school.match_reasons || []).some(r => ["Strong Academic Fit", "Good Academic Fit"].includes(r));
+  const tierLabel = isReach ? "Reach" : isSlightReach ? "Slight Reach" : isStrongFit ? "Strong Fit" : null;
+  const tierColor = isReach ? "#ef4444" : isSlightReach ? "#f59e0b" : isStrongFit ? "#10b981" : null;
 
   return (
     <div
-      className="flex items-center gap-4 px-5 py-4 border-b last:border-b-0 transition-colors"
-      style={{ borderColor: "var(--t-border)" }}
-      onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--t-surface-hover, rgba(255,255,255,0.02))"; }}
-      onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
-      data-testid={`suggestion-${school.university_name}`}
+      className="flex items-center gap-3 rounded-lg border p-3 transition-all hover:shadow-sm"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      data-testid={`suggestion-${school.university_name.replace(/\s+/g, "-").toLowerCase()}`}
     >
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold" style={{ color: "var(--t-text)" }}>{school.university_name}</p>
-        <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
-          {school.division || "—"}{school.conference ? ` · ${school.conference}` : ""}{school.region ? ` · ${school.region}` : ""}
-        </p>
-        {school.match_reasons?.length > 0 && (
-          <p className="text-[11px] mt-1 flex items-start gap-1" style={{ color: "var(--t-text-secondary)" }}>
-            <span style={{ color: "#f59e0b", flexShrink: 0 }}>✦</span>
-            {school.match_reasons.join(" · ")}
-          </p>
-        )}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="font-semibold text-[12px] truncate" style={{ color: "var(--t-text)" }}>{school.university_name}</span>
+          {school.match_score && <span className="text-[11px] font-bold" style={{ color: "#2ec4b6" }}>{school.match_score}%</span>}
+        </div>
+        <div className="flex items-center gap-1.5 mt-1">
+          {school.division && <span className="text-[9px] font-bold px-1.5 py-px rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>{school.division}</span>}
+          {school.conference && <span className="text-[9px]" style={{ color: "var(--t-text-muted)" }}>{school.conference}</span>}
+          {tierLabel && <span className="text-[9px] font-semibold px-1.5 py-px rounded" style={{ color: tierColor, background: `${tierColor}10`, border: `1px solid ${tierColor}20` }}>{tierLabel}</span>}
+        </div>
       </div>
-      <div className="flex flex-col items-end gap-2 flex-shrink-0">
-        <span className="text-xs font-extrabold px-2.5 py-1 rounded-lg" style={{ backgroundColor: scoreColor.bg, color: scoreColor.color }}>
-          {school.match_score}%
-        </span>
-        <button
-          className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg border transition-all disabled:opacity-50"
-          style={{ borderColor: "#2ec4b6", color: "#2ec4b6" }}
-          onClick={(e) => { e.stopPropagation(); onAdd(school); }}
-          disabled={adding}
-          onMouseEnter={e => { if (!adding) { e.currentTarget.style.backgroundColor = "#2ec4b6"; e.currentTarget.style.color = "white"; }}}
-          onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2ec4b6"; }}
-          data-testid={`add-suggestion-${school.university_name}`}
-        >
-          {adding ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
-          Add to Board
-        </button>
-      </div>
+      <button onClick={(e) => { e.stopPropagation(); onAdd(school); }} disabled={adding}
+        className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+        style={{ background: "#2ec4b6", color: "white" }}
+        data-testid={`add-suggestion-${school.university_name.replace(/\s+/g, "-").toLowerCase()}`}
+      >
+        {adding ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3 inline mr-0.5" />Add</>}
+      </button>
     </div>
   );
 }
