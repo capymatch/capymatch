@@ -26,7 +26,7 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 25. Private SAT/ACT scores — editable, hidden from coaches/public endpoints
 26. **Tier-based academic match scoring** — honest, parent-safe scores with reach labels
 27. **Find Schools page** — Hero card shows #1 match; grid shows top 5 with scores, all others without (Feb 20, 2026)
-28. **My Schools page** — Consolidated suggested schools UI; empty board shows EmptyBoardState only (15 suggestions); non-empty board shows SuggestedSchoolsSection with top 15 (Feb 20, 2026)
+28. **My Schools page** — "Top matches for you" grid ONLY in onboarding view; non-empty board has no suggestions section (Feb 20, 2026)
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (on hold)
