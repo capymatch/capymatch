@@ -289,7 +289,7 @@ export default function SchoolInfoPage() {
                       <User className="w-5 h-5 text-[#2ec4b6]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[15px] font-bold text-slate-800">{c.name}</div>
+                      <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}">{c.name}</div>
                       <div className="text-[12px] text-slate-400 mt-0.5">{c.title || "Coach"}</div>
                     </div>
                   </div>
@@ -355,19 +355,19 @@ export default function SchoolInfoPage() {
               {school.region && (
                 <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Location</div>
-                  <div className="text-[15px] font-bold text-slate-800">{school.region}</div>
+                  <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}">{school.region}</div>
                 </div>
               )}
               {school.mascot && (
                 <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Mascot</div>
-                  <div className="text-[15px] font-bold text-slate-800">{school.mascot}</div>
+                  <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}">{school.mascot}</div>
                 </div>
               )}
               {school.scholarship_type && (
                 <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-4">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 mb-1">Scholarship</div>
-                  <div className="text-[15px] font-bold text-slate-800">{school.scholarship_type}</div>
+                  <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}">{school.scholarship_type}</div>
                 </div>
               )}
             </div>
