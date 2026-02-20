@@ -340,13 +340,20 @@ def _parse_scorecard(r):
 
 
 def _compute_match(uni, profile):
-    """Match score — mirrors get_suggested_schools logic exactly."""
+    """Match score — mirrors get_match_scores logic exactly."""
     score = 0
+    total_weight = 0
     reasons = []
-    pref_division = (profile.get("division") or "").upper()
+
+    pref_divisions = profile.get("division") or []
+    if isinstance(pref_divisions, str):
+        pref_divisions = [pref_divisions] if pref_divisions else []
+    pref_divisions_upper = [d.upper() for d in pref_divisions]
     pref_regions = profile.get("regions") or []
     pref_priorities = profile.get("priorities") or []
-    pref_size = profile.get("school_size") or ""
+    user_gpa = profile.get("gpa")
+    user_act = profile.get("act_score")
+    user_sat = profile.get("sat_score")
 
     school_div = (uni.get("division") or "").upper()
     school_region = uni.get("region") or ""
@@ -366,13 +373,17 @@ def _compute_match(uni, profile):
         "Great Lakes": ["Great Lakes", "Midwest"],
     }
 
-    if pref_division and school_div:
-        if pref_division == school_div:
-            score += 40
+    # Division match (30 pts)
+    total_weight += 30
+    if pref_divisions_upper and school_div:
+        if school_div in pref_divisions_upper:
+            score += 30
             reasons.append("Division Match")
-        elif (pref_division == "D1" and school_div == "D2") or (pref_division == "D2" and school_div in ("D1", "D3")):
-            score += 15
+        elif any(("D1" in pd and school_div == "D2") or ("D2" in pd and school_div in ("D1", "D3")) for pd in pref_divisions_upper):
+            score += 12
 
+    # Region match (25 pts)
+    total_weight += 25
     if pref_regions:
         matched = False
         for pref_r in pref_regions:
@@ -381,35 +392,110 @@ def _compute_match(uni, profile):
                 matched = True
                 break
         if matched:
-            score += 30
+            score += 25
             reasons.append("Preferred Region")
         else:
             score += 5
 
+    # Priority alignment (25 pts)
+    total_weight += 25
+    per_priority = 25 / max(len(pref_priorities), 1)
     for pr in pref_priorities:
         pr_lower = pr.lower()
         if "academ" in pr_lower and school_div in ("D1", "D2", "D3"):
-            score += 8
+            score += per_priority
             if "Academics" not in reasons:
                 reasons.append("Academics")
-        elif "athlet" in pr_lower and school_div == "D1":
-            score += 8
-            if "Athletics" not in reasons:
-                reasons.append("Athletics")
+        elif "athlet" in pr_lower:
+            if school_div == "D1":
+                score += per_priority
+                if "Athletics" not in reasons:
+                    reasons.append("Athletics")
+            elif school_div == "D2":
+                score += per_priority * 0.6
         elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
-            score += 8
+            score += per_priority
             if "Scholarship" not in reasons:
                 reasons.append("Scholarship")
+        elif "location" in pr_lower:
+            for pref_r in pref_regions:
+                aliases = region_aliases.get(pref_r, [pref_r])
+                if school_region in aliases or school_region == pref_r:
+                    score += per_priority
+                    break
+        elif "campus" in pr_lower or "culture" in pr_lower:
+            score += per_priority * 0.5
+        elif "coach" in pr_lower:
+            score += per_priority * 0.5
+        elif "conference" in pr_lower:
+            if uni.get("conference"):
+                score += per_priority * 0.7
+        elif "playing" in pr_lower or "roster" in pr_lower:
+            if school_div in ("D2", "D3", "NAIA"):
+                score += per_priority
+            else:
+                score += per_priority * 0.3
 
-    if pref_size:
-        if pref_size == "Large (15K+)" and school_div == "D1":
-            score += 5
-        elif pref_size == "Medium (5K-15K)" and school_div in ("D2", "D3"):
-            score += 5
-        elif pref_size == "Small (<5K)" and school_div in ("D3", "NAIA"):
-            score += 5
+    # Academic fit (20 pts)
+    total_weight += 20
+    academic_score = 0
+    academic_checks = 0
 
-    pct = min(round(score), 99) if score > 20 else 0
+    if user_gpa:
+        academic_checks += 1
+        # Use acceptance rate from scorecard if available
+        accept_rate = uni.get("acceptance_rate")
+        if accept_rate is not None:
+            if accept_rate >= 70:
+                academic_score += 1.0
+            elif accept_rate >= 50:
+                academic_score += 0.85 if user_gpa >= 3.0 else 0.5
+            elif accept_rate >= 30:
+                academic_score += 0.9 if user_gpa >= 3.3 else 0.5 if user_gpa >= 2.8 else 0.2
+            else:
+                academic_score += 0.9 if user_gpa >= 3.7 else 0.5 if user_gpa >= 3.3 else 0.1
+        else:
+            # Fallback: use division as proxy
+            if school_div in ("D3", "NAIA"):
+                academic_score += 0.8
+            elif school_div == "D2":
+                academic_score += 0.7 if user_gpa >= 2.8 else 0.4
+            else:
+                academic_score += 0.7 if user_gpa >= 3.0 else 0.4
+
+    if user_sat:
+        academic_checks += 1
+        sat_avg = uni.get("sat_avg")
+        if sat_avg:
+            diff = user_sat - sat_avg
+            if diff >= 0:
+                academic_score += 1.0
+            elif diff >= -100:
+                academic_score += 0.7
+            elif diff >= -200:
+                academic_score += 0.3
+            else:
+                academic_score += 0.1
+        else:
+            academic_score += 0.6
+
+    if user_act:
+        academic_checks += 1
+        if school_div == "D1":
+            academic_score += 0.9 if user_act >= 24 else 0.5 if user_act >= 20 else 0.2
+        elif school_div == "D2":
+            academic_score += 0.9 if user_act >= 21 else 0.6 if user_act >= 18 else 0.3
+        else:
+            academic_score += 0.8
+
+    if academic_checks > 0:
+        avg_academic = academic_score / academic_checks
+        score += round(avg_academic * 20)
+        if avg_academic >= 0.7:
+            reasons.append("Academic Fit")
+
+    pct = round((score / total_weight) * 100) if total_weight > 0 else 0
+    pct = min(pct, 99)
     return {"score": pct, "reasons": reasons}
 
 
