@@ -518,19 +518,28 @@ export default function RecruitingBoard() {
     },
   ];
 
-  // Auto-start tour on first visit
+  // Auto-start tour on first visit (check backend, not just localStorage)
   useEffect(() => {
     if (groupedData.total > 0 && !loading) {
-      const hasSeenTour = localStorage.getItem("pipeline_tour_done");
-      if (!hasSeenTour) {
+      const hasSeenLocal = localStorage.getItem("pipeline_tour_done");
+      if (hasSeenLocal) return; // Already seen locally, skip API call
+      api.get("/user/tours").then(res => {
+        if (res.data?.pipeline_tour) {
+          localStorage.setItem("pipeline_tour_done", "true");
+        } else {
+          setTimeout(() => setTourStep(0), 800);
+        }
+      }).catch(() => {
+        // Fallback: show tour if API fails and localStorage not set
         setTimeout(() => setTourStep(0), 800);
-      }
+      });
     }
   }, [groupedData.total, loading]);
 
   const closeTour = () => {
     setTourStep(-1);
     localStorage.setItem("pipeline_tour_done", "true");
+    api.post("/user/tours/pipeline_tour/complete").catch(() => {});
   };
 
   useEffect(() => {
