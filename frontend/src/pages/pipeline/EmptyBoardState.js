@@ -94,6 +94,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   const [addingSchool, setAddingSchool] = useState(null);
   const [gmailConnecting, setGmailConnecting] = useState(false);
   const [celebrating, setCelebrating] = useState(null);
+  const [showConsentModal, setShowConsentModal] = useState(false);
 
   // Handle Gmail OAuth callback params
   useEffect(() => {
