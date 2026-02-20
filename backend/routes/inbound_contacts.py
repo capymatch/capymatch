@@ -330,7 +330,7 @@ async def scan_sent_emails_for_user(user_id: str, tenant_id: str):
         {"tenant_id": tenant_id},
         {"_id": 0, "gmail_message_id": 1}
     ).to_list(10000)
-    logged_ids = {l["gmail_message_id"] for l in logged if l.get("gmail_message_id")}
+    logged_ids = {entry["gmail_message_id"] for entry in logged if entry.get("gmail_message_id")}
 
     # 4. Scan Sent folder for recent emails
     try:
