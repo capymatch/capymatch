@@ -27,6 +27,8 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 26. **Tier-based academic match scoring** — honest, parent-safe scores with reach labels
 27. **Find Schools page** — Hero card shows #1 match; grid shows top 5 with scores, all others without (Feb 20, 2026)
 28. **My Schools page** — "Top matches for you" grid ONLY in onboarding view; non-empty board has no suggestions section (Feb 20, 2026)
+29. **Onboarding profile flow** — "Continue to My Schools" banner on profile page when from onboarding; gentle gate modal when navigating away with incomplete profile (Feb 20, 2026)
+30. **Matching algorithm GPA fallback** — When SAT/ACT missing, uses GPA only for academic scoring; when ALL academic data missing, skips academic weight entirely so scores aren't artificially penalized (Feb 20, 2026)
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (on hold)
