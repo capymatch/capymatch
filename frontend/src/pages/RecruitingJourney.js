@@ -411,9 +411,11 @@ export default function RecruitingJourney() {
       </div>
       </>)}
 
-      {/* Floating Action Bar */}
-      <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
-        onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} activeAction={activeForm} />
+      {/* Floating Action Bar — hidden when any modal is open */}
+      {!activeForm && (
+        <FloatingActionBar onEmail={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
+          onLog={openLog} onReplied={openReplied} onFollowup={openFollowup} isBasic={isBasic} activeAction={activeForm} />
+      )}
 
       {/* Notes Sidebar */}
       <NotesSidebar programId={programId} universityName={program.university_name}
