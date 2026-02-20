@@ -438,10 +438,10 @@ def _compute_match(uni, profile):
                 score += per_priority * 0.3
 
     # Academic fit (40 pts) — tier-based with geometric mean so one weak metric pulls score down
-    total_weight += 40
-    metric_scores = []
-
-    DIV_SAT_BENCH = {"D1": 1150, "D2": 1050, "D3": 1100, "NAIA": 1000}
+    has_academic_data = bool(user_gpa or user_sat or user_act)
+    if has_academic_data:
+        total_weight += 40
+    metric_scores = [] = {"D1": 1150, "D2": 1050, "D3": 1100, "NAIA": 1000}
     DIV_ACT_BENCH = {"D1": 25, "D2": 22, "D3": 24, "NAIA": 22}
     DIV_GPA_BENCH = {"D1": 3.2, "D2": 2.9, "D3": 3.1, "NAIA": 2.8}
 
