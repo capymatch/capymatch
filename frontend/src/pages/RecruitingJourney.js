@@ -205,7 +205,7 @@ export default function RecruitingJourney() {
                   <Target className="w-3 h-3" /> {matchScore.match_score}% Match
                 </span>
               )}
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` \u00b7 ${program.region}` : ""} \u00b7 {timeline.length} events</span>
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
