@@ -33,8 +33,12 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 32. **GPA-aware matching** — Algorithm now prefers school's published avg_gpa for direct GPA comparison over admission-rate inference (Feb 20, 2026)
 
 ## Pending Issues
+- **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
 - **P2**: NCAA Timeline colors (on hold)
-- **P2**: Monitor Bulk Questionnaire Discovery Job
+- **P1**: Refactor duplicated matching algorithm (athlete_profile.py + knowledge.py)
+
+## Recently Fixed
+- **P0 Bug Fix (Feb 20, 2026)**: "Complete your profile" Journey checklist step not updating — field name mismatch `grad_year` vs `graduation_year` in `RecruitingJourney.js` line 66
 
 ## Upcoming Tasks
 1. Separate Girls/Boys Volleyball data (P0)
