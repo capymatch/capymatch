@@ -156,11 +156,12 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
 
         token_doc = {
             "user_id": user_id,
-            "access_token": creds.token,
-            "refresh_token": creds.refresh_token,
+            "access_token": encrypt_value(creds.token),
+            "refresh_token": encrypt_value(creds.refresh_token) if creds.refresh_token else None,
             "expires_at": creds.expiry.isoformat() if creds.expiry else None,
             "gmail_email": gmail_email,
             "connected_at": datetime.now(timezone.utc).isoformat(),
+            "encrypted": True,
         }
         await db.gmail_tokens.update_one(
             {"user_id": user_id},
