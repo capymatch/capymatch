@@ -155,8 +155,10 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   };
 
   const handleConnectGmail = async () => {
+    setShowConsentModal(false);
     setGmailConnecting(true);
     try {
+      await api.put("/privacy/preferences", { gmail_consent_given: true });
       const res = await api.get("/gmail/connect?return_to=/pipeline");
       window.location.href = res.data.auth_url;
     } catch {
