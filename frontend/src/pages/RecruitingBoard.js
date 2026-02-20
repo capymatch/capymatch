@@ -704,7 +704,7 @@ export default function RecruitingBoard() {
               </button>
               <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
                 className="text-white text-xs shadow-md flex-shrink-0"
-                style={{ background: "var(--t-text)", padding: "6px 14px", height: "auto" }}
+                style={{ background: "#2ec4b6", padding: "6px 14px", height: "auto" }}
               >
                 <Plus className="w-3 h-3 mr-1" />Add School
               </Button>
