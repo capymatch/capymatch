@@ -4,7 +4,7 @@ export default function LandingPage() {
   const handleLogin = () => {
     const redirectUrl = window.location.origin + "/";
     const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
-    const a = document.createElement('a'); a.href = authUrl; a.target = '_top'; document.body.appendChild(a); a.click(); a.remove();
+    window.open(authUrl, '_top');
   };
 
   return (

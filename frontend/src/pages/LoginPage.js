@@ -17,7 +17,7 @@ export default function LoginPage({ onAuth }) {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
     const redirectUrl = window.location.origin + '/board';
     const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
-    const a = document.createElement('a'); a.href = authUrl; a.target = '_top'; document.body.appendChild(a); a.click(); a.remove();
+    window.open(authUrl, '_top');
   };
 
   const handleSubmit = async (e) => {
