@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
       <div className="rounded-xl px-5 py-4" style={{ background: "rgba(46,196,182,0.08)", border: "1px solid rgba(46,196,182,0.15)" }}>
         <p className="text-sm leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
           We built this app for student-athletes and their families. We know trust matters, especially when it involves your child's personal information.
-          Here's exactly what we do \u2014 and don't do \u2014 with your data.
+          Here's exactly what we do — and don't do — with your data.
         </p>
       </div>
 
