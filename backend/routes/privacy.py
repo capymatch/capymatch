@@ -79,6 +79,7 @@ async def export_user_data(request: Request):
     events = await db.events.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(1000)
     notifications = await db.notifications.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(1000)
     inbound = await db.inbound_contacts.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(1000)
+    sent_log = await db.sent_email_log.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(5000)
 
     # User account info (no password)
     account = await db.users.find_one({"user_id": user["user_id"]}, {"_id": 0, "password_hash": 0})
