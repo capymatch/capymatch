@@ -10,8 +10,8 @@ import { Input } from "../components/ui/input";
 
 const RAIL_STAGES = [
   { key: "added", label: "Added" },
-  { key: "outreach_sent", label: "Outreach" },
-  { key: "coach_replied", label: "Replied" },
+  { key: "outreach", label: "Outreach" },
+  { key: "in_conversation", label: "Replied" },
   { key: "campus_visit", label: "Visit" },
   { key: "offer", label: "Offer" },
   { key: "committed", label: "Committed" },
