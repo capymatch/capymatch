@@ -178,6 +178,7 @@ async def delete_account(request: Request):
     await db.user_sessions.delete_many({"user_id": user_id})
     await db.temp_attachments.delete_many({"user_id": user_id})
     await db.ai_conversations.delete_many({"user_id": user_id})
+    await db.user_tours.delete_many({"user_id": user_id})
 
     # Delete user account last
     await db.users.delete_one({"user_id": user_id})
