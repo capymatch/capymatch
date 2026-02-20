@@ -230,7 +230,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
                   style={{ backgroundColor: "#2ec4b6", color: "white" }}
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate("/profile?from=onboarding")}
                   data-testid="complete-profile-btn"
                 >
                   Set Up Athlete Profile <ChevronRight className="w-4 h-4" />
