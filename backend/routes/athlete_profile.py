@@ -247,7 +247,10 @@ async def get_suggested_schools(request: Request):
 
     all_schools = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
 
-    pref_division = (profile.get("division") or "").upper()
+    pref_divisions = profile.get("division") or []
+    if isinstance(pref_divisions, str):
+        pref_divisions = [pref_divisions] if pref_divisions else []
+    pref_divisions_upper = [d.upper() for d in pref_divisions]
     pref_regions = profile.get("regions") or []
     pref_priorities = profile.get("priorities") or []
     pref_size = profile.get("school_size") or ""
@@ -278,11 +281,11 @@ async def get_suggested_schools(request: Request):
         school_div = (school.get("division") or "").upper()
         school_region = school.get("region") or ""
 
-        if pref_division and school_div:
-            if pref_division == school_div:
+        if pref_divisions_upper and school_div:
+            if school_div in pref_divisions_upper:
                 score += 40
                 reasons.append("Division Match")
-            elif (pref_division == "D1" and school_div == "D2") or (pref_division == "D2" and school_div in ("D1", "D3")):
+            elif any(("D1" in pd and school_div == "D2") or ("D2" in pd and school_div in ("D1", "D3")) for pd in pref_divisions_upper):
                 score += 15
 
         if pref_regions:
@@ -304,10 +307,13 @@ async def get_suggested_schools(request: Request):
                 score += 8
                 if "Academics" not in reasons:
                     reasons.append("Academics")
-            elif "athlet" in pr_lower and school_div == "D1":
-                score += 8
-                if "Athletics" not in reasons:
-                    reasons.append("Athletics")
+            elif "athlet" in pr_lower:
+                if school_div == "D1":
+                    score += 8
+                    if "Athletics" not in reasons:
+                        reasons.append("Athletics")
+                elif school_div == "D2":
+                    score += 5
             elif "scholarship" in pr_lower and school_div in ("D1", "D2", "NAIA"):
                 score += 8
                 if "Scholarship" not in reasons:
