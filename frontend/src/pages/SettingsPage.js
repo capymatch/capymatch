@@ -214,6 +214,115 @@ export default function SettingsPage() {
       {/* Team Management */}
       <TeamSection />
 
+      {/* Your Data & Privacy */}
+      <div className="rounded-xl p-4 lg:p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="privacy-section">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
+            <Shield className="w-4 h-4 lg:w-5 lg:h-5" style={{ color: "#2ec4b6" }} />
+          </div>
+          <div>
+            <h2 className="font-semibold text-base lg:text-lg" style={{ color: "var(--t-text)" }}>Your Data & Privacy</h2>
+            <p className="text-xs lg:text-sm" style={{ color: "var(--t-text-muted)" }}>Control how your data is used</p>
+          </div>
+        </div>
+
+        {/* Inbound scanning toggle */}
+        <div className="flex items-center justify-between p-3 rounded-xl mb-3" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+          <div className="flex items-center gap-3 flex-1">
+            <Eye className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Auto-detect inbound coach emails</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                {privacyPrefs.inbound_email_scanning
+                  ? "We scan email headers to detect when coaches contact you first"
+                  : "Disabled \u2014 you'll need to manually add schools when a coach contacts you"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleToggleInboundScanning(!privacyPrefs.inbound_email_scanning)}
+            className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ml-3"
+            style={{ backgroundColor: privacyPrefs.inbound_email_scanning ? "#2ec4b6" : "var(--t-border)" }}
+            data-testid="inbound-scanning-toggle"
+          >
+            <div
+              className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform shadow-sm"
+              style={{ left: privacyPrefs.inbound_email_scanning ? "22px" : "2px" }}
+            />
+          </button>
+        </div>
+
+        {/* Privacy Policy link */}
+        <button
+          onClick={() => navigate("/privacy")}
+          className="flex items-center gap-3 w-full p-3 rounded-xl mb-3 transition-colors hover:bg-white/5"
+          style={{ backgroundColor: "var(--t-surface-alt)" }}
+          data-testid="privacy-policy-link"
+        >
+          <Shield className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+          <p className="text-sm font-medium flex-1 text-left" style={{ color: "var(--t-text)" }}>Privacy Policy</p>
+          <ExternalLink className="w-3.5 h-3.5" style={{ color: "var(--t-text-faint)" }} />
+        </button>
+
+        {/* Export data */}
+        <button
+          onClick={handleExportData}
+          disabled={exporting}
+          className="flex items-center gap-3 w-full p-3 rounded-xl mb-3 transition-colors hover:bg-white/5 disabled:opacity-50"
+          style={{ backgroundColor: "var(--t-surface-alt)" }}
+          data-testid="export-data-btn"
+        >
+          <Download className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+          <p className="text-sm font-medium flex-1 text-left" style={{ color: "var(--t-text)" }}>{exporting ? "Exporting..." : "Download My Data"}</p>
+        </button>
+
+        {/* Delete account */}
+        {!showDeleteConfirm ? (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-3 w-full p-3 rounded-xl transition-colors hover:bg-red-500/10"
+            style={{ backgroundColor: "var(--t-surface-alt)" }}
+            data-testid="delete-account-btn"
+          >
+            <Trash2 className="w-4 h-4 flex-shrink-0 text-red-500" />
+            <p className="text-sm font-medium flex-1 text-left text-red-500">Delete My Account</p>
+          </button>
+        ) : (
+          <div className="p-4 rounded-xl border" style={{ borderColor: "rgba(239,68,68,0.3)", backgroundColor: "rgba(239,68,68,0.05)" }}>
+            <p className="text-sm font-semibold text-red-500 mb-2">This is permanent and cannot be undone</p>
+            <p className="text-xs mb-3" style={{ color: "var(--t-text-muted)" }}>
+              All your schools, interactions, coaches, notes, and account data will be permanently deleted. Type <span className="font-bold" style={{ color: "var(--t-text)" }}>DELETE</span> to confirm.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="Type DELETE"
+                className="flex-1 px-3 py-2 rounded-lg text-sm border"
+                style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                data-testid="delete-confirm-input"
+              />
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmText !== "DELETE"}
+                className="px-4 py-2 rounded-lg text-sm font-semibold bg-red-600 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:bg-red-700"
+                data-testid="delete-confirm-btn"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmText(""); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-white/5"
+                style={{ color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Replay Tour */}
       <div className="rounded-xl p-4 lg:p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
         <div className="flex items-center justify-between">
