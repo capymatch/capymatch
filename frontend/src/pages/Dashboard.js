@@ -276,6 +276,11 @@ export default function Dashboard() {
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const dateStr = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
+  const dismissInboundContact = (contactId) => {
+    api.post(`/inbound-contacts/${contactId}/dismiss`).catch(() => {});
+    setInboundContacts(prev => prev.filter(c => c.contact_id !== contactId));
+  };
+
   const totalSchools = programs.length;
   const contacted = programs.filter(p => p.recruiting_status && p.recruiting_status !== "Not Contacted" && p.recruiting_status !== "Not a Fit / Closed").length;
   const replied = programs.filter(p => p.reply_status === "Replied").length;
