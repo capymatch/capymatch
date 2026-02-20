@@ -95,6 +95,47 @@ export default function SettingsPage() {
     applyTheme(newTheme);
   };
 
+  const handleToggleInboundScanning = async (enabled) => {
+    setPrivacyPrefs(prev => ({ ...prev, inbound_email_scanning: enabled }));
+    try {
+      await api.put("/privacy/preferences", { inbound_email_scanning: enabled });
+      toast.success(enabled ? "Inbound scanning enabled" : "Inbound scanning disabled");
+    } catch {
+      setPrivacyPrefs(prev => ({ ...prev, inbound_email_scanning: !enabled }));
+      toast.error("Failed to update preference");
+    }
+  };
+
+  const handleExportData = async () => {
+    setExporting(true);
+    try {
+      const res = await api.get("/privacy/export-data");
+      const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `recruiting-data-export-${new Date().toISOString().split("T")[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Data exported successfully");
+    } catch {
+      toast.error("Failed to export data");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "DELETE") return;
+    try {
+      await api.delete("/privacy/delete-account");
+      toast.success("Account deleted. Redirecting...");
+      setTimeout(() => { window.location.href = "/login"; }, 1500);
+    } catch {
+      toast.error("Failed to delete account");
+    }
+  };
+
   const themeOptions = [
     { value: "dark", label: "Dark", icon: Moon },
     { value: "light", label: "Light", icon: Sun },
