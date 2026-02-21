@@ -95,17 +95,29 @@ async def pass2_scrape_gpas(page, slug_map, db):
         # Try to find matching slug
         match = slug_map.get(norm)
         if not match:
-            # Try partial matching
+            # Try prefix matching and word-overlap matching
             best_key = None
-            best_overlap = 0
+            best_score = 0
             for key in slug_map:
-                # Check how much overlap there is
-                if norm in key or key in norm:
-                    overlap = min(len(norm), len(key)) / max(len(norm), len(key))
-                    if overlap > best_overlap:
-                        best_overlap = overlap
-                        best_key = key
-            if best_key and best_overlap > 0.7:
+                score = 0
+                # Prefix: our name starts the key (e.g., "arizonastate" starts "arizonastatecampusimmersion")
+                if key.startswith(norm) and len(norm) >= 6:
+                    score = len(norm) / len(key) + 0.5
+                # Reverse prefix
+                elif norm.startswith(key) and len(key) >= 6:
+                    score = len(key) / len(norm) + 0.5
+                # Substring
+                elif norm in key and len(norm) >= 8:
+                    score = len(norm) / len(key) + 0.3
+                # Bidirectional overlap
+                elif key in norm and len(key) >= 8:
+                    score = len(key) / len(norm) + 0.3
+
+                if score > best_score:
+                    best_score = score
+                    best_key = key
+
+            if best_key and best_score > 0.6:
                 match = slug_map[best_key]
 
         if not match:
