@@ -51,7 +51,8 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
                 {uni.match_score ? `${uni.match_score}%` : ""}
               </span>
             </div>
-            <h3 className="font-heading text-2xl font-extrabold uppercase tracking-tight leading-none mt-3" style={{ color: "var(--t-text)" }}>
+            <h3 className="font-heading text-2xl font-extrabold uppercase tracking-tight leading-none mt-3 flex items-center gap-3" style={{ color: "var(--t-text)" }}>
+              <UniversityLogo domain={uni.domain} name={uni.university_name} logoUrl={uni.logo_url} size={36} />
               {uni.university_name}
             </h3>
             <div className="flex items-center gap-2 mt-2 text-sm" style={{ color: "var(--t-text-muted)" }}>
