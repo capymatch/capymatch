@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sparkles, ChevronDown, ChevronUp, ShieldCheck, AlertTriangle, Info, RefreshCw, Loader2 } from "lucide-react";
+import { AcademicCompletenessFlag, ThisMayChangeCopy } from "./TrustIndicators";
 
 const CONFIDENCE_STYLES = {
   High: { bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", text: "#059669", label: "High Confidence" },
