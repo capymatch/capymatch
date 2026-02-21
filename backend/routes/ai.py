@@ -1140,9 +1140,9 @@ async def get_school_insight(program_id: str, request: Request):
     if not profile:
         raise HTTPException(status_code=400, detail="Complete your athlete profile first")
 
-    # Load university knowledge base data
+    # Load university knowledge base data — multi-strategy lookup
     uni_name = program.get("university_name", "")
-    uni_data = await db.university_knowledge_base.find_one({"university_name": uni_name}, {"_id": 0})
+    uni_data = await _find_university_kb(uni_name, program.get("domain", ""))
 
     # Build source records
     sources = []
