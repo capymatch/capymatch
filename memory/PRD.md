@@ -31,6 +31,8 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 30. **Matching algorithm GPA fallback** — When SAT/ACT missing, uses GPA only for academic scoring; when ALL academic data missing, skips academic weight entirely so scores aren't artificially penalized (Feb 20, 2026)
 31. **Bulk school enrichment** — Background job scrapes average incoming GPA for all 1,053 schools via DuckDuckGo search + regex extraction; also backfills College Scorecard data (SAT, admission rate, etc.) (Feb 20, 2026)
 32. **GPA-aware matching** — Algorithm now prefers school's published avg_gpa for direct GPA comparison over admission-rate inference (Feb 20, 2026)
+33. **NCAA Match Risk Badges** (Feb 21, 2026) — 4 badge types: Academic Reach, Roster Tight, Timeline Risk, Funding Dependent. Displayed as parent-safe colored pills on Find Schools cards (max 2 + overflow) and Journey page (all badges). Clickable badges open Risk Explainer Drawer with contextual copy. Empty state shows "No major risks identified". Backend: `_compute_risk_badges()` in `athlete_profile.py`, integrated into `/api/match-scores`, `/api/suggested-schools`, `/api/risk-badges/{program_id}`. Frontend: `RiskBadges.js` component library.
+34. **Gmail consent modal in onboarding** (Feb 21, 2026) — Connect Gmail step in onboarding pipeline now shows the same privacy consent modal as Settings page before initiating OAuth.
 
 ## Pending Issues
 - **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
@@ -39,6 +41,13 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 
 ## Recently Fixed
 - **P0 Bug Fix (Feb 20, 2026)**: "Complete your profile" Journey checklist step not updating — field name mismatch `grad_year` vs `graduation_year` in `RecruitingJourney.js` line 66
+- **Bug Fix (Feb 21, 2026)**: Gmail OAuth in preview iframe — reverted all `window.open`/`window.top` hacks; the issue was `redirect_uri_mismatch` in Google Console (not an iframe issue)
+
+## NCAA Risk Badge System
+- **Academic Reach**: Triggered when match algorithm returns "Reach" or "High Reach" in reasons
+- **Roster Tight**: D1 programs (18-player roster cap)
+- **Timeline Risk**: D1/D2 programs when athlete graduation year is within 2 years
+- **Funding Dependent**: D2/NAIA/D3 programs (equivalency scholarships / no athletic aid)
 
 ## Upcoming Tasks
 1. Separate Girls/Boys Volleyball data (P0)
