@@ -186,6 +186,7 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
       onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
       data-testid={`school-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
       <div className="flex items-center gap-3 mb-3.5">
+        <UniversityLogo domain={uni.domain} name={uni.university_name} logoUrl={uni.logo_url} size={32} />
         <div className="flex-1 min-w-0">
           <div className="text-[13px] font-bold truncate" style={{ color: "var(--t-text)" }}>{uni.university_name}</div>
           <div className="flex items-center gap-1.5 mt-0.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
