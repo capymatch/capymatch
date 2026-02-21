@@ -105,6 +105,7 @@ def _extract_section(
     missing_out: list,
     section_name: str,
     source_meta: dict | None = None,
+    debug: bool = False,
 ) -> dict:
     """
     For each field in a contract section, resolve the value from the raw documents.
@@ -139,15 +140,19 @@ def _extract_section(
 
     if result and source_meta:
         freshness = _compute_freshness_months(source_meta.get("retrieved_at"))
-        sources_out.append({
+        populated = list(result.keys())
+        quality = _quality_rating(len(populated), total_fields)
+        source_record = {
             "section": section_name,
             "source_id": source_meta.get("source_id", "unknown"),
-            "source_url": source_meta.get("source_url"),
             "retrieved_at": source_meta.get("retrieved_at"),
             "license_ok": source_meta.get("license_ok", True),
             "freshness_months": freshness,
-            "fields_populated": list(result.keys()),
-        })
+        }
+        # Only include per-field list when quality is not high or debug mode
+        if debug or quality != "high":
+            source_record["fields_populated"] = populated
+        sources_out.append(source_record)
 
     return result, total_fields
 
