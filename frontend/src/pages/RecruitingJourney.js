@@ -383,7 +383,7 @@ export default function RecruitingJourney() {
       {/* NIL Readiness Card */}
       {nilReadiness && (
         <div className="mt-4" data-testid="journey-nil-card">
-          <NilReadinessCard nil={nilReadiness} dataConfidence={dataConfidence} />
+          <NilReadinessCard nil={nilReadiness} dataConfidence={dataConfidence} timeline={recruitingTimeline} />
         </div>
       )}
 
