@@ -59,6 +59,15 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
               {uni.conference && <span>· {DIV_FULL[uni.division] || uni.division} | {uni.conference}</span>}
             </div>
 
+            {/* Risk Badges */}
+            <div className="mt-3">
+              {uni.risk_badges?.length > 0 ? (
+                <RiskBadgeRow badges={uni.risk_badges} max={4} onBadgeClick={(b) => onRiskBadgeClick?.(uni, b)} />
+              ) : uni.match_score ? (
+                <RiskBadgeEmpty />
+              ) : null}
+            </div>
+
             {/* Coaching Staff */}
             {(uni.primary_coach || uni.recruiting_coordinator) && (
               <>
