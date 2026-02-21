@@ -51,6 +51,8 @@ export default function UniversityLogo({ domain, name, size = 40, className = ""
       onError={() => {
         if (!triedFallback && domain) {
           setTriedFallback(true);
+          setSrc(logoUrl ? SOURCES.primary(domain) : SOURCES.fallback(domain));
+        } else if (triedFallback && domain && src !== SOURCES.fallback(domain)) {
           setSrc(SOURCES.fallback(domain));
         } else {
           setSrc(null);
