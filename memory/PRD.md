@@ -38,6 +38,7 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 36. **Roster Spot Reality** (Feb 21, 2026) — 3 statuses: Open (green), Limited (amber), Tight (muted rose). Compact label on Find Schools cards, full Reality Card on Journey page with estimated openings range, explanation, guidance, and "How this is estimated" tooltip. Logic: D1 ≤1yr = tight/1-3 spots, D1 ≤2yr = limited/2-4, D1 else = open/3-5. D2 ≤1yr = limited/2-4, D2 ≤2yr = limited/2-5, else = open/3-6. D3/NAIA = open/3-6. Backend: `_compute_roster_outlook()`. Frontend: `RosterOutlook.js`.
 37. **Scholarship Structure** (Feb 21, 2026) — 3 types: Typically Partial (D1 non-power/D2/NAIA), Mix of Partial and Full (D1 power conf with NIL context), Walk-On Pathways Common (D3). Neutral slate accent, no dollar amounts. Optional NIL Environment sub-line for power conferences. Backend: `_compute_scholarship_structure()`. Frontend: `ScholarshipStructure.js`. Journey page card order: Timeline → Roster → Scholarship.
 38. **NIL Readiness** (Feb 21, 2026) — 3 statuses: NIL-Friendly (blue, D1 power conferences), NIL-Limited (slate, D1 non-power/D2/NAIA), NIL Information Limited (light slate, D3). Guidance bullets in "What this means for you" section. No dollar amounts, no rankings. Backend: `_compute_nil_readiness()`. Frontend: `NilReadiness.js`. Full decision stack: Timeline → Roster → Scholarship → NIL.
+39. **Source-Aware AI School Insight ("Why This School")** (Feb 21, 2026) — AI-powered analysis card on Journey page. Top 3 reasons and Top 2 risks for each school, with source attribution (IPEDS, School Site, Program Data). Confidence scoring (High/Medium/Limited) based on data coverage and freshness. Expandable section shows confidence factors, data sources, and disclaimers. 24-hour cache with refresh button. Backend: `POST /api/ai/school-insight/{program_id}`, `DELETE /api/ai/school-insight/{program_id}/cache`. Frontend: `SchoolInsightCard.js`. Uses Claude Sonnet 4.5 via Emergent LLM Key with structured prompt ensuring no hallucination and source-backed claims.
 
 ## Pending Issues
 - **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
@@ -55,9 +56,10 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 - **Funding Dependent**: D2/NAIA/D3 programs (equivalency scholarships / no athletic aid)
 
 ## Upcoming Tasks
-1. Separate Girls/Boys Volleyball data (P0)
-2. Camp/Tournament ROI tracker (P1)
-3. Email templates & bulk outreach (P1)
+1. Commitment Stability Index (P1)
+2. Separate Girls/Boys Volleyball data (P1)
+3. Camp/Tournament ROI tracker (P1)
+4. Email templates & bulk outreach (P1)
 
 ## Future/Backlog
 - Marketing Website, Tiered Celebrations, App Naming, Multi-sport, Family Roles, Mobile App
