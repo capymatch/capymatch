@@ -465,6 +465,61 @@ def _compute_suggestion_match(school, profile):
     return {"score": pct, "reasons": reasons}
 
 
+
+def _compute_risk_badges(school, profile, match_reasons=None):
+    """Compute NCAA-aware risk badges for a school given an athlete profile."""
+    badges = []
+    reasons = match_reasons or []
+    division = (school.get("division") or "").upper()
+
+    # 1. Academic Reach — if match algorithm flagged Reach / High Reach
+    if any(r in reasons for r in ("Reach", "High Reach")):
+        badges.append({
+            "key": "academic_reach",
+            "label": "Academic Reach",
+            "severity": "warn",
+            "summary": "This school's typical admitted academic range is higher than your current profile. This doesn't mean \"no,\" but it does mean admission may be more competitive.",
+        })
+
+    # 2. Roster Tight — D1 indoor volleyball has 18-player cap
+    if division == "D1":
+        badges.append({
+            "key": "roster_tight",
+            "label": "Roster Tight",
+            "severity": "info",
+            "summary": "Based on public roster data, this program may have limited openings for your class year. Opportunities can change due to transfers and injuries.",
+        })
+
+    # 3. Timeline Risk — D1/D2 fill earlier; flag if athlete is junior year or later
+    grad_year = profile.get("graduation_year") or profile.get("grad_year") or ""
+    try:
+        grad_yr = int(grad_year)
+    except (ValueError, TypeError):
+        grad_yr = None
+    current_year = datetime.now(timezone.utc).year
+    if grad_yr and division in ("D1", "D2"):
+        years_out = grad_yr - current_year
+        if years_out <= 2:  # Junior year or closer
+            badges.append({
+                "key": "timeline_risk",
+                "label": "Timeline Risk",
+                "severity": "time",
+                "summary": "This program often fills spots earlier in the recruiting cycle. If you're interested, outreach sooner rather than later is recommended.",
+            })
+
+    # 4. Funding Dependent — equivalency sports (D2, NAIA use partial scholarships; D3 no athletic scholarships)
+    if division in ("D2", "NAIA", "D3"):
+        badges.append({
+            "key": "funding_dependent",
+            "label": "Funding Dependent",
+            "severity": "funding",
+            "summary": "This program typically uses partial scholarships or relies on additional funding sources. Aid packages may vary by role and timing.",
+        })
+
+    return badges
+
+
+
 @router.get("/suggested-schools")
 async def get_suggested_schools(request: Request):
     user = await get_current_user(request)
