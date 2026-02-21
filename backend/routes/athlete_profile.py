@@ -977,6 +977,14 @@ async def get_risk_badges(program_id: str, request: Request):
     if not program:
         return {"badges": [], "empty_state": True}
 
+    # Enrich program with KB scorecard data via fuzzy matching
+    if not program.get("scorecard_data"):
+        uni_data = await db.university_knowledge_base.find_one({"university_name": program.get("university_name", "")}, {"_id": 0})
+        if not uni_data and program.get("domain"):
+            uni_data = await db.university_knowledge_base.find_one({"domain": program["domain"]}, {"_id": 0})
+        if uni_data and uni_data.get("scorecard"):
+            program["scorecard_data"] = uni_data["scorecard"]
+
     match = _compute_suggestion_match(program, profile)
     badges = _compute_risk_badges(program, profile, match["reasons"])
     timeline = _compute_timeline_status(program, profile)
