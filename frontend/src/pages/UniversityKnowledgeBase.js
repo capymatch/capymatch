@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
 import { TimelineLabel } from "../components/TimelineIntelligence";
 import { RosterLabel } from "../components/RosterOutlook";
+import UniversityLogo from "../components/UniversityLogo";
 
 const PER_PAGE = 48;
 
