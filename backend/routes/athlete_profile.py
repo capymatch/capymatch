@@ -840,47 +840,81 @@ def _compute_nil_readiness(school):
     division = (school.get("division") or "").upper()
     conference = (school.get("conference") or "").upper()
     region = (school.get("region") or "").lower()
-    tooltip = "NIL readiness is estimated using public information such as conference environment, market size, and publicly known NIL support structures. NIL opportunities vary by athlete and are not guaranteed."
+    tooltip = "The program offers guidance, education, and local connections to help athletes with NIL opportunities."
 
     power_conf = {"BIG 12", "SEC", "ACC", "BIG TEN", "BIG EAST", "PAC-12"}
     mid_major_conf = {"AAC", "MOUNTAIN WEST", "WCC", "A-10", "MVC", "COLONIAL", "SOUTHLAND", "SUN BELT", "C-USA"}
     urban_regions = {"southeast", "southwest", "west coast"}
 
-    # NIL-Friendly: D1 power conferences, or D1 mid-majors in large urban markets
+    # Roster limit based on division
+    roster_limit = 18 if division == "D1" else 18 if division == "D2" else None
+
+    # Context tags
+    ctx = []
+    if division:
+        ctx.append(f"NCAA {division}")
+    if division in ("D1", "D2"):
+        ctx.append("Equivalency Era")
+    if roster_limit:
+        ctx.append(f"Roster Limit: {roster_limit}")
+
+    # NIL-Friendly: D1 power conferences
     if division == "D1":
         if any(pc in conference for pc in power_conf):
             return {
                 "status": "friendly",
                 "label": "NIL-Friendly Environment",
-                "explanation": "This program operates in an environment where Name, Image, and Likeness opportunities are commonly supported. Opportunities vary by athlete and role.",
+                "status_label": "Program-backed",
+                "explanation": "The program has internal NIL support structure and established local partnerships.",
+                "involves": [
+                    "NIL education sessions",
+                    "Local business relationships",
+                    "Support navigating NIL deals",
+                ],
+                "meaning": "Athletes in this program generally have opportunities to earn NIL compensation beginning early in their college careers.",
                 "guidance": [
                     "NIL may be part of recruiting conversations",
                     "Aid decisions still vary by athlete",
                     "Ask about NIL support during visits",
                 ],
                 "tooltip": tooltip,
+                "context_tags": ctx,
             }
         if any(mc in conference for mc in mid_major_conf) or region in urban_regions:
             return {
                 "status": "limited",
                 "label": "NIL-Limited Environment",
-                "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+                "status_label": "Emerging support",
+                "explanation": "NIL opportunities may be available but formal support structures are still developing at this program.",
+                "involves": [
+                    "Some NIL awareness programs",
+                    "Growing local partnerships",
+                ],
+                "meaning": "NIL opportunities exist but may be less structured. Focus on athletic and academic fit as primary factors.",
                 "guidance": [
                     "NIL may not be a major factor",
                     "Athletic and academic fit remain primary",
                 ],
                 "tooltip": tooltip,
+                "context_tags": ctx,
             }
         # Other D1
         return {
             "status": "limited",
             "label": "NIL-Limited Environment",
-            "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+            "status_label": "Emerging support",
+            "explanation": "NIL opportunities may be available but formal support structures are still developing at this program.",
+            "involves": [
+                "Some NIL awareness programs",
+                "Growing local partnerships",
+            ],
+            "meaning": "NIL opportunities exist but may be less structured. Focus on athletic and academic fit as primary factors.",
             "guidance": [
                 "NIL may not be a major factor",
                 "Athletic and academic fit remain primary",
             ],
             "tooltip": tooltip,
+            "context_tags": ctx,
         }
 
     # D2, NAIA, JUCO — NIL limited
@@ -888,12 +922,19 @@ def _compute_nil_readiness(school):
         return {
             "status": "limited",
             "label": "NIL-Limited Environment",
-            "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+            "status_label": "Limited availability",
+            "explanation": "NIL activity at this level is less common. Programs may offer some awareness but structured support is rare.",
+            "involves": [
+                "Basic NIL compliance info",
+                "Limited formal programs",
+            ],
+            "meaning": "NIL is unlikely to be a significant factor in your recruiting decision at this program level.",
             "guidance": [
                 "NIL may not be a major factor",
                 "Athletic and academic fit remain primary",
             ],
             "tooltip": tooltip,
+            "context_tags": ctx,
         }
 
     # D3 — NIL info limited
@@ -901,24 +942,34 @@ def _compute_nil_readiness(school):
         return {
             "status": "info_limited",
             "label": "NIL Information Limited",
+            "status_label": "Information limited",
             "explanation": "Public information about NIL activity for this program is limited or unavailable.",
+            "involves": [
+                "NIL policies still evolving",
+            ],
+            "meaning": "D3 programs are newer to NIL. Consider asking coaches directly about any available opportunities.",
             "guidance": [
                 "NIL impact is unclear",
                 "Consider asking coaches directly",
             ],
             "tooltip": tooltip,
+            "context_tags": ctx,
         }
 
     # Unknown
     return {
         "status": "unknown",
         "label": "NIL Information Limited",
+        "status_label": "Information limited",
         "explanation": "NIL context is still being evaluated for this program.",
+        "involves": [],
+        "meaning": "Not enough data is available to assess NIL readiness for this program.",
         "guidance": [
             "NIL impact is unclear",
             "Consider asking coaches directly",
         ],
         "tooltip": "NIL information becomes clearer as more public data becomes available.",
+        "context_tags": ctx,
     }
 
 
