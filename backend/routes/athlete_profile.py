@@ -1168,6 +1168,7 @@ async def get_suggested_schools(request: Request):
                 "roster": _compute_roster_outlook(school, profile),
                 "scholarship": _compute_scholarship_structure(school),
                 "nil": _compute_nil_readiness(school),
+                "commitment_stability": _compute_commitment_stability(school, profile),
                 "data_confidence": _compute_data_confidence(school),
             })
 
