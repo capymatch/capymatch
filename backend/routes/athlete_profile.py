@@ -747,6 +747,94 @@ def _compute_scholarship_structure(school):
     }
 
 
+def _compute_nil_readiness(school):
+    """Compute NIL readiness for a school based on division, conference, and market factors."""
+    division = (school.get("division") or "").upper()
+    conference = (school.get("conference") or "").upper()
+    region = (school.get("region") or "").lower()
+    tooltip = "NIL readiness is estimated using public information such as conference environment, market size, and publicly known NIL support structures. NIL opportunities vary by athlete and are not guaranteed."
+
+    power_conf = {"BIG 12", "SEC", "ACC", "BIG TEN", "BIG EAST", "PAC-12"}
+    mid_major_conf = {"AAC", "MOUNTAIN WEST", "WCC", "A-10", "MVC", "COLONIAL", "SOUTHLAND", "SUN BELT", "C-USA"}
+    urban_regions = {"southeast", "southwest", "west coast"}
+
+    # NIL-Friendly: D1 power conferences, or D1 mid-majors in large urban markets
+    if division == "D1":
+        if any(pc in conference for pc in power_conf):
+            return {
+                "status": "friendly",
+                "label": "NIL-Friendly Environment",
+                "explanation": "This program operates in an environment where Name, Image, and Likeness opportunities are commonly supported. Opportunities vary by athlete and role.",
+                "guidance": [
+                    "NIL may be part of recruiting conversations",
+                    "Aid decisions still vary by athlete",
+                    "Ask about NIL support during visits",
+                ],
+                "tooltip": tooltip,
+            }
+        if any(mc in conference for mc in mid_major_conf) or region in urban_regions:
+            return {
+                "status": "limited",
+                "label": "NIL-Limited Environment",
+                "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+                "guidance": [
+                    "NIL may not be a major factor",
+                    "Athletic and academic fit remain primary",
+                ],
+                "tooltip": tooltip,
+            }
+        # Other D1
+        return {
+            "status": "limited",
+            "label": "NIL-Limited Environment",
+            "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+            "guidance": [
+                "NIL may not be a major factor",
+                "Athletic and academic fit remain primary",
+            ],
+            "tooltip": tooltip,
+        }
+
+    # D2, NAIA, JUCO — NIL limited
+    if division in ("D2", "NAIA", "JUCO"):
+        return {
+            "status": "limited",
+            "label": "NIL-Limited Environment",
+            "explanation": "NIL opportunities may be available but are less common or more limited for this program.",
+            "guidance": [
+                "NIL may not be a major factor",
+                "Athletic and academic fit remain primary",
+            ],
+            "tooltip": tooltip,
+        }
+
+    # D3 — NIL info limited
+    if division == "D3":
+        return {
+            "status": "info_limited",
+            "label": "NIL Information Limited",
+            "explanation": "Public information about NIL activity for this program is limited or unavailable.",
+            "guidance": [
+                "NIL impact is unclear",
+                "Consider asking coaches directly",
+            ],
+            "tooltip": tooltip,
+        }
+
+    # Unknown
+    return {
+        "status": "unknown",
+        "label": "NIL Information Limited",
+        "explanation": "NIL context is still being evaluated for this program.",
+        "guidance": [
+            "NIL impact is unclear",
+            "Consider asking coaches directly",
+        ],
+        "tooltip": "NIL information becomes clearer as more public data becomes available.",
+    }
+
+
+
 
 
 
