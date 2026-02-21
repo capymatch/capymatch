@@ -134,10 +134,12 @@ async def get_match_scores(request: Request):
 
     # Enrich programs with scorecard data from KB
     for p in programs:
-        if not p.get("scorecard_data"):
-            kb_match = _find_kb_match(p, by_name, by_domain, by_norm)
-            if kb_match and kb_match.get("scorecard"):
+        kb_match = _find_kb_match(p, by_name, by_domain, by_norm)
+        if kb_match:
+            if not p.get("scorecard_data") and kb_match.get("scorecard"):
                 p["scorecard_data"] = kb_match["scorecard"]
+            if not p.get("logo_url") and kb_match.get("logo_url"):
+                p["logo_url"] = kb_match["logo_url"]
 
     region_map = {
         "Northeast": ["NY", "MA", "PA", "CT", "NJ", "ME", "VT", "NH", "RI"],
