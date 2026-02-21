@@ -429,7 +429,8 @@ async def gpa_data_status():
 @router.post("/scrape-school-data")
 async def trigger_school_data_scrape(request: Request):
     """Admin-only: trigger comprehensive data scrape from ProductiveRecruit (SAT, ACT, logos, etc)."""
-    import subprocess, sys
+    import subprocess
+    import sys
     from pathlib import Path
 
     ROOT = Path(__file__).parent.parent
