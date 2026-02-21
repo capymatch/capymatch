@@ -1,0 +1,78 @@
+{
+  "summary": "Completed testing of Roster Spot Reality feature. All 18 backend API tests pass (100%). Frontend tests pass - Roster labels render on Find Schools school cards, Roster Reality Card renders on Journey page with left accent bar, openings box, explanation, guidance, and 'How this is estimated' tooltip. All three intelligence cards (Risk Badges, Timeline, Roster) stack vertically on Journey page.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "GET /api/match-scores returns roster object": "PASS",
+      "Roster object has required fields (status/label/openings/explanation/guidance/tooltip)": "PASS",
+      "Roster status values are valid (open/limited/tight/unknown)": "PASS",
+      "Roster label values are valid (Open/Limited/Tight/Pending)": "PASS",
+      "GET /api/suggested-schools returns roster for each suggestion": "PASS",
+      "Suggested schools roster has openings range": "PASS",
+      "GET /api/risk-badges/{program_id} returns roster alongside badges": "PASS",
+      "Risk badges roster has all required fields": "PASS",
+      "D1 school with grad year 2027 (1 year out) gets 'tight' status": "PASS",
+      "D1 tight status has '1-3 spots' openings": "PASS",
+      "D2 school with grad year 2027 (1 year out) gets 'limited' status": "PASS",
+      "D2 limited status has '2-4 spots' openings": "PASS",
+      "Roster status-to-label mapping is correct": "PASS",
+      "Roster explanation mentions data source": "PASS",
+      "Roster tooltip is privacy-safe": "PASS",
+      "Tight guidance mentions timing/fit": "PASS",
+      "Match scores has all three features (risk_badges, timeline, roster)": "PASS",
+      "Risk badges endpoint has badges, timeline, AND roster": "PASS"
+    },
+    "frontend": {
+      "Roster labels render on Find Schools school cards": "PASS - 4 roster labels found, showing 'Roster Outlook: Tight'",
+      "Roster Reality Card renders on Journey page": "PASS - Card visible with left accent bar",
+      "Roster Reality Card shows openings estimate": "PASS - 'Estimated openings for your class: 1-3 spots'",
+      "Roster Reality Card shows explanation": "PASS - 'Based on public roster data, graduating players, and recent roster changes.'",
+      "Roster Reality Card shows guidance": "PASS - 'This program may have limited room for your class. Timing and fit will matter.'",
+      "Roster Reality Card shows 'How this is estimated' info button": "PASS",
+      "Clicking 'How this is estimated' shows tooltip": "PASS - Tooltip shows privacy-safe copy about roster estimates",
+      "Timeline Intelligence Card still works alongside Roster card": "PASS",
+      "Risk badges still work on Journey page": "PASS",
+      "D1 program shows 'Tight' status with muted rose accent": "PASS",
+      "D2 program shows 'Limited' status with amber accent": "PASS",
+      "All three intelligence cards stack vertically": "PASS"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_roster_outlook.py",
+    "/app/test_reports/pytest/roster_outlook_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_roster_outlook.py"
+  ],
+  "success_rate": {
+    "backend": "100% (18/18 tests passed)",
+    "frontend": "100% (all requested features working)"
+  },
+  "roster_feature_verified": {
+    "status_values": ["tight (muted rose)", "limited (amber)", "open (green)", "unknown (gray)"],
+    "D1_with_2027_grad": "tight (correct - 1 year out, <= 1 threshold) with 1-3 spots",
+    "D2_with_2027_grad": "limited (correct - 1 year out, <= 1 threshold) with 2-4 spots",
+    "roster_label_format": "Roster Outlook: {label}",
+    "card_components": ["Left accent bar", "Users icon", "Status label", "Openings estimate box", "Explanation", "Guidance section", "Info button with tooltip"]
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "programs": ["prog_3fe70bce8e71 (D1 Florida Gulf Coast)", "prog_0a5dfa9c59d1 (D2 Tampa University)"],
+    "profile": "GPA 3.2, SAT 1100, ACT 24, graduation_year 2027"
+  },
+  "seed_data_creation": "None - used existing user account",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Roster Spot Reality feature fully tested and working. Backend _compute_roster_outlook() function correctly computes status based on division + graduation year distance (D1: <=1yr=tight, <=2yr=limited, else=open; D2: <=1yr=limited, <=2yr=limited, else=open; D3/NAIA/JUCO: always open). Frontend RosterLabel component renders on Find Schools school cards. RosterRealityCard component renders on Journey page with all elements: left accent bar color-coded by status, Users icon, openings estimate box, explanation, guidance, and 'How this is estimated' tooltip. All three intelligence cards (Risk Badges → Timeline → Roster) stack vertically on Journey page. Parent-safe language confirmed in all explanations and tooltips."
+}
