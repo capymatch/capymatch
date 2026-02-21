@@ -53,7 +53,7 @@ async def pass1_collect_slugs(page):
 
             # Extract all school links from the table
             links = re.findall(
-                r'href="https://productiverecruit\.com/athletic-scholarships/womens-volleyball/'
+                r'href="[^"]*/womens-volleyball/'
                 + re.escape(state) + r'/([^"]+)"[^>]*>\s*\n?\s*([^<]+)',
                 content
             )
