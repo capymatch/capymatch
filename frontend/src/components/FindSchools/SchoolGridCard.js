@@ -237,7 +237,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
         <MapPin className="w-3 h-3" /> {uni.region} {uni.conference && `· ${uni.conference}`}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-4">
+      <div className="flex flex-wrap gap-1 mb-3">
         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${divColor}`}>{uni.division}</span>
         {uni.conference && (
           <span className="px-2 py-0.5 rounded text-[10px] font-medium" style={{ backgroundColor: "var(--t-surface-alt)", border: "1px solid var(--t-border)", color: "var(--t-text-muted)" }}>
@@ -245,6 +245,14 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
           </span>
         )}
       </div>
+
+      {uni.risk_badges?.length > 0 ? (
+        <div className="mb-3">
+          <RiskBadgeRow badges={uni.risk_badges} max={2} onBadgeClick={(b) => onRiskBadgeClick?.(uni, b)} />
+        </div>
+      ) : uni.match_score ? (
+        <div className="mb-3"><RiskBadgeEmpty /></div>
+      ) : null}
 
       <button
         className={`w-full py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-all duration-200 border ${
