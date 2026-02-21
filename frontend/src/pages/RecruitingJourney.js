@@ -239,6 +239,7 @@ export default function RecruitingJourney() {
           </button>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2.5 flex-wrap">
+              <UniversityLogo domain={program.domain} name={program.university_name} logoUrl={matchScore?.logo_url} size={32} />
               <h1 className="text-lg sm:text-xl font-extrabold" style={{ color: "#ffffff", letterSpacing: "-0.3px" }}>{program.university_name}</h1>
               {rail && <PulseIndicator pulse={rail.pulse} />}
             </div>
