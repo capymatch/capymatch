@@ -27,7 +27,7 @@ export function TimelineLabel({ timeline, onClick }) {
 }
 
 /* ── Full Timeline Status Card for Journey / Detail pages ── */
-export function TimelineStatusCard({ timeline }) {
+export function TimelineStatusCard({ timeline, dataConfidence }) {
   const [showTooltip, setShowTooltip] = useState(false);
   if (!timeline) return null;
   const cfg = STATUS_CONFIG[timeline.status] || STATUS_CONFIG.unknown;
@@ -44,18 +44,21 @@ export function TimelineStatusCard({ timeline }) {
 
         <div className="p-4 flex-1 space-y-3">
           {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
-              <Clock className="w-4 h-4" style={{ color: cfg.accent }} />
-            </div>
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                Recruiting Timeline
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
+                <Clock className="w-4 h-4" style={{ color: cfg.accent }} />
               </div>
-              <div className="text-sm font-bold" style={{ color: cfg.text }}>
-                {timeline.label}
+              <div>
+                <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
+                  Recruiting Timeline
+                </div>
+                <div className="text-sm font-bold" style={{ color: cfg.text }}>
+                  {timeline.label}
+                </div>
               </div>
             </div>
+            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
           </div>
 
           {/* Explanation */}
