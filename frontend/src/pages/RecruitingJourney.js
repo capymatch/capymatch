@@ -17,6 +17,7 @@ import { RosterRealityCard } from "../components/RosterOutlook";
 import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
 import { NilReadinessCard } from "../components/NilReadiness";
 import { SchoolInsightCard } from "../components/SchoolInsightCard";
+import { CommitmentStabilityCard } from "../components/CommitmentStabilityCard";
 import { AcademicCompletenessFlag } from "../components/TrustIndicators";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
