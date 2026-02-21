@@ -377,3 +377,49 @@ async def list_subscription_logs(page: int = 1, limit: int = 30):
         {}, {"_id": 0}
     ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return {"logs": logs, "total": total, "page": page, "limit": limit}
+
+
+@router.post("/admin/refresh-gpa")
+async def trigger_gpa_refresh(request: Request):
+    """Admin-only: trigger a manual GPA data refresh from ProductiveRecruit."""
+    import subprocess
+    from pathlib import Path
+
+    # Fire and forget — run in background
+    ROOT = Path(__file__).parent.parent
+    subprocess.Popen(
+        ["python3", "scripts/scrape_gpa.py"],
+        env={**os.environ},
+        cwd=str(ROOT),
+        stdout=open("/tmp/gpa_manual_refresh.log", "w"),
+        stderr=subprocess.STDOUT,
+    )
+    return {"status": "started", "log_file": "/tmp/gpa_manual_refresh.log"}
+
+
+@router.get("/admin/gpa-status")
+async def gpa_data_status():
+    """Get GPA data coverage stats."""
+    real = await db.university_knowledge_base.count_documents({"scorecard.gpa_is_estimated": False, "scorecard.avg_gpa": {"$ne": None}})
+    estimated = await db.university_knowledge_base.count_documents({"scorecard.gpa_is_estimated": True})
+    total = await db.university_knowledge_base.count_documents({})
+    no_gpa = total - real - estimated
+
+    # Get freshness
+    sample = await db.university_knowledge_base.find_one(
+        {"scorecard.gpa_scraped_at": {"$exists": True}},
+        {"_id": 0, "scorecard.gpa_scraped_at": 1}
+    )
+    last_scraped = (sample or {}).get("scorecard", {}).get("gpa_scraped_at", "unknown")
+
+    return {
+        "total_schools": total,
+        "real_gpa": real,
+        "estimated_gpa": estimated,
+        "no_gpa": no_gpa,
+        "real_pct": round(real / total * 100, 1) if total else 0,
+        "coverage_pct": round((real + estimated) / total * 100, 1) if total else 0,
+        "last_scraped": last_scraped,
+        "source": "productiverecruit.com",
+    }
+
