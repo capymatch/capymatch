@@ -224,8 +224,13 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
         <div className="mb-3"><RiskBadgeEmpty /></div>
       ) : null}
       {uni.timeline && (
-        <div className="mb-3" onClick={e => e.stopPropagation()}>
+        <div className="mb-2" onClick={e => e.stopPropagation()}>
           <TimelineLabel timeline={uni.timeline} onClick={() => navigate(`/school/${encodeURIComponent(uni.university_name)}`)} />
+        </div>
+      )}
+      {uni.roster && (
+        <div className="mb-3" onClick={e => e.stopPropagation()}>
+          <RosterLabel roster={uni.roster} onClick={() => navigate(`/school/${encodeURIComponent(uni.university_name)}`)} />
         </div>
       )}
       <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
