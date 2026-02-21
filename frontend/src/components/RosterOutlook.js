@@ -112,6 +112,8 @@ export function RosterRealityCard({ roster, dataConfidence }) {
               </div>
             )}
           </div>
+
+          <ThisMayChangeCopy />
         </div>
       </div>
     </div>
