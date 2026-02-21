@@ -82,6 +82,7 @@ export default function RecruitingJourney() {
           setMatchScore(found);
           setRiskBadges(found.risk_badges || []);
           setRecruitingTimeline(found.timeline || null);
+          setRosterOutlook(found.roster || null);
         }
       }
       setLoading(false);
