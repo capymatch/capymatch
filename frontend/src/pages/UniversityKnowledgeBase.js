@@ -506,6 +506,13 @@ export default function UniversityKnowledgeBase() {
         onApply={() => setFiltersOpen(false)}
         onClear={() => { resetFilters(); setFiltersOpen(false); }}
       />
+      {riskDrawer && (
+        <RiskExplainerDrawer
+          badges={riskDrawer.badges}
+          activeBadge={riskDrawer.active}
+          onClose={() => setRiskDrawer(null)}
+        />
+      )}
     </div>
   );
 }
