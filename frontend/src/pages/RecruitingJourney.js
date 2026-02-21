@@ -15,6 +15,7 @@ import { TimelineStatusCard } from "../components/TimelineIntelligence";
 import { RosterRealityCard } from "../components/RosterOutlook";
 import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
 import { NilReadinessCard } from "../components/NilReadiness";
+import { SchoolInsightCard } from "../components/SchoolInsightCard";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
