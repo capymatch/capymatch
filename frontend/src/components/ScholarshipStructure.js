@@ -10,7 +10,7 @@ const STATUS_CONFIG = {
 };
 
 /* ── Full Scholarship Structure Card for Journey / Detail pages ── */
-export function ScholarshipStructureCard({ scholarship }) {
+export function ScholarshipStructureCard({ scholarship, dataConfidence }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showNilTooltip, setShowNilTooltip] = useState(false);
   if (!scholarship) return null;
@@ -28,18 +28,21 @@ export function ScholarshipStructureCard({ scholarship }) {
 
         <div className="p-4 flex-1 space-y-3">
           {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
-              <GraduationCap className="w-4 h-4" style={{ color: cfg.accent }} />
-            </div>
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                Scholarship Structure
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
+                <GraduationCap className="w-4 h-4" style={{ color: cfg.accent }} />
               </div>
-              <div className="text-sm font-bold" style={{ color: cfg.text }}>
-                {scholarship.label}
+              <div>
+                <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
+                  Scholarship Structure
+                </div>
+                <div className="text-sm font-bold" style={{ color: cfg.text }}>
+                  {scholarship.label}
+                </div>
               </div>
             </div>
+            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
           </div>
 
           {/* Explanation */}
