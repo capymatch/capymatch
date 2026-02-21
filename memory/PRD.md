@@ -39,6 +39,12 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 37. **Scholarship Structure** (Feb 21, 2026) — 3 types: Typically Partial (D1 non-power/D2/NAIA), Mix of Partial and Full (D1 power conf with NIL context), Walk-On Pathways Common (D3). Neutral slate accent, no dollar amounts. Optional NIL Environment sub-line for power conferences. Backend: `_compute_scholarship_structure()`. Frontend: `ScholarshipStructure.js`. Journey page card order: Timeline → Roster → Scholarship.
 38. **NIL Readiness** (Feb 21, 2026) — 3 statuses: NIL-Friendly (blue, D1 power conferences), NIL-Limited (slate, D1 non-power/D2/NAIA), NIL Information Limited (light slate, D3). Guidance bullets in "What this means for you" section. No dollar amounts, no rankings. Backend: `_compute_nil_readiness()`. Frontend: `NilReadiness.js`. Full decision stack: Timeline → Roster → Scholarship → NIL.
 39. **Source-Aware AI School Insight ("Why This School")** (Feb 21, 2026) — AI-powered analysis card on Journey page. Top 3 reasons and Top 2 risks for each school, with source attribution (IPEDS, School Site, Program Data). Confidence scoring (High/Medium/Limited) based on data coverage and freshness. Expandable section shows confidence factors, data sources, and disclaimers. 24-hour cache with refresh button. Backend: `POST /api/ai/school-insight/{program_id}`, `DELETE /api/ai/school-insight/{program_id}/cache`. Frontend: `SchoolInsightCard.js`. Uses Claude Sonnet 4.5 via Emergent LLM Key with structured prompt ensuring no hallucination and source-backed claims.
+40. **Trust & Safety UI Features** (Feb 21, 2026) — 4 transparency features for AI intelligence cards:
+    - **Data Confidence Indicator**: High/Medium/Limited badge on all 5 intelligence cards (Timeline, Roster, Scholarship, NIL, SchoolInsight). Computed from GPA quality, SAT, admission rate, ACT availability. Backend: `_compute_data_confidence()` in `athlete_profile.py`.
+    - **Academic Data Completeness Flag**: Warning banner when academic data is missing (e.g. "Limited academic data — missing SAT"). Renders above intelligence cards on Journey page.
+    - **Source Freshness Awareness**: `last_updated` timestamp in API responses from scraped data timestamps.
+    - **"This May Change" Microcopy**: Gentle disclaimer at bottom of every intelligence card: "Recruiting data changes frequently. Verify details directly with the school's coaching staff."
+    - Frontend: `TrustIndicators.js` (DataConfidenceBadge, AcademicCompletenessFlag, ThisMayChangeCopy components).
 
 ## Data Reliability Improvements (Feb 21, 2026)
 - **Fuzzy KB Matching**: Multi-strategy lookup (exact → domain → normalized text) resolves 90% of name mismatches (e.g., "BYU" → "Brigham Young University", "Tampa University" → "University of Tampa"). Shared logic in `athlete_profile.py` used by match-scores, risk-badges, and AI insight endpoints.
@@ -46,7 +52,6 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 - **Monthly GPA Refresh Job**: Background task in server.py runs every 30 days. Admin endpoints: `GET /api/admin/gpa-status` (coverage stats), `POST /api/admin/refresh-gpa` (trigger manual refresh). Script at `backend/scripts/scrape_gpa.py`.
 
 ## Pending Issues
-- **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
 - **P2**: NCAA Timeline colors (on hold)
 - **P1**: Refactor duplicated matching algorithm (athlete_profile.py + knowledge.py)
 
