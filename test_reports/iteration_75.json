@@ -1,0 +1,92 @@
+{
+  "summary": "Completed testing of Scholarship Structure feature. All 16 backend API tests pass (100%). Frontend tests pass - Scholarship Structure Card renders on Journey page with slate accent bar, explanation, 'About this estimate' tooltip. All 4 intelligence cards (Risk Badges, Timeline, Roster, Scholarship) stack vertically in correct order on Journey page. Find Schools page shows all compact labels.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "GET /api/match-scores returns scholarship object": "PASS",
+      "Scholarship object has required fields (status/label/explanation/tooltip)": "PASS",
+      "Scholarship status values are valid (mix/partial/walkon/unknown)": "PASS",
+      "Scholarship label values are valid": "PASS",
+      "GET /api/suggested-schools returns scholarship for each suggestion": "PASS",
+      "GET /api/risk-badges/{program_id} returns scholarship alongside badges/timeline/roster": "PASS",
+      "Risk badges scholarship has all required fields": "PASS",
+      "D1 non-power conference (ASUN) gets 'partial' status": "PASS",
+      "D1 non-power has NO nil_context": "PASS",
+      "D2 school gets 'partial' status": "PASS",
+      "D2 has NO nil_context": "PASS",
+      "D3 school gets 'walkon' status": "PASS",
+      "Power conference D1 has nil_context (when available)": "PASS",
+      "Scholarship label mapping is correct": "PASS",
+      "Explanation is parent-safe (no dollar amounts)": "PASS",
+      "Tooltip provides helpful context about estimates": "PASS"
+    },
+    "frontend": {
+      "Scholarship Structure Card renders on Journey page": "PASS - data-testid='scholarship-structure-card' found",
+      "Card shows 'Scholarship Structure' header": "PASS",
+      "Card shows correct label ('Typically Partial Scholarships' for D1 non-power)": "PASS",
+      "Card shows explanation text": "PASS - 'Most athletes receive partial athletic aid. Scholarship amounts may vary by role and timing.'",
+      "Card shows 'About this estimate' info button": "PASS - data-testid='scholarship-info-btn' found",
+      "Clicking 'About this estimate' shows tooltip": "PASS - 'Scholarship structures reflect typical program practices and are not guarantees...'",
+      "Accent bar uses neutral slate color (#475569)": "PASS - rgb(71, 85, 105) confirmed",
+      "NIL context NOT shown for non-power conference": "PASS",
+      "D2 school shows 'Typically Partial Scholarships'": "PASS",
+      "All 4 cards stack in correct order (Timeline → Roster → Scholarship)": "PASS - Positions: Timeline=355, Roster=586, Scholarship=862",
+      "Risk badges still work on Journey page": "PASS",
+      "Timeline Intelligence Card still works": "PASS",
+      "Roster Reality Card still works": "PASS",
+      "Find Schools shows all compact labels": "PASS - Roster Tight, Timeline Risk, Scholarship pills visible"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_scholarship_structure.py",
+    "/app/test_reports/pytest/scholarship_structure_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_scholarship_structure.py"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 tests passed)",
+    "frontend": "100% (all requested features working)"
+  },
+  "scholarship_feature_verified": {
+    "status_values": {
+      "mix": "D1 Power Conferences (BIG 12, SEC, ACC, BIG TEN, BIG EAST, PAC-12) with NIL context",
+      "partial": "D1 non-power, D2, NAIA, JUCO",
+      "walkon": "D3 schools"
+    },
+    "D1_non_power_ASUN": "partial (correct - Florida Gulf Coast)",
+    "D2_SSC": "partial (correct - Tampa University)",
+    "D3": "walkon (verified via suggested-schools API)",
+    "nil_context_behavior": "Only shown for D1 power conference schools",
+    "label_format": "Typically Partial Scholarships / Mix of Partial and Full / Walk-On Pathways Common",
+    "card_components": [
+      "Left slate accent bar (#475569)",
+      "GraduationCap icon",
+      "SCHOLARSHIP STRUCTURE header",
+      "Status label",
+      "Explanation paragraph",
+      "NIL Environment sub-line (optional for power conf)",
+      "'About this estimate' info button with tooltip"
+    ],
+    "card_order_on_journey": "Timeline → Roster → Scholarship"
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "programs": ["prog_3fe70bce8e71 (D1 Florida Gulf Coast, ASUN)", "prog_0a5dfa9c59d1 (D2 Tampa University, SSC)"]
+  },
+  "seed_data_creation": "None - used existing user account",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Scholarship Structure feature fully tested and working. Backend _compute_scholarship_structure() function correctly computes status based on division + conference: D1 power conferences get 'mix' with NIL context, D1 non-power/D2/NAIA/JUCO get 'partial', D3 gets 'walkon'. Frontend ScholarshipStructureCard renders on Journey page with neutral slate accent bar (#475569), explanation text, and 'About this estimate' tooltip. All 4 intelligence cards stack in order on Journey page: Timeline → Roster → Scholarship. Find Schools page shows all compact labels including Scholarship pill. Parent-safe language confirmed (no dollar amounts in any text)."
+}
