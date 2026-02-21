@@ -11,7 +11,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
 import UniversityLogo from "../components/UniversityLogo";
-import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
+import { RiskExplainerDrawer } from "../components/RiskBadges";
 import { TimelineStatusCard } from "../components/TimelineIntelligence";
 import { RosterRealityCard } from "../components/RosterOutlook";
 import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
