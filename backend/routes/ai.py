@@ -1248,8 +1248,13 @@ async def get_school_insight(program_id: str, request: Request):
     if scorecard.get("sat_avg"): academics_context["sat_avg"] = scorecard["sat_avg"]
     if scorecard.get("act_midpoint"): academics_context["act_midpoint"] = scorecard["act_midpoint"]
     if scorecard.get("admission_rate") is not None: academics_context["acceptance_rate"] = scorecard["admission_rate"]
-    if (uni_data or {}).get("avg_gpa"): academics_context["avg_gpa"] = uni_data["avg_gpa"]
     if scorecard.get("graduation_rate"): academics_context["graduation_rate"] = scorecard["graduation_rate"]
+    # Use estimated GPA with transparency
+    if scorecard.get("estimated_avg_gpa"):
+        academics_context["avg_gpa"] = scorecard["estimated_avg_gpa"]
+        academics_context["gpa_is_estimated"] = True
+    elif (uni_data or {}).get("avg_gpa"):
+        academics_context["avg_gpa"] = uni_data["avg_gpa"]
 
     athlete_context = {
         "graduation_year": profile.get("graduation_year") or profile.get("grad_year", ""),
