@@ -1024,6 +1024,7 @@ async def get_suggested_schools(request: Request):
                 "website": school.get("website"),
                 "domain": school.get("domain"),
                 "mascot": school.get("mascot"),
+                "logo_url": school.get("logo_url"),
                 "match_score": match["score"],
                 "match_reasons": match["reasons"],
                 "risk_badges": _compute_risk_badges(school, profile, match["reasons"]),
