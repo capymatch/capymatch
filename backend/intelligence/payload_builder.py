@@ -161,10 +161,11 @@ def _extract_section(
 # Core builder
 # ---------------------------------------------------------------------------
 
-async def build_payload(db, program_id: str, tenant_id: str) -> dict:
+async def build_payload(db, program_id: str, tenant_id: str, debug: bool = False) -> dict:
     """
     Build a minimal, source-aware payload for a single school + athlete.
     All numeric fields normalized. Test scores use structured shape.
+    When debug=False, fields_populated is omitted from sources where quality is high.
     """
     now = datetime.now(timezone.utc).isoformat()
 
