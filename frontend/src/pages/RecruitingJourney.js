@@ -316,28 +316,28 @@ export default function RecruitingJourney() {
       {/* Timeline Intelligence Card */}
       {recruitingTimeline && (
         <div className="mt-5" data-testid="journey-timeline-card">
-          <TimelineStatusCard timeline={recruitingTimeline} />
+          <TimelineStatusCard timeline={recruitingTimeline} dataConfidence={dataConfidence} />
         </div>
       )}
 
       {/* Roster Reality Card */}
       {rosterOutlook && (
         <div className="mt-4" data-testid="journey-roster-card">
-          <RosterRealityCard roster={rosterOutlook} />
+          <RosterRealityCard roster={rosterOutlook} dataConfidence={dataConfidence} />
         </div>
       )}
 
       {/* Scholarship Structure Card */}
       {scholarship && (
         <div className="mt-4" data-testid="journey-scholarship-card">
-          <ScholarshipStructureCard scholarship={scholarship} />
+          <ScholarshipStructureCard scholarship={scholarship} dataConfidence={dataConfidence} />
         </div>
       )}
 
       {/* NIL Readiness Card */}
       {nilReadiness && (
         <div className="mt-4" data-testid="journey-nil-card">
-          <NilReadinessCard nil={nilReadiness} />
+          <NilReadinessCard nil={nilReadiness} dataConfidence={dataConfidence} />
         </div>
       )}
 
@@ -348,6 +348,7 @@ export default function RecruitingJourney() {
             insight={schoolInsight}
             loading={insightLoading}
             onRefresh={() => fetchInsight(true)}
+            dataConfidence={dataConfidence}
           />
         </div>
       )}
