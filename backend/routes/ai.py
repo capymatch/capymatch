@@ -1476,6 +1476,7 @@ def _build_fallback_insight(program_id, uni_name, sources, now_iso):
                 "top_risks": [
                     {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
                     {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
                 ],
             },
             "data_confidence": {"level": "Limited", "reasons": ["AI analysis unavailable. Try again later."]},
