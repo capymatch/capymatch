@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import {
-  ArrowLeft, Mail, Phone, Clock, Target,
+  ArrowLeft, Mail, Phone, Clock, Target, DollarSign,
   MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
   Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info
 } from "lucide-react";
