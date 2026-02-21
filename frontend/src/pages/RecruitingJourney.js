@@ -440,6 +440,14 @@ export default function RecruitingJourney() {
             setNotesCount((r.data.pinned?.length || 0) + (r.data.recent?.length || 0));
           }).catch(() => {});
         }} />
+
+      {riskDrawer && (
+        <RiskExplainerDrawer
+          badges={riskBadges}
+          activeBadge={riskDrawer}
+          onClose={() => setRiskDrawer(false)}
+        />
+      )}
     </div>
   );
 }
