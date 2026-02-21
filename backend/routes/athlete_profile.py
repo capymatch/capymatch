@@ -315,6 +315,7 @@ async def get_match_scores(request: Request):
             "roster": _compute_roster_outlook(p, profile),
             "scholarship": _compute_scholarship_structure(p),
             "nil": _compute_nil_readiness(p),
+            "data_confidence": _compute_data_confidence(p),
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
@@ -1029,6 +1030,7 @@ async def get_suggested_schools(request: Request):
                 "roster": _compute_roster_outlook(school, profile),
                 "scholarship": _compute_scholarship_structure(school),
                 "nil": _compute_nil_readiness(school),
+                "data_confidence": _compute_data_confidence(school),
             })
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
@@ -1065,4 +1067,5 @@ async def get_risk_badges(program_id: str, request: Request):
     roster = _compute_roster_outlook(program, profile)
     scholarship = _compute_scholarship_structure(program)
     nil_readiness = _compute_nil_readiness(program)
-    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship, "nil": nil_readiness}
+    data_confidence = _compute_data_confidence(program)
+    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship, "nil": nil_readiness, "data_confidence": data_confidence}
