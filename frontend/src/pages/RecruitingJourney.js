@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
 import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
 import { TimelineStatusCard } from "../components/TimelineIntelligence";
+import { RosterRealityCard } from "../components/RosterOutlook";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
