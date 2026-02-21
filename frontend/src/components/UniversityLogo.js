@@ -5,8 +5,9 @@ const SOURCES = {
   fallback: (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=256`,
 };
 
-export default function UniversityLogo({ domain, name, size = 40, className = "" }) {
-  const [src, setSrc] = useState(domain ? SOURCES.primary(domain) : null);
+export default function UniversityLogo({ domain, name, size = 40, className = "", logoUrl }) {
+  const initialSrc = logoUrl || (domain ? SOURCES.primary(domain) : null);
+  const [src, setSrc] = useState(initialSrc);
   const [triedFallback, setTriedFallback] = useState(false);
 
   const initials = (name || "")
