@@ -277,9 +277,9 @@ export default function RecruitingJourney() {
       {(!isCommitted || showJourneyDetails) && (<>
 
       {/* Timeline Intelligence Card */}
-      {timeline && (
+      {recruitingTimeline && (
         <div className="mt-5" data-testid="journey-timeline-card">
-          <TimelineStatusCard timeline={timeline} />
+          <TimelineStatusCard timeline={recruitingTimeline} />
         </div>
       )}
 
