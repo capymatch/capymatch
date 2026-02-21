@@ -46,7 +46,7 @@ async def pass1_collect_slugs(page):
         url = f"{BASE}/{state}"
         try:
             resp = await page.goto(url, wait_until="domcontentloaded", timeout=15000)
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(3)
             if not resp or resp.status != 200:
                 continue
             content = await page.content()
