@@ -234,6 +234,7 @@ async def get_match_scores(request: Request):
             "timeline": _compute_timeline_status(p, profile),
             "roster": _compute_roster_outlook(p, profile),
             "scholarship": _compute_scholarship_structure(p),
+            "nil": _compute_nil_readiness(p),
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
