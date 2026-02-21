@@ -424,3 +424,59 @@ async def gpa_data_status():
         "source": "productiverecruit.com",
     }
 
+
+
+@router.post("/scrape-school-data")
+async def trigger_school_data_scrape(request: Request):
+    """Admin-only: trigger comprehensive data scrape from ProductiveRecruit (SAT, ACT, logos, etc)."""
+    import subprocess
+    from pathlib import Path
+
+    ROOT = Path(__file__).parent.parent
+    subprocess.Popen(
+        ["python3", "scripts/scrape_school_data.py"],
+        env={**os.environ},
+        cwd=str(ROOT),
+        stdout=open("/tmp/school_data_scrape.log", "w"),
+        stderr=subprocess.STDOUT,
+    )
+    return {"status": "started", "log_file": "/tmp/school_data_scrape.log"}
+
+
+@router.get("/scrape-school-data/status")
+async def school_data_scrape_status():
+    """Check progress of comprehensive school data scrape."""
+    total = await db.university_knowledge_base.count_documents({})
+    has_sat = await db.university_knowledge_base.count_documents({"scorecard.sat_avg": {"$exists": True, "$ne": None}})
+    has_act = await db.university_knowledge_base.count_documents({"scorecard.act_midpoint": {"$exists": True, "$ne": None}})
+    has_logo = await db.university_knowledge_base.count_documents({"logo_url": {"$exists": True, "$ne": None}})
+    has_gpa = await db.university_knowledge_base.count_documents({"scorecard.avg_gpa": {"$exists": True, "$ne": None}, "scorecard.gpa_is_estimated": False})
+    has_accept = await db.university_knowledge_base.count_documents({"scorecard.acceptance_rate": {"$exists": True, "$ne": None}})
+    has_grad = await db.university_knowledge_base.count_documents({"scorecard.graduation_rate": {"$exists": True, "$ne": None}})
+
+    # Check if scrape is running
+    import subprocess
+    running = "school_data_scrape" in subprocess.getoutput("ps aux")
+
+    # Get last few log lines
+    log_tail = ""
+    try:
+        with open("/tmp/school_data_scrape.log") as f:
+            lines = f.readlines()
+            log_tail = "".join(lines[-5:])
+    except FileNotFoundError:
+        log_tail = "No scrape has been run yet"
+
+    return {
+        "total_schools": total,
+        "coverage": {
+            "logo": {"count": has_logo, "pct": round(has_logo / total * 100, 1)},
+            "gpa": {"count": has_gpa, "pct": round(has_gpa / total * 100, 1)},
+            "sat": {"count": has_sat, "pct": round(has_sat / total * 100, 1)},
+            "act": {"count": has_act, "pct": round(has_act / total * 100, 1)},
+            "acceptance_rate": {"count": has_accept, "pct": round(has_accept / total * 100, 1)},
+            "graduation_rate": {"count": has_grad, "pct": round(has_grad / total * 100, 1)},
+        },
+        "scrape_running": running,
+        "log_tail": log_tail,
+    }
