@@ -175,7 +175,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
 }
 
 /* ── School Card ── */
-function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate }) {
+function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBadgeClick }) {
   const isOnBoard = boardSchools.has(uni.university_name);
   return (
     <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2ec4b6]/30 group"
