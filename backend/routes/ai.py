@@ -1102,11 +1102,8 @@ from routes.athlete_profile import _normalize_school_name as _norm_name
 
 
 async def _find_university_kb(name: str, domain: str = ""):
-    """Multi-strategy lookup for a university in the knowledge base.
-    1. Exact name match
-    2. Domain match (most reliable for abbreviations)
-    3. Normalized substring match
-    """
+    """Multi-strategy lookup for a university in the knowledge base."""
+    import re as _re
     # Strategy 1: Exact name
     result = await db.university_knowledge_base.find_one({"university_name": name}, {"_id": 0})
     if result:
@@ -1119,15 +1116,13 @@ async def _find_university_kb(name: str, domain: str = ""):
             return result
 
     # Strategy 3: Normalized text matching
-    norm = _normalize_school_name(name)
+    norm = _norm_name(name)
     if len(norm) < 3:
         return None
 
-    # Try regex on the KB — match if the normalized key words appear
     key_words = [w for w in norm.split() if len(w) > 2]
     if key_words:
-        # Build a regex that requires all key words to appear (in any order)
-        regex_pattern = "".join(f"(?=.*{re.escape(w)})" for w in key_words[:3])
+        regex_pattern = "".join(f"(?=.*{_re.escape(w)})" for w in key_words[:3])
         candidates = await db.university_knowledge_base.find(
             {"university_name": {"$regex": regex_pattern, "$options": "i"}},
             {"_id": 0}
@@ -1136,13 +1131,11 @@ async def _find_university_kb(name: str, domain: str = ""):
         if len(candidates) == 1:
             return candidates[0]
 
-        # If multiple candidates, score them by normalized similarity
         if candidates:
             best = None
             best_score = 0
             for c in candidates:
-                c_norm = _normalize_school_name(c["university_name"])
-                # Score: how many key words match + length similarity
+                c_norm = _norm_name(c["university_name"])
                 matches = sum(1 for w in key_words if w in c_norm)
                 len_sim = 1 - abs(len(norm) - len(c_norm)) / max(len(norm), len(c_norm), 1)
                 score = matches + len_sim
