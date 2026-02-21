@@ -1,4 +1,4 @@
-"""Concurrent GPA scraper using multiple Playwright tabs."""
+"""GPA scraper v3 - single context, multiple tabs sharing Cloudflare cookies."""
 import asyncio, re, os, logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timezone
@@ -35,18 +35,20 @@ def parse_gpa(html):
         if 2.0 <= v <= 4.0: return v
     return None
 
-async def worker(sem, page, school, db, now, stats):
+async def scrape_page(page, school, db, now, stats, sem):
     name = school.get("university_name","")
     sc = school.get("scorecard") or {}
     st = sc.get("state") or school.get("state","")
     if not st or st not in STATES:
         stats["skip"] += 1
+        stats["done"] += 1
         return
+
     url = f"{BASE}/{STATES[st]}/{slug(name)}"
     async with sem:
         try:
             resp = await page.goto(url, wait_until="domcontentloaded", timeout=12000)
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(1)
             if resp and resp.status == 200:
                 gpa = parse_gpa(await page.content())
                 if gpa:
@@ -61,9 +63,10 @@ async def worker(sem, page, school, db, now, stats):
                 stats["miss"] += 1
         except:
             stats["fail"] += 1
-        stats["done"] += 1
-        if stats["done"] % 50 == 0:
-            log.info(f"Progress: {stats['done']}/{stats['total']} | Found: {stats['found']} | Miss: {stats['miss']} | Fail: {stats['fail']}")
+
+    stats["done"] += 1
+    if stats["done"] % 50 == 0:
+        log.info(f"{stats['done']}/{stats['total']} | Found: {stats['found']} | Miss: {stats['miss']} | Fail: {stats['fail']}")
 
 async def main():
     client = AsyncIOMotorClient(os.environ.get("MONGO_URL","mongodb://localhost:27017"))
@@ -74,45 +77,47 @@ async def main():
         {"_id":1,"university_name":1,"scorecard":1,"state":1}
     ).to_list(2000)
 
-    log.info(f"Scraping {len(schools)} schools with 5 concurrent tabs")
+    log.info(f"Scraping {len(schools)} schools (3 concurrent tabs, shared context)")
     now = datetime.now(timezone.utc).isoformat()
     stats = {"done":0,"found":0,"miss":0,"fail":0,"skip":0,"total":len(schools)}
 
-    CONCURRENCY = 5
-    sem = asyncio.Semaphore(1)  # One page at a time per tab, but 5 tabs
+    N_TABS = 3
+    sem = asyncio.Semaphore(N_TABS)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True, args=['--disable-blink-features=AutomationControlled','--no-sandbox'])
+        # Single context = shared cookies
+        ctx = await browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            viewport={"width":1920,"height":1080})
 
-        # Create multiple pages (tabs)
-        pages = []
-        for _ in range(CONCURRENCY):
-            ctx = await browser.new_context(
-                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-                viewport={"width":1920,"height":1080})
-            pg = await ctx.new_page()
-            pages.append(pg)
-
-        # Warmup the first page
+        # Warmup to solve Cloudflare challenge
+        warmup_page = await ctx.new_page()
         try:
-            await pages[0].goto(f"{BASE}/florida/florida-gulf-coast-university", wait_until="domcontentloaded", timeout=30000)
-            await asyncio.sleep(5)
-            log.info("Warmup done")
-        except:
-            pass
+            await warmup_page.goto(f"{BASE}/florida/florida-gulf-coast-university", wait_until="domcontentloaded", timeout=30000)
+            await asyncio.sleep(8)
+            content = await warmup_page.content()
+            if "Average GPA" in content:
+                log.info("Warmup OK - Cloudflare passed")
+            else:
+                log.warning("Warmup: page loaded but no GPA data visible")
+        except Exception as e:
+            log.warning(f"Warmup failed: {e}")
+        await warmup_page.close()
 
-        # Distribute schools across pages
-        chunks = [[] for _ in range(CONCURRENCY)]
+        # Create tabs
+        pages = [await ctx.new_page() for _ in range(N_TABS)]
+
+        # Distribute and process
+        chunks = [[] for _ in range(N_TABS)]
         for i, s in enumerate(schools):
-            chunks[i % CONCURRENCY].append(s)
+            chunks[i % N_TABS].append(s)
 
         async def process_chunk(page, chunk):
             for school in chunk:
-                await worker(sem, page, school, db, now, stats)
-                await asyncio.sleep(0.3)
+                await scrape_page(page, school, db, now, stats, sem)
 
-        # Run all chunks concurrently
-        await asyncio.gather(*[process_chunk(pages[i], chunks[i]) for i in range(CONCURRENCY)])
+        await asyncio.gather(*[process_chunk(pages[i], chunks[i]) for i in range(N_TABS)])
         await browser.close()
 
     log.info(f"DONE: {stats}")
