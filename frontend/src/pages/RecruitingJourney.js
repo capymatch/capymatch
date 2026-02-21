@@ -354,6 +354,14 @@ export default function RecruitingJourney() {
         </div>
       )}
 
+      {/* Commitment Stability Index */}
+      {!isBasic && commitmentStability && (
+        <div className="mt-4" data-testid="journey-stability-card">
+          <CommitmentStabilityCard stability={commitmentStability} />
+        </div>
+      )}
+
+
       {/* AI School Insight Card */}
       {!isBasic && (
         <div className="mt-4" data-testid="journey-insight-card">
