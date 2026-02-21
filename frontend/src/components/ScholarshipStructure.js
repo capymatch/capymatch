@@ -109,6 +109,8 @@ export function ScholarshipStructureCard({ scholarship, dataConfidence }) {
               </div>
             )}
           </div>
+
+          <ThisMayChangeCopy />
         </div>
       </div>
     </div>
