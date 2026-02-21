@@ -1098,8 +1098,14 @@ async def get_coach_watch_alert_for_school(university_name: str, request: Reques
 
 # ── Source-Aware School Insight (Pro+) ────────────────────────
 
-class SchoolInsightRequest(BaseModel):
-    program_id: str
+
+@router.delete("/school-insight/{program_id}/cache")
+async def clear_school_insight_cache(program_id: str, request: Request):
+    """Clear cached insight for a specific school to force regeneration."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    await db.ai_school_insights.delete_one({"tenant_id": tenant_id, "program_id": program_id})
+    return {"cleared": True}
 
 
 @router.post("/school-insight/{program_id}")
