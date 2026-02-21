@@ -34,7 +34,7 @@ export default function RecruitingJourney() {
   const [matchScore, setMatchScore] = useState(null);
   const [riskBadges, setRiskBadges] = useState([]);
   const [riskDrawer, setRiskDrawer] = useState(false);
-  const [timeline, setTimeline] = useState(null);
+  const [recruitingTimeline, setRecruitingTimeline] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
