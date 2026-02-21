@@ -457,7 +457,7 @@ async def school_data_scrape_status():
 
     # Check if scrape is running
     import subprocess
-    running = "school_data_scrape" in subprocess.getoutput("ps aux")
+    running = "scrape_school_data" in subprocess.getoutput("ps aux")
 
     # Get last few log lines
     log_tail = ""
