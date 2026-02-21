@@ -528,8 +528,9 @@ async def build_payload_endpoint(program_id: str, request: Request):
     tenant_id = request.query_params.get("tenant_id")
     if not tenant_id:
         raise HTTPException(status_code=400, detail="tenant_id query param required")
+    debug = request.query_params.get("debug", "false").lower() == "true"
     try:
-        payload = await build_payload(db, program_id, tenant_id)
+        payload = await build_payload(db, program_id, tenant_id, debug=debug)
         # Compute estimated token size (rough: 4 chars ≈ 1 token)
         import json
         payload_str = json.dumps(payload)
