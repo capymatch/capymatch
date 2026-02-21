@@ -1368,7 +1368,7 @@ Return a single JSON object with this exact shape:
 
 Additional Hard Constraints:
 - top_reasons must be exactly 3 items (use "Unknown" only if necessary).
-- top_risks must be exactly 2 items.
+- top_risks must be exactly 3 items.
 - Each reason/risk must reference at least one program_data_key in supports.
 - Each reason/risk must include at least one source_id. If you truly cannot, set text to "Limited data available to support this insight." and sources to [] and lower confidence to Limited.
 
