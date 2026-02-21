@@ -9,6 +9,7 @@ import {
   Loader2, RotateCcw, Sparkles, ArrowRight, Zap
 } from "lucide-react";
 import { toast } from "sonner";
+import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
 
 const PER_PAGE = 48;
 
