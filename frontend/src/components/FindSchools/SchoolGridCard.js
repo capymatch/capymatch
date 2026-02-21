@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Building2, User, Mail, Plus, ExternalLink, X, Check, Sparkles, ChevronDown, GraduationCap, DollarSign, Users, Award, BarChart3, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { RiskBadgeRow, RiskBadgeEmpty } from "../RiskBadges";
 
 const DIV_COLORS = {
   D1: "bg-slate-500/15 text-teal-700",
