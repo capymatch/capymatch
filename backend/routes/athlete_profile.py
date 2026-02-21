@@ -554,6 +554,7 @@ async def get_suggested_schools(request: Request):
                 "mascot": school.get("mascot"),
                 "match_score": match["score"],
                 "match_reasons": match["reasons"],
+                "risk_badges": _compute_risk_badges(school, profile, match["reasons"]),
             })
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
