@@ -58,6 +58,9 @@ def _find_kb_match(program, by_name, by_domain, by_norm):
     if not key_words:
         return None
 
+    # For very short queries (1 word, <5 chars), require near-exact match
+    min_score = 2.0 if (len(key_words) == 1 and len(norm) < 5) else 1.5
+
     best = None
     best_score = 0
     for kb_norm, kb in by_norm.items():
@@ -70,7 +73,7 @@ def _find_kb_match(program, by_name, by_domain, by_norm):
             best_score = score
             best = kb
 
-    return best if best_score >= 1.5 else None
+    return best if best_score >= min_score else None
 
 @router.get("/recruiting-profile")
 async def get_recruiting_profile(request: Request):
