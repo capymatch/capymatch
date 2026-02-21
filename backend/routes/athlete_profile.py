@@ -712,6 +712,7 @@ async def get_suggested_schools(request: Request):
                 "match_reasons": match["reasons"],
                 "risk_badges": _compute_risk_badges(school, profile, match["reasons"]),
                 "timeline": _compute_timeline_status(school, profile),
+                "roster": _compute_roster_outlook(school, profile),
             })
 
     suggestions.sort(key=lambda x: x["match_score"], reverse=True)
