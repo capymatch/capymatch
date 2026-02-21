@@ -157,9 +157,10 @@ async def main():
 
         # Warmup
         try:
-            await page.goto(f"{BASE}/florida", wait_until="domcontentloaded", timeout=30000)
-            await asyncio.sleep(5)
-            log.info("Cloudflare warmup done")
+            await page.goto(f"{BASE}/florida/florida-gulf-coast-university", wait_until="domcontentloaded", timeout=30000)
+            await asyncio.sleep(8)
+            warmup_ok = "Average GPA" in await page.content()
+            log.info(f"Cloudflare warmup done (ok={warmup_ok})")
         except:
             pass
 
