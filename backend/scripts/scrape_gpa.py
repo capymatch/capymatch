@@ -34,7 +34,7 @@ def parse_gpa(html):
     m = re.search(r'(\d\.\d{1,2})\s*</(?:p|div|span|h\d)>\s*(?:<[^>]*>)*\s*Average GPA', html, re.DOTALL)
     if m:
         v = float(m.group(1))
-        if 2.0 <= v <= 4.0: return v
+        if 2.0 <= v <= 5.0: return v
     return None
 
 
