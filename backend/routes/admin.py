@@ -5,6 +5,7 @@ from database import db
 from subscriptions import SUBSCRIPTION_TIERS
 from ws_manager import manager
 import uuid
+import os
 
 router = APIRouter(prefix="/api/admin")
 
