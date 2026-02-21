@@ -380,7 +380,7 @@ async def list_subscription_logs(page: int = 1, limit: int = 30):
     return {"logs": logs, "total": total, "page": page, "limit": limit}
 
 
-@router.post("/admin/refresh-gpa")
+@router.post("/refresh-gpa")
 async def trigger_gpa_refresh(request: Request):
     """Admin-only: trigger a manual GPA data refresh from ProductiveRecruit."""
     import subprocess
