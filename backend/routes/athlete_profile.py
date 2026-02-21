@@ -577,20 +577,6 @@ async def get_risk_badges(program_id: str, request: Request):
     if not program:
         return {"badges": [], "empty_state": True}
 
-    # Get match reasons from match-scores if available
-    match_reasons = []
-    scores = await db.programs.find({"tenant_id": tenant_id}, {"_id": 0}).to_list(200)
-    # Recompute match for this specific program to get reasons
-    # Use the same logic from match-scores
-    region_map = {
-        "Northeast": ["NY", "MA", "PA", "CT", "NJ", "ME", "VT", "NH", "RI"],
-        "Southeast": ["FL", "GA", "NC", "VA", "SC", "TN", "AL", "MS", "LA", "KY", "AR"],
-        "Midwest": ["OH", "IL", "MI", "IN", "WI", "MN", "IA", "MO", "KS", "NE", "ND", "SD"],
-        "Southwest": ["TX", "AZ", "NM", "OK"],
-        "Mountain West": ["CO", "UT", "MT", "ID", "WY", "NV"],
-        "West Coast": ["CA", "OR", "WA", "HI", "AK"],
-    }
-    # Simplified: reuse _compute_suggestion_match to get reasons
     match = _compute_suggestion_match(program, profile)
     badges = _compute_risk_badges(program, profile, match["reasons"])
     return {"badges": badges, "empty_state": len(badges) == 0}
