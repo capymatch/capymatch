@@ -97,6 +97,7 @@ export default function RecruitingJourney() {
           setRosterOutlook(found.roster || null);
           setScholarship(found.scholarship || null);
           setNilReadiness(found.nil || null);
+          setCommitmentStability(found.commitment_stability || null);
           setDataConfidence(found.data_confidence || null);
         }
       }
