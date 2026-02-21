@@ -1094,3 +1094,336 @@ async def get_coach_watch_alert_for_school(university_name: str, request: Reques
         {"_id": 0}
     )
     return {"alert": alert}
+
+
+# ── Source-Aware School Insight (Pro+) ────────────────────────
+
+class SchoolInsightRequest(BaseModel):
+    program_id: str
+
+
+@router.post("/school-insight/{program_id}")
+async def get_school_insight(program_id: str, request: Request):
+    """Source-aware AI reasoning for a specific school. Returns top reasons, risks, and confidence."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    await enforce_ai_limit(tenant_id, subscription)
+
+    # Check cache first (24-hour TTL)
+    cache_key = {"tenant_id": tenant_id, "program_id": program_id}
+    cached = await db.ai_school_insights.find_one(cache_key, {"_id": 0})
+    if cached:
+        created = cached.get("created_at", "")
+        try:
+            cache_dt = datetime.fromisoformat(created)
+            age_hours = (datetime.now(timezone.utc) - cache_dt).total_seconds() / 3600
+            if age_hours < 24:
+                return cached.get("insight", {})
+        except Exception:
+            pass
+
+    # Load program
+    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+
+    # Load athlete profile
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    if not profile:
+        raise HTTPException(status_code=400, detail="Complete your athlete profile first")
+
+    # Load university knowledge base data
+    uni_name = program.get("university_name", "")
+    uni_data = await db.university_knowledge_base.find_one({"university_name": uni_name}, {"_id": 0})
+
+    # Build source records
+    sources = []
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    scorecard = (uni_data or {}).get("scorecard") or program.get("scorecard_data") or {}
+    if scorecard:
+        sc_fields = []
+        if scorecard.get("sat_avg"): sc_fields.append("sat_avg")
+        if scorecard.get("act_midpoint"): sc_fields.append("act_midpoint")
+        if scorecard.get("admission_rate") is not None: sc_fields.append("acceptance_rate")
+        if scorecard.get("graduation_rate"): sc_fields.append("graduation_rate")
+        if scorecard.get("retention_rate"): sc_fields.append("retention_rate")
+        if scorecard.get("tuition_in_state"): sc_fields.append("tuition")
+        if scorecard.get("student_size"): sc_fields.append("student_size")
+        sources.append({
+            "source_id": "COLLEGE_SCORECARD",
+            "source_type": "IPEDS",
+            "retrieved_at": scorecard.get("synced_at", now_iso),
+            "fields_supported": sc_fields,
+        })
+
+    if uni_data:
+        uni_fields = []
+        if uni_data.get("coaches_scraped"): uni_fields.append("coaching_staff")
+        if uni_data.get("coaches_source_url"): uni_fields.append("coaches_url")
+        if uni_data.get("avg_gpa"): uni_fields.append("avg_gpa")
+        if uni_fields:
+            sources.append({
+                "source_id": "SCHOOL_SITE_SCRAPE",
+                "source_type": "SchoolSite",
+                "retrieved_at": (uni_data or {}).get("coaches_scraped_at", now_iso),
+                "fields_supported": uni_fields,
+            })
+
+    # Always add program-level source from knowledge base
+    if uni_data and uni_data.get("division"):
+        sources.append({
+            "source_id": "KNOWLEDGE_BASE",
+            "source_type": "Manual",
+            "retrieved_at": now_iso,
+            "fields_supported": ["division", "conference", "region", "scholarship_type"],
+        })
+
+    # Build the structured input for the AI
+    school_context = {
+        "name": uni_name,
+        "division": program.get("division", ""),
+        "conference": program.get("conference", ""),
+        "region": program.get("region", ""),
+    }
+
+    academics_context = {}
+    if scorecard.get("sat_avg"): academics_context["sat_avg"] = scorecard["sat_avg"]
+    if scorecard.get("act_midpoint"): academics_context["act_midpoint"] = scorecard["act_midpoint"]
+    if scorecard.get("admission_rate") is not None: academics_context["acceptance_rate"] = scorecard["admission_rate"]
+    if (uni_data or {}).get("avg_gpa"): academics_context["avg_gpa"] = uni_data["avg_gpa"]
+    if scorecard.get("graduation_rate"): academics_context["graduation_rate"] = scorecard["graduation_rate"]
+
+    athlete_context = {
+        "graduation_year": profile.get("graduation_year") or profile.get("grad_year", ""),
+        "gpa": profile.get("gpa", ""),
+        "sat_score": profile.get("sat_score", ""),
+        "act_score": profile.get("act_score", ""),
+        "position": profile.get("position", ""),
+        "state": profile.get("state", ""),
+        "priorities": profile.get("priorities", []),
+        "preferred_divisions": profile.get("division", []),
+        "preferred_regions": profile.get("regions", []),
+    }
+
+    # Compute existing intelligence for context
+    from routes.athlete_profile import (
+        _compute_risk_badges, _compute_timeline_status, _compute_roster_outlook,
+        _compute_scholarship_structure, _compute_nil_readiness, _compute_suggestion_match
+    )
+
+    match_result = _compute_suggestion_match(program if not uni_data else {**program, **(uni_data or {})}, profile)
+    risk_badges = _compute_risk_badges(program, profile, match_result["reasons"])
+    timeline_status = _compute_timeline_status(program, profile)
+    roster_outlook = _compute_roster_outlook(program, profile)
+    scholarship = _compute_scholarship_structure(program)
+    nil_readiness = _compute_nil_readiness(program)
+
+    # Build the full structured input
+    structured_input = json.dumps({
+        "school": school_context,
+        "academics": academics_context,
+        "athlete": athlete_context,
+        "existing_intelligence": {
+            "match_score": match_result["score"],
+            "match_reasons": match_result["reasons"],
+            "risk_badges": [b["key"] for b in risk_badges],
+            "timeline": timeline_status.get("status", "unknown"),
+            "roster": roster_outlook.get("status", "unknown"),
+            "scholarship": scholarship.get("status", "unknown"),
+            "nil": nil_readiness.get("status", "unknown"),
+        },
+        "sources": sources,
+    }, indent=2)
+
+    system_message = """You are the "Recruiting HQ Source-Aware Intelligence Agent."
+
+Your job is to generate recruiting insights that families can trust. You must be conservative, transparent, and never invent facts.
+
+Non-Negotiable Rules
+1. Never hallucinate or guess silently. If a field is missing, say it's missing.
+2. Every factual claim must be backed by a source record provided in the input context.
+3. If no valid source supports a claim, you must either omit the claim, or mark it explicitly as Estimate or Unknown.
+4. Separate facts from interpretations: Facts = "Program Data", Interpretations = "AI Insight"
+5. Use calm, parent-safe language. No guarantees, no "almost full," no money promises.
+
+Output Requirements (STRICT JSON)
+
+Return a single JSON object with this exact shape:
+
+{
+  "program_data": {
+    "academic_fit": {
+      "status": "Complete|Partial|Incomplete",
+      "inputs_used": ["SAT","ACT","GPA","TestOptionalPolicy"],
+      "notes": "",
+      "sources": ["source_id"]
+    },
+    "roster_outlook": {
+      "label": "Open|Limited|Tight|Unknown",
+      "estimated_openings_range": "e.g., 2-4|Unknown",
+      "notes": "",
+      "sources": ["source_id"]
+    },
+    "recruiting_timeline": {
+      "label": "Late Opportunities|Standard|Filling Early|Unknown",
+      "notes": "",
+      "sources": ["source_id"]
+    },
+    "scholarship_structure": {
+      "label": "Typically Partial|Mix of Partial and Full|Walk-on Pathways Common|Unknown",
+      "notes": "",
+      "sources": ["source_id"]
+    },
+    "nil_readiness": {
+      "label": "NIL-Friendly Environment|NIL-Limited Environment|NIL Information Limited",
+      "notes": "",
+      "sources": ["source_id"]
+    }
+  },
+  "ai_insight": {
+    "top_reasons": [
+      {"text": "", "supports": ["program_data_key"], "sources": ["source_id"]},
+      {"text": "", "supports": ["program_data_key"], "sources": ["source_id"]},
+      {"text": "", "supports": ["program_data_key"], "sources": ["source_id"]}
+    ],
+    "top_risks": [
+      {"text": "", "supports": ["program_data_key"], "sources": ["source_id"]},
+      {"text": "", "supports": ["program_data_key"], "sources": ["source_id"]}
+    ]
+  },
+  "data_confidence": {
+    "level": "High|Medium|Limited",
+    "reasons": ["", "", ""]
+  },
+  "disclaimers": [
+    "Insights are based on public data and historical trends and may change.",
+    "Scholarship and NIL outcomes are not guaranteed."
+  ]
+}
+
+Additional Hard Constraints:
+- top_reasons must be exactly 3 items (use "Unknown" only if necessary).
+- top_risks must be exactly 2 items.
+- Each reason/risk must reference at least one program_data_key in supports.
+- Each reason/risk must include at least one source_id. If you truly cannot, set text to "Limited data available to support this insight." and sources to [] and lower confidence to Limited.
+
+Data Confidence Logic:
+High: At least 3 categories have sources, sources are recent, at least one is high-quality (IPEDS/CDS/SchoolSite)
+Medium: 2 categories have sources OR some sources are stale, data includes at least one high-quality source
+Limited: 0-1 categories have sources OR most data is missing/stale
+
+Academic Fit Handling:
+- If SAT/ACT exist: use SAT/ACT + GPA (if GPA exists)
+- If SAT/ACT missing but GPA exists: GPA-only fit and mark status: Partial
+- If no academic inputs: mark status: Incomplete and note "Add GPA/test scores to improve match accuracy."
+- Never assume average test scores.
+
+Roster Outlook: If roster data exists estimate openings. If no roster data label Unknown. Never say "full" or "no spots."
+
+NIL: No dollar amounts. No promises. Only the allowed labels.
+
+Style: calm, supportive, confident. Avoid dramatic language. Prefer "may", "typically", "based on public data".
+
+Return ONLY the JSON. No extra commentary."""
+
+    user_prompt = f"""Analyze this school for the athlete and return source-aware insights.
+
+INPUT DATA:
+{structured_input}
+
+Return ONLY valid JSON matching the exact schema specified."""
+
+    try:
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"insight_{uuid.uuid4().hex[:8]}",
+            system_message=system_message,
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        response = await chat.send_message(UserMessage(text=user_prompt))
+        response_text = response.strip() if isinstance(response, str) else str(response).strip()
+        if response_text.startswith("```"):
+            response_text = response_text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        await track_ai_usage(tenant_id)
+        insight = json.loads(response_text)
+
+        # Validate structure
+        if "ai_insight" not in insight or "program_data" not in insight:
+            raise ValueError("Missing required keys in AI response")
+
+        # Ensure exactly 3 reasons and 2 risks
+        reasons = insight.get("ai_insight", {}).get("top_reasons", [])
+        risks = insight.get("ai_insight", {}).get("top_risks", [])
+        while len(reasons) < 3:
+            reasons.append({"text": "Limited data available to support this insight.", "supports": [], "sources": []})
+        while len(risks) < 2:
+            risks.append({"text": "Limited data available to support this insight.", "supports": [], "sources": []})
+        insight["ai_insight"]["top_reasons"] = reasons[:3]
+        insight["ai_insight"]["top_risks"] = risks[:2]
+
+        # Add metadata
+        result = {
+            "insight": insight,
+            "program_id": program_id,
+            "university_name": uni_name,
+            "generated_at": now_iso,
+            "sources_used": sources,
+        }
+
+        # Cache the result
+        await db.ai_school_insights.update_one(
+            cache_key,
+            {"$set": {**cache_key, "insight": result, "created_at": now_iso}},
+            upsert=True,
+        )
+
+        return result
+
+    except json.JSONDecodeError as e:
+        logger.error(f"School insight JSON error: {e}, response: {response_text[:200]}")
+        await track_ai_usage(tenant_id)
+        # Return a fallback structure
+        return _build_fallback_insight(program_id, uni_name, sources, now_iso)
+    except Exception as e:
+        logger.error(f"School insight error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate school insight: {str(e)}")
+
+
+def _build_fallback_insight(program_id, uni_name, sources, now_iso):
+    """Build a minimal fallback when AI response fails to parse."""
+    return {
+        "insight": {
+            "program_data": {
+                "academic_fit": {"status": "Incomplete", "inputs_used": [], "notes": "Unable to analyze at this time.", "sources": []},
+                "roster_outlook": {"label": "Unknown", "estimated_openings_range": "Unknown", "notes": "", "sources": []},
+                "recruiting_timeline": {"label": "Unknown", "notes": "", "sources": []},
+                "scholarship_structure": {"label": "Unknown", "notes": "", "sources": []},
+                "nil_readiness": {"label": "NIL Information Limited", "notes": "", "sources": []},
+            },
+            "ai_insight": {
+                "top_reasons": [
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                ],
+                "top_risks": [
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                    {"text": "Limited data available to support this insight.", "supports": [], "sources": []},
+                ],
+            },
+            "data_confidence": {"level": "Limited", "reasons": ["AI analysis unavailable. Try again later."]},
+            "disclaimers": [
+                "Insights are based on public data and historical trends and may change.",
+                "Scholarship and NIL outcomes are not guaranteed.",
+            ],
+        },
+        "program_id": program_id,
+        "university_name": uni_name,
+        "generated_at": now_iso,
+        "sources_used": sources,
+    }
