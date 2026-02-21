@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
+import { TimelineLabel } from "../components/TimelineIntelligence";
 
 const PER_PAGE = 48;
 
