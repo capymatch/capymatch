@@ -246,7 +246,10 @@ function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
           )}
         </div>
 
-        <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white">{program.university_name}</p>
+        <p className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white flex items-center gap-2">
+          <UniversityLogo domain={program.domain} name={program.university_name} logoUrl={program.logo_url} size={28} />
+          {program.university_name}
+        </p>
 
         <div className="flex items-center gap-2 mb-2.5">
           {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(46,196,182,0.12)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
