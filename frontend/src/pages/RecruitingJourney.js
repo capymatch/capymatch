@@ -44,6 +44,7 @@ export default function RecruitingJourney() {
   const [nilReadiness, setNilReadiness] = useState(null);
   const [schoolInsight, setSchoolInsight] = useState(null);
   const [insightLoading, setInsightLoading] = useState(false);
+  const [dataConfidence, setDataConfidence] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
