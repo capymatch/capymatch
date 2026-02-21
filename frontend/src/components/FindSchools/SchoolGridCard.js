@@ -236,6 +236,7 @@ export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, 
       <div className="absolute top-0 left-0 right-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
 
       <div className="flex items-start justify-between mb-3">
+        <UniversityLogo domain={uni.domain} name={uni.university_name} logoUrl={uni.logo_url} size={32} />
         {uni.match_score && (
           <span className={`font-heading text-xl font-extrabold ${uni.match_score >= 80 ? "text-gray-800" : uni.match_score >= 60 ? "text-gray-500" : "text-gray-400"}`}>
             {uni.match_score}%
