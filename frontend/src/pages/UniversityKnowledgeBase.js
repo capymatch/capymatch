@@ -215,7 +215,7 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
         </div>
       )}
       {uni.risk_badges?.length > 0 ? (
-        <div className="mb-3">
+        <div className="mb-3" onClick={e => e.stopPropagation()}>
           <RiskBadgeRow badges={uni.risk_badges} max={2} onBadgeClick={(b) => onRiskBadgeClick?.(uni, b)} />
         </div>
       ) : uni.match_score ? (
