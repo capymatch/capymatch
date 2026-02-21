@@ -125,6 +125,13 @@ export default function RecruitingJourney() {
     }
   }, [programId, isBasic]);
 
+  // Fetch AI insight after initial data loads
+  useEffect(() => {
+    if (!loading && program && !isBasic && !schoolInsight && !insightLoading) {
+      fetchInsight();
+    }
+  }, [loading, program, isBasic, schoolInsight, insightLoading, fetchInsight]);
+
   const updateProgram = async (updates) => {
     try {
       const res = await api.put(`/programs/${programId}`, updates);
