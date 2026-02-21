@@ -85,6 +85,7 @@ export default function RecruitingJourney() {
           setRiskBadges(found.risk_badges || []);
           setRecruitingTimeline(found.timeline || null);
           setRosterOutlook(found.roster || null);
+          setScholarship(found.scholarship || null);
         }
       }
       setLoading(false);
