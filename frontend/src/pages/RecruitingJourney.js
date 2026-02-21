@@ -296,6 +296,13 @@ export default function RecruitingJourney() {
         </div>
       )}
 
+      {/* Scholarship Structure Card */}
+      {scholarship && (
+        <div className="mt-4" data-testid="journey-scholarship-card">
+          <ScholarshipStructureCard scholarship={scholarship} />
+        </div>
+      )}
+
       {isFollowUpOverdue && !activeForm && (
         <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
           data-testid="overdue-followup-card">
