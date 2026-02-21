@@ -34,6 +34,8 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 33. **NCAA Match Risk Badges** (Feb 21, 2026) — 4 badge types: Academic Reach, Roster Tight, Timeline Risk, Funding Dependent. Displayed as parent-safe colored pills on Find Schools cards (max 2 + overflow) and Journey page (all badges). Clickable badges open Risk Explainer Drawer with contextual copy. Empty state shows "No major risks identified". Backend: `_compute_risk_badges()` in `athlete_profile.py`, integrated into `/api/match-scores`, `/api/suggested-schools`, `/api/risk-badges/{program_id}`. Frontend: `RiskBadges.js` component library.
 34. **Gmail consent modal in onboarding** (Feb 21, 2026) — Connect Gmail step in onboarding pipeline now shows the same privacy consent modal as Settings page before initiating OAuth.
 
+35. **Recruiting Timeline Intelligence** (Feb 21, 2026) — 3 statuses: Filling Early (amber), Standard (blue), Late Opportunities (green). Compact label on Find Schools cards, full Status Card on Journey page with explanation, guidance, and "How this is determined" tooltip. Logic: D1 ≤2 years = filling_early, D2 ≤1 year = filling_early, D1 ≤4 / D2 ≤3 = standard, else = late. Backend: `_compute_timeline_status()`, integrated into all match endpoints. Frontend: `TimelineIntelligence.js`.
+
 ## Pending Issues
 - **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
 - **P2**: NCAA Timeline colors (on hold)
