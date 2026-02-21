@@ -95,8 +95,6 @@ export default function RecruitingJourney() {
         }
       }
       setLoading(false);
-      // Fetch AI insight after main data loads
-      if (!isBasic) fetchInsight();
       if (!isBasic) {
         try {
           const cwRes = await api.get(`/ai/coach-watch/alert/${encodeURIComponent(progRes.value.data.university_name)}`);
