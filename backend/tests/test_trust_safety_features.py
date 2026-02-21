@@ -25,8 +25,8 @@ class TestTrustSafetyFeatures:
         s = requests.Session()
         s.headers.update({"Content-Type": "application/json"})
         
-        # Login to get cookies
-        login_response = s.post(f"{BASE_URL}/api/login", json={
+        # Login to get cookies - use /api/auth/login endpoint
+        login_response = s.post(f"{BASE_URL}/api/auth/login", json={
             "email": TEST_EMAIL,
             "password": TEST_PASSWORD
         })
