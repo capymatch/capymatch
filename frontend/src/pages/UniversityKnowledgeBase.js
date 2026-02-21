@@ -214,6 +214,13 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
           })}
         </div>
       )}
+      {uni.risk_badges?.length > 0 ? (
+        <div className="mb-3">
+          <RiskBadgeRow badges={uni.risk_badges} max={2} onBadgeClick={(b) => onRiskBadgeClick?.(uni, b)} />
+        </div>
+      ) : uni.match_score ? (
+        <div className="mb-3"><RiskBadgeEmpty /></div>
+      ) : null}
       <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
         <button onClick={() => !isOnBoard && addToBoard(uni)} disabled={adding[uni.university_name] || isOnBoard}
           data-testid={`add-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
