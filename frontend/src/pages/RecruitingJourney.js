@@ -40,6 +40,7 @@ export default function RecruitingJourney() {
   const [recruitingTimeline, setRecruitingTimeline] = useState(null);
   const [rosterOutlook, setRosterOutlook] = useState(null);
   const [scholarship, setScholarship] = useState(null);
+  const [nilReadiness, setNilReadiness] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
