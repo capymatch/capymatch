@@ -371,6 +371,7 @@ export default function UniversityKnowledgeBase() {
     ...u,
     match_score: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_score || null) : null,
     match_reasons: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_reasons || []) : [],
+    risk_badges: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.risk_badges || []) : [],
   }));
 
   // Bucket counts
