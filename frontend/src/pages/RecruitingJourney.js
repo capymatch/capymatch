@@ -403,6 +403,7 @@ export default function RecruitingJourney() {
             loading={insightLoading}
             onRefresh={() => fetchInsight(true)}
             dataConfidence={dataConfidence}
+            program={program}
           />
         </div>
       )}
