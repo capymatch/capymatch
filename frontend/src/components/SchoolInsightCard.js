@@ -53,7 +53,7 @@ function ConfidenceBadge({ confidence }) {
   );
 }
 
-export function SchoolInsightCard({ insight, loading, onRefresh }) {
+export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence }) {
   const [expanded, setExpanded] = useState(false);
 
   if (loading) {
