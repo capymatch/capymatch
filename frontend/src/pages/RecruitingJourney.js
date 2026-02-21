@@ -231,58 +231,91 @@ export default function RecruitingJourney() {
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
       {/* Header with Progress Rail */}
-      <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", padding: "0", position: "relative" }} data-testid="journey-header">
+      <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", position: "relative" }} data-testid="journey-header">
         <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
-        <div style={{ padding: "20px 24px" }}>
-        <div className="flex items-start gap-3 mb-4">
-          <button onClick={() => navigate("/pipeline")} className="p-1.5 rounded-lg transition-colors mt-0.5" style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.05)" }} data-testid="back-btn"
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}>
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <UniversityLogo domain={program.domain} name={program.university_name} logoUrl={matchScore?.logo_url} size={32} />
-              <h1 className="text-lg sm:text-xl font-extrabold" style={{ color: "#ffffff", letterSpacing: "-0.3px" }}>{program.university_name}</h1>
-              {rail && <PulseIndicator pulse={rail.pulse} />}
+        <div style={{ padding: "20px 24px 16px" }}>
+          {/* Top row: Back + Name + Active toggle */}
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <button onClick={() => navigate("/pipeline")} className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors" style={{ color: "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }} data-testid="back-btn"
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}>
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <UniversityLogo domain={program.domain} name={program.university_name} logoUrl={matchScore?.logo_url} size={28} />
+              <h1 className="text-lg sm:text-xl font-extrabold truncate" style={{ color: "#ffffff", letterSpacing: "-0.3px" }} data-testid="journey-school-name">{program.university_name}</h1>
             </div>
-            <div className="flex items-center gap-2 mt-1 flex-wrap">
-              {program.division && <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-teal-700/15 text-teal-700">{program.division}</span>}
-              {matchScore && (
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                  matchScore.match_score >= 80 ? "text-teal-600 bg-slate-500/15 border-slate-500/30"
-                  : matchScore.match_score >= 60 ? "text-amber-400 bg-amber-500/15 border-amber-500/30"
-                  : "text-gray-400 bg-gray-500/15 border-gray-500/30"
-                }`} data-testid="journey-match-score">
-                  <Target className="w-3 h-3" /> {matchScore.match_score}% Match
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Button variant="outline" size="sm" className="text-[11px] h-7 hidden sm:flex" onClick={() => navigate(`/compare?selected=${programId}`)}
+                style={{ color: "rgba(255,255,255,0.45)", borderColor: "rgba(255,255,255,0.08)", background: "transparent" }} data-testid="compare-btn">
+                <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
+              </Button>
+              <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
+                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors"
+                style={program.is_active !== false
+                  ? { background: "rgba(34,197,94,0.15)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.25)" }
+                  : { background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
+                data-testid="active-toggle">
+                {program.is_active !== false ? "Active" : "Inactive"}
+              </button>
+            </div>
+          </div>
+
+          {/* Meta row: Status + Division + Match + Events */}
+          <div className="flex items-center gap-2.5 flex-wrap ml-11 sm:ml-[44px] mb-2.5">
+            {rail && <PulseIndicator pulse={rail.pulse} />}
+            {program.division && (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold" style={{ background: "rgba(13,148,136,0.15)", color: "#2dd4bf" }} data-testid="journey-division">{program.division}</span>
+            )}
+            {matchScore && (
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                matchScore.match_score >= 80 ? "text-teal-400" : matchScore.match_score >= 60 ? "text-amber-400" : "text-gray-400"
+              }`} style={{ background: "rgba(255,255,255,0.06)" }} data-testid="journey-match-score">
+                <Target className="w-3 h-3" /> {matchScore.match_score}% Match
+              </span>
+            )}
+            <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.3)" }}>
+              {program.conference}{program.region ? ` \u00b7 ${program.region}` : ""} \u00b7 {timeline.length} events
+            </span>
+          </div>
+
+          {/* Risk badges */}
+          {matchScore && (
+            <div className="ml-11 sm:ml-[44px] mb-4" data-testid="journey-risk-badges">
+              {riskBadges.length > 0 ? (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {riskBadges.map((b) => {
+                    const pillStyles = {
+                      academic_reach: { bg: "rgba(234,88,12,0.15)", color: "#fb923c", border: "rgba(234,88,12,0.25)" },
+                      roster_tight: { bg: "rgba(148,163,184,0.12)", color: "#94a3b8", border: "rgba(148,163,184,0.2)" },
+                      timeline_risk: { bg: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "rgba(139,92,246,0.25)" },
+                      funding_dependent: { bg: "rgba(34,197,94,0.15)", color: "#4ade80", border: "rgba(34,197,94,0.25)" },
+                    };
+                    const s = pillStyles[b.key] || pillStyles.roster_tight;
+                    const IconMap = { academic_reach: AlertCircle, roster_tight: Users, timeline_risk: Clock, funding_dependent: Target };
+                    const Icon = IconMap[b.key] || Info;
+                    return (
+                      <button key={b.key} onClick={() => setRiskDrawer(b)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium transition-opacity hover:opacity-80"
+                        style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                        data-testid={`risk-badge-${b.key}`}>
+                        <Icon className="w-3 h-3 flex-shrink-0" />{b.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "rgba(34,197,94,0.1)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.15)" }}
+                  data-testid="risk-badge-clear">
+                  <Target className="w-3 h-3" /> No major risks identified
                 </span>
               )}
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
             </div>
-            {matchScore && (
-              <div className="mt-2">
-                {riskBadges.length > 0 ? (
-                  <RiskBadgeRow badges={riskBadges} max={4} onBadgeClick={(b) => setRiskDrawer(b)} />
-                ) : (
-                  <RiskBadgeEmpty />
-                )}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Button variant="outline" size="sm" className="text-[11px] h-8 hidden sm:flex" onClick={() => navigate(`/compare?selected=${programId}`)}
-              style={{ color: "rgba(255,255,255,0.5)", borderColor: "rgba(255,255,255,0.1)", background: "transparent" }} data-testid="compare-btn">
-              <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
-            </Button>
-            <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
-              className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-colors ${
-                program.is_active !== false ? "bg-slate-500/15 text-teal-600 border-slate-500/30" : "bg-gray-500/15 text-gray-400 border-gray-500/30"
-              }`} data-testid="active-toggle">
-              {program.is_active !== false ? "Active" : "Inactive"}
-            </button>
-          </div>
-        </div>
-        <ProgressRail rail={rail} onStageClick={handleStageClick} />
+          )}
+
+          {/* Progress Rail */}
+          <ProgressRail rail={rail} onStageClick={handleStageClick} />
         </div>
       </div>
 
