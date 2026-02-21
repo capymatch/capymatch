@@ -292,7 +292,7 @@ export default function RecruitingJourney() {
                       funding_dependent: { bg: "rgba(34,197,94,0.15)", color: "#4ade80", border: "rgba(34,197,94,0.25)" },
                     };
                     const s = pillStyles[b.key] || pillStyles.roster_tight;
-                    const IconMap = { academic_reach: AlertCircle, roster_tight: Users, timeline_risk: Clock, funding_dependent: Target };
+                    const IconMap = { academic_reach: AlertCircle, roster_tight: Users, timeline_risk: Clock, funding_dependent: DollarSign };
                     const Icon = IconMap[b.key] || Info;
                     return (
                       <button key={b.key} onClick={() => setRiskDrawer(b)}
