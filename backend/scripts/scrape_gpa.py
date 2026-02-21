@@ -26,7 +26,9 @@ STATES = [
 
 def normalize(name):
     n = name.lower().strip()
-    for w in ["the ", "university of ", "university", "college of ", "college", "– ", "- ", "&", "at ", "in "]:
+    n = re.sub(r'\([^)]*\)', '', n)  # Remove parenthetical text like "(LSU)"
+    n = re.sub(r'–.*', '', n)  # Remove dash-suffix like "– Minnesota"
+    for w in ["the ", "university of ", "university", "college of ", "college", "- ", "&", "at ", "in "]:
         n = n.replace(w, " ")
     return re.sub(r"[^a-z0-9]", "", n)
 
