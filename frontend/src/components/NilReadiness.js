@@ -10,7 +10,7 @@ const STATUS_CONFIG = {
 };
 
 /* ── Full NIL Readiness Card for Journey / Detail pages ── */
-export function NilReadinessCard({ nil }) {
+export function NilReadinessCard({ nil, dataConfidence }) {
   const [showTooltip, setShowTooltip] = useState(false);
   if (!nil) return null;
   const cfg = STATUS_CONFIG[nil.status] || STATUS_CONFIG.unknown;
@@ -26,18 +26,21 @@ export function NilReadinessCard({ nil }) {
 
         <div className="p-4 flex-1 space-y-3">
           {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
-              <Briefcase className="w-4 h-4" style={{ color: cfg.accent }} />
-            </div>
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                NIL Readiness
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.bg }}>
+                <Briefcase className="w-4 h-4" style={{ color: cfg.accent }} />
               </div>
-              <div className="text-sm font-bold" style={{ color: cfg.text }}>
-                {nil.label}
+              <div>
+                <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--t-text-muted, #6b7280)" }}>
+                  NIL Readiness
+                </div>
+                <div className="text-sm font-bold" style={{ color: cfg.text }}>
+                  {nil.label}
+                </div>
               </div>
             </div>
+            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
           </div>
 
           {/* Explanation */}
