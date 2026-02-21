@@ -332,6 +332,17 @@ export default function RecruitingJourney() {
         </div>
       )}
 
+      {/* AI School Insight Card */}
+      {!isBasic && (
+        <div className="mt-4" data-testid="journey-insight-card">
+          <SchoolInsightCard
+            insight={schoolInsight}
+            loading={insightLoading}
+            onRefresh={() => fetchInsight(true)}
+          />
+        </div>
+      )}
+
       {isFollowUpOverdue && !activeForm && (
         <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
           data-testid="overdue-followup-card">
