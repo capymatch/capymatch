@@ -257,6 +257,13 @@ export default function SchoolInfoPage() {
         </div>
       </div>
 
+      {/* ══════ COMMITMENT STABILITY INDEX ══════ */}
+      {school.commitment_stability && (
+        <div className="mb-6" data-testid="school-stability-section">
+          <CommitmentStabilityCard stability={school.commitment_stability} />
+        </div>
+      )}
+
       {/* ══════ LIGHT Sections ══════ */}
       <div className="flex flex-col gap-5">
 
