@@ -15,7 +15,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout with plan=pro returns Stripe Checkout URL and session_id"""
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         # Verify status code
@@ -42,7 +42,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout with plan=premium returns Stripe Checkout URL and session_id"""
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "premium",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
@@ -59,7 +59,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout rejects invalid plans (e.g., 'mega') with 400"""
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "mega",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         assert response.status_code == 400, f"Expected 400 for invalid plan, got {response.status_code}"
@@ -105,7 +105,7 @@ class TestStripeCheckoutStatus:
         """Create a checkout session and return the session_id"""
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         if response.status_code != 200:
             pytest.skip("Could not create checkout session")
@@ -160,7 +160,7 @@ class TestStripeCheckoutTierValidation:
         # Now try to checkout for pro (same tier)
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         assert response.status_code == 400, f"Expected 400 for same tier, got {response.status_code}"
@@ -184,7 +184,7 @@ class TestStripeCheckoutTierValidation:
         # Now try to checkout for pro (lower tier)
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         assert response.status_code == 400, f"Expected 400 for lower tier, got {response.status_code}"
@@ -206,7 +206,7 @@ class TestPaymentTransactions:
         # Create a checkout session
         response = requests.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://school-match-1.preview.emergentagent.com"
+            "origin_url": "https://recruit-intel-4.preview.emergentagent.com"
         })
         
         assert response.status_code == 200, f"Checkout failed: {response.text}"
