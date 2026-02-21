@@ -1098,6 +1098,73 @@ async def get_coach_watch_alert_for_school(university_name: str, request: Reques
 
 # ── Source-Aware School Insight (Pro+) ────────────────────────
 
+import re
+
+def _normalize_school_name(name: str) -> str:
+    """Normalize a school name for fuzzy comparison."""
+    n = name.lower().strip()
+    # Remove common suffixes/prefixes
+    for word in ["university of", "university", "college of", "college", "the ", "– ", "- "]:
+        n = n.replace(word, " ")
+    # Normalize punctuation and whitespace
+    n = re.sub(r"[^a-z0-9\s]", "", n)
+    n = re.sub(r"\s+", " ", n).strip()
+    return n
+
+
+async def _find_university_kb(name: str, domain: str = ""):
+    """Multi-strategy lookup for a university in the knowledge base.
+    1. Exact name match
+    2. Domain match (most reliable for abbreviations)
+    3. Normalized substring match
+    """
+    # Strategy 1: Exact name
+    result = await db.university_knowledge_base.find_one({"university_name": name}, {"_id": 0})
+    if result:
+        return result
+
+    # Strategy 2: Domain match
+    if domain:
+        result = await db.university_knowledge_base.find_one({"domain": domain}, {"_id": 0})
+        if result:
+            return result
+
+    # Strategy 3: Normalized text matching
+    norm = _normalize_school_name(name)
+    if len(norm) < 3:
+        return None
+
+    # Try regex on the KB — match if the normalized key words appear
+    key_words = [w for w in norm.split() if len(w) > 2]
+    if key_words:
+        # Build a regex that requires all key words to appear (in any order)
+        regex_pattern = "".join(f"(?=.*{re.escape(w)})" for w in key_words[:3])
+        candidates = await db.university_knowledge_base.find(
+            {"university_name": {"$regex": regex_pattern, "$options": "i"}},
+            {"_id": 0}
+        ).to_list(5)
+
+        if len(candidates) == 1:
+            return candidates[0]
+
+        # If multiple candidates, score them by normalized similarity
+        if candidates:
+            best = None
+            best_score = 0
+            for c in candidates:
+                c_norm = _normalize_school_name(c["university_name"])
+                # Score: how many key words match + length similarity
+                matches = sum(1 for w in key_words if w in c_norm)
+                len_sim = 1 - abs(len(norm) - len(c_norm)) / max(len(norm), len(c_norm), 1)
+                score = matches + len_sim
+                if score > best_score:
+                    best_score = score
+                    best = c
+            if best and best_score >= 1.5:
+                return best
+
+    return None
+
 
 @router.delete("/school-insight/{program_id}/cache")
 async def clear_school_insight_cache(program_id: str, request: Request):
