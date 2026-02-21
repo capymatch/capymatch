@@ -275,7 +275,7 @@ export default function RecruitingJourney() {
               </span>
             )}
             <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.3)" }}>
-              {program.conference}{program.region ? ` \u00b7 ${program.region}` : ""} \u00b7 {timeline.length} events
+              {program.conference}{program.region ? ` · ${program.region}` : ""}{" · "}{timeline.length} events
             </span>
           </div>
 
