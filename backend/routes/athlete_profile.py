@@ -1210,5 +1210,6 @@ async def get_risk_badges(program_id: str, request: Request):
     roster = _compute_roster_outlook(program, profile)
     scholarship = _compute_scholarship_structure(program)
     nil_readiness = _compute_nil_readiness(program)
+    commitment_stability = _compute_commitment_stability(program, profile)
     data_confidence = _compute_data_confidence(program)
-    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship, "nil": nil_readiness, "data_confidence": data_confidence}
+    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship, "nil": nil_readiness, "commitment_stability": commitment_stability, "data_confidence": data_confidence}
