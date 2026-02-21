@@ -429,10 +429,10 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    global reply_check_task, coach_watch_task, inbound_scan_task
+    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task
     
     # Cancel background tasks
-    for task in [reply_check_task, coach_watch_task, inbound_scan_task]:
+    for task in [reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task]:
         if task:
             task.cancel()
             try:
