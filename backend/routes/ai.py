@@ -1418,15 +1418,15 @@ Return ONLY valid JSON matching the exact schema specified."""
         if "ai_insight" not in insight or "program_data" not in insight:
             raise ValueError("Missing required keys in AI response")
 
-        # Ensure exactly 3 reasons and 2 risks
+        # Ensure exactly 3 reasons and 3 risks
         reasons = insight.get("ai_insight", {}).get("top_reasons", [])
         risks = insight.get("ai_insight", {}).get("top_risks", [])
         while len(reasons) < 3:
             reasons.append({"text": "Limited data available to support this insight.", "supports": [], "sources": []})
-        while len(risks) < 2:
+        while len(risks) < 3:
             risks.append({"text": "Limited data available to support this insight.", "supports": [], "sources": []})
         insight["ai_insight"]["top_reasons"] = reasons[:3]
-        insight["ai_insight"]["top_risks"] = risks[:2]
+        insight["ai_insight"]["top_risks"] = risks[:3]
 
         # Add metadata
         result = {
