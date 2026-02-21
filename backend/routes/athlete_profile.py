@@ -616,9 +616,6 @@ def _compute_roster_outlook(school, profile):
     # D1 indoor volleyball: 18-player roster cap, typically 3-5 graduate per year
     # D2: ~16 players, 2-4 graduate; D3/NAIA: ~18-20 players, more flexible
     if division == "D1":
-        roster_cap = 18
-        avg_graduates = 4
-        transfer_factor = 1  # D1 has more transfers
         if years_out <= 1:
             estimated_low, estimated_high = 1, 3
             status = "tight"
@@ -629,9 +626,6 @@ def _compute_roster_outlook(school, profile):
             estimated_low, estimated_high = 3, 5
             status = "open"
     elif division == "D2":
-        roster_cap = 16
-        avg_graduates = 3
-        transfer_factor = 0
         if years_out <= 1:
             estimated_low, estimated_high = 2, 4
             status = "limited"
@@ -642,15 +636,9 @@ def _compute_roster_outlook(school, profile):
             estimated_low, estimated_high = 3, 6
             status = "open"
     elif division == "D3":
-        roster_cap = 20
-        avg_graduates = 4
-        transfer_factor = 0
         estimated_low, estimated_high = 3, 6
         status = "open"
     elif division in ("NAIA", "JUCO"):
-        roster_cap = 18
-        avg_graduates = 4
-        transfer_factor = 1
         estimated_low, estimated_high = 3, 6
         status = "open"
     else:
