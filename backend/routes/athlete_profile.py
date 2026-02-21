@@ -662,6 +662,91 @@ def _compute_roster_outlook(school, profile):
     }
 
 
+def _compute_scholarship_structure(school):
+    """Compute scholarship structure insight for a school based on division and conference."""
+    division = (school.get("division") or "").upper()
+    conference = (school.get("conference") or "").upper()
+    tooltip = "Scholarship structures reflect typical program practices and are not guarantees. Aid decisions are made by coaching staffs and can change year to year."
+
+    # D1 volleyball is a head-count sport for women (12 full scholarships for women's volleyball)
+    # For men's volleyball, it's equivalency. Most D1 programs offer a mix.
+    if division == "D1":
+        # Power conferences and top programs more likely to offer full scholarships
+        power_conf = {"BIG 12", "SEC", "ACC", "BIG TEN", "BIG EAST", "PAC-12"}
+        if any(pc in conference for pc in power_conf):
+            return {
+                "status": "mix",
+                "label": "Mix of Partial and Full Scholarships",
+                "explanation": "This program may offer a mix of partial and full athletic scholarships depending on needs and roster makeup.",
+                "nil_context": "Program-supported",
+                "nil_tooltip": "This program operates in an environment where Name, Image, and Likeness opportunities may be available. NIL opportunities vary by athlete and situation.",
+                "tooltip": tooltip,
+            }
+        return {
+            "status": "partial",
+            "label": "Typically Partial Scholarships",
+            "explanation": "Most athletes receive partial athletic aid. Scholarship amounts may vary by role and timing.",
+            "nil_context": None,
+            "nil_tooltip": None,
+            "tooltip": tooltip,
+        }
+
+    # D2 is equivalency — partial scholarships are the norm
+    if division == "D2":
+        return {
+            "status": "partial",
+            "label": "Typically Partial Scholarships",
+            "explanation": "Most athletes receive partial athletic aid. Scholarship amounts may vary by role and timing.",
+            "nil_context": None,
+            "nil_tooltip": None,
+            "tooltip": tooltip,
+        }
+
+    # NAIA — equivalency, partial scholarships common
+    if division == "NAIA":
+        return {
+            "status": "partial",
+            "label": "Typically Partial Scholarships",
+            "explanation": "Most athletes receive partial athletic aid. Scholarship amounts may vary by role and timing.",
+            "nil_context": None,
+            "nil_tooltip": None,
+            "tooltip": tooltip,
+        }
+
+    # D3 — no athletic scholarships, walk-on pathways
+    if division == "D3":
+        return {
+            "status": "walkon",
+            "label": "Walk-On Pathways Common",
+            "explanation": "Many athletes join as walk-ons, with opportunities to earn aid later based on contribution.",
+            "nil_context": None,
+            "nil_tooltip": None,
+            "tooltip": tooltip,
+        }
+
+    # JUCO — typically partial
+    if division == "JUCO":
+        return {
+            "status": "partial",
+            "label": "Typically Partial Scholarships",
+            "explanation": "Most athletes receive partial athletic aid. Scholarship amounts may vary by role and timing.",
+            "nil_context": None,
+            "nil_tooltip": None,
+            "tooltip": tooltip,
+        }
+
+    # Unknown
+    return {
+        "status": "unknown",
+        "label": "Unknown",
+        "explanation": "Typical scholarship information is not publicly available for this program.",
+        "nil_context": None,
+        "nil_tooltip": None,
+        "tooltip": tooltip,
+    }
+
+
+
 
 
 
