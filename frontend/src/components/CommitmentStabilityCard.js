@@ -1,87 +1,55 @@
 import { useState } from "react";
-import { TrendingDown, Info, X, ShieldCheck } from "lucide-react";
+import { TrendingDown, Info, Check, X } from "lucide-react";
 
 const STATUS_CONFIG = {
-  high: { accent: "#10b981", bg: "rgba(16,185,129,0.08)", text: "#065f46", pill: "rgba(16,185,129,0.12)", pillText: "#059669" },
-  moderate: { accent: "#f59e0b", bg: "rgba(245,158,11,0.08)", text: "#78350f", pill: "rgba(245,158,11,0.12)", pillText: "#d97706" },
-  volatile: { accent: "#ef4444", bg: "rgba(239,68,68,0.08)", text: "#7f1d1d", pill: "rgba(239,68,68,0.12)", pillText: "#dc2626" },
+  high: { pill: "#d1fae5", pillText: "#065f46", pillDot: "#10b981", barColor: "#6ee7b7" },
+  moderate: { pill: "#fef3c7", pillText: "#78350f", pillDot: "#f59e0b", barColor: "#93c5fd" },
+  volatile: { pill: "#fee2e2", pillText: "#7f1d1d", pillDot: "#ef4444", barColor: "#fca5a5" },
 };
 
-function MiniSparkline({ data, trend, accent }) {
+function Sparkline({ data, trend }) {
   if (!data || data.length < 3) return null;
-  const max = Math.max(...data);
-  const min = Math.min(...data);
+  // Generate 7 bar points from 3 data values (interpolated)
+  const bars = [];
+  for (let i = 0; i < 7; i++) {
+    const t = i / 6;
+    let val;
+    if (t <= 0.5) {
+      val = data[0] + (data[1] - data[0]) * (t / 0.5);
+    } else {
+      val = data[1] + (data[2] - data[1]) * ((t - 0.5) / 0.5);
+    }
+    bars.push(val);
+  }
+  const max = Math.max(...bars);
+  const min = Math.min(...bars);
   const range = max - min || 1;
-  const years = ["2022", "2023", "2024"];
 
   return (
-    <div className="flex flex-col items-end gap-1" data-testid="stability-sparkline">
-      <div className="flex items-end gap-1.5" style={{ height: 32 }}>
-        {data.map((v, i) => {
-          const h = 8 + ((v - min) / range) * 22;
+    <div className="flex flex-col items-center" data-testid="stability-sparkline">
+      <div className="flex items-end gap-[3px]" style={{ height: 44 }}>
+        {bars.map((v, i) => {
+          const h = 10 + ((v - min) / range) * 30;
           return (
             <div
               key={i}
               className="rounded-sm"
               style={{
-                width: 14,
+                width: 10,
                 height: h,
-                backgroundColor: accent,
-                opacity: 0.25 + (i / (data.length - 1)) * 0.75,
+                backgroundColor: `rgba(147,197,253,${0.4 + (i / 6) * 0.6})`,
               }}
             />
           );
         })}
       </div>
-      <div className="flex gap-1.5">
-        {years.map((y) => (
-          <span key={y} className="text-[8px]" style={{ color: "var(--t-text-faint, #b0b0c0)", width: 14, textAlign: "center" }}>{y}</span>
-        ))}
+      <div className="flex justify-between w-full mt-1.5 px-0.5">
+        <span className="text-[11px]" style={{ color: "#9ca3af" }}>2022</span>
+        <span className="text-[11px]" style={{ color: "#9ca3af" }}>2023</span>
+        <span className="text-[11px]" style={{ color: "#9ca3af" }}>2024</span>
       </div>
-      <span className="text-[10px] font-medium" style={{ color: "var(--t-text-muted, #6b7280)" }}>
+      <span className="text-[12px] mt-1" style={{ color: "#6b7280" }}>
         Trend: {trend}
-      </span>
-    </div>
-  );
-}
-
-function ConfidenceFooter({ confidence, lastUpdated, tooltip }) {
-  const [showTip, setShowTip] = useState(false);
-  return (
-    <div
-      className="flex items-center justify-between pt-3 mt-3 relative"
-      style={{ borderTop: "1px solid var(--t-border, #e5e7eb)" }}
-      data-testid="stability-confidence-footer"
-    >
-      <div className="flex items-center gap-1.5">
-        <ShieldCheck className="w-3 h-3" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
-        <span className="text-[10px]" style={{ color: "var(--t-text-faint, #b0b0c0)" }}>
-          Data confidence: <strong>{confidence}</strong>
-        </span>
-        <button
-          onClick={() => setShowTip(!showTip)}
-          className="ml-0.5 hover:opacity-80"
-        >
-          <Info className="w-3 h-3" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
-        </button>
-        {showTip && (
-          <div
-            className="absolute bottom-full left-0 mb-2 p-3 rounded-lg border shadow-lg z-10 max-w-xs"
-            style={{ backgroundColor: "var(--t-surface, #fff)", borderColor: "var(--t-border, #e5e7eb)" }}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}>
-                {tooltip}
-              </p>
-              <button onClick={() => setShowTip(false)} className="flex-shrink-0 p-0.5">
-                <X className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <span className="text-[10px]" style={{ color: "var(--t-text-faint, #b0b0c0)" }}>
-        Updated: {lastUpdated}
       </span>
     </div>
   );
@@ -94,130 +62,147 @@ export function CommitmentStabilityCard({ stability }) {
 
   return (
     <div
-      className="rounded-xl overflow-hidden"
+      className="rounded-2xl overflow-hidden"
       style={{
         backgroundColor: "#FFFFFF",
-        border: "1px solid #EEF2F6",
-        boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+        border: "1px solid #f0f0f0",
       }}
       data-testid="commitment-stability-card"
     >
-      <div className="flex">
-        <div className="w-1 flex-shrink-0" style={{ backgroundColor: cfg.accent }} />
-
-        <div className="p-5 flex-1">
-          {/* 1. Header Row */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <TrendingDown className="w-4 h-4" style={{ color: cfg.accent }} />
-              <span className="text-[15px] font-semibold" style={{ color: "var(--t-text, #1f2937)" }}>
-                Commitment Stability
-              </span>
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => setShowBadgeTip(!showBadgeTip)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold cursor-help"
-                style={{ backgroundColor: cfg.pill, color: cfg.pillText }}
-                data-testid="stability-status-pill"
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cfg.accent }} />
-                {stability.label}
-              </button>
-              {showBadgeTip && (
-                <div
-                  className="absolute top-full right-0 mt-2 p-3 rounded-lg border shadow-lg z-10 w-64"
-                  style={{ backgroundColor: "var(--t-surface, #fff)", borderColor: "var(--t-border, #e5e7eb)" }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}>
-                      {stability.tooltip}
-                    </p>
-                    <button onClick={() => setShowBadgeTip(false)} className="flex-shrink-0 p-0.5">
-                      <X className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+      <div className="p-5 pb-0">
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between mb-4 relative">
+          <div className="flex items-center gap-2">
+            <TrendingDown className="w-5 h-5" style={{ color: "#0d9488" }} />
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#1a1a1a" }}>
+              Commitment Stability
+            </span>
           </div>
-
-          {/* 2. Primary Metric Row */}
-          <div className="flex items-end justify-between mb-5">
-            <div>
-              <div
-                className="text-4xl font-extrabold tracking-tight leading-none"
-                style={{ color: cfg.text }}
-                data-testid="stability-retention-rate"
-              >
-                {stability.retention_rate}%
-              </div>
-              <div className="text-[13px] font-medium mt-1" style={{ color: "var(--t-text, #1f2937)" }}>
-                Roster Retention Rate
-              </div>
-              <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                Last 3 recruiting cycles
-              </div>
-            </div>
-            <MiniSparkline data={stability.sparkline} trend={stability.trend} accent={cfg.accent} />
-          </div>
-
-          {/* 3. Key Signals Section (2-column) */}
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 p-4 rounded-lg"
-            style={{ backgroundColor: "var(--t-bg-subtle, #f8fafc)" }}
-            data-testid="stability-insights"
+          <button
+            onClick={() => setShowBadgeTip(!showBadgeTip)}
+            className="px-3.5 py-1 rounded-full text-[13px] font-semibold cursor-help"
+            style={{ backgroundColor: cfg.pill, color: cfg.pillText }}
+            data-testid="stability-status-pill"
           >
-            {/* Left: What We're Seeing */}
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                What We're Seeing
-              </p>
-              <ul className="space-y-1.5">
-                {stability.signals.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px] leading-relaxed" style={{ color: "var(--t-text, #1f2937)" }}>
-                    <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.accent }} />
-                    {s}
-                  </li>
-                ))}
-              </ul>
+            {stability.label}
+          </button>
+          {showBadgeTip && (
+            <div
+              className="absolute top-full right-0 mt-2 p-3.5 rounded-xl border shadow-lg z-20 w-64"
+              style={{ backgroundColor: "#fff", borderColor: "#e5e7eb" }}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-[13px] leading-relaxed" style={{ color: "#4b5563" }}>
+                  {stability.tooltip}
+                </p>
+                <button onClick={() => setShowBadgeTip(false)} className="p-0.5">
+                  <X className="w-3.5 h-3.5" style={{ color: "#9ca3af" }} />
+                </button>
+              </div>
             </div>
+          )}
+        </div>
 
-            {/* Right: What This Means */}
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--t-text-muted, #6b7280)" }}>
-                What This Means
-              </p>
-              <p className="text-[12px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}>
-                {stability.meaning}
-              </p>
+        {/* ── Metric Section (inner card) ── */}
+        <div
+          className="rounded-xl p-4 mb-5 grid grid-cols-2 gap-4 items-center"
+          style={{ backgroundColor: "#f8fafc", border: "1px solid #f0f2f5" }}
+        >
+          {/* Left: Big number */}
+          <div>
+            <div className="flex items-baseline gap-0.5" data-testid="stability-retention-rate">
+              <span className="text-[42px] font-bold leading-none" style={{ color: "#1e6091" }}>
+                {stability.retention_rate}
+              </span>
+              <span className="text-xl font-medium" style={{ color: "#1e6091" }}>%</span>
+            </div>
+            <div className="text-[14px] font-semibold mt-1.5" style={{ color: "#1a1a1a" }}>
+              Roster Retention Rate
+            </div>
+            <div className="text-[12px] mt-0.5" style={{ color: "#9ca3af" }}>
+              Last 3 recruiting cycles
             </div>
           </div>
 
-          {/* 4. Context Tags */}
-          <div className="flex flex-wrap gap-2 mb-4" data-testid="stability-context-tags">
-            {stability.tags.map((tag, i) => (
+          {/* Right: Sparkline */}
+          <div className="flex justify-end">
+            <Sparkline data={stability.sparkline} trend={stability.trend} />
+          </div>
+        </div>
+
+        {/* ── Two-column insights ── */}
+        <div className="grid grid-cols-2 gap-0 mb-5">
+          {/* Left: What We're Seeing */}
+          <div className="pr-4" style={{ borderRight: "1px solid #e5e7eb" }}>
+            <p className="text-[15px] font-bold mb-3" style={{ color: "#1a1a1a" }}>
+              What We're Seeing
+            </p>
+            <ul className="space-y-2.5">
+              {stability.signals.map((s, i) => (
+                <li key={i} className="flex items-start gap-2 text-[13px] leading-snug" style={{ color: "#374151" }}>
+                  <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#5eead4" }} />
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Right: What This Means */}
+          <div className="pl-4">
+            <p className="text-[15px] font-bold mb-3" style={{ color: "#1a1a1a" }}>
+              What This Means
+            </p>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#4b5563" }}>
+              {stability.meaning}
+            </p>
+          </div>
+        </div>
+
+        {/* ── Context Tags ── */}
+        <div className="flex items-center flex-wrap gap-2 mb-5" data-testid="stability-context-tags">
+          {stability.tags.map((tag, i) => (
+            <span key={i} className="contents">
               <span
-                key={i}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium"
-                style={{
-                  backgroundColor: "rgba(100,116,139,0.06)",
-                  color: "var(--t-text-muted, #6b7280)",
-                  border: "1px solid rgba(100,116,139,0.1)",
-                }}
+                className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-medium"
+                style={{ backgroundColor: "#f3f4f6", color: "#4b5563" }}
               >
                 {tag}
               </span>
-            ))}
-          </div>
-
-          {/* 5. Confidence & Transparency Footer */}
-          <ConfidenceFooter
-            confidence={stability.confidence}
-            lastUpdated={stability.last_updated}
-            tooltip="Based on public roster data and historical patterns. Accuracy improves as data refreshes."
-          />
+              {i < stability.tags.length - 1 && (
+                <span className="text-[10px]" style={{ color: "#d1d5db" }}>&#x2022;</span>
+              )}
+            </span>
+          ))}
         </div>
+
+        {/* ── Confidence footer ── */}
+        <div
+          className="flex items-center justify-between pb-4 pt-3"
+          style={{ borderTop: "1px solid #e5e7eb" }}
+          data-testid="stability-confidence-footer"
+        >
+          <div className="flex items-center gap-1.5">
+            <Info className="w-4 h-4" style={{ color: "#6b96b8" }} />
+            <span className="text-[13px]" style={{ color: "#1a1a1a" }}>
+              Data confidence: <strong>{stability.confidence}</strong>
+            </span>
+          </div>
+          <span className="text-[13px]" style={{ color: "#1a1a1a" }}>
+            Updated: {stability.last_updated}
+          </span>
+        </div>
+      </div>
+
+      {/* ── Bottom disclaimer bar ── */}
+      <div
+        className="px-5 py-3 text-center"
+        style={{ backgroundColor: "#f8f9fa", borderTop: "1px solid #f0f0f0" }}
+        data-testid="stability-disclaimer"
+      >
+        <p className="text-[12px]" style={{ color: "#9ca3af" }}>
+          Based on public roster data and historical patterns. Not a prediction.
+        </p>
       </div>
     </div>
   );
