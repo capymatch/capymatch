@@ -109,6 +109,22 @@ export default function RecruitingJourney() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const fetchInsight = useCallback(async (forceRefresh = false) => {
+    if (isBasic) return;
+    setInsightLoading(true);
+    try {
+      if (forceRefresh) {
+        await api.delete(`/ai/school-insight/${programId}/cache`).catch(() => {});
+      }
+      const res = await api.post(`/ai/school-insight/${programId}`);
+      setSchoolInsight(res.data);
+    } catch (err) {
+      console.warn("Insight fetch failed:", err);
+    } finally {
+      setInsightLoading(false);
+    }
+  }, [programId, isBasic]);
+
   const updateProgram = async (updates) => {
     try {
       const res = await api.put(`/programs/${programId}`, updates);
