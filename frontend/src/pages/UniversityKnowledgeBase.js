@@ -222,6 +222,11 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
       ) : uni.match_score ? (
         <div className="mb-3"><RiskBadgeEmpty /></div>
       ) : null}
+      {uni.timeline && (
+        <div className="mb-3" onClick={e => e.stopPropagation()}>
+          <TimelineLabel timeline={uni.timeline} onClick={() => navigate(`/school/${encodeURIComponent(uni.university_name)}`)} />
+        </div>
+      )}
       <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
         <button onClick={() => !isOnBoard && addToBoard(uni)} disabled={adding[uni.university_name] || isOnBoard}
           data-testid={`add-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
