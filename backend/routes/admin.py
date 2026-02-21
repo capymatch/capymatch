@@ -481,3 +481,36 @@ async def school_data_scrape_status():
         "scrape_running": running,
         "log_tail": log_tail,
     }
+
+
+# ---------------------------------------------------------------------------
+# Intelligence Pipeline — Schema Mapper (Stage 1)
+# ---------------------------------------------------------------------------
+
+@router.post("/run-schema-mapper")
+async def run_schema_mapper_endpoint():
+    """Run the Schema Mapper to generate/refresh the Agent Input Contract."""
+    from intelligence.schema_mapper import run_schema_mapper
+    try:
+        contract = await run_schema_mapper(db)
+        return {
+            "status": "ok",
+            "schema_version": contract.get("schema_version"),
+            "generated_at": contract.get("generated_at"),
+            "open_questions_count": len(contract.get("open_questions", [])),
+            "field_coverage_count": len(contract.get("field_coverage", {})),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Schema Mapper failed: {str(e)}")
+
+
+@router.get("/agent-contract")
+async def get_agent_contract():
+    """Retrieve the latest Agent Input Contract."""
+    doc = await db.intelligence_contracts.find_one(
+        {"contract_type": "agent_input"}, {"_id": 0}
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="No Agent Input Contract found. Run the Schema Mapper first.")
+    return doc.get("contract", {})
+
