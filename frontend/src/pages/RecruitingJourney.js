@@ -93,6 +93,7 @@ export default function RecruitingJourney() {
           setRosterOutlook(found.roster || null);
           setScholarship(found.scholarship || null);
           setNilReadiness(found.nil || null);
+          setDataConfidence(found.data_confidence || null);
         }
       }
       setLoading(false);
