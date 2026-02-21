@@ -277,6 +277,10 @@ async def get_school_by_domain(domain: str, request: Request):
         uni["match_score"] = 0
         uni["match_reasons"] = []
         uni["on_board"] = False
+
+    # Add intelligence data
+    uni["commitment_stability"] = _compute_commitment_stability(uni)
+    uni["data_confidence"] = _compute_data_confidence(uni)
     return uni
 
 
