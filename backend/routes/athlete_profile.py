@@ -125,6 +125,17 @@ async def get_match_scores(request: Request):
         {"tenant_id": tenant_id}, {"_id": 0}
     ).to_list(200)
 
+    # Pre-load KB data for fuzzy matching with scorecard
+    all_kb = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
+    by_name, by_domain, by_norm = _build_kb_index(all_kb)
+
+    # Enrich programs with scorecard data from KB
+    for p in programs:
+        if not p.get("scorecard_data"):
+            kb_match = _find_kb_match(p, by_name, by_domain, by_norm)
+            if kb_match and kb_match.get("scorecard"):
+                p["scorecard_data"] = kb_match["scorecard"]
+
     region_map = {
         "Northeast": ["NY", "MA", "PA", "CT", "NJ", "ME", "VT", "NH", "RI"],
         "Southeast": ["FL", "GA", "NC", "VA", "SC", "TN", "AL", "MS", "LA", "KY", "AR"],
