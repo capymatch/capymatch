@@ -1,0 +1,100 @@
+{
+  "summary": "Completed testing of Source-Aware AI School Insight feature (Why This School card). All 14 backend API tests pass (100%). Frontend tests pass - SchoolInsightCard renders on Journey page with correct structure including 'Why This School' heading, confidence badge (High/Medium/Limited), Top 3 Reasons with source tags, Top 2 Risks with source tags, expand/collapse for confidence factors and data sources, refresh button triggers new AI analysis, and proper loading state with spinner.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "POST /api/ai/school-insight/{program_id} returns 200": "PASS",
+      "Response has required top-level fields (insight, program_id, university_name, generated_at, sources_used)": "PASS",
+      "insight contains program_data section": "PASS",
+      "insight contains ai_insight section": "PASS",
+      "ai_insight has exactly 3 top_reasons": "PASS",
+      "ai_insight has exactly 2 top_risks": "PASS",
+      "Each reason has text, supports, sources fields": "PASS",
+      "Each risk has text, supports, sources fields": "PASS",
+      "data_confidence has level (High/Medium/Limited) and reasons array": "PASS",
+      "disclaimers is array with proper content": "PASS",
+      "sources_used has valid source objects": "PASS",
+      "DELETE /api/ai/school-insight/{program_id}/cache returns cleared: true": "PASS",
+      "Caching works - second call returns faster": "PASS",
+      "Invalid program_id returns 404": "PASS",
+      "Unauthenticated request returns 401": "PASS",
+      "Tampa University (D2) returns valid structure": "PASS"
+    },
+    "frontend": {
+      "SchoolInsightCard renders on Journey page": "PASS - data-testid='school-insight-card' found",
+      "'Why This School' heading visible": "PASS",
+      "Confidence badge visible": "PASS - FGCU shows 'High Confidence', Tampa shows 'Limited Confidence'",
+      "Refresh button present": "PASS - data-testid='insight-refresh-btn'",
+      "Expand/collapse button works": "PASS - data-testid='insight-expand-btn'",
+      "'Top reasons' section label visible": "PASS - 'TOP REASONS THIS MAY BE A GOOD FIT'",
+      "'Risks to consider' section label visible": "PASS - 'RISKS TO CONSIDER'",
+      "3 reasons displayed with source tags (IPEDS, Program Data)": "PASS",
+      "2 risks displayed with source tags": "PASS",
+      "Expanded view shows 'Confidence factors'": "PASS",
+      "Expanded view shows 'Data sources'": "PASS",
+      "Expanded view shows disclaimers": "PASS",
+      "Refresh button triggers loading state": "PASS",
+      "Loading state shows spinner and 'Analyzing this school for you...'": "PASS",
+      "Card position is after NIL Readiness card (6th in stack)": "PASS",
+      "All 5 intelligence cards present": "PASS - Timeline, Roster, Scholarship, NIL, School Insight"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_school_insight.py",
+    "/app/test_reports/pytest/school_insight_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_school_insight.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all requested features working)"
+  },
+  "feature_verified": {
+    "backend_endpoints": {
+      "POST /api/ai/school-insight/{program_id}": "Returns AI-powered 'Why This School' insights with 3 reasons, 2 risks, confidence scoring, and source attribution",
+      "DELETE /api/ai/school-insight/{program_id}/cache": "Clears cached insight forcing regeneration"
+    },
+    "response_structure": {
+      "program_data": "Contains academic_fit, roster_outlook, recruiting_timeline, scholarship_structure, nil_readiness",
+      "ai_insight": "Contains exactly 3 top_reasons and 2 top_risks with text, supports, sources",
+      "data_confidence": "Level (High/Medium/Limited) with array of reasons",
+      "disclaimers": "Array of parent-safe disclaimer strings",
+      "sources_used": "Array of source objects with source_id, source_type, retrieved_at, fields_supported"
+    },
+    "caching": "24-hour TTL, second call returns cached result, DELETE cache endpoint clears cache",
+    "frontend_components": {
+      "SchoolInsightCard": "Renders below NIL Readiness card on Journey page",
+      "ConfidenceBadge": "Shows High (green), Medium (amber), or Limited (gray) confidence",
+      "ReasonItem": "Shows reason/risk text with source tags",
+      "SourceTag": "Labels: IPEDS, School Site, Program Data",
+      "ExpandButton": "Toggles visibility of confidence factors, data sources, disclaimers"
+    },
+    "tested_programs": {
+      "prog_3fe70bce8e71 (Florida Gulf Coast, D1 ASUN)": "High Confidence - good data availability",
+      "prog_0a5dfa9c59d1 (Tampa University, D2 SSC)": "Limited Confidence - less data available"
+    }
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "programs": [
+      "prog_3fe70bce8e71 (D1 Florida Gulf Coast, ASUN)",
+      "prog_0a5dfa9c59d1 (D2 Tampa University, SSC)"
+    ]
+  },
+  "seed_data_creation": "None - used existing user account",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "School Insight feature (Why This School card) fully tested and working. Backend POST /api/ai/school-insight/{program_id} calls Claude via Emergent LLM key and returns structured JSON with program_data, ai_insight (3 reasons, 2 risks), data_confidence (High/Medium/Limited), disclaimers, and sources_used. Caching works with 24h TTL. DELETE endpoint clears cache. Frontend SchoolInsightCard renders on Journey page after NIL Readiness card (6th in intelligence stack), shows confidence badge, 3 reasons with source tags, 2 risks with source tags, and expand/collapse for confidence factors, data sources, and disclaimers. Refresh button triggers new AI analysis with loading spinner. Both D1 (FGCU - High Confidence) and D2 (Tampa - Limited Confidence) programs tested successfully."
+}
