@@ -275,6 +275,14 @@ export default function RecruitingJourney() {
 
       {/* Below-hero content */}
       {(!isCommitted || showJourneyDetails) && (<>
+
+      {/* Timeline Intelligence Card */}
+      {timeline && (
+        <div className="mt-5" data-testid="journey-timeline-card">
+          <TimelineStatusCard timeline={timeline} />
+        </div>
+      )}
+
       {isFollowUpOverdue && !activeForm && (
         <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
           data-testid="overdue-followup-card">
