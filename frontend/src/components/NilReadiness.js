@@ -92,6 +92,8 @@ export function NilReadinessCard({ nil, dataConfidence }) {
               </div>
             )}
           </div>
+
+          <ThisMayChangeCopy />
         </div>
       </div>
     </div>
