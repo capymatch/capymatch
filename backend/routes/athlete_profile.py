@@ -308,6 +308,7 @@ async def get_match_scores(request: Request):
             "division": p.get("division"),
             "conference": p.get("conference"),
             "region": p.get("region"),
+            "logo_url": p.get("logo_url"),
             "match_score": pct,
             "match_reasons": list(set(match_reasons)),
             "risk_badges": _compute_risk_badges(p, profile, match_reasons),
