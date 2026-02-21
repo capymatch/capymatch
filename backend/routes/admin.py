@@ -433,9 +433,10 @@ async def trigger_school_data_scrape(request: Request):
     from pathlib import Path
 
     ROOT = Path(__file__).parent.parent
+    env = {**os.environ, "PLAYWRIGHT_BROWSERS_PATH": "/pw-browsers"}
     subprocess.Popen(
         [sys.executable, "scripts/scrape_school_data.py"],
-        env={**os.environ},
+        env=env,
         cwd=str(ROOT),
         stdout=open("/tmp/school_data_scrape.log", "w"),
         stderr=subprocess.STDOUT,
