@@ -380,6 +380,7 @@ export default function UniversityKnowledgeBase() {
     match_reasons: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_reasons || []) : [],
     risk_badges: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.risk_badges || []) : [],
     timeline: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.timeline || null) : null,
+    roster: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.roster || null) : null,
   }));
 
   // Bucket counts
