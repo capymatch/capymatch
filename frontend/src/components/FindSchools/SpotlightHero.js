@@ -53,7 +53,8 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
                   Best Match for You
                 </span>
               </div>
-              <h2 className="font-heading text-3xl lg:text-4xl font-extrabold uppercase text-white tracking-tight leading-none mb-3" data-testid="spotlight-hero-name">
+              <h2 className="font-heading text-3xl lg:text-4xl font-extrabold uppercase text-white tracking-tight leading-none mb-3 flex items-center gap-3" data-testid="spotlight-hero-name">
+                <UniversityLogo domain={hero.domain} name={hero.university_name} logoUrl={hero.logo_url} size={48} />
                 {hero.university_name}
               </h2>
               <div className="flex items-center gap-3 text-white/60 text-sm mb-5">
