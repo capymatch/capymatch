@@ -195,6 +195,8 @@ export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence 
             )}
           </div>
         )}
+
+        <ThisMayChangeCopy />
       </div>
     </div>
   );
