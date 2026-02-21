@@ -35,6 +35,7 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 34. **Gmail consent modal in onboarding** (Feb 21, 2026) — Connect Gmail step in onboarding pipeline now shows the same privacy consent modal as Settings page before initiating OAuth.
 
 35. **Recruiting Timeline Intelligence** (Feb 21, 2026) — 3 statuses: Filling Early (amber), Standard (blue), Late Opportunities (green). Compact label on Find Schools cards, full Status Card on Journey page with explanation, guidance, and "How this is determined" tooltip. Logic: D1 ≤2 years = filling_early, D2 ≤1 year = filling_early, D1 ≤4 / D2 ≤3 = standard, else = late. Backend: `_compute_timeline_status()`, integrated into all match endpoints. Frontend: `TimelineIntelligence.js`.
+36. **Roster Spot Reality** (Feb 21, 2026) — 3 statuses: Open (green), Limited (amber), Tight (muted rose). Compact label on Find Schools cards, full Reality Card on Journey page with estimated openings range, explanation, guidance, and "How this is estimated" tooltip. Logic: D1 ≤1yr = tight/1-3 spots, D1 ≤2yr = limited/2-4, D1 else = open/3-5. D2 ≤1yr = limited/2-4, D2 ≤2yr = limited/2-5, else = open/3-6. D3/NAIA = open/3-6. Backend: `_compute_roster_outlook()`. Frontend: `RosterOutlook.js`.
 
 ## Pending Issues
 - **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
