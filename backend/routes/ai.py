@@ -1207,6 +1207,7 @@ async def get_school_insight(program_id: str, request: Request):
         if scorecard.get("retention_rate"): sc_fields.append("retention_rate")
         if scorecard.get("tuition_in_state"): sc_fields.append("tuition")
         if scorecard.get("student_size"): sc_fields.append("student_size")
+        if scorecard.get("estimated_avg_gpa"): sc_fields.append("estimated_avg_gpa")
         sources.append({
             "source_id": "COLLEGE_SCORECARD",
             "source_type": "IPEDS",
