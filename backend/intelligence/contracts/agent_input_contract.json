@@ -1,0 +1,401 @@
+{
+  "agent_contract": {
+    "school": {
+      "id": "university_knowledge_base.domain",
+      "name": "university_knowledge_base.university_name",
+      "division": "university_knowledge_base.division",
+      "conference": "university_knowledge_base.conference",
+      "region": "university_knowledge_base.region"
+    },
+    "academics": {
+      "sat_avg_or_range": "university_knowledge_base.scorecard.sat_avg",
+      "act_avg_or_range": "university_knowledge_base.scorecard.act_midpoint",
+      "acceptance_rate": "university_knowledge_base.scorecard.acceptance_rate",
+      "avg_gpa": "university_knowledge_base.scorecard.avg_gpa",
+      "gpa_is_estimated": "university_knowledge_base.scorecard.gpa_is_estimated",
+      "graduation_rate": "university_knowledge_base.scorecard.graduation_rate",
+      "retention_rate": "university_knowledge_base.scorecard.retention_rate",
+      "test_optional_policy": null,
+      "last_updated": "university_knowledge_base.scorecard.data_scraped_at"
+    },
+    "roster": {
+      "roster_size": null,
+      "class_distribution": null,
+      "roster_limit": null,
+      "roster_last_updated": null
+    },
+    "timeline": {
+      "commit_timing_signals": null,
+      "history_window_years": null,
+      "timeline_last_updated": null
+    },
+    "scholarship": {
+      "scholarship_notes": "university_knowledge_base.scholarship_type",
+      "scholarship_last_updated": null
+    },
+    "nil": {
+      "nil_signals": null,
+      "market_signal": null,
+      "collective_present": null,
+      "nil_last_updated": null
+    },
+    "athlete": {
+      "gpa": "athlete_profiles.gpa",
+      "sat_score": "athlete_profiles.sat_score",
+      "act_score": "athlete_profiles.act_score",
+      "position": "athlete_profiles.position",
+      "grad_year": "athlete_profiles.grad_year",
+      "priorities": "athlete_profiles.priorities",
+      "state": "athlete_profiles.state"
+    },
+    "recruiting": {
+      "status": "programs.recruiting_status",
+      "priority": "programs.priority",
+      "interactions_collection": "interactions",
+      "events_collection": "events"
+    },
+    "sources": {
+      "sources_array": null,
+      "source_id": null,
+      "source_type": "university_knowledge_base.scorecard.data_source",
+      "retrieved_at": "university_knowledge_base.scorecard.data_scraped_at",
+      "fields_supported": null
+    }
+  },
+  "source_precedence": [
+    "ManualOverride",
+    "SchoolSite",
+    "IPEDS",
+    "CDS",
+    "AthleticsRoster",
+    "ThirdParty",
+    "Inference"
+  ],
+  "freshness_windows_months": {
+    "academics": 18,
+    "roster": 12,
+    "timeline": 24,
+    "scholarship": 24,
+    "nil": 18
+  },
+  "open_questions": [
+    "No roster_size or class_distribution data exists in DB. The roster_needs field is 0% populated across university_knowledge_base.",
+    "No commit_timing_signals or history_window_years data exists. Timeline intelligence relies on interaction history per-tenant, not program-level commit data.",
+    "No NIL-specific signals, market data, or collective presence data exists in any collection.",
+    "No test_optional_policy data exists for academics.",
+    "Roster limits are inferred from NCAA division rules (not stored in DB). D1/D2 volleyball: 18.",
+    "scholarship_type is a categorical label (e.g. 'Full & Partial Athletic'), not a detailed financial breakdown.",
+    "athlete_profiles.sat_score and act_score have very low coverage (12.5%). Most athlete academic data is GPA-only.",
+    "scorecard.avg_gpa may be estimated (check gpa_is_estimated boolean). Estimated GPAs use a formula, not direct school reporting."
+  ],
+  "field_coverage": {
+    "university_knowledge_base.university_name": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.division": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.conference": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.region": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.domain": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.logo_url": {
+      "total": 1053,
+      "populated": 961,
+      "coverage_pct": 91.3,
+      "type": "str"
+    },
+    "university_knowledge_base.primary_coach": {
+      "total": 1053,
+      "populated": 932,
+      "coverage_pct": 88.5,
+      "type": "str"
+    },
+    "university_knowledge_base.coach_email": {
+      "total": 1053,
+      "populated": 929,
+      "coverage_pct": 88.2,
+      "type": "str"
+    },
+    "university_knowledge_base.scholarship_type": {
+      "total": 1053,
+      "populated": 1053,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "university_knowledge_base.roster_needs": {
+      "total": 1053,
+      "populated": 0,
+      "coverage_pct": 0.0,
+      "type": "str"
+    },
+    "university_knowledge_base.coaches_scraped": {
+      "total": 1053,
+      "populated": 896,
+      "coverage_pct": 85.1,
+      "type": "list"
+    },
+    "university_knowledge_base.pr_slug": {
+      "total": 1053,
+      "populated": 961,
+      "coverage_pct": 91.3,
+      "type": "str"
+    },
+    "university_knowledge_base.scorecard.sat_avg": {
+      "total": 1053,
+      "populated": 1043,
+      "coverage_pct": 99.1,
+      "type": "int"
+    },
+    "university_knowledge_base.scorecard.act_midpoint": {
+      "total": 1053,
+      "populated": 1047,
+      "coverage_pct": 99.4,
+      "type": "int"
+    },
+    "university_knowledge_base.scorecard.avg_gpa": {
+      "total": 1053,
+      "populated": 1016,
+      "coverage_pct": 96.5,
+      "type": "float"
+    },
+    "university_knowledge_base.scorecard.acceptance_rate": {
+      "total": 1053,
+      "populated": 919,
+      "coverage_pct": 87.3,
+      "type": "float"
+    },
+    "university_knowledge_base.scorecard.graduation_rate": {
+      "total": 1053,
+      "populated": 1047,
+      "coverage_pct": 99.4,
+      "type": "float"
+    },
+    "university_knowledge_base.scorecard.retention_rate": {
+      "total": 1053,
+      "populated": 1047,
+      "coverage_pct": 99.4,
+      "type": "float"
+    },
+    "university_knowledge_base.scorecard.student_size": {
+      "total": 1053,
+      "populated": 1047,
+      "coverage_pct": 99.4,
+      "type": "int"
+    },
+    "university_knowledge_base.scorecard.school_type": {
+      "total": 1053,
+      "populated": 961,
+      "coverage_pct": 91.3,
+      "type": "str"
+    },
+    "university_knowledge_base.scorecard.avg_annual_cost": {
+      "total": 1053,
+      "populated": 954,
+      "coverage_pct": 90.6,
+      "type": "int"
+    },
+    "university_knowledge_base.scorecard.data_source": {
+      "total": 1053,
+      "populated": 961,
+      "coverage_pct": 91.3,
+      "type": "str"
+    },
+    "university_knowledge_base.scorecard.data_scraped_at": {
+      "total": 1053,
+      "populated": 961,
+      "coverage_pct": 91.3,
+      "type": "str"
+    },
+    "university_knowledge_base.scorecard.gpa_is_estimated": {
+      "total": 1053,
+      "populated": 1046,
+      "coverage_pct": 99.3,
+      "type": "bool"
+    },
+    "athlete_profiles.athlete_name": {
+      "total": 16,
+      "populated": 6,
+      "coverage_pct": 37.5,
+      "type": "str"
+    },
+    "athlete_profiles.position": {
+      "total": 16,
+      "populated": 13,
+      "coverage_pct": 81.2,
+      "type": "str"
+    },
+    "athlete_profiles.height": {
+      "total": 16,
+      "populated": 6,
+      "coverage_pct": 37.5,
+      "type": "str"
+    },
+    "athlete_profiles.grad_year": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "athlete_profiles.gpa": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "athlete_profiles.sat_score": {
+      "total": 16,
+      "populated": 2,
+      "coverage_pct": 12.5,
+      "type": "int"
+    },
+    "athlete_profiles.act_score": {
+      "total": 16,
+      "populated": 2,
+      "coverage_pct": 12.5,
+      "type": "int"
+    },
+    "athlete_profiles.priorities": {
+      "total": 16,
+      "populated": 11,
+      "coverage_pct": 68.8,
+      "type": "list"
+    },
+    "athlete_profiles.city": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "athlete_profiles.state": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "athlete_profiles.high_school": {
+      "total": 16,
+      "populated": 4,
+      "coverage_pct": 25.0,
+      "type": "str"
+    },
+    "athlete_profiles.club_team": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "athlete_profiles.video_link": {
+      "total": 16,
+      "populated": 5,
+      "coverage_pct": 31.2,
+      "type": "str"
+    },
+    "programs.program_id": {
+      "total": 49,
+      "populated": 49,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "programs.university_name": {
+      "total": 49,
+      "populated": 49,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "programs.division": {
+      "total": 49,
+      "populated": 48,
+      "coverage_pct": 98.0,
+      "type": "str"
+    },
+    "programs.conference": {
+      "total": 49,
+      "populated": 46,
+      "coverage_pct": 93.9,
+      "type": "str"
+    },
+    "programs.region": {
+      "total": 49,
+      "populated": 33,
+      "coverage_pct": 67.3,
+      "type": "str"
+    },
+    "programs.domain": {
+      "total": 49,
+      "populated": 45,
+      "coverage_pct": 91.8,
+      "type": "str"
+    },
+    "programs.recruiting_status": {
+      "total": 49,
+      "populated": 49,
+      "coverage_pct": 100.0,
+      "type": "str"
+    },
+    "programs.priority": {
+      "total": 49,
+      "populated": 36,
+      "coverage_pct": 73.5,
+      "type": "str"
+    },
+    "programs.scholarship_type": {
+      "total": 49,
+      "populated": 4,
+      "coverage_pct": 8.2,
+      "type": "str"
+    },
+    "programs.roster_needs": {
+      "total": 49,
+      "populated": 1,
+      "coverage_pct": 2.0,
+      "type": "str"
+    },
+    "programs.follow_up_days": {
+      "total": 49,
+      "populated": 36,
+      "coverage_pct": 73.5,
+      "type": "int"
+    },
+    "programs.initial_contact_sent": {
+      "total": 49,
+      "populated": 13,
+      "coverage_pct": 26.5,
+      "type": "str"
+    },
+    "programs.last_follow_up": {
+      "total": 49,
+      "populated": 2,
+      "coverage_pct": 4.1,
+      "type": "str"
+    },
+    "programs.notes": {
+      "total": 49,
+      "populated": 17,
+      "coverage_pct": 34.7,
+      "type": "str"
+    }
+  },
+  "generated_at": "2026-02-21T23:36:22.261346+00:00",
+  "schema_version": "1.0.0"
+}
