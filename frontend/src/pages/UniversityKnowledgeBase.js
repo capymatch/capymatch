@@ -262,6 +262,7 @@ export default function UniversityKnowledgeBase() {
   const [viewMode, setViewMode] = useState("grid");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [riskDrawer, setRiskDrawer] = useState(null);
 
   const { subscription } = useSubscription();
 
