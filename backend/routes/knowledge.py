@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_school_limit
+from routes.athlete_profile import _compute_commitment_stability, _compute_data_confidence
 import uuid
 import os
 import re
