@@ -40,6 +40,11 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 38. **NIL Readiness** (Feb 21, 2026) — 3 statuses: NIL-Friendly (blue, D1 power conferences), NIL-Limited (slate, D1 non-power/D2/NAIA), NIL Information Limited (light slate, D3). Guidance bullets in "What this means for you" section. No dollar amounts, no rankings. Backend: `_compute_nil_readiness()`. Frontend: `NilReadiness.js`. Full decision stack: Timeline → Roster → Scholarship → NIL.
 39. **Source-Aware AI School Insight ("Why This School")** (Feb 21, 2026) — AI-powered analysis card on Journey page. Top 3 reasons and Top 2 risks for each school, with source attribution (IPEDS, School Site, Program Data). Confidence scoring (High/Medium/Limited) based on data coverage and freshness. Expandable section shows confidence factors, data sources, and disclaimers. 24-hour cache with refresh button. Backend: `POST /api/ai/school-insight/{program_id}`, `DELETE /api/ai/school-insight/{program_id}/cache`. Frontend: `SchoolInsightCard.js`. Uses Claude Sonnet 4.5 via Emergent LLM Key with structured prompt ensuring no hallucination and source-backed claims.
 
+## Data Reliability Improvements (Feb 21, 2026)
+- **Fuzzy KB Matching**: Multi-strategy lookup (exact → domain → normalized text) resolves 90% of name mismatches (e.g., "BYU" → "Brigham Young University", "Tampa University" → "University of Tampa"). Shared logic in `athlete_profile.py` used by match-scores, risk-badges, and AI insight endpoints.
+- **Real GPA Data**: Scraped 1,016 real GPAs (96.5%) from ProductiveRecruit.com using Playwright browser automation (handles Cloudflare). Two-pass approach: (1) collect real slugs from 51 state index pages, (2) match to KB and scrape individual school pages. Remaining 30 schools use calibrated estimates, 7 have no GPA.
+- **Monthly GPA Refresh Job**: Background task in server.py runs every 30 days. Admin endpoints: `GET /api/admin/gpa-status` (coverage stats), `POST /api/admin/refresh-gpa` (trigger manual refresh). Script at `backend/scripts/scrape_gpa.py`.
+
 ## Pending Issues
 - **P1**: Monitor Bulk University Data Enrichment Job (verify completion)
 - **P2**: NCAA Timeline colors (on hold)
