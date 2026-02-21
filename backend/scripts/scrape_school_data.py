@@ -293,7 +293,7 @@ async def main():
             await asyncio.sleep(8)
             warmup_ok = "Average GPA" in await page.content()
             log.info(f"Cloudflare warmup done (ok={warmup_ok})")
-        except:
+        except Exception:
             log.warning("Warmup failed, continuing anyway")
 
         # Pass 1: Collect slugs
