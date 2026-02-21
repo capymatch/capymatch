@@ -318,6 +318,7 @@ async def get_match_scores(request: Request):
             "roster": _compute_roster_outlook(p, profile),
             "scholarship": _compute_scholarship_structure(p),
             "nil": _compute_nil_readiness(p),
+            "commitment_stability": _compute_commitment_stability(p, profile),
             "data_confidence": _compute_data_confidence(p),
         })
 
