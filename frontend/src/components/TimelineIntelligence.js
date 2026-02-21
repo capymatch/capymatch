@@ -103,6 +103,8 @@ export function TimelineStatusCard({ timeline, dataConfidence }) {
               </div>
             )}
           </div>
+
+          <ThisMayChangeCopy />
         </div>
       </div>
     </div>
