@@ -88,6 +88,7 @@ export default function RecruitingJourney() {
           setRecruitingTimeline(found.timeline || null);
           setRosterOutlook(found.roster || null);
           setScholarship(found.scholarship || null);
+          setNilReadiness(found.nil || null);
         }
       }
       setLoading(false);
