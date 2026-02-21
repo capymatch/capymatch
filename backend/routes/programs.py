@@ -200,7 +200,20 @@ async def list_programs(
         query["university_name"] = {"$regex": search, "$options": "i"}
     
     programs = await db.programs.find(query, {"_id": 0}).to_list(1000)
-    
+
+    # Enrich with logo_url from KB for programs that don't have one
+    programs_needing_logo = [p for p in programs if not p.get("logo_url")]
+    if programs_needing_logo:
+        kb_names = [p.get("university_name", "") for p in programs_needing_logo]
+        kb_entries = await db.university_knowledge_base.find(
+            {"university_name": {"$in": kb_names}},
+            {"_id": 0, "university_name": 1, "logo_url": 1}
+        ).to_list(1000)
+        logo_map = {e["university_name"]: e.get("logo_url") for e in kb_entries if e.get("logo_url")}
+        for p in programs_needing_logo:
+            if p.get("university_name") in logo_map:
+                p["logo_url"] = logo_map[p["university_name"]]
+
     # Enrich with coach data and interaction signals
     for p in programs:
         coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(50)
