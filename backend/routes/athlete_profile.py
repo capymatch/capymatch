@@ -588,6 +588,92 @@ def _compute_timeline_status(school, profile):
     }
 
 
+def _compute_roster_outlook(school, profile):
+    """Compute roster spot reality for a school given an athlete profile."""
+    division = (school.get("division") or "").upper()
+    grad_year = profile.get("graduation_year") or profile.get("grad_year") or ""
+    try:
+        grad_yr = int(grad_year)
+    except (ValueError, TypeError):
+        grad_yr = None
+    current_year = datetime.now(timezone.utc).year
+    years_out = (grad_yr - current_year) if grad_yr else None
+
+    tooltip = "Roster outlooks are estimates based on public team rosters, class years, and recent changes. Actual openings may change due to transfers, injuries, or coaching decisions."
+
+    if years_out is None:
+        return {
+            "status": "unknown",
+            "label": "Pending",
+            "openings": None,
+            "explanation": "Roster availability is still being evaluated for this program.",
+            "guidance": "Complete your profile with your graduation year to see roster insights.",
+            "tooltip": "Estimates improve as roster information becomes available.",
+        }
+
+    # Roster cap and estimated openings by division
+    # D1 indoor volleyball: 18-player roster cap, typically 3-5 graduate per year
+    # D2: ~16 players, 2-4 graduate; D3/NAIA: ~18-20 players, more flexible
+    if division == "D1":
+        roster_cap = 18
+        avg_graduates = 4
+        transfer_factor = 1  # D1 has more transfers
+        if years_out <= 1:
+            estimated_low, estimated_high = 1, 3
+            status = "tight"
+        elif years_out <= 2:
+            estimated_low, estimated_high = 2, 4
+            status = "limited"
+        else:
+            estimated_low, estimated_high = 3, 5
+            status = "open"
+    elif division == "D2":
+        roster_cap = 16
+        avg_graduates = 3
+        transfer_factor = 0
+        if years_out <= 1:
+            estimated_low, estimated_high = 2, 4
+            status = "limited"
+        elif years_out <= 2:
+            estimated_low, estimated_high = 2, 5
+            status = "limited"
+        else:
+            estimated_low, estimated_high = 3, 6
+            status = "open"
+    elif division == "D3":
+        roster_cap = 20
+        avg_graduates = 4
+        transfer_factor = 0
+        estimated_low, estimated_high = 3, 6
+        status = "open"
+    elif division in ("NAIA", "JUCO"):
+        roster_cap = 18
+        avg_graduates = 4
+        transfer_factor = 1
+        estimated_low, estimated_high = 3, 6
+        status = "open"
+    else:
+        estimated_low, estimated_high = 2, 5
+        status = "limited"
+
+    labels = {"open": "Open", "limited": "Limited", "tight": "Tight"}
+    guidance_map = {
+        "open": "This program appears to have room for new athletes in your class year.",
+        "limited": "Opportunities may be competitive. Early outreach and follow-up are recommended.",
+        "tight": "This program may have limited room for your class. Timing and fit will matter.",
+    }
+
+    return {
+        "status": status,
+        "label": labels[status],
+        "openings": f"{estimated_low}\u2013{estimated_high} spots",
+        "explanation": "Based on public roster data, graduating players, and recent roster changes.",
+        "guidance": guidance_map[status],
+        "tooltip": tooltip,
+    }
+
+
+
 
 
 @router.get("/suggested-schools")
