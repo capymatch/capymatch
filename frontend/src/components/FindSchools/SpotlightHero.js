@@ -1,6 +1,7 @@
 import { Sparkles, Trophy, MapPin, Building2, Plus, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRef } from "react";
+import UniversityLogo from "../UniversityLogo";
 
 const DIV_COLORS = {
   D1: "bg-teal-700 text-white",
