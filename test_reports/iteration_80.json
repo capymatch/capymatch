@@ -1,0 +1,97 @@
+{
+  "summary": "Completed testing of Commitment Stability Index card. Backend: 11/11 tests pass (100%). Frontend: All card components rendering correctly on Journey page between NIL Readiness and Why This School cards. Card displays status pill with correct colors (green for High), retention rate, sparkline with 3 bars, two-column insights section, context tags (NCAA division, Roster Limit, Equivalency Era), and confidence footer.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "risk_badges_returns_commitment_stability": "PASS",
+      "commitment_stability_fgcu_d1_nonpower": "PASS - 82% retention, High Stability",
+      "commitment_stability_tampa_d2": "PASS - 84% retention, High Stability",
+      "commitment_stability_consistency": "PASS - seeded RNG returns same values",
+      "match_scores_includes_commitment_stability": "PASS - all schools have commitment_stability",
+      "match_scores_stability_varies_by_division": "PASS",
+      "sparkline_format": "PASS - 3 values between 50-99",
+      "signals_format": "PASS - array of 3 strings",
+      "tags_format": "PASS - includes NCAA D1/D2, Roster Limit, Equivalency Era",
+      "confidence_and_last_updated": "PASS - Medium confidence, Feb 2026",
+      "status_label_mapping": "PASS - high -> High Stability"
+    },
+    "frontend": {
+      "FGCU_D1_Journey_Page": {
+        "CommitmentStabilityCard_presence": "PASS",
+        "Status_pill": "PASS - 'High Stability' (green)",
+        "Retention_rate": "PASS - '82%'",
+        "Sparkline": "PASS - 3 bars with years 2022, 2023, 2024 and trend",
+        "Insights_section": "PASS - 'What We're Seeing' and 'What This Means' columns",
+        "Context_tags": "PASS - NCAA D1, Roster Limit: 18, Equivalency Era",
+        "Confidence_footer": "PASS - Medium confidence, Feb 2026",
+        "Card_ordering": "PASS - NIL → Stability → Insight"
+      },
+      "Tampa_D2_Journey_Page": {
+        "CommitmentStabilityCard_presence": "PASS",
+        "Status_pill": "PASS - 'High Stability' (green)",
+        "Retention_rate": "PASS - '84%' (higher than D1 as expected)",
+        "Context_tags": "PASS - NCAA D2 correctly shown",
+        "Division_specific_signals": "PASS - D2-specific content displayed"
+      },
+      "Other_cards_still_render": {
+        "Timeline_card": "PASS",
+        "Roster_card": "PASS",
+        "Scholarship_card": "PASS",
+        "NIL_card": "PASS",
+        "School_Insight_card": "PASS"
+      }
+    }
+  },
+  "features_verified": {
+    "commitment_stability_index": {
+      "description": "Heuristic-based intelligence card showing roster retention rate, trend sparkline, signals, meaning, context tags, and trust footer",
+      "data_type": "HEURISTIC - seeded RNG per school, not real historical data",
+      "division_variation": {
+        "D1_Power": "62-76% base retention (volatile due to transfer portal/NIL)",
+        "D1_Non_Power": "70-84% base retention",
+        "D2": "76-88% base retention",
+        "D3": "80-93% base retention"
+      },
+      "status_thresholds": {
+        "high": ">= 82%",
+        "moderate": ">= 68%",
+        "volatile": "< 68%"
+      },
+      "card_placement": "Between NIL Readiness and Why This School (SchoolInsight)"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_commitment_stability.py",
+    "/app/test_reports/pytest/commitment_stability_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_commitment_stability.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (all card components and placement verified)"
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "programs_tested": [
+      "prog_3fe70bce8e71 (Florida Gulf Coast University, D1 ASUN) - 82% High Stability",
+      "prog_0a5dfa9c59d1 (Tampa University, D2 SSC) - 84% High Stability"
+    ]
+  },
+  "seed_data_creation": "None - used existing user account and programs",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Commitment Stability Index feature fully tested. Backend returns commitment_stability in /api/risk-badges/{program_id} and /api/match-scores. Frontend CommitmentStabilityCard component renders correctly with all visual elements per spec. Card uses HEURISTIC data (seeded RNG) - NOT real historical roster data. Division-based variation confirmed working (D2 > D1 non-power retention rates).",
+  "notes": "The Commitment Stability Index is a HEURISTIC model - retention_rate and sparkline values are deterministic per school name (seeded RNG), not actual historical data."
+}
