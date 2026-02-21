@@ -74,7 +74,10 @@ export default function RecruitingJourney() {
       } else { setNotesCount(0); }
       if (msRes.status === "fulfilled" && msRes.value.data?.scores) {
         const found = msRes.value.data.scores.find(s => s.program_id === programId);
-        if (found) setMatchScore(found);
+        if (found) {
+          setMatchScore(found);
+          setRiskBadges(found.risk_badges || []);
+        }
       }
       setLoading(false);
       if (!isBasic) {
