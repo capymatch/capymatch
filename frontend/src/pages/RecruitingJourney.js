@@ -314,6 +314,13 @@ export default function RecruitingJourney() {
       {/* Below-hero content */}
       {(!isCommitted || showJourneyDetails) && (<>
 
+      {/* Academic Data Completeness Warning */}
+      {dataConfidence?.academic_completeness && !dataConfidence.academic_completeness.complete && (
+        <div className="mt-5" data-testid="journey-academic-completeness">
+          <AcademicCompletenessFlag completeness={dataConfidence.academic_completeness} />
+        </div>
+      )}
+
       {/* Timeline Intelligence Card */}
       {recruitingTimeline && (
         <div className="mt-5" data-testid="journey-timeline-card">
