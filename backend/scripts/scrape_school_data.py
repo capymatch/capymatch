@@ -7,7 +7,11 @@ student_faculty_ratio, avg_annual_cost, median_earnings, student_size, school_ty
 
 Run: cd /app/backend && python3 scripts/scrape_school_data.py
 """
-import asyncio, re, os, logging, json
+import asyncio
+import re
+import os
+import logging
+import json
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timezone
 from playwright.async_api import async_playwright
