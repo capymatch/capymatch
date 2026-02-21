@@ -7,6 +7,7 @@ import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
   Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone
 } from "lucide-react";
+import { CommitmentStabilityCard } from "../components/CommitmentStabilityCard";
 
 /* ── Match Ring (dark hero) ── */
 function MatchRing({ score }) {
