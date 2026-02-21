@@ -429,12 +429,12 @@ async def gpa_data_status():
 @router.post("/scrape-school-data")
 async def trigger_school_data_scrape(request: Request):
     """Admin-only: trigger comprehensive data scrape from ProductiveRecruit (SAT, ACT, logos, etc)."""
-    import subprocess
+    import subprocess, sys
     from pathlib import Path
 
     ROOT = Path(__file__).parent.parent
     subprocess.Popen(
-        ["python3", "scripts/scrape_school_data.py"],
+        [sys.executable, "scripts/scrape_school_data.py"],
         env={**os.environ},
         cwd=str(ROOT),
         stdout=open("/tmp/school_data_scrape.log", "w"),
