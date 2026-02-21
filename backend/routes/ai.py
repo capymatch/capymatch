@@ -1098,18 +1098,7 @@ async def get_coach_watch_alert_for_school(university_name: str, request: Reques
 
 # ── Source-Aware School Insight (Pro+) ────────────────────────
 
-import re
-
-def _normalize_school_name(name: str) -> str:
-    """Normalize a school name for fuzzy comparison."""
-    n = name.lower().strip()
-    # Remove common suffixes/prefixes
-    for word in ["university of", "university", "college of", "college", "the ", "– ", "- "]:
-        n = n.replace(word, " ")
-    # Normalize punctuation and whitespace
-    n = re.sub(r"[^a-z0-9\s]", "", n)
-    n = re.sub(r"\s+", " ", n).strip()
-    return n
+from routes.athlete_profile import _normalize_school_name as _norm_name
 
 
 async def _find_university_kb(name: str, domain: str = ""):
