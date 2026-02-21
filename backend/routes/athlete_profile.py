@@ -922,6 +922,75 @@ def _compute_nil_readiness(school):
 
 
 
+def _compute_data_confidence(school):
+    """Compute data confidence level and academic completeness for a school."""
+    scorecard = school.get("scorecard_data") or school.get("scorecard") or {}
+    factors = []
+    available = []
+    missing = []
+
+    # Check GPA
+    has_real_gpa = bool(scorecard.get("avg_gpa") and not scorecard.get("gpa_is_estimated"))
+    has_estimated_gpa = bool(scorecard.get("estimated_avg_gpa") or scorecard.get("avg_gpa"))
+    if has_real_gpa:
+        factors.append("Verified GPA data available")
+        available.append("GPA")
+    elif has_estimated_gpa:
+        factors.append("Estimated GPA data (less reliable)")
+        available.append("GPA (estimated)")
+    else:
+        missing.append("GPA")
+
+    # Check SAT
+    if scorecard.get("sat_avg"):
+        factors.append("SAT averages from IPEDS")
+        available.append("SAT")
+    else:
+        missing.append("SAT")
+
+    # Check admission rate
+    if scorecard.get("admission_rate") is not None:
+        factors.append("Admission rate from IPEDS")
+        available.append("Admission Rate")
+    else:
+        missing.append("Admission Rate")
+
+    # Check ACT
+    if scorecard.get("act_midpoint"):
+        available.append("ACT")
+    else:
+        missing.append("ACT")
+
+    # Determine level
+    academic_points = sum([
+        2 if has_real_gpa else (1 if has_estimated_gpa else 0),
+        1 if scorecard.get("sat_avg") else 0,
+        1 if scorecard.get("admission_rate") is not None else 0,
+        0.5 if scorecard.get("act_midpoint") else 0,
+    ])
+
+    if academic_points >= 3.5:
+        level = "High"
+    elif academic_points >= 1.5:
+        level = "Medium"
+    else:
+        level = "Limited"
+
+    # Data freshness
+    last_updated = scorecard.get("gpa_scraped_at") or scorecard.get("synced_at")
+
+    return {
+        "level": level,
+        "factors": factors,
+        "academic_completeness": {
+            "complete": len(missing) == 0,
+            "available": available,
+            "missing": missing,
+        },
+        "last_updated": last_updated,
+    }
+
+
 @router.get("/suggested-schools")
 async def get_suggested_schools(request: Request):
     user = await get_current_user(request)
