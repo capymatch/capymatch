@@ -1,5 +1,6 @@
 import { Users, Info, X } from "lucide-react";
 import { useState } from "react";
+import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
 
 const STATUS_CONFIG = {
   open:    { accent: "#16A34A", bg: "#F0FDF4", text: "#166534" },

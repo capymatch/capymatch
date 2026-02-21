@@ -1,5 +1,6 @@
 import { GraduationCap, Info, X } from "lucide-react";
 import { useState } from "react";
+import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
 
 const STATUS_CONFIG = {
   mix:     { accent: "#475569", bg: "#F8FAFC", text: "#334155" },

@@ -1,5 +1,6 @@
 import { Clock, Info, X } from "lucide-react";
 import { useState } from "react";
+import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
 
 const STATUS_CONFIG = {
   filling_early: { accent: "#F59E0B", bg: "#FFFBEB", text: "#92400E", dotColor: "#F59E0B" },
