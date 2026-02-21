@@ -28,7 +28,7 @@ function ScorecardStat({ icon: Icon, label, value, color }) {
   );
 }
 
-export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, isExpanded, onToggleExpand }) {
+export default function SchoolGridCard({ uni, adding, addToBoard, boardSchools, isExpanded, onToggleExpand, onRiskBadgeClick }) {
   const isOnBoard = boardSchools.has(uni.university_name);
   const divColor = DIV_COLORS[uni.division] || "bg-gray-500/15 text-gray-600";
   const navigate = useNavigate();
