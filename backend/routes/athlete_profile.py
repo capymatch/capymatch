@@ -233,6 +233,7 @@ async def get_match_scores(request: Request):
             "risk_badges": _compute_risk_badges(p, profile, match_reasons),
             "timeline": _compute_timeline_status(p, profile),
             "roster": _compute_roster_outlook(p, profile),
+            "scholarship": _compute_scholarship_structure(p),
         })
 
     scores.sort(key=lambda x: x["match_score"], reverse=True)
