@@ -32,7 +32,7 @@ export function AcademicCompletenessFlag({ completeness }) {
     >
       <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "#d97706" }} />
       <p className="text-[11px] leading-relaxed" style={{ color: "#92400E" }}>
-        Limited academic data — missing {missingList.join(", ")}. Insights may be less precise.
+        This school hasn't published {missingList.join(", ")} data. Some insights may be less precise.
       </p>
     </div>
   );
