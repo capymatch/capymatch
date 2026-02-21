@@ -520,6 +520,74 @@ def _compute_risk_badges(school, profile, match_reasons=None):
     return badges
 
 
+def _compute_timeline_status(school, profile):
+    """Compute recruiting timeline status for a school given an athlete profile."""
+    division = (school.get("division") or "").upper()
+    grad_year = profile.get("graduation_year") or profile.get("grad_year") or ""
+    try:
+        grad_yr = int(grad_year)
+    except (ValueError, TypeError):
+        grad_yr = None
+    current_year = datetime.now(timezone.utc).year
+    years_out = (grad_yr - current_year) if grad_yr else None
+
+    # If no graduation year, return unknown
+    if years_out is None:
+        return {
+            "status": "unknown",
+            "label": "Timeline Pending",
+            "explanation": "Timeline information is still being evaluated for this program.",
+            "guidance": "Complete your profile with your graduation year to see personalized timeline insights.",
+            "tooltip": "Timeline insights improve as more public recruiting data becomes available.",
+        }
+
+    # Filling Early: D1 programs with athlete junior year or closer, or D2 with athlete senior year
+    if division == "D1" and years_out <= 2:
+        return {
+            "status": "filling_early",
+            "label": "Filling Early",
+            "explanation": "This program often commits athletes earlier than average.",
+            "guidance": "If this school is a priority, earlier outreach and follow-up may be important.",
+            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+        }
+    if division == "D2" and years_out <= 1:
+        return {
+            "status": "filling_early",
+            "label": "Filling Early",
+            "explanation": "This program often commits athletes earlier than average.",
+            "guidance": "If this school is a priority, earlier outreach and follow-up may be important.",
+            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+        }
+
+    # Standard: D1 with more time, or D2 with some time
+    if division == "D1" and years_out <= 4:
+        return {
+            "status": "standard",
+            "label": "Standard",
+            "explanation": "This program typically fills spots throughout the normal recruiting window.",
+            "guidance": "Outreach within the next few months is recommended to stay competitive.",
+            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+        }
+    if division == "D2" and years_out <= 3:
+        return {
+            "status": "standard",
+            "label": "Standard",
+            "explanation": "This program typically fills spots throughout the normal recruiting window.",
+            "guidance": "Outreach within the next few months is recommended to stay competitive.",
+            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+        }
+
+    # Late Opportunities: D3, NAIA, JUCO, or early in recruitment cycle
+    return {
+        "status": "late",
+        "label": "Late Opportunities",
+        "explanation": "This program often has roster openings later in the recruiting cycle.",
+        "guidance": "You can continue building your profile and reach out as opportunities arise.",
+        "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+    }
+
+
+
 
 @router.get("/suggested-schools")
 async def get_suggested_schools(request: Request):
