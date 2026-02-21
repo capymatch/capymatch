@@ -379,6 +379,7 @@ function SchoolRow({ p, navigate, matchScore, onMarkReplied }) {
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
+          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={20} />
           <span className="font-semibold text-[13px] truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
           {matchScore?.match_score && (
             <span className="text-[10px] font-bold" style={{ color: "var(--t-text-muted, #999)" }}>{matchScore.match_score}%</span>
