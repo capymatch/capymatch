@@ -814,4 +814,5 @@ async def get_risk_badges(program_id: str, request: Request):
     badges = _compute_risk_badges(program, profile, match["reasons"])
     timeline = _compute_timeline_status(program, profile)
     roster = _compute_roster_outlook(program, profile)
-    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster}
+    scholarship = _compute_scholarship_structure(program)
+    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship}
