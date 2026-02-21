@@ -514,3 +514,34 @@ async def get_agent_contract():
         raise HTTPException(status_code=404, detail="No Agent Input Contract found. Run the Schema Mapper first.")
     return doc.get("contract", {})
 
+
+# ---------------------------------------------------------------------------
+# Intelligence Pipeline — Payload Builder (Stage 2)
+# ---------------------------------------------------------------------------
+
+@router.post("/build-payload/{program_id}")
+async def build_payload_endpoint(program_id: str, request: Request):
+    """Build a minimal intelligence payload for a school + athlete."""
+    from intelligence.payload_builder import build_payload
+    # Accept tenant_id from query param (admin testing) or auth
+    tenant_id = request.query_params.get("tenant_id")
+    if not tenant_id:
+        raise HTTPException(status_code=400, detail="tenant_id query param required")
+    try:
+        payload = await build_payload(db, program_id, tenant_id)
+        # Compute estimated token size (rough: 4 chars ≈ 1 token)
+        import json
+        payload_str = json.dumps(payload)
+        estimated_tokens = len(payload_str) // 4
+        return {
+            "payload": payload,
+            "meta": {
+                "payload_bytes": len(payload_str),
+                "estimated_tokens": estimated_tokens,
+                "missing_fields_count": len(payload.get("missing_fields", [])),
+            },
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Payload Builder failed: {str(e)}")
+
+
