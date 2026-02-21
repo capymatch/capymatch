@@ -1,73 +1,18 @@
 import { useState } from "react";
-import { Sparkles, ChevronDown, ChevronUp, ShieldCheck, AlertTriangle, Info, RefreshCw, Loader2 } from "lucide-react";
-import { AcademicCompletenessFlag, ThisMayChangeCopy } from "./TrustIndicators";
+import { Check, AlertTriangle, Info, RefreshCw, Loader2 } from "lucide-react";
 
-const CONFIDENCE_STYLES = {
-  High: { bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", text: "#059669", label: "High Confidence" },
-  Medium: { bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", text: "#d97706", label: "Medium Confidence" },
-  Limited: { bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.25)", text: "#94a3b8", label: "Limited Confidence" },
-};
-
-function SourceTag({ sourceId }) {
-  const labels = {
-    COLLEGE_SCORECARD: "IPEDS",
-    SCHOOL_SITE_SCRAPE: "School Site",
-    KNOWLEDGE_BASE: "Program Data",
-  };
-  return (
-    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium"
-      style={{ background: "rgba(100,116,139,0.1)", color: "var(--t-text-faint, #94a3b8)", border: "1px solid rgba(100,116,139,0.15)" }}>
-      {labels[sourceId] || sourceId}
-    </span>
-  );
-}
-
-function ReasonItem({ item, icon: Icon, accentColor }) {
-  return (
-    <div className="flex items-start gap-2.5 py-2">
-      <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-        style={{ background: `${accentColor}15` }}>
-        <Icon className="w-3.5 h-3.5" style={{ color: accentColor }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] leading-relaxed" style={{ color: "var(--t-text)" }}>{item.text}</p>
-        {item.sources?.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {item.sources.map((s, i) => <SourceTag key={i} sourceId={s} />)}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ConfidenceBadge({ confidence }) {
-  const style = CONFIDENCE_STYLES[confidence?.level] || CONFIDENCE_STYLES.Limited;
-  return (
-    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
-      style={{ background: style.bg, color: style.text, border: `1px solid ${style.border}` }}
-      data-testid="insight-confidence-badge">
-      <ShieldCheck className="w-3 h-3" />
-      {style.label}
-    </div>
-  );
-}
-
-export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence }) {
-  const [expanded, setExpanded] = useState(false);
+export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence, program }) {
+  const [showInfo, setShowInfo] = useState(false);
 
   if (loading) {
     return (
-      <div className="rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      <div className="rounded-xl border p-5" style={{ backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
         data-testid="school-insight-loading">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(99,102,241,0.1)" }}>
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
-          </div>
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
           <div>
-            <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Analyzing this school for you...</p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Reviewing data sources and generating personalized insights</p>
+            <p className="text-sm font-semibold" style={{ color: "#1a1a2e" }}>Analyzing this school for you...</p>
+            <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>Reviewing data sources and generating personalized insights</p>
           </div>
         </div>
       </div>
@@ -80,123 +25,134 @@ export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence 
   const aiInsight = data.ai_insight || {};
   const reasons = aiInsight.top_reasons || [];
   const risks = aiInsight.top_risks || [];
-  const confidence = data.data_confidence || { level: "Limited" };
-  const disclaimers = data.disclaimers || [];
-  const confidenceReasons = confidence.reasons || [];
+
+  const division = (program?.division || "").toUpperCase();
+  const rosterLimit = division === "D1" || division === "D2" ? 18 : null;
+  const ctxTags = [];
+  if (division) ctxTags.push(`NCAA ${division}`);
+  if (division === "D1" || division === "D2") ctxTags.push("Equivalency Era");
+  if (rosterLimit) ctxTags.push(`Roster Limit: ${rosterLimit}`);
+
+  const now = new Date();
+  const updatedDate = `${now.toLocaleString("en-US", { month: "short" })} ${now.getFullYear()}`;
 
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+    <div className="rounded-xl border overflow-hidden"
+      style={{ backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
       data-testid="school-insight-card">
-      {/* Accent bar */}
-      <div style={{ height: 3, background: "linear-gradient(90deg, #6366f1, #8b5cf6)" }} />
-
-      <div className="p-5">
+      <div className="p-5 space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: "rgba(99,102,241,0.1)" }}>
-              <Sparkles className="w-5 h-5" style={{ color: "#6366f1" }} />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Why This School</h3>
-              <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>AI-powered analysis based on your profile</p>
-            </div>
+            <span className="text-xl" role="img" aria-label="brain">🧠</span>
+            <h3 className="text-base font-bold" style={{ color: "#1a1a2e" }} data-testid="insight-card-title">
+              Why This School / Why Not
+            </h3>
           </div>
-          <div className="flex items-center gap-2">
-            <ConfidenceBadge confidence={confidence} />
-            {onRefresh && (
-              <button onClick={onRefresh} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"
-                title="Refresh analysis" data-testid="insight-refresh-btn">
-                <RefreshCw className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-              </button>
-            )}
-          </div>
+          {onRefresh && (
+            <button onClick={onRefresh} className="p-1.5 rounded-lg transition-colors hover:bg-gray-100"
+              title="Refresh analysis" data-testid="insight-refresh-btn">
+              <RefreshCw className="w-3.5 h-3.5" style={{ color: "#9ca3af" }} />
+            </button>
+          )}
         </div>
 
-        {/* Top 3 Reasons */}
-        <div className="mb-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: "#6366f1" }}>
-            Top reasons this may be a good fit
-          </p>
-          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
-            {reasons.map((r, i) => (
-              <ReasonItem key={i} item={r} icon={ShieldCheck} accentColor="#059669" />
-            ))}
+        {/* Main content with left border */}
+        <div style={{ borderLeft: "2px solid rgba(99,102,241,0.15)", paddingLeft: 16 }}>
+          {/* AI attribution */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-base" role="img" aria-label="robot">🤖</span>
+            <p className="text-[13px]" style={{ color: "#6b7280" }}>
+              AI-generated based on coach, roster, and program insights.
+            </p>
           </div>
-        </div>
 
-        {/* Top 2 Risks */}
-        <div className="mb-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: "#f59e0b" }}>
-            Risks to consider
-          </p>
-          <div className="divide-y" style={{ borderColor: "var(--t-border)" }}>
-            {risks.map((r, i) => (
-              <ReasonItem key={i} item={r} icon={AlertTriangle} accentColor="#f59e0b" />
-            ))}
-          </div>
-        </div>
-
-        {/* Academic Completeness Flag */}
-        <AcademicCompletenessFlag completeness={dataConfidence?.academic_completeness} />
-
-        {/* Expandable details */}
-        <button onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1.5 text-[11px] font-medium transition-colors hover:opacity-80"
-          style={{ color: "var(--t-text-muted)" }}
-          data-testid="insight-expand-btn">
-          {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          {expanded ? "Hide details" : "Data sources & confidence"}
-        </button>
-
-        {expanded && (
-          <div className="mt-3 pt-3 space-y-3" style={{ borderTop: "1px solid var(--t-border)" }}>
-            {/* Confidence reasons */}
-            {confidenceReasons.length > 0 && (
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: "var(--t-text-muted)" }}>
-                  Confidence factors
-                </p>
-                <ul className="space-y-1">
-                  {confidenceReasons.map((r, i) => (
-                    <li key={i} className="flex items-start gap-1.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-                      <Info className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                      {r}
-                    </li>
-                  ))}
-                </ul>
+          {/* Two-column: Strengths + Factors */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 rounded-lg border overflow-hidden mb-4" style={{ borderColor: "#e5e7eb" }}>
+            {/* Left: Strengths */}
+            <div className="p-3.5 sm:border-r" style={{ borderColor: "#e5e7eb" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-5 h-5 rounded flex items-center justify-center" style={{ background: "rgba(16,185,129,0.12)" }}>
+                  <Check className="w-3.5 h-3.5" style={{ color: "#10b981" }} />
+                </span>
+                <h4 className="text-[13px] font-bold" style={{ color: "#1a1a2e" }}>Strengths of This Program</h4>
               </div>
-            )}
-
-            {/* Sources used */}
-            {insight.sources_used?.length > 0 && (
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1.5" style={{ color: "var(--t-text-muted)" }}>
-                  Data sources
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {insight.sources_used.map((s, i) => (
-                    <SourceTag key={i} sourceId={s.source_id} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Disclaimers */}
-            {disclaimers.length > 0 && (
-              <div className="rounded-lg p-2.5" style={{ background: "rgba(100,116,139,0.06)" }}>
-                {disclaimers.map((d, i) => (
-                  <p key={i} className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-faint, #94a3b8)" }}>
-                    {d}
-                  </p>
+              <ul className="space-y-2.5">
+                {reasons.map((r, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
+                    <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#10b981" }} />
+                    {r.text}
+                  </li>
                 ))}
+              </ul>
+            </div>
+
+            {/* Right: Factors to Consider */}
+            <div className="p-3.5 border-t sm:border-t-0" style={{ borderColor: "#e5e7eb" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-5 h-5 rounded flex items-center justify-center" style={{ background: "rgba(245,158,11,0.12)" }}>
+                  <AlertTriangle className="w-3.5 h-3.5" style={{ color: "#f59e0b" }} />
+                </span>
+                <h4 className="text-[13px] font-bold" style={{ color: "#1a1a2e" }}>Factors to Consider</h4>
               </div>
-            )}
+              <ul className="space-y-2.5">
+                {risks.map((r, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
+                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#f59e0b" }} />
+                    {r.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Context tags */}
+          {ctxTags.length > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap mb-3" data-testid="insight-context-tags">
+              {ctxTags.map((tag, i) => (
+                <span key={i} className="flex items-center">
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-medium"
+                    style={{ background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
+                    {tag}
+                  </span>
+                  {i < ctxTags.length - 1 && (
+                    <span className="mx-1 text-[10px]" style={{ color: "#cbd5e1" }}>·</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Disclaimer */}
+          <p className="text-[11px] italic" style={{ color: "#9ca3af" }}>
+            *This analysis should not be considered definitive.
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: "#f3f4f6" }}>
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className="inline-flex items-center gap-1.5 text-[12px] font-bold hover:opacity-70 transition-opacity"
+            style={{ color: "#1a1a2e" }}
+            data-testid="insight-info-btn">
+            Recruiting HQ Perspective
+            <Info className="w-3.5 h-3.5" style={{ color: "#93c5fd" }} />
+          </button>
+          <span className="text-[12px]" style={{ color: "#9ca3af" }}>
+            Updated: {updatedDate}
+          </span>
+        </div>
+
+        {/* Expandable info */}
+        {showInfo && (
+          <div className="rounded-lg px-4 py-3" style={{ background: "#f9fafb", border: "1px solid #f3f4f6" }}
+            data-testid="insight-info-panel">
+            <p className="text-[12px] leading-relaxed" style={{ color: "#6b7280" }}>
+              Based on available information and current landscape. Factors may evolve with time.
+            </p>
           </div>
         )}
-
-        <ThisMayChangeCopy />
       </div>
     </div>
   );
