@@ -467,7 +467,7 @@ export default function UniversityKnowledgeBase() {
       ) : (
         <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" : "flex flex-col gap-2.5"} data-testid="kb-grid">
           {enriched.map(uni => (
-            <SchoolCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} />
+            <SchoolCard key={uni.university_name} uni={uni} adding={adding} addToBoard={addToBoard} boardSchools={boardSchools} navigate={navigate} onRiskBadgeClick={(u, b) => setRiskDrawer({ badges: u.risk_badges, active: b })} />
           ))}
         </div>
       )}
