@@ -3,8 +3,74 @@ from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription
 from datetime import datetime, timezone
+import re
 
 router = APIRouter(prefix="/api")
+
+
+def _normalize_school_name(name: str) -> str:
+    """Normalize a school name for fuzzy comparison."""
+    n = name.lower().strip()
+    for word in ["university of", "university", "college of", "college", "the ", "– ", "- "]:
+        n = n.replace(word, " ")
+    n = re.sub(r"[^a-z0-9\s]", "", n)
+    n = re.sub(r"\s+", " ", n).strip()
+    return n
+
+
+def _build_kb_index(all_kb):
+    """Build lookup indexes from knowledge base entries for fast matching."""
+    by_name = {}
+    by_domain = {}
+    by_norm = {}
+    for kb in all_kb:
+        name = kb.get("university_name", "")
+        by_name[name] = kb
+        domain = kb.get("domain", "")
+        if domain:
+            by_domain[domain] = kb
+        norm = _normalize_school_name(name)
+        if norm:
+            by_norm[norm] = kb
+    return by_name, by_domain, by_norm
+
+
+def _find_kb_match(program, by_name, by_domain, by_norm):
+    """Find the best KB entry for a program using multiple strategies."""
+    name = program.get("university_name", "")
+
+    # Strategy 1: Exact name
+    if name in by_name:
+        return by_name[name]
+
+    # Strategy 2: Domain
+    domain = program.get("domain", "")
+    if domain and domain in by_domain:
+        return by_domain[domain]
+
+    # Strategy 3: Normalized text match
+    norm = _normalize_school_name(name)
+    if norm in by_norm:
+        return by_norm[norm]
+
+    # Strategy 4: Substring matching on key words
+    key_words = [w for w in norm.split() if len(w) > 2]
+    if not key_words:
+        return None
+
+    best = None
+    best_score = 0
+    for kb_norm, kb in by_norm.items():
+        matches = sum(1 for w in key_words if w in kb_norm)
+        if matches < len(key_words) * 0.6:
+            continue
+        len_sim = 1 - abs(len(norm) - len(kb_norm)) / max(len(norm), len(kb_norm), 1)
+        score = matches + len_sim
+        if score > best_score:
+            best_score = score
+            best = kb
+
+    return best if best_score >= 1.5 else None
 
 @router.get("/recruiting-profile")
 async def get_recruiting_profile(request: Request):
