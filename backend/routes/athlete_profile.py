@@ -649,4 +649,5 @@ async def get_risk_badges(program_id: str, request: Request):
 
     match = _compute_suggestion_match(program, profile)
     badges = _compute_risk_badges(program, profile, match["reasons"])
-    return {"badges": badges, "empty_state": len(badges) == 0}
+    timeline = _compute_timeline_status(program, profile)
+    return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline}
