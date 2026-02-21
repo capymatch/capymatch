@@ -398,7 +398,7 @@ async def trigger_gpa_refresh(request: Request):
     return {"status": "started", "log_file": "/tmp/gpa_manual_refresh.log"}
 
 
-@router.get("/admin/gpa-status")
+@router.get("/gpa-status")
 async def gpa_data_status():
     """Get GPA data coverage stats."""
     real = await db.university_knowledge_base.count_documents({"scorecard.gpa_is_estimated": False, "scorecard.avg_gpa": {"$ne": None}})
