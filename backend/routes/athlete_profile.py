@@ -445,7 +445,7 @@ def _compute_suggestion_match(school, profile):
 
     # GPA tier
     if user_gpa:
-        school_avg_gpa = scorecard.get("avg_gpa")
+        school_avg_gpa = scorecard.get("avg_gpa") or scorecard.get("estimated_avg_gpa")
         if school_avg_gpa:
             try:
                 school_avg_gpa = float(school_avg_gpa)
