@@ -45,6 +45,18 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
     - **Source Freshness Awareness**: `last_updated` timestamp in API responses from scraped data timestamps.
     - **"This May Change" Microcopy**: Gentle disclaimer at bottom of every intelligence card: "Recruiting data changes frequently. Verify details directly with the school's coaching staff."
     - Frontend: `TrustIndicators.js` (DataConfidenceBadge, AcademicCompletenessFlag, ThisMayChangeCopy components).
+41. **Comprehensive School Data Scraping** (Feb 21, 2026) — Extended ProductiveRecruit scraper to extract ALL academic data + school logos for 1,053 universities:
+    - **SAT**: 770 schools (73.1%) — up from near 0
+    - **ACT**: 747 schools (70.9%) — up from near 0
+    - **Logos**: 961 schools (91.3%) — NEW
+    - **Acceptance Rate**: 919 schools (87.3%) — significant improvement
+    - **Graduation Rate**: ~1,040 schools (98.8%) — NEW
+    - Also scrapes: retention rate, student-faculty ratio, avg annual cost, median earnings, student size, school type
+    - Backend: `scripts/scrape_school_data.py`, admin endpoints `POST /api/admin/scrape-school-data` and `GET /api/admin/scrape-school-data/status`
+42. **School Logos Integration** (Feb 21, 2026) — University logos now display across the entire app:
+    - Enhanced `UniversityLogo.js` component with new `logoUrl` prop and improved fallback chain (scraped logo → icon.horse → Google favicons → initials)
+    - Integrated into: Find Schools grid cards, My Schools board cards, Journey page header
+    - Backend: `logo_url` field now returned from `/api/match-scores`, `/api/suggested-schools`, `/api/programs`
 
 ## Data Reliability Improvements (Feb 21, 2026)
 - **Fuzzy KB Matching**: Multi-strategy lookup (exact → domain → normalized text) resolves 90% of name mismatches (e.g., "BYU" → "Brigham Young University", "Tampa University" → "University of Tampa"). Shared logic in `athlete_profile.py` used by match-scores, risk-badges, and AI insight endpoints.
