@@ -27,7 +27,7 @@ async def _field_coverage(collection, field_path: str) -> dict:
         return {"total": 0, "populated": 0, "coverage_pct": 0.0}
 
     populated = await collection.count_documents(
-        {field_path: {"$exists": True, "$ne": None, "$ne": ""}}
+        {field_path: {"$exists": True, "$ne": None, "$nin": [None, ""]}}
     )
     return {
         "total": total,
