@@ -13,24 +13,16 @@ A public-facing Volleyball Recruiting CRM application for athletes and parents t
 - Pro User: `pro@test.com` / `password`
 - Google Auth User: `douglas@yeslms.com` / `password` (Premium)
 
-## Match Scoring Algorithm (v3 — Feb 20, 2026)
-**Weights**: Division 20%, Region 20%, Priorities 20%, **Academic Fit 40%**
-**Academic Fit**: Tier-based scoring with geometric mean (one weak metric drags all down)
-- **Tiers**: Strong Fit (1.0), Good Fit (0.85), Slight Reach (0.5), Reach (0.2), High Reach (0.05)
-- **Benchmarks**: D1 SAT ~1150/ACT ~25/GPA ~3.2; D2 SAT ~1050/ACT ~22/GPA ~2.9
-- **Geo mean**: Prevents one strong metric from masking a weak one
-- **UI**: Color-coded badges (green/amber/red), contextual language, disclaimer text
-
 ## Completed Features
 1-43. [See previous PRD entries — Trust & Safety, Data Scraping, Logos, Commitment Stability, etc.]
-44. **Journey Header Card Redesign** (Feb 21, 2026) — Redesigned the top dark card on the Recruiting Journey page to match user-provided mockup:
-    - Circular back button, school logo + name on top row
-    - "Active/Inactive" green pill toggle on top-right with Compare button
-    - Metadata row: Pulse indicator (Neutral/Hot/Warm), Division tag, Match % badge, Conference/Events text
-    - Dark-themed inline risk badge pills (purple=Timeline Risk, green=Funding Dependent, gray=Roster Tight, orange=Academic Reach) - clickable to open Risk Explainer Drawer
-    - Progress rail timeline (Added → Outreach → Talking → Visit → Offer → Committed)
-    - My Notes floating tab on right edge, Academic data completeness alert below header
-    - Fixed hydration warning (p→div) in RecruitingBoard.js
+44. **Journey Header Card Redesign** (Feb 21, 2026) — Circular back button, school logo + name, Active/Inactive pill, metadata row, dark-themed risk badge pills, refined progress rail.
+45. **NIL Readiness Card Redesign** (Feb 21, 2026) — Redesigned to match user mockup:
+    - Money bag emoji + "NIL Readiness" title with timeline pill (e.g. "Fills Early") on right
+    - Status banner with colored dot (Program-backed/Emerging support/Limited availability)
+    - Two-column layout: "What This Involves" (green checkmarks) | "What This Means for You" (paragraph)
+    - Context tags (NCAA D1 · Equivalency Era · Roster Limit: 18)
+    - Disclaimer + Data confidence footer with tooltip
+    - Backend enriched with new fields: status_label, involves, meaning, context_tags
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (on hold)
