@@ -378,9 +378,37 @@ If no changes found, return []"""
             await asyncio.sleep(3600)  # Retry in 1 hour on error
 
 
+# ── Monthly GPA Refresh Job ──────────────────────────
+async def gpa_refresh_monthly():
+    """Monthly background job to refresh GPA data from ProductiveRecruit."""
+    import re as _re
+    import subprocess
+    while True:
+        try:
+            # Run every 30 days
+            await asyncio.sleep(30 * 24 * 3600)
+
+            logger.info("GPA Refresh: Starting monthly scrape")
+            result = subprocess.run(
+                ["python3", "scripts/scrape_gpa.py"],
+                capture_output=True, text=True, timeout=7200,  # 2 hour timeout
+                env={**os.environ, "MONGO_URL": os.environ.get("MONGO_URL", ""), "DB_NAME": os.environ.get("DB_NAME", "")},
+                cwd=str(ROOT_DIR),
+            )
+            logger.info(f"GPA Refresh: Complete. stdout={result.stdout[-200:]}")
+            if result.returncode != 0:
+                logger.error(f"GPA Refresh error: {result.stderr[-300:]}")
+
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"GPA Refresh background error: {e}")
+            await asyncio.sleep(86400)  # Retry next day
+
+
 @app.on_event("startup")
 async def startup_event():
-    global reply_check_task, coach_watch_task, inbound_scan_task
+    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task
     
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
@@ -393,6 +421,10 @@ async def startup_event():
     # Start background task for inbound coach contact scanning
     inbound_scan_task = asyncio.create_task(scan_inbound_contacts())
     logger.info("Started background task: inbound coach contact scanner (runs every 2 hours)")
+
+    # Start monthly GPA refresh
+    gpa_refresh_task = asyncio.create_task(gpa_refresh_monthly())
+    logger.info("Started background task: GPA refresh (runs monthly)")
 
 
 @app.on_event("shutdown")
