@@ -254,33 +254,33 @@ async def build_payload(db, program_id: str, tenant_id: str, debug: bool = False
     # 4. Extract sections
     # ------------------------------------------------------------------
     school, school_total = _extract_section(
-        contract["school"], raw_docs, sources, missing_fields, "school", academic_source
+        contract["school"], raw_docs, sources, missing_fields, "school", academic_source, debug
     )
 
     academics_raw, acad_total = _extract_section(
-        contract["academics"], raw_docs, sources, missing_fields, "academics", academic_source
+        contract["academics"], raw_docs, sources, missing_fields, "academics", academic_source, debug
     )
 
     athlete_raw, athlete_total = _extract_section(
-        contract["athlete"], raw_docs, sources, missing_fields, "athlete", athlete_source
+        contract["athlete"], raw_docs, sources, missing_fields, "athlete", athlete_source, debug
     )
 
     roster, roster_total = _extract_section(
-        contract["roster"], raw_docs, sources, missing_fields, "roster", None
+        contract["roster"], raw_docs, sources, missing_fields, "roster", None, debug
     )
 
     timeline_section, timeline_total = _extract_section(
-        contract["timeline"], raw_docs, sources, missing_fields, "timeline", None
+        contract["timeline"], raw_docs, sources, missing_fields, "timeline", None, debug
     )
 
     nil_section, nil_total = _extract_section(
-        contract["nil"], raw_docs, sources, missing_fields, "nil", None
+        contract["nil"], raw_docs, sources, missing_fields, "nil", None, debug
     )
 
     recruiting, _ = _extract_section(
         {k: v for k, v in contract["recruiting"].items()
          if k not in ("interactions_collection", "events_collection")},
-        raw_docs, sources, missing_fields, "recruiting", program_source
+        raw_docs, sources, missing_fields, "recruiting", program_source, debug
     )
     recruiting["interaction_count"] = interaction_count
     if latest_interaction:
