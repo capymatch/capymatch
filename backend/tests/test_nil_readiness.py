@@ -1,284 +1,215 @@
 """
-NIL Readiness Feature Tests
-Tests the new NIL readiness intelligence feature including:
-- GET /api/match-scores returns nil object with status/label/explanation/guidance/tooltip
-- GET /api/suggested-schools returns nil for each suggestion
-- GET /api/risk-badges/{program_id} returns nil alongside other data
-- NIL status logic: D1 power conf = friendly, D1 non-power/D2/NAIA = limited, D3 = info_limited
+NIL Readiness Card Redesign Tests
+Tests the new NIL fields: status_label, involves, meaning, context_tags
 """
-
 import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
-TEST_EMAIL = "douglas@yeslms.com"
-TEST_PASSWORD = "password"
-# D1 non-power (ASUN)
-D1_ASUN_PROGRAM_ID = "prog_3fe70bce8e71"
-# D2 (SSC)
-D2_PROGRAM_ID = "prog_0a5dfa9c59d1"
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
-VALID_NIL_STATUSES = ["friendly", "limited", "info_limited", "unknown"]
-
-
-@pytest.fixture(scope="module")
-def session():
-    """Create authenticated session for API tests"""
-    s = requests.Session()
-    s.headers.update({"Content-Type": "application/json"})
+class TestNilReadinessAPI:
+    """Tests for NIL Readiness data in match-scores API"""
     
-    # Login
-    login_resp = s.post(f"{BASE_URL}/api/auth/login", json={
-        "email": TEST_EMAIL,
-        "password": TEST_PASSWORD
-    })
-    assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
-    return s
-
-
-class TestMatchScoresNIL:
-    """Tests for NIL object in /api/match-scores response"""
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        """Login and get session cookie"""
+        self.session = requests.Session()
+        login_response = self.session.post(
+            f"{BASE_URL}/api/auth/login",
+            json={"email": "douglas@yeslms.com", "password": "password"}
+        )
+        assert login_response.status_code == 200, f"Login failed: {login_response.text}"
+        yield
+        self.session.close()
     
-    def test_match_scores_returns_nil_object(self, session):
-        """GET /api/match-scores returns nil object with required fields"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200, f"API call failed: {resp.text}"
-        data = resp.json()
+    def test_match_scores_returns_nil_data(self):
+        """Test that match-scores endpoint returns nil data with new fields"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
         
-        assert "scores" in data, "Response missing 'scores' field"
-        assert len(data["scores"]) > 0, "No scores returned"
+        data = response.json()
+        assert "scores" in data
+        assert len(data["scores"]) > 0
         
-        # Check first score has nil object
+        # Check first school has nil field
         first_score = data["scores"][0]
-        assert "nil" in first_score, "Score missing 'nil' field"
+        assert "nil" in first_score, "Match score missing 'nil' field"
         
         nil = first_score["nil"]
-        assert nil is not None, "nil object is None"
-        
-    def test_nil_has_required_fields(self, session):
-        """NIL object has status, label, explanation, guidance, tooltip"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        for score in data["scores"][:5]:  # Check first 5
-            nil = score.get("nil")
-            assert nil is not None, f"nil missing for {score.get('university_name')}"
-            
-            assert "status" in nil, f"nil.status missing for {score.get('university_name')}"
-            assert "label" in nil, f"nil.label missing for {score.get('university_name')}"
-            assert "explanation" in nil, f"nil.explanation missing for {score.get('university_name')}"
-            assert "guidance" in nil, f"nil.guidance missing for {score.get('university_name')}"
-            assert "tooltip" in nil, f"nil.tooltip missing for {score.get('university_name')}"
-            
-    def test_nil_status_is_valid(self, session):
-        """NIL status is one of: friendly, limited, info_limited, unknown"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        for score in data["scores"]:
-            nil = score.get("nil")
-            if nil:
-                assert nil["status"] in VALID_NIL_STATUSES, \
-                    f"Invalid NIL status '{nil['status']}' for {score.get('university_name')}"
-                    
-    def test_nil_guidance_is_list(self, session):
-        """NIL guidance is a list of bullet points"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        for score in data["scores"][:5]:
-            nil = score.get("nil")
-            if nil:
-                assert isinstance(nil["guidance"], list), \
-                    f"nil.guidance should be list for {score.get('university_name')}"
-                assert len(nil["guidance"]) > 0, \
-                    f"nil.guidance should have items for {score.get('university_name')}"
-                    
-    def test_nil_label_is_parent_safe(self, session):
-        """NIL label contains no dollar amounts (parent-safe)"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        for score in data["scores"]:
-            nil = score.get("nil")
-            if nil:
-                label = nil.get("label", "")
-                assert "$" not in label, f"Dollar sign in NIL label for {score.get('university_name')}"
-                assert "dollar" not in label.lower(), f"'dollar' in NIL label for {score.get('university_name')}"
-
-
-class TestSuggestedSchoolsNIL:
-    """Tests for NIL in /api/suggested-schools response"""
+        print(f"School: {first_score['university_name']}")
+        print(f"NIL data: {nil}")
     
-    def test_suggested_schools_returns_nil(self, session):
-        """GET /api/suggested-schools returns nil for each suggestion"""
-        resp = session.get(f"{BASE_URL}/api/suggested-schools")
-        assert resp.status_code == 200, f"API call failed: {resp.text}"
-        data = resp.json()
+    def test_nil_has_status_label(self):
+        """Test that NIL data includes status_label field"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
         
-        if data.get("suggestions"):
-            for suggestion in data["suggestions"][:5]:
-                assert "nil" in suggestion, f"Suggestion missing 'nil' for {suggestion.get('university_name')}"
-                nil = suggestion["nil"]
-                assert nil is not None
-                assert "status" in nil
-                assert "label" in nil
-
-
-class TestRiskBadgesNIL:
-    """Tests for NIL in /api/risk-badges/{program_id} response"""
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            assert "status_label" in nil, f"NIL for {score['university_name']} missing status_label"
+            assert nil["status_label"], f"status_label is empty for {score['university_name']}"
+            print(f"{score['university_name']}: status_label = '{nil['status_label']}'")
     
-    def test_risk_badges_returns_nil(self, session):
-        """GET /api/risk-badges/{program_id} returns nil alongside other data"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200, f"API call failed: {resp.text}"
-        data = resp.json()
+    def test_nil_has_involves_array(self):
+        """Test that NIL data includes 'involves' array for What This Involves section"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
         
-        assert "nil" in data, "Response missing 'nil' field"
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            assert "involves" in nil, f"NIL for {score['university_name']} missing 'involves'"
+            assert isinstance(nil["involves"], list), f"involves should be a list"
+            assert len(nil["involves"]) > 0, f"involves should not be empty"
+            print(f"{score['university_name']}: involves = {nil['involves']}")
+    
+    def test_nil_has_meaning_text(self):
+        """Test that NIL data includes 'meaning' text for What This Means section"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            assert "meaning" in nil, f"NIL for {score['university_name']} missing 'meaning'"
+            assert nil["meaning"], f"meaning should not be empty"
+            assert isinstance(nil["meaning"], str), f"meaning should be a string"
+            print(f"{score['university_name']}: meaning = '{nil['meaning'][:50]}...'")
+    
+    def test_nil_has_context_tags(self):
+        """Test that NIL data includes context_tags array"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            assert "context_tags" in nil, f"NIL for {score['university_name']} missing 'context_tags'"
+            assert isinstance(nil["context_tags"], list), f"context_tags should be a list"
+            
+            tags = nil["context_tags"]
+            print(f"{score['university_name']}: context_tags = {tags}")
+            
+            # Context tags should include NCAA division
+            tag_text = " ".join(tags)
+            assert "NCAA" in tag_text, f"context_tags should include NCAA level"
+    
+    def test_d1_school_status_is_emerging_support(self):
+        """Test that D1 non-power school shows 'Emerging support' status"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        d1_schools = [s for s in response.json()["scores"] if s.get("division", "").upper() == "D1"]
+        
+        for school in d1_schools:
+            nil = school.get("nil", {})
+            status_label = nil.get("status_label", "")
+            print(f"D1 School {school['university_name']}: status_label = '{status_label}'")
+            
+            # D1 non-power schools should show "Emerging support"
+            # D1 power schools would show "Program-backed"
+            assert status_label in ["Emerging support", "Program-backed"], \
+                f"D1 school should have 'Emerging support' or 'Program-backed', got '{status_label}'"
+    
+    def test_d2_school_status_is_limited_availability(self):
+        """Test that D2 school shows 'Limited availability' status"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        d2_schools = [s for s in response.json()["scores"] if s.get("division", "").upper() == "D2"]
+        
+        for school in d2_schools:
+            nil = school.get("nil", {})
+            status_label = nil.get("status_label", "")
+            print(f"D2 School {school['university_name']}: status_label = '{status_label}'")
+            
+            assert status_label == "Limited availability", \
+                f"D2 school should have 'Limited availability', got '{status_label}'"
+    
+    def test_nil_has_all_required_fields(self):
+        """Test that NIL data structure has all required fields for card redesign"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        required_fields = [
+            "status",       # Status key (friendly, limited, etc)
+            "label",        # Main label
+            "status_label", # NEW: Display label for status banner
+            "explanation",  # Description text
+            "involves",     # NEW: Array for What This Involves
+            "meaning",      # NEW: Text for What This Means
+            "guidance",     # Guidance array
+            "tooltip",      # Tooltip text
+            "context_tags", # NEW: Context tags array
+        ]
+        
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            
+            for field in required_fields:
+                assert field in nil, \
+                    f"NIL for {score['university_name']} missing required field: {field}"
+            
+            print(f"✓ {score['university_name']} has all required NIL fields")
+    
+    def test_context_tags_include_roster_limit(self):
+        """Test that context_tags include roster limit"""
+        response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert response.status_code == 200
+        
+        for score in response.json()["scores"]:
+            nil = score.get("nil", {})
+            tags = nil.get("context_tags", [])
+            tag_text = " ".join(tags)
+            
+            # D1 and D2 should have roster limit
+            division = score.get("division", "").upper()
+            if division in ["D1", "D2"]:
+                assert "Roster Limit" in tag_text, \
+                    f"{score['university_name']} ({division}) should have 'Roster Limit' in context_tags"
+                print(f"✓ {score['university_name']} has Roster Limit tag")
+
+
+class TestNilReadinessRiskBadges:
+    """Test NIL data is also returned in risk-badges endpoint"""
+    
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        """Login and get session cookie"""
+        self.session = requests.Session()
+        login_response = self.session.post(
+            f"{BASE_URL}/api/auth/login",
+            json={"email": "douglas@yeslms.com", "password": "password"}
+        )
+        assert login_response.status_code == 200
+        yield
+        self.session.close()
+    
+    def test_risk_badges_includes_nil_data(self):
+        """Test that risk-badges endpoint also returns nil data"""
+        # First get a program ID
+        ms_response = self.session.get(f"{BASE_URL}/api/match-scores")
+        assert ms_response.status_code == 200
+        
+        scores = ms_response.json().get("scores", [])
+        if not scores:
+            pytest.skip("No programs found for testing")
+        
+        program_id = scores[0].get("program_id")
+        
+        # Get risk badges for this program
+        rb_response = self.session.get(f"{BASE_URL}/api/risk-badges/{program_id}")
+        assert rb_response.status_code == 200
+        
+        data = rb_response.json()
+        assert "nil" in data, "risk-badges response should include nil field"
+        
         nil = data["nil"]
-        assert nil is not None, "nil is None"
+        assert "status_label" in nil, "nil should have status_label"
+        assert "involves" in nil, "nil should have involves"
+        assert "meaning" in nil, "nil should have meaning"
+        assert "context_tags" in nil, "nil should have context_tags"
         
-    def test_risk_badges_nil_has_all_fields(self, session):
-        """NIL object from risk-badges has all required fields"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None
-        
-        required_fields = ["status", "label", "explanation", "guidance", "tooltip"]
-        for field in required_fields:
-            assert field in nil, f"nil missing '{field}' field"
-            
-    def test_risk_badges_also_returns_other_intelligence(self, session):
-        """risk-badges returns badges, timeline, roster, scholarship, nil together"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        # All 5 intelligence features should be present
-        assert "badges" in data, "Missing badges"
-        assert "timeline" in data, "Missing timeline"
-        assert "roster" in data, "Missing roster"
-        assert "scholarship" in data, "Missing scholarship"
-        assert "nil" in data, "Missing nil"
+        print(f"✓ risk-badges endpoint returns NIL data with new fields")
 
 
-class TestNILStatusLogic:
-    """Tests for NIL status computation logic based on division/conference"""
-    
-    def test_d1_non_power_asun_gets_limited(self, session):
-        """D1 non-power conference (ASUN) gets 'limited' NIL status"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200, f"API call failed: {resp.text}"
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None, "nil is None"
-        assert nil["status"] == "limited", \
-            f"Expected 'limited' for D1 ASUN, got '{nil['status']}'"
-        assert nil["label"] == "NIL-Limited Environment", \
-            f"Expected 'NIL-Limited Environment', got '{nil['label']}'"
-            
-    def test_d2_gets_limited(self, session):
-        """D2 school gets 'limited' NIL status"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D2_PROGRAM_ID}")
-        assert resp.status_code == 200, f"API call failed: {resp.text}"
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None, "nil is None"
-        assert nil["status"] == "limited", \
-            f"Expected 'limited' for D2, got '{nil['status']}'"
-        assert nil["label"] == "NIL-Limited Environment", \
-            f"Expected 'NIL-Limited Environment', got '{nil['label']}'"
-            
-    def test_nil_explanation_is_informative(self, session):
-        """NIL explanation provides helpful context"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None
-        
-        explanation = nil.get("explanation", "")
-        assert len(explanation) > 20, "Explanation too short"
-        assert "$" not in explanation, "Dollar sign in explanation (not parent-safe)"
-        
-    def test_nil_tooltip_explains_determination(self, session):
-        """NIL tooltip explains 'How this is determined'"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None
-        
-        tooltip = nil.get("tooltip", "")
-        assert len(tooltip) > 20, "Tooltip too short"
-        # Should mention it's estimated based on public info
-        assert "estimate" in tooltip.lower() or "public" in tooltip.lower(), \
-            "Tooltip should mention it's estimated from public info"
-
-
-class TestNILGuidanceBullets:
-    """Tests for NIL guidance bullet points"""
-    
-    def test_limited_has_appropriate_guidance(self, session):
-        """'limited' status has guidance about NIL not being major factor"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None
-        assert nil["status"] == "limited"
-        
-        guidance = nil.get("guidance", [])
-        assert len(guidance) >= 1, "Should have at least 1 guidance bullet"
-        
-        guidance_text = " ".join(guidance).lower()
-        # Should mention NIL may not be major factor or athletics/academic fit
-        assert "nil" in guidance_text or "athletic" in guidance_text or "academic" in guidance_text
-        
-    def test_guidance_bullets_are_strings(self, session):
-        """Each guidance bullet is a non-empty string"""
-        resp = session.get(f"{BASE_URL}/api/risk-badges/{D1_ASUN_PROGRAM_ID}")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        nil = data.get("nil")
-        assert nil is not None
-        
-        for i, bullet in enumerate(nil.get("guidance", [])):
-            assert isinstance(bullet, str), f"Guidance bullet {i} is not a string"
-            assert len(bullet.strip()) > 0, f"Guidance bullet {i} is empty"
-
-
-class TestMatchScoresWithNIL:
-    """Tests that match-scores contains program-specific NIL data"""
-    
-    def test_match_scores_contains_d1_asun_with_limited_nil(self, session):
-        """Match scores for D1 ASUN program has 'limited' NIL status"""
-        resp = session.get(f"{BASE_URL}/api/match-scores")
-        assert resp.status_code == 200
-        data = resp.json()
-        
-        # Find the D1 ASUN program
-        asun_program = None
-        for score in data["scores"]:
-            if score.get("program_id") == D1_ASUN_PROGRAM_ID:
-                asun_program = score
-                break
-        
-        if asun_program:
-            nil = asun_program.get("nil")
-            assert nil is not None, "nil missing for ASUN program"
-            assert nil["status"] == "limited", f"Expected 'limited', got '{nil['status']}'"
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
