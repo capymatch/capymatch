@@ -213,6 +213,15 @@ export default function RecruitingJourney() {
               )}
               <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{program.conference}{program.region ? ` · ${program.region}` : ""} · {timeline.length} events</span>
             </div>
+            {matchScore && (
+              <div className="mt-2">
+                {riskBadges.length > 0 ? (
+                  <RiskBadgeRow badges={riskBadges} max={4} onBadgeClick={(b) => setRiskDrawer(b)} />
+                ) : (
+                  <RiskBadgeEmpty />
+                )}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button variant="outline" size="sm" className="text-[11px] h-8 hidden sm:flex" onClick={() => navigate(`/compare?selected=${programId}`)}
