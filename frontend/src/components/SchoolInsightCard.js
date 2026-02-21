@@ -138,6 +138,9 @@ export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence 
           </div>
         </div>
 
+        {/* Academic Completeness Flag */}
+        <AcademicCompletenessFlag completeness={dataConfidence?.academic_completeness} />
+
         {/* Expandable details */}
         <button onClick={() => setExpanded(!expanded)}
           className="flex items-center gap-1.5 text-[11px] font-medium transition-colors hover:opacity-80"
