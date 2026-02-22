@@ -53,6 +53,7 @@ print(f"Tenant created: {tenant_id}")
 # ─── 3. CREATE ATHLETE PROFILE ───
 db.athlete_profiles.insert_one({
     "tenant_id": tenant_id,
+    "athlete_name": "Emma Mitchell",
     "questionnaire_completed": True,
     "positions": ["Outside Hitter", "Opposite Hitter"],
     "grad_year": "2027",
