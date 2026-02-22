@@ -58,6 +58,12 @@ All 5 micro-agents built, tested, and wired. Three-stage architecture: Schema Ma
 3. "Recruiting HQ" branding references → updated to CapyMatch
 4. Orphaned test data → cleaned up (42 users, 18 tenants, 62 interactions removed)
 
+## Demo Data Freshness Fix (Feb 22, 2026)
+- **Critical Bug**: Demo account had stale interaction dates causing "Coach replied 26 days ago" and false "Follow-Up Due" alerts
+- **Fix**: Created `scripts/refresh_demo_dates.py` that freshens coach reply dates and pushes overdue next_action_due dates into the future
+- **Prevention**: Added daily background task in `server.py` startup to auto-refresh demo dates
+- **Root cause**: Static demo data with hardcoded dates that become stale over time
+
 ## Completed — Feb 22, 2026 (Session 2)
 - **User Profile Update**: Athletes can now edit their name and email from Account page
   - Backend: `PUT /api/auth/update-account` — updates `users`, `tenants`, `athlete_profiles` collections
