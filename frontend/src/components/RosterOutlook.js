@@ -137,6 +137,10 @@ export function RosterRealityCard({ roster, dataConfidence, loading, onRefresh, 
             )}
           </div>
 
+          {roster.status === "unknown" && programId && (
+            <ImproveCardNudge cardType="roster_stability" programId={programId} />
+          )}
+
           <ThisMayChangeCopy />
         </div>
       </div>
