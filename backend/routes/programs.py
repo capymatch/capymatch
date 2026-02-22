@@ -577,6 +577,8 @@ async def get_program_journey(program_id: str, request: Request):
         # Map stored type to timeline event_type
         type_map = {
             "email": "email_sent",
+            "email_sent": "email_sent",
+            "email_received": "email_received",
             "phone_call": "phone_call",
             "video_call": "video_call",
             "text_message": "text_message",
@@ -591,7 +593,8 @@ async def get_program_journey(program_id: str, request: Request):
         event_type = type_map.get(itype_lower, "interaction")
         
         uni_name = i.get("university_name") or ""
-        if itype_lower == "coach_reply":
+        is_coach_msg = itype_lower in ("coach_reply", "email_received")
+        if is_coach_msg:
             title = "Coach replied"
         elif itype_lower in ("camp", "camp_meeting", "campus_visit", "showcase"):
             title = f"{uni_name} {itype}".strip() if uni_name else itype
