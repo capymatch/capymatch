@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
 import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
-import { } from "../components/TrustIndicators";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
