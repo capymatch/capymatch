@@ -96,7 +96,7 @@ export default function Analytics() {
 
       // Response rates
       const contacted = programs.filter(p => p.recruiting_status && p.recruiting_status !== "Not Contacted").length;
-      const replied = programs.filter(p => p.reply_status === "Replied").length;
+      const replied = programs.filter(p => p.reply_status === "Reply Received" || p.reply_status === "In Conversation").length;
       const responseRate = contacted > 0 ? Math.round((replied / contacted) * 100) : 0;
 
       // Offers
@@ -129,8 +129,8 @@ export default function Analytics() {
 
   const divColors = { D1: "#10b981", D2: "#3b82f6", D3: "#8b5cf6", NAIA: "#f59e0b", JUCO: "#ef4444", Unknown: "#6b7280" };
   const statusColors = {
-    "Not Contacted": "#6b7280", "Contacted": "#3b82f6", "Actively Recruiting": "#8b5cf6",
-    "Active Communication": "#2ec4b6", "Offer Received": "#10b981", "Not a Fit / Closed": "#ef4444",
+    "Not Contacted": "#6b7280", "Contacted": "#3b82f6", "Some Interest": "#8b5cf6",
+    "Active Conversation": "#2ec4b6", "Offer Received": "#10b981", "Not a Fit / Closed": "#ef4444",
   };
 
   const divSegments = Object.entries(data?.divCounts || {}).map(([k, v]) => ({ label: k, value: v, color: divColors[k] || "#6b7280" }));
