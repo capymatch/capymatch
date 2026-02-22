@@ -302,9 +302,7 @@ export default function LandingPage() {
       <footer className="py-8" style={{ borderTop: "1px solid #e8eeeb" }}>
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: "#2ec4b6" }}>
-              <Activity className="w-3 h-3 text-white" strokeWidth={2.5} />
-            </div>
+            <img src="/images/capymatch-logo.png" alt="CapyMatch" className="w-7 h-7 rounded-md object-cover" />
             <span className="font-bold text-sm" style={{ color: "#1a2b2a" }}>CapyMatch</span>
           </div>
           <p className="text-xs" style={{ color: "#8fa5a0" }}>Built for volleyball families navigating high-visibility recruiting seasons.</p>
