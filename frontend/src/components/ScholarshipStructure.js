@@ -1,6 +1,7 @@
-import { GraduationCap, Info, X } from "lucide-react";
+import { GraduationCap, Info, X, RefreshCw, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
+import { ImproveCardNudge } from "./ImproveCardNudge";
 
 const STATUS_CONFIG = {
   mix:     { accent: "#475569", bg: "#F8FAFC", text: "#334155" },
@@ -10,9 +11,25 @@ const STATUS_CONFIG = {
 };
 
 /* ── Full Scholarship Structure Card for Journey / Detail pages ── */
-export function ScholarshipStructureCard({ scholarship, dataConfidence }) {
+export function ScholarshipStructureCard({ scholarship, dataConfidence, loading, onRefresh, programId }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showNilTooltip, setShowNilTooltip] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="rounded-xl border p-5" style={{ backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+        data-testid="scholarship-structure-loading">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "#1a1a2e" }}>Analyzing scholarship structure...</p>
+            <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>Reviewing available financial aid data</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!scholarship) return null;
   const cfg = STATUS_CONFIG[scholarship.status] || STATUS_CONFIG.unknown;
 
