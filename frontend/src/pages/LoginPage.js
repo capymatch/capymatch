@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, User, Lock, Eye, EyeOff, Loader2, Mail, Compass, ArrowRight, Zap } from "lucide-react";
+import { Sparkles, User, Lock, Eye, EyeOff, Loader2, Mail, Compass, ArrowRight, Zap, ChevronLeft, CheckCircle } from "lucide-react";
 import api from "../lib/api";
 
 const BANNER_IMG = "https://static.prod-images.emergentagent.com/jobs/9e6ea980-8158-4981-b7bd-5e0116513214/images/f7dc0782833b6c45f432631fe3a1b15f484365361d0515f6847bd9b496686c2d.png";
@@ -12,6 +12,10 @@ export default function LoginPage({ onAuth }) {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   const handleGoogle = () => {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
