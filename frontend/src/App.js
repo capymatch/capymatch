@@ -175,7 +175,6 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<Navigate to="/board" replace />} />
       <Route path="/welcome" element={<LandingPage />} />
-      <Route path="/mockup" element={<MockupPage />} />
       <Route path="/onboarding" element={<AthleteProfileQuiz />} />
       <Route path="/" element={<OnboardingGate><Layout user={user} onLogout={onLogout} /></OnboardingGate>}>
         <Route index element={<Navigate to="/board" replace />} />
@@ -216,7 +215,6 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<LoginPage onAuth={onAuth} />} />
       <Route path="/welcome" element={<LandingPage />} />
-      <Route path="/mockup" element={<MockupPage />} />
       {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
       <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />
       <Route path="/board" element={<OAuthCallbackGate onAuth={onAuth} />} />
