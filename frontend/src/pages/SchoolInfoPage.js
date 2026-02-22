@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useSubscription, canAccess } from "../lib/subscription";
 import { toast } from "sonner";
 import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
-  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone
+  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone, Sparkles
 } from "lucide-react";
 import { CommitmentStabilityCard } from "../components/CommitmentStabilityCard";
+import { TimelineStatusCard } from "../components/TimelineIntelligence";
+import { RosterRealityCard } from "../components/RosterOutlook";
+import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
+import { NilReadinessCard } from "../components/NilReadiness";
+import { SchoolInsightCard } from "../components/SchoolInsightCard";
 
 /* ── Match Ring (dark hero) ── */
 function MatchRing({ score }) {
