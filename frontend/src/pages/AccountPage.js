@@ -77,6 +77,120 @@ export default function AccountPage() {
 
   return (
     <div data-testid="account-page" className="max-w-3xl mx-auto space-y-8">
+      {/* Personal Info Card */}
+      <div
+        className="rounded-xl border overflow-hidden"
+        style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+        data-testid="personal-info-card"
+      >
+        <div className="flex items-center justify-between px-6 pt-6 pb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
+              <User className="w-5 h-5" style={{ color: "#2ec4b6" }} />
+            </div>
+            <div>
+              <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Personal Info</h2>
+              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Your account name and email</p>
+            </div>
+          </div>
+          {!isEditing && !infoLoading && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg font-medium transition-colors"
+              style={{ backgroundColor: "var(--t-surface-alt)", color: "var(--t-text-secondary)" }}
+              data-testid="edit-personal-info-btn"
+            >
+              <Pencil className="w-3.5 h-3.5" /> Edit
+            </button>
+          )}
+        </div>
+
+        <div className="px-6 py-4">
+          {infoLoading ? (
+            <div className="flex items-center gap-2 py-3">
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#2ec4b6" }} />
+              <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Loading...</span>
+            </div>
+          ) : isEditing ? (
+            <form onSubmit={handleSaveInfo} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--t-text-secondary)" }}>Name</label>
+                <input
+                  type="text"
+                  value={accountName}
+                  onChange={(e) => setAccountName(e.target.value)}
+                  required
+                  data-testid="account-name-input"
+                  className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none transition-colors"
+                  style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  onFocus={(e) => e.target.style.borderColor = "#2ec4b6"}
+                  onBlur={(e) => e.target.style.borderColor = ""}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--t-text-secondary)" }}>Email</label>
+                <input
+                  type="email"
+                  value={accountEmail}
+                  onChange={(e) => setAccountEmail(e.target.value)}
+                  required
+                  disabled={isGoogleUser}
+                  data-testid="account-email-input"
+                  className="w-full px-3 py-2 rounded-lg text-sm border focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  onFocus={(e) => { if (!isGoogleUser) e.target.style.borderColor = "#2ec4b6"; }}
+                  onBlur={(e) => e.target.style.borderColor = ""}
+                />
+                {isGoogleUser && (
+                  <p className="text-[11px] mt-1" style={{ color: "var(--t-text-muted)" }}>
+                    Email is managed by Google and cannot be changed here.
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="submit"
+                  disabled={infoSaving || !hasChanges}
+                  data-testid="save-personal-info-btn"
+                  className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-medium text-white transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: "#2ec4b6" }}
+                >
+                  {infoSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="px-4 py-2 text-sm rounded-lg font-medium transition-colors"
+                  style={{ color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+                  data-testid="cancel-edit-personal-info-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Name</p>
+                  <p className="text-sm font-medium mt-0.5" style={{ color: "var(--t-text)" }} data-testid="account-name-display">{originalName || "—"}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Email</p>
+                  <p className="text-sm font-medium mt-0.5" style={{ color: "var(--t-text)" }} data-testid="account-email-display">{originalEmail || "—"}</p>
+                </div>
+                {isGoogleUser && (
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{ background: "rgba(99,102,241,0.12)", color: "#818cf8" }}>Google</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Subscription Plan Card */}
       {subscription && (
         <div
