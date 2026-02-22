@@ -159,6 +159,35 @@ export default function SchoolInfoPage() {
     }
   };
 
+  // Intelligence fetchers — only when school is on board
+  const programId = school?.program_id;
+
+  const fetchIntel = useCallback(async (type, setter, loadingSetter, forceRefresh = false) => {
+    if (isBasic || !programId) return;
+    loadingSetter(true);
+    try {
+      const url = forceRefresh
+        ? `/intelligence/${type}/${programId}?force=true`
+        : `/intelligence/${type}/${programId}`;
+      const res = await api.post(url);
+      setter(res.data);
+    } catch (err) {
+      console.warn(`${type} intel fetch failed:`, err);
+    } finally {
+      loadingSetter(false);
+    }
+  }, [programId, isBasic]);
+
+  useEffect(() => {
+    if (!loading && school?.on_board && programId && !isBasic) {
+      fetchIntel("timeline", setTimelineIntel, setTimelineIntelLoading);
+      fetchIntel("roster", setRosterIntel, setRosterIntelLoading);
+      fetchIntel("scholarship", setScholarshipIntel, setScholarshipIntelLoading);
+      fetchIntel("nil", setNilIntel, setNilIntelLoading);
+      fetchIntel("school-insight", setSchoolInsight, setInsightLoading);
+    }
+  }, [loading, school?.on_board, programId, isBasic, fetchIntel]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
