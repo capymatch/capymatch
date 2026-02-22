@@ -223,7 +223,7 @@ export function SchoolInsightCard({ insight, loading, onRefresh, dataConfidence,
             className="inline-flex items-center gap-1.5 text-[12px] font-bold hover:opacity-70 transition-opacity"
             style={{ color: "#1a1a2e" }}
             data-testid="insight-info-btn">
-            Recruiting HQ Perspective
+            CapyMatch Perspective
             <Info className="w-3.5 h-3.5" style={{ color: "#93c5fd" }} />
           </button>
           <span className="text-[12px]" style={{ color: "#9ca3af" }}>
