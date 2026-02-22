@@ -207,7 +207,6 @@ async def _run_ai_timeline(payload: dict, program_id: str) -> dict:
     now_iso = datetime.now(timezone.utc).isoformat()
     school = payload.get("school", {})
     recruiting = payload.get("recruiting", {})
-    timeline_data = payload.get("timeline", {})
     dq = payload.get("data_quality", {})
     source_lookup = {s["section"]: s.get("source_id", "unknown") for s in payload.get("sources", [])}
 
