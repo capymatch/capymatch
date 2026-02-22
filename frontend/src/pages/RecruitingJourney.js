@@ -458,9 +458,15 @@ export default function RecruitingJourney() {
       )}
 
       {/* Scholarship Structure Card */}
-      {scholarship && (
+      {!isBasic && (
         <div className="mt-4" data-testid="journey-scholarship-card">
-          <ScholarshipStructureCard scholarship={scholarship} dataConfidence={dataConfidence} />
+          <ScholarshipStructureCard
+            scholarship={scholarshipIntel?.ui}
+            loading={scholarshipIntelLoading}
+            onRefresh={() => fetchScholarshipIntel(true)}
+            dataConfidence={scholarshipIntel?.data_quality}
+            programId={programId}
+          />
         </div>
       )}
 
