@@ -78,7 +78,6 @@ export default function RecruitingJourney() {
         if (found) {
           setMatchScore(found);
           setRiskBadges(found.risk_badges || []);
-          setDataConfidence(found.data_confidence || null);
         }
       }
       setLoading(false);
