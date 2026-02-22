@@ -283,7 +283,7 @@ export default function Dashboard() {
 
   const totalSchools = programs.length;
   const contacted = programs.filter(p => p.recruiting_status && p.recruiting_status !== "Not Contacted" && p.recruiting_status !== "Not a Fit / Closed").length;
-  const replied = programs.filter(p => p.reply_status === "Replied").length;
+  const replied = programs.filter(p => p.reply_status === "Reply Received" || p.reply_status === "In Conversation").length;
   const responseRate = contacted > 0 ? Math.round((replied / contacted) * 100) : 0;
 
   // Replies this week
