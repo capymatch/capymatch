@@ -122,6 +122,19 @@ export default function SchoolInfoPage() {
   const [adding, setAdding] = useState(false);
   const { subscription } = useSubscription();
   const hasCoachAccess = canAccess(subscription, "coach_contacts");
+  const isBasic = !subscription || subscription.tier === "basic";
+
+  // Intelligence card state
+  const [timelineIntel, setTimelineIntel] = useState(null);
+  const [timelineIntelLoading, setTimelineIntelLoading] = useState(false);
+  const [rosterIntel, setRosterIntel] = useState(null);
+  const [rosterIntelLoading, setRosterIntelLoading] = useState(false);
+  const [scholarshipIntel, setScholarshipIntel] = useState(null);
+  const [scholarshipIntelLoading, setScholarshipIntelLoading] = useState(false);
+  const [nilIntel, setNilIntel] = useState(null);
+  const [nilIntelLoading, setNilIntelLoading] = useState(false);
+  const [schoolInsight, setSchoolInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(false);
 
   useEffect(() => {
     api.get(`/knowledge-base/school/${domain}`)
