@@ -428,6 +428,71 @@ export default function SchoolInfoPage() {
             </div>
           </div>
         )}
+
+        {/* ── Intelligence Cards (only for schools on board) ── */}
+        {school.on_board && programId && !isBasic && (
+          <div data-testid="school-intelligence-section">
+            <SectionHeader icon={Sparkles} title="School Intelligence" testId="intelligence-section-header" />
+            <div className="space-y-4">
+              <TimelineStatusCard
+                timeline={timelineIntel?.ui}
+                loading={timelineIntelLoading}
+                onRefresh={() => fetchIntel("timeline", setTimelineIntel, setTimelineIntelLoading, true)}
+                dataConfidence={timelineIntel?.data_quality}
+                programId={programId}
+              />
+              <RosterRealityCard
+                roster={rosterIntel?.ui_roster}
+                loading={rosterIntelLoading}
+                onRefresh={() => fetchIntel("roster", setRosterIntel, setRosterIntelLoading, true)}
+                dataConfidence={rosterIntel?.data_quality}
+                programId={programId}
+              />
+              <ScholarshipStructureCard
+                scholarship={scholarshipIntel?.ui}
+                loading={scholarshipIntelLoading}
+                onRefresh={() => fetchIntel("scholarship", setScholarshipIntel, setScholarshipIntelLoading, true)}
+                dataConfidence={scholarshipIntel?.data_quality}
+                programId={programId}
+              />
+              <NilReadinessCard
+                nil={nilIntel?.ui}
+                loading={nilIntelLoading}
+                onRefresh={() => fetchIntel("nil", setNilIntel, setNilIntelLoading, true)}
+                dataConfidence={nilIntel?.data_quality}
+                programId={programId}
+              />
+              {(rosterIntel || rosterIntelLoading) && (
+                <CommitmentStabilityCard
+                  stability={rosterIntel ? {
+                    status: rosterIntel.ui_stability?.status || "unknown",
+                    label: rosterIntel.stability_label || "Unknown",
+                    retention_rate: rosterIntel.ui_stability?.retention_rate,
+                    sparkline: rosterIntel.ui_stability?.history,
+                    trend: rosterIntel.ui_stability?.trend,
+                    signals: (rosterIntel.ui_stability?.signals || []).map(s => typeof s === "string" ? s : s.text),
+                    meaning: rosterIntel.ui_stability?.meaning || "Commitment stability data not available.",
+                    tags: rosterIntel.ui_stability?.context_tags || [],
+                    tooltip: `Based on ${rosterIntel.stability_evidence === "none" ? "insufficient" : "available"} historical data.`,
+                    confidence: rosterIntel.data_quality?.overall || "Unknown",
+                    last_updated: rosterIntel.generated_at
+                      ? new Date(rosterIntel.generated_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+                      : "N/A",
+                  } : null}
+                  loading={rosterIntelLoading}
+                  programId={programId}
+                />
+              )}
+              <SchoolInsightCard
+                insight={schoolInsight}
+                loading={insightLoading}
+                onRefresh={() => fetchIntel("school-insight", setSchoolInsight, setInsightLoading, true)}
+                dataConfidence={null}
+                program={school}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
