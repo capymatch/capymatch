@@ -51,9 +51,9 @@ function ActionRow({ domain, school, detail, badge, badgeBg, badgeColor, onClick
 /* ── Spotlight Card ── */
 function SpotlightCard({ program, onClick }) {
   const colorMap = {
-    "In Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
-    "Actively Recruiting": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
-    "Active Communication": { bg: "rgba(46,196,182,0.12)", color: "#14b8a6" },
+    "Active Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
+    "Some Interest": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
+    "Camp Attended": { bg: "rgba(46,196,182,0.12)", color: "#14b8a6" },
     "Contacted": { bg: "rgba(59,130,246,0.12)", color: "#2563eb" },
     "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
@@ -298,7 +298,7 @@ export default function Dashboard() {
   // Awaiting reply
   const awaitingReply = programs.filter(p =>
     p.recruiting_status && p.recruiting_status !== "Not Contacted" && p.recruiting_status !== "Not a Fit / Closed"
-    && p.reply_status !== "Replied"
+    && p.reply_status !== "Reply Received" && p.reply_status !== "In Conversation"
   );
 
   const today = now.toISOString().split("T")[0];
@@ -330,9 +330,9 @@ export default function Dashboard() {
   const pipelineStatuses = [
     { key: "Not Contacted", label: "Not\nContacted", color: "#6b7280" },
     { key: "Contacted", label: "Contacted", color: "#3b82f6" },
-    { key: "Actively Recruiting", label: "Actively\nRecruiting", color: "#a855f7" },
-    { key: "Active Communication", label: "In\nConversation", color: "#2ec4b6" },
+    { key: "Active Conversation", label: "In\nConversation", color: "#2ec4b6" },
     { key: "Offer Received", label: "Offer\nReceived", color: "#10b981" },
+    { key: "Committed", label: "Committed", color: "#fbbf24" },
     { key: "Not a Fit / Closed", label: "Closed", color: "#ef4444" },
   ];
   const maxPipeline = Math.max(...pipelineStatuses.map(s => statusMap[s.key] || 0), 1);
