@@ -62,6 +62,7 @@ async def register(request: Request, response: Response):
 
 
 @router.post("/auth/login")
+@limiter.limit("10/minute")
 async def login(request: Request, response: Response):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
