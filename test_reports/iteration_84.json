@@ -1,0 +1,79 @@
+{
+  "summary": "Completed full testing of the 3-stage Intelligence Pipeline for School Insight Card. All 12 features verified working correctly. Backend: POST /api/intelligence/school-insight/{program_id} returns correct JSON structure with strengths, concerns, unknowns, citations, evidence levels, severity ratings. 24hr caching works (<0.6s response). force=true bypasses cache. Insufficient data handling works for Tampa University. Frontend: SchoolInsightCard renders correctly with brain emoji title, robot emoji AI attribution, two-column layout, green checkmarks for strengths, orange triangles for concerns, data gaps section, context tags, disclaimer, and expandable info panel.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Journey page",
+        "issues": [
+          "Console warnings for OAuth image loading (not critical)"
+        ]
+      }
+    ]
+  },
+  "test_results": {
+    "backend_api": {
+      "fgcu_status_ok": "PASS - Returns status 'ok' with card_type 'school_insight'",
+      "strengths_structure": "PASS - 3 strengths with text, based_on, citations, evidence fields",
+      "concerns_structure": "PASS - 3 concerns with text, based_on, citations, evidence, severity fields",
+      "unknowns_array": "PASS - Unknowns derived from known_unknowns with text, missing_data, unlock_hint",
+      "metadata_fields": "PASS - data_quality, summary, school_id, school_name, division, generated_at, cache_ttl_hours (24), model (claude-sonnet-4-5)",
+      "cached_response": "PASS - 0.55s response time (< 2s requirement)",
+      "force_bypass": "PASS - force=true generates fresh response with new timestamp (~13s AI call)",
+      "tampa_insufficient_data": "PASS - Returns status 'insufficient_data' with reason and missing_sections",
+      "authentication_required": "PASS - Returns 401 for unauthenticated requests"
+    },
+    "frontend_ui": {
+      "brain_emoji_title": "PASS - 🧠 emoji + 'Why This School / Why Not' title",
+      "robot_emoji_attribution": "PASS - 🤖 emoji + 'AI-generated based on coach, roster, and program insights.'",
+      "summary_above_layout": "PASS - Summary text displayed above two-column layout",
+      "strengths_section": "PASS - 'Strengths of This Program' with green checkmarks (4 icons visible)",
+      "concerns_section": "PASS - 'Factors to Consider' with orange triangles (3 icons visible)",
+      "two_column_layout": "PASS - Grid layout with sm:grid-cols-2",
+      "data_gaps_section": "PASS - 'Data gaps' section with unknowns displayed",
+      "context_tags": "PASS - 'NCAA D1 · Equivalency Era · Roster Limit: 18'",
+      "disclaimer": "PASS - '*This analysis should not be considered definitive.'",
+      "footer_recruiting_hq": "PASS - 'Recruiting HQ Perspective' button expandable",
+      "footer_updated_date": "PASS - 'Updated: Feb 2026' displayed",
+      "refresh_button": "PASS - Refresh button clickable",
+      "expandable_info_panel": "PASS - Info panel expands on click",
+      "insufficient_data_state": "PASS - Tampa University shows yellow warning with reason and missing sections",
+      "console_errors": "PASS - No critical console errors (only OAuth image loading warnings)"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_intelligence_pipeline.py",
+    "/app/test_reports/pytest/intelligence_pipeline_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Intelligence pipeline code is well-structured with proper separation of concerns (orchestrator.py, payload_builder.py, school_insight.py)",
+    "SchoolInsightCard.js properly supports both new schema (strengths/concerns) and legacy schema (ai_insight.top_reasons/top_risks)",
+    "24-hour cache with force=true bypass is correctly implemented in routes/intelligence.py",
+    "AI response validation and normalization in school_insight.py ensures consistent output structure"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_intelligence_pipeline.py"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 tests passed)",
+    "frontend": "100% (all UI elements verified)"
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "programs_tested": [
+      "prog_3fe70bce8e71 (Florida Gulf Coast University - D1, full data, status: ok)",
+      "prog_0a5dfa9c59d1 (Tampa University - D2, no KB data, status: insufficient_data)"
+    ]
+  },
+  "seed_data_creation": "None - used existing user account and programs",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Intelligence Pipeline v1 fully tested. 3-stage pipeline (Schema Mapper → Payload Builder → Intelligence Runtime) working correctly. SchoolInsightCard supports both new (strengths/concerns) and legacy (top_reasons/top_risks) schemas. Backend caches results in intelligence_cache collection for 24 hours. FGCU (D1) returns full insight with AI-generated content. Tampa University returns insufficient_data status when KB data missing. All data-testid selectors working for automated testing."
+}
