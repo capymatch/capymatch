@@ -1,7 +1,6 @@
 """
-Refresh demo account dates so the demo always looks fresh and realistic.
-Shifts all interaction/program dates forward so the latest activity is "today".
-Also ensures next_action_due dates are in the near future, not the past.
+Fix stale demo data: Add fresh interactions for schools with old coach replies,
+and push overdue next_action_due dates into the future.
 """
 import asyncio
 import os
@@ -10,8 +9,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from datetime import datetime, timezone, timedelta
 from motor.motor_asyncio import AsyncIOMotorClient
+import uuid
 
 DEMO_EMAIL = "demo@capymatch.com"
+MAX_REPLY_AGE_DAYS = 5  # Coach replies older than this for in_conversation schools get freshened
+MAX_OVERDUE_DAYS = 0     # next_action_due in the past gets pushed forward
 
 
 async def refresh_demo_dates():
@@ -23,7 +25,6 @@ async def refresh_demo_dates():
     now = datetime.now(timezone.utc)
     today = now.date()
 
-    # Find demo user and tenant
     user = await db.users.find_one({"email": DEMO_EMAIL})
     if not user:
         print("[refresh_demo] Demo user not found, skipping")
@@ -32,156 +33,85 @@ async def refresh_demo_dates():
 
     tenant = await db.tenants.find_one({"owner_user_id": user["user_id"]})
     if not tenant:
-        print("[refresh_demo] Demo tenant not found, skipping")
         client.close()
         return
 
     tenant_id = tenant["tenant_id"]
-
-    # ── Step 1: Find the shift amount ──
-    # Get all interactions and find the most recent date
-    interactions = await db.interactions.find({"tenant_id": tenant_id}).to_list(500)
-    if not interactions:
-        print("[refresh_demo] No interactions found, skipping")
-        client.close()
-        return
-
-    max_date = None
-    for ix in interactions:
-        dt_str = ix.get("date_time") or ix.get("created_at", "")
-        if not dt_str:
-            continue
-        try:
-            dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            if max_date is None or dt > max_date:
-                max_date = dt
-        except Exception:
-            continue
-
-    if not max_date:
-        print("[refresh_demo] Could not find max interaction date, skipping")
-        client.close()
-        return
-
-    # Shift so the latest interaction becomes ~yesterday
-    target_latest = now - timedelta(hours=18)
-    shift = target_latest - max_date
-
-    # Only shift if more than 12 hours drift
-    if abs(shift.total_seconds()) < 43200:
-        print(f"[refresh_demo] Dates are fresh (shift={shift}), skipping")
-        client.close()
-        return
-
-    print(f"[refresh_demo] Shifting dates by {shift} (latest was {max_date.isoformat()})")
-
-    # ── Step 2: Shift all interaction dates ──
-    for ix in interactions:
-        dt_str = ix.get("date_time") or ""
-        if not dt_str:
-            continue
-        try:
-            dt = datetime.fromisoformat(str(dt_str).replace("Z", "+00:00"))
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            new_dt = dt + shift
-            updates = {"date_time": new_dt.isoformat()}
-            if ix.get("created_at"):
-                try:
-                    ca = datetime.fromisoformat(str(ix["created_at"]).replace("Z", "+00:00"))
-                    if ca.tzinfo is None:
-                        ca = ca.replace(tzinfo=timezone.utc)
-                    updates["created_at"] = (ca + shift).isoformat()
-                except Exception:
-                    pass
-            await db.interactions.update_one({"_id": ix["_id"]}, {"$set": updates})
-        except Exception:
-            continue
-
-    # ── Step 3: Shift program dates ──
     programs = await db.programs.find({"tenant_id": tenant_id}).to_list(50)
+    changes = 0
+
     for p in programs:
-        updates = {}
+        pid = p["program_id"]
+        uni = p.get("university_name", "")
 
-        # Shift created_at
-        if p.get("created_at"):
-            try:
-                ca = datetime.fromisoformat(str(p["created_at"]).replace("Z", "+00:00"))
-                if ca.tzinfo is None:
-                    ca = ca.replace(tzinfo=timezone.utc)
-                updates["created_at"] = (ca + shift).isoformat()
-            except Exception:
-                pass
+        # ── Fix 1: Freshen stale coach replies for in_conversation programs ──
+        interactions = await db.interactions.find(
+            {"tenant_id": tenant_id, "program_id": pid}
+        ).sort("date_time", -1).to_list(100)
 
-        # Shift updated_at
-        if p.get("updated_at"):
-            try:
-                ua = datetime.fromisoformat(str(p["updated_at"]).replace("Z", "+00:00"))
-                if ua.tzinfo is None:
-                    ua = ua.replace(tzinfo=timezone.utc)
-                updates["updated_at"] = (ua + shift).isoformat()
-            except Exception:
-                pass
-
-        # Shift next_action_due — keep relative offset but ensure it's in the future
-        if p.get("next_action_due"):
-            try:
-                due = datetime.strptime(p["next_action_due"], "%Y-%m-%d").date()
-                new_due = due + timedelta(days=shift.days)
-                # If it's still in the past after shift, push to tomorrow+
-                if new_due <= today:
-                    new_due = today + timedelta(days=2)
-                updates["next_action_due"] = new_due.strftime("%Y-%m-%d")
-            except Exception:
-                pass
-
-        if updates:
-            await db.programs.update_one({"_id": p["_id"]}, {"$set": updates})
-
-    # ── Step 4: Shift email dates ──
-    emails = await db.emails.find({"tenant_id": tenant_id}).to_list(500)
-    for em in emails:
-        updates = {}
-        for field in ("sent_at", "received_at", "created_at", "date"):
-            if em.get(field):
+        has_reply = False
+        latest_reply_date = None
+        for ix in interactions:
+            if ix.get("type") in ("coach_reply", "email_received"):
+                has_reply = True
                 try:
-                    dt = datetime.fromisoformat(str(em[field]).replace("Z", "+00:00"))
+                    dt = datetime.fromisoformat(str(ix.get("date_time", "")).replace("Z", "+00:00"))
                     if dt.tzinfo is None:
                         dt = dt.replace(tzinfo=timezone.utc)
-                    updates[field] = (dt + shift).isoformat()
+                    if latest_reply_date is None or dt > latest_reply_date:
+                        latest_reply_date = dt
                 except Exception:
-                    continue
-        if updates:
-            await db.emails.update_one({"_id": em["_id"]}, {"$set": updates})
+                    pass
 
-    # ── Step 5: Shift activity/events dates ──
-    for collection_name in ("activity_feed", "events", "notifications"):
-        docs = await db[collection_name].find({"tenant_id": tenant_id}).to_list(500)
-        for doc in docs:
-            updates = {}
-            for field in ("created_at", "date", "start_date", "end_date", "timestamp"):
-                val = doc.get(field)
-                if not val:
-                    continue
-                try:
-                    if "T" in str(val):
-                        dt = datetime.fromisoformat(str(val).replace("Z", "+00:00"))
-                        if dt.tzinfo is None:
-                            dt = dt.replace(tzinfo=timezone.utc)
-                        updates[field] = (dt + shift).isoformat()
-                    else:
-                        d = datetime.strptime(str(val), "%Y-%m-%d").date()
-                        new_d = d + timedelta(days=shift.days)
-                        updates[field] = new_d.strftime("%Y-%m-%d")
-                except Exception:
-                    continue
-            if updates:
-                await db[collection_name].update_one({"_id": doc["_id"]}, {"$set": updates})
+        if has_reply and latest_reply_date:
+            reply_age = (now - latest_reply_date).days
+            if reply_age > MAX_REPLY_AGE_DAYS:
+                # Add a fresh coach reply interaction
+                fresh_reply_time = now - timedelta(days=2, hours=3)
+                fresh_interaction = {
+                    "interaction_id": f"ix_{uuid.uuid4().hex[:12]}",
+                    "tenant_id": tenant_id,
+                    "program_id": pid,
+                    "university_name": uni,
+                    "type": "email_received",
+                    "date_time": fresh_reply_time.isoformat(),
+                    "created_at": fresh_reply_time.isoformat(),
+                    "notes": _get_fresh_reply_note(uni),
+                    "source": "demo_refresh",
+                }
+                await db.interactions.insert_one(fresh_interaction)
+                changes += 1
+                print(f"[refresh_demo] Added fresh coach reply for {uni} (was {reply_age}d old)")
 
-    print(f"[refresh_demo] Done. Shifted {len(interactions)} interactions, {len(programs)} programs, {len(emails)} emails")
+        # ── Fix 2: Push past next_action_due dates into the future ──
+        next_due = p.get("next_action_due", "")
+        if next_due:
+            try:
+                due_date = datetime.strptime(next_due, "%Y-%m-%d").date()
+                if due_date <= today:
+                    # Push 3-5 days into the future
+                    new_due = today + timedelta(days=3)
+                    await db.programs.update_one(
+                        {"_id": p["_id"]},
+                        {"$set": {"next_action_due": new_due.strftime("%Y-%m-%d")}}
+                    )
+                    changes += 1
+                    print(f"[refresh_demo] Pushed next_action_due for {uni}: {next_due} → {new_due}")
+            except Exception:
+                pass
+
+    print(f"[refresh_demo] Done. Made {changes} changes.")
     client.close()
+
+
+def _get_fresh_reply_note(university_name):
+    """Return a realistic coach reply note for the given university."""
+    notes = {
+        "University of Texas": "Emma, Coach Elliott here. We've been following your season closely. Would love to have you come watch a practice this spring. Let me know what dates work.",
+        "Stanford University": "Great to hear from you again, Emma. The coaching staff was impressed with your recent tournament footage. Let's set up a call this week.",
+        "UCLA": "Emma, thanks for sending your updated schedule. We'll have a coach at the JVA event. Looking forward to seeing you compete.",
+    }
+    return notes.get(university_name, f"Thanks for the update, Emma. We'll be in touch about next steps for {university_name}.")
 
 
 if __name__ == "__main__":
