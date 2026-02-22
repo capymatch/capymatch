@@ -98,7 +98,7 @@ function NilQuestions({ status, isVague }) {
           </ul>
           <div className="px-3.5 py-2 flex items-center justify-between" style={{ background: "#f9fafb", borderTop: "1px solid #f3f4f6" }}>
             <p className="text-[10.5px] leading-relaxed" style={{ color: "#9ca3af" }}>
-              These questions are meant to guide the conversation. NIL opportunities vary and are not guaranteed.
+              NIL opportunities vary by school and individual circumstances. Participation and outcomes are not guaranteed.
             </p>
             <button
               onClick={handleCopy}
