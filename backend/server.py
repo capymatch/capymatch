@@ -121,6 +121,7 @@ reply_check_task = None
 coach_watch_task = None
 inbound_scan_task = None
 gpa_refresh_task = None
+demo_refresh_task = None
 
 async def check_coach_replies():
     """Background task that checks for coach email replies every 10 minutes"""
