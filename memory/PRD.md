@@ -58,6 +58,14 @@ All 5 micro-agents built, tested, and wired. Three-stage architecture: Schema Ma
 3. "Recruiting HQ" branding references → updated to CapyMatch
 4. Orphaned test data → cleaned up (42 users, 18 tenants, 62 interactions removed)
 
+## Completed — Feb 22, 2026 (Session 2)
+- **User Profile Update**: Athletes can now edit their name and email from Account page
+  - Backend: `PUT /api/auth/update-account` — updates `users`, `tenants`, `athlete_profiles` collections
+  - Frontend: Personal Info card on Account page with edit/display modes
+  - Validation: empty name, invalid email, duplicate email
+  - Google auth users: email field disabled with explanation
+  - Tested: 12/12 backend + 7/7 frontend tests passed
+
 ## Prioritized Backlog
 ### P1
 - Admin dashboard for contribution review/verification
