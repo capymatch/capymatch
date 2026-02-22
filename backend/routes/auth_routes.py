@@ -165,6 +165,53 @@ async def logout(request: Request, response: Response):
 
 
 
+@router.put("/auth/update-account")
+async def update_account(request: Request):
+    user = await get_current_user(request)
+    body = await request.json()
+    new_name = (body.get("name") or "").strip()
+    new_email = (body.get("email") or "").strip().lower()
+
+    if not new_name:
+        raise HTTPException(status_code=400, detail="Name is required")
+    if not new_email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    # Validate email format
+    import re as re_mod
+    if not re_mod.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", new_email):
+        raise HTTPException(status_code=400, detail="Invalid email format")
+
+    # Check email uniqueness if changed
+    if new_email != user.get("email", ""):
+        existing = await db.users.find_one({"email": new_email})
+        if existing:
+            raise HTTPException(status_code=409, detail="An account with this email already exists")
+
+    user_id = user["user_id"]
+
+    # Update users collection
+    await db.users.update_one(
+        {"user_id": user_id},
+        {"$set": {"name": new_name, "email": new_email}}
+    )
+
+    # Update athlete_name in tenants collection
+    tenant_id = await get_tenant_id(user)
+    await db.tenants.update_one(
+        {"tenant_id": tenant_id},
+        {"$set": {"athlete_name": new_name}}
+    )
+
+    # Update athlete_name in athlete_profiles collection if it exists
+    await db.athlete_profiles.update_one(
+        {"tenant_id": tenant_id},
+        {"$set": {"athlete_name": new_name}},
+    )
+
+    return {"ok": True, "name": new_name, "email": new_email}
+
+
 @router.post("/auth/change-password")
 async def change_password(request: Request):
     user = await get_current_user(request)
