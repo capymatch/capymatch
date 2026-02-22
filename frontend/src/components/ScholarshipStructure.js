@@ -70,9 +70,23 @@ export function ScholarshipStructureCard({ scholarship, dataConfidence, loading,
           </div>
 
           {/* Explanation */}
-          <p className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}>
+          <p className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}
+            data-testid="scholarship-explanation">
             {scholarship.explanation}
           </p>
+
+          {/* Guidance */}
+          {scholarship.guidance && (
+            <div className="rounded-lg px-3.5 py-2.5" style={{ background: "rgba(99,102,241,0.04)", border: "1px solid rgba(99,102,241,0.10)" }}
+              data-testid="scholarship-guidance">
+              <p className="text-[12px] font-medium mb-0.5" style={{ color: "var(--t-text-muted, #6b7280)" }}>
+                What this means for you
+              </p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary, #4b5563)" }}>
+                {scholarship.guidance}
+              </p>
+            </div>
+          )}
 
           {/* NIL Context — subtle sub-line */}
           {scholarship.nil_context && (
