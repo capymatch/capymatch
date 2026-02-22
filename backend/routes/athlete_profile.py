@@ -594,9 +594,9 @@ def _compute_risk_badges(school, profile, match_reasons=None):
         if years_out <= 2:  # Junior year or closer
             badges.append({
                 "key": "timeline_risk",
-                "label": "Timeline Risk",
+                "label": "Timeline Awareness",
                 "severity": "time",
-                "summary": "This program often fills spots earlier in the recruiting cycle. If you're interested, outreach sooner rather than later is recommended.",
+                "summary": "Based on general division patterns, D1/D2 programs at this stage often fill spots earlier in the recruiting cycle. This is a division-level estimate, not specific to this program. If you're interested, earlier outreach is recommended.",
             })
 
     # 4. Funding Dependent — equivalency sports (D2, NAIA use partial scholarships; D3 no athletic scholarships)
