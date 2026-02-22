@@ -74,10 +74,17 @@ async def run_timeline_intelligence(payload: dict, program_id: str) -> dict:
     # 1. Check for real commit timing signals
     # ------------------------------------------------------------------
     has_signals = bool(timeline_data.get("commit_timing_signals"))
+    signal_count = len(timeline_data.get("commit_timing_signals", []) or [])
 
-    if has_signals:
-        # Future: call AI agent with real data
+    # Minimum evidence threshold: need at least 3 data points across cycles
+    # to produce a confident label. Thin evidence → Unknown.
+    MIN_SIGNAL_COUNT = 3
+
+    if has_signals and signal_count >= MIN_SIGNAL_COUNT:
         return await _run_ai_timeline(payload, program_id)
+
+    # If signals exist but are too sparse, note it but still return Unknown
+    sparse_signals = has_signals and signal_count < MIN_SIGNAL_COUNT
 
     # ------------------------------------------------------------------
     # 2. Deterministic path: no commit timing data → Unknown
