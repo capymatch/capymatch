@@ -108,7 +108,7 @@ export default function LandingPage() {
             </div>
             {/* App screenshot */}
             <img
-              src="/images/app-dashboard.png"
+              src="/images/app-dashboard.jpg"
               alt="CapyMatch Dashboard - Track schools, response rates, and recruiting actions"
               className="w-full block"
               style={{ backgroundColor: "#f4f6f5" }}
