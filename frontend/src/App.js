@@ -217,7 +217,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<LoginPage onAuth={onAuth} />} />
       <Route path="/welcome" element={<LandingPage />} />
-      {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
+      <Route path="/mockup" element={<MockupPage />} />
       <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />
       <Route path="/board" element={<OAuthCallbackGate onAuth={onAuth} />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
