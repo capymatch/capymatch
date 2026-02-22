@@ -18,9 +18,21 @@ export default function LoginPage({ onAuth }) {
   const [forgotSent, setForgotSent] = useState(false);
 
   const handleGoogle = () => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
     const redirectUrl = window.location.origin + '/board';
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    try {
+      await api.post("/auth/forgot-password", { email: forgotEmail });
+      setForgotSent(true);
+    } catch {
+      setForgotSent(true);
+    } finally {
+      setForgotLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
