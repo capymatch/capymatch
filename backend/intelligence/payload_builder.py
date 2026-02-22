@@ -277,6 +277,10 @@ async def build_payload(db, program_id: str, tenant_id: str, debug: bool = False
         contract["nil"], raw_docs, sources, missing_fields, "nil", None, debug
     )
 
+    scholarship_section, scholarship_total = _extract_section(
+        contract["scholarship"], raw_docs, sources, missing_fields, "scholarship", None, debug
+    )
+
     recruiting, _ = _extract_section(
         {k: v for k, v in contract["recruiting"].items()
          if k not in ("interactions_collection", "events_collection")},
@@ -343,6 +347,7 @@ async def build_payload(db, program_id: str, tenant_id: str, debug: bool = False
             len(timeline_section), max(timeline_total, 1)
         ),
         "nil": _quality_rating(len(nil_section), nil_total),
+        "scholarship": _quality_rating(len(scholarship_section), max(scholarship_total, 1)),
     }
 
     # ------------------------------------------------------------------
@@ -360,6 +365,7 @@ async def build_payload(db, program_id: str, tenant_id: str, debug: bool = False
         "roster": roster,
         "timeline": timeline_section,
         "nil": nil_section,
+        "scholarship": scholarship_section,
         "recruiting": recruiting,
         "sources": sources,
         "data_quality": data_quality,
