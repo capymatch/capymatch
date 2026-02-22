@@ -441,9 +441,20 @@ async def gpa_refresh_monthly():
             await asyncio.sleep(86400)  # Retry next day
 
 
+async def demo_date_refresh_loop():
+    """Keep demo account dates fresh — runs daily."""
+    from scripts.refresh_demo_dates import refresh_demo_dates
+    while True:
+        try:
+            await refresh_demo_dates()
+        except Exception as e:
+            logger.error(f"Demo date refresh error: {e}")
+        await asyncio.sleep(86400)  # 24 hours
+
+
 @app.on_event("startup")
 async def startup_event():
-    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task
+    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task
     
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
@@ -460,6 +471,10 @@ async def startup_event():
     # Start monthly GPA refresh
     gpa_refresh_task = asyncio.create_task(gpa_refresh_monthly())
     logger.info("Started background task: GPA refresh (runs monthly)")
+
+    # Keep demo account dates fresh
+    demo_refresh_task = asyncio.create_task(demo_date_refresh_loop())
+    logger.info("Started background task: demo date refresh (runs daily)")
 
 
 @app.on_event("shutdown")
