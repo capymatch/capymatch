@@ -132,6 +132,63 @@ export default function LoginPage({ onAuth }) {
 
           {/* Form Area */}
           <div className="p-6 pt-5">
+            {forgotMode ? (
+              <div className="space-y-4" data-testid="forgot-password-form">
+                {forgotSent ? (
+                  <div className="text-center py-4">
+                    <CheckCircle className="w-10 h-10 mx-auto mb-3 text-teal-600" />
+                    <h3 className="text-base font-semibold text-gray-900 mb-1">Check your email</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      If an account exists for <span className="font-medium text-gray-700">{forgotEmail}</span>, we've sent a password reset link. It expires in 1 hour.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => { setForgotMode(false); setForgotSent(false); }}
+                      className="mt-5 flex items-center gap-1.5 mx-auto text-sm font-medium text-teal-700 hover:text-teal-800 transition-colors"
+                      data-testid="back-to-login-btn"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Back to sign in
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleForgotPassword} className="space-y-3.5">
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      Enter the email address associated with your account and we'll send you a link to reset your password.
+                    </p>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="email"
+                        placeholder="Email address"
+                        value={forgotEmail}
+                        onChange={(e) => setForgotEmail(e.target.value)}
+                        required
+                        data-testid="forgot-email-input"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-teal-600 focus:ring-1 focus:ring-teal-600/20 focus:outline-none transition-colors bg-white"
+                        autoFocus
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      data-testid="forgot-submit-btn"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
+                      style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #2ec4b6 100%)" }}
+                    >
+                      {forgotLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setForgotMode(false)}
+                      className="w-full flex items-center justify-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors pt-1"
+                      data-testid="back-to-login-from-forgot"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Back to sign in
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : (
             <form onSubmit={handleSubmit} className="space-y-3.5">
               {mode === "register" && (
                 <div className="relative">
