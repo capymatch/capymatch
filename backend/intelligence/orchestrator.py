@@ -40,4 +40,8 @@ async def run_card(db, card_type: str, program_id: str, tenant_id: str) -> dict:
         from intelligence.agents.timeline import run_timeline_intelligence
         return await run_timeline_intelligence(payload, program_id)
 
+    if card_type == "roster_stability":
+        from intelligence.agents.roster_stability import run_roster_stability
+        return await run_roster_stability(payload, program_id)
+
     raise ValueError(f"Unknown card_type: {card_type}")
