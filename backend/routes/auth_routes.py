@@ -254,8 +254,37 @@ async def forgot_password(request: Request):
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
 
-    reset_url = f"/reset-password/{token}"
+    # Build reset URL and send email
+    origin = str(request.base_url).rstrip("/")
+    # Use the frontend origin from the Referer header if available
+    referer = request.headers.get("referer") or request.headers.get("origin") or ""
+    if referer:
+        from urllib.parse import urlparse
+        parsed = urlparse(referer)
+        origin = f"{parsed.scheme}://{parsed.netloc}"
+
+    reset_url = f"{origin}/reset-password/{token}"
     logger.info(f"[Password Reset] Token generated for {email}: {reset_url}")
+
+    from email_service import send_email
+    await send_email(
+        to=email,
+        subject="Reset your CapyMatch password",
+        html=f"""
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px;">
+          <h1 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">Reset your password</h1>
+          <p style="font-size: 15px; color: #64748b; margin-bottom: 24px;">
+            We received a request to reset the password for your CapyMatch account. Click the button below to choose a new password.
+          </p>
+          <div style="text-align: center; margin-bottom: 24px;">
+            <a href="{reset_url}" style="display: inline-block; padding: 12px 32px; background: linear-gradient(135deg, #1a3a4a, #2ec4b6); color: white; text-decoration: none; border-radius: 24px; font-size: 14px; font-weight: 600;">
+              Reset Password
+            </a>
+          </div>
+          <p style="font-size: 13px; color: #94a3b8;">This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
+        </div>
+        """,
+    )
 
     return {"ok": True}
 
