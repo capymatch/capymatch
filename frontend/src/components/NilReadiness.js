@@ -1,23 +1,131 @@
-import { Info, Check } from "lucide-react";
+import { Info, Check, X, RefreshCw, Loader2, MessageSquare, Copy, ChevronDown, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
+import { ImproveCardNudge } from "./ImproveCardNudge";
+import { toast } from "sonner";
 
 const STATUS_CONFIG = {
-  friendly:     { dot: "#10b981", statusBg: "rgba(16,185,129,0.08)", statusBorder: "rgba(16,185,129,0.18)", accent: "#10b981" },
-  limited:      { dot: "#f59e0b", statusBg: "rgba(245,158,11,0.08)", statusBorder: "rgba(245,158,11,0.18)", accent: "#f59e0b" },
+  established:  { dot: "#10b981", statusBg: "rgba(16,185,129,0.08)", statusBorder: "rgba(16,185,129,0.18)", accent: "#10b981" },
+  emerging:     { dot: "#f59e0b", statusBg: "rgba(245,158,11,0.08)", statusBorder: "rgba(245,158,11,0.18)", accent: "#f59e0b" },
   info_limited: { dot: "#94a3b8", statusBg: "rgba(148,163,184,0.08)", statusBorder: "rgba(148,163,184,0.18)", accent: "#94a3b8" },
-  unknown:      { dot: "#94a3b8", statusBg: "rgba(148,163,184,0.08)", statusBorder: "rgba(148,163,184,0.18)", accent: "#94a3b8" },
 };
 
-export function NilReadinessCard({ nil, dataConfidence, timeline }) {
+const UNIVERSAL_QUESTIONS = [
+  "What NIL education or resources does your program provide to athletes?",
+  "How does the coaching staff view NIL in the recruiting process?",
+];
+
+const LABEL_QUESTIONS = {
+  info_limited: [
+    "Are there any NIL collectives or organized support groups connected to your program?",
+    "What should incoming athletes know about NIL opportunities at your school?",
+    "How do athletes in your program currently approach NIL — is there a common path?",
+  ],
+  established: [
+    "What does the NIL onboarding process look like for incoming athletes?",
+    "Are there collectives or organized groups that athletes can connect with?",
+    "How do athletes balance NIL commitments with their training and academic schedules?",
+    "What kind of NIL opportunities have been most common for volleyball athletes?",
+  ],
+  emerging: [
+    "What NIL resources are currently available, and what's being developed?",
+    "Are there any local business partnerships or collectives forming around the program?",
+    "How do you advise athletes who want to explore NIL opportunities?",
+    "What's the coaching staff's perspective on athletes pursuing NIL during the season?",
+  ],
+};
+
+function NilQuestions({ status }) {
+  const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const labelQuestions = LABEL_QUESTIONS[status] || LABEL_QUESTIONS.info_limited;
+  const allQuestions = [...UNIVERSAL_QUESTIONS, ...labelQuestions];
+
+  const handleCopy = () => {
+    const text = allQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n");
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      toast.success("Questions copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div className="space-y-2" data-testid="nil-questions">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="inline-flex items-center gap-1.5 text-[12px] font-medium hover:opacity-70 transition-opacity"
+        style={{ color: "#6366f1" }}
+        data-testid="nil-questions-toggle"
+      >
+        <MessageSquare className="w-3.5 h-3.5" />
+        Questions to ask the coach
+        <ChevronDown
+          className="w-3 h-3 transition-transform"
+          style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </button>
+
+      {expanded && (
+        <div className="rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
+          <ul className="divide-y" style={{ borderColor: "#f3f4f6" }}>
+            {allQuestions.map((q, i) => (
+              <li
+                key={i}
+                className="px-3.5 py-2.5 text-[12.5px] leading-relaxed"
+                style={{ color: "#374151", background: i < UNIVERSAL_QUESTIONS.length ? "var(--accent-subtle, rgba(99,102,241,0.03))" : "#fff" }}
+                data-testid={`nil-question-${i}`}
+              >
+                {q}
+              </li>
+            ))}
+          </ul>
+          <div className="px-3.5 py-2 flex items-center justify-between" style={{ background: "#f9fafb", borderTop: "1px solid #f3f4f6" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "#9ca3af" }}>
+              These questions are meant to guide the conversation. NIL opportunities vary and are not guaranteed.
+            </p>
+            <button
+              onClick={handleCopy}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors flex-shrink-0 ml-3"
+              style={{
+                background: copied ? "#ecfdf5" : "#f8fafc",
+                color: copied ? "#059669" : "#6366f1",
+                border: `1px solid ${copied ? "#a7f3d0" : "#e2e8f0"}`,
+              }}
+              data-testid="nil-copy-questions-btn"
+            >
+              {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+              {copied ? "Copied!" : "Copy Questions"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function NilReadinessCard({ nil, dataConfidence, loading, onRefresh, programId }) {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="rounded-xl border p-5" style={{ backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+        data-testid="nil-readiness-loading">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "#1a1a2e" }}>Analyzing NIL environment...</p>
+            <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>Reviewing available NIL data and program signals</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!nil) return null;
-  const cfg = STATUS_CONFIG[nil.status] || STATUS_CONFIG.unknown;
-  const timelineLabel = timeline?.label || null;
-  const timelineStatus = timeline?.status || null;
-  const tlDot = timelineStatus === "filling_early" ? "#10b981" : timelineStatus === "standard" ? "#3b82f6" : timelineStatus === "late" ? "#f59e0b" : "#94a3b8";
-  const confidenceLevel = dataConfidence?.level || "Medium";
-  const now = new Date();
-  const updatedDate = `${now.toLocaleString("en-US", { month: "short" })} ${now.getFullYear()}`;
+  const cfg = STATUS_CONFIG[nil.status] || STATUS_CONFIG.info_limited;
+  const isLimited = nil.status === "info_limited";
 
   return (
     <div
@@ -26,37 +134,47 @@ export function NilReadinessCard({ nil, dataConfidence, timeline }) {
       data-testid="nil-readiness-card"
     >
       <div className="p-5 space-y-4">
-        {/* Header row */}
+        {/* Header */}
         <div className="flex items-center justify-between relative">
           <div className="flex items-center gap-2.5">
-            <span className="text-xl" role="img" aria-label="money bag">💰</span>
-            <h3 className="text-base font-bold" style={{ color: "#1a1a2e" }} data-testid="nil-card-title">NIL Readiness</h3>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: cfg.statusBg }}>
+              <Info className="w-4 h-4" style={{ color: cfg.accent }} />
+            </div>
+            <div>
+              <div className="text-[11px] font-medium uppercase tracking-wide" style={{ color: "#6b7280" }}>
+                NIL Readiness
+              </div>
+              <div className="text-sm font-bold" style={{ color: "#1a1a2e" }} data-testid="nil-card-label">
+                {nil.label}
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            {timelineLabel && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-                style={{ background: "#f8fafc", color: "#374151", border: "1px solid #e5e7eb" }}
-                data-testid="nil-timeline-pill">
-                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: tlDot }} />
-                {timelineLabel}
-              </span>
+            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
+            {onRefresh && (
+              <button onClick={onRefresh} className="p-1.5 rounded-lg hover:bg-gray-100" data-testid="nil-refresh-btn">
+                <RefreshCw className="w-3.5 h-3.5" style={{ color: "#9ca3af" }} />
+              </button>
             )}
           </div>
-          {/* Tooltip bubble */}
+
           {showTooltip && (
             <div className="absolute right-0 -top-2 -translate-y-full z-10 max-w-[280px] p-3 rounded-lg border shadow-lg"
               style={{ backgroundColor: "#f8fafc", borderColor: "#e5e7eb" }}
               data-testid="nil-tooltip-bubble">
-              <p className="text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
-                {nil.tooltip}
-              </p>
-              <div className="absolute bottom-0 right-8 translate-y-1/2 rotate-45 w-2.5 h-2.5"
-                style={{ backgroundColor: "#f8fafc", borderRight: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb" }} />
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
+                  {nil.tooltip}
+                </p>
+                <button onClick={() => setShowTooltip(false)} className="flex-shrink-0 p-0.5">
+                  <X className="w-3 h-3" style={{ color: "#9ca3af" }} />
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Main content with left border */}
+        {/* Content */}
         <div style={{ borderLeft: `2px solid ${cfg.accent}20`, paddingLeft: 16 }}>
           {/* Status banner */}
           <div className="rounded-lg px-3.5 py-2.5 mb-3"
@@ -64,77 +182,88 @@ export function NilReadinessCard({ nil, dataConfidence, timeline }) {
             data-testid="nil-status-banner">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.dot }} />
-              <span className="text-sm font-bold" style={{ color: "#1a1a2e" }}>{nil.status_label || nil.label}</span>
+              <span className="text-sm font-bold" style={{ color: "#1a1a2e" }}>{nil.status_label}</span>
             </div>
           </div>
 
-          {/* Description */}
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#4b5563" }}>
+          {/* Explanation */}
+          <p className="text-[13px] leading-relaxed mb-3" style={{ color: "#4b5563" }}
+            data-testid="nil-explanation">
             {nil.explanation}
           </p>
 
-          {/* Two-column: What This Involves + What This Means */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 rounded-lg border overflow-hidden mb-4" style={{ borderColor: "#e5e7eb" }}>
-            {/* Left: What This Involves */}
-            <div className="p-3.5 sm:border-r" style={{ borderColor: "#e5e7eb" }}>
-              <h4 className="text-[13px] font-bold mb-2.5" style={{ color: "#1a1a2e" }}>What This Involves</h4>
-              <ul className="space-y-2">
-                {(nil.involves || nil.guidance || []).map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
-                    <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#10b981" }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Right: What This Means for You */}
-            <div className="p-3.5 border-t sm:border-t-0" style={{ borderColor: "#e5e7eb" }}>
-              <h4 className="text-[13px] font-bold mb-2.5" style={{ color: "#1a1a2e" }}>What This Means for You</h4>
-              <p className="text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
-                {nil.meaning || (nil.guidance || []).join(". ") + "."}
+          {/* Guidance block */}
+          {nil.guidance && (
+            <div className="rounded-lg px-3.5 py-2.5 mb-3" style={{ background: "var(--accent-subtle, rgba(99,102,241,0.04))", border: "1px solid rgba(99,102,241,0.10)" }}
+              data-testid="nil-guidance">
+              <p className="text-[12px] font-medium mb-0.5" style={{ color: "#6b7280" }}>
+                What this means for you
+              </p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "#4b5563" }}>
+                {nil.guidance}
               </p>
             </div>
-          </div>
+          )}
+
+          {/* Two-column (only for non-limited states with involves/meaning) */}
+          {!isLimited && nil.involves?.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 rounded-lg border overflow-hidden mb-3" style={{ borderColor: "#e5e7eb" }}>
+              <div className="p-3.5 sm:border-r" style={{ borderColor: "#e5e7eb" }}>
+                <h4 className="text-[13px] font-bold mb-2.5" style={{ color: "#1a1a2e" }}>What This Involves</h4>
+                <ul className="space-y-2">
+                  {nil.involves.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
+                      <Check className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#10b981" }} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-3.5 border-t sm:border-t-0" style={{ borderColor: "#e5e7eb" }}>
+                <h4 className="text-[13px] font-bold mb-2.5" style={{ color: "#1a1a2e" }}>What This Means for You</h4>
+                <p className="text-[12px] leading-relaxed" style={{ color: "#4b5563" }}>
+                  {nil.meaning}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Context tags */}
           {nil.context_tags?.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap mb-3" data-testid="nil-context-tags">
               {nil.context_tags.map((tag, i) => (
-                <span key={i} className="flex items-center">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-medium"
-                    style={{ background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
-                    {tag}
-                  </span>
-                  {i < nil.context_tags.length - 1 && (
-                    <span className="mx-1 text-[10px]" style={{ color: "#cbd5e1" }}>·</span>
-                  )}
+                <span key={i} className="px-2.5 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
+                  {tag}
                 </span>
               ))}
             </div>
           )}
-
-          {/* Disclaimer */}
-          <p className="text-[11px] italic" style={{ color: "#9ca3af" }}>
-            *NIL results vary by athlete, sport, and situation.
-          </p>
         </div>
 
-        {/* Footer: Data confidence + Updated */}
-        <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: "#f3f4f6" }}>
-          <button
-            onClick={() => setShowTooltip(!showTooltip)}
-            className="inline-flex items-center gap-1.5 text-[12px] hover:opacity-70 transition-opacity"
-            style={{ color: "#6b7280" }}
-            data-testid="nil-info-btn"
-          >
-            <Info className="w-3.5 h-3.5" style={{ color: "#93c5fd" }} />
-            Data confidence: <span className="font-bold" style={{ color: "#1a1a2e" }}>{confidenceLevel}</span>
-          </button>
-          <span className="text-[12px]" style={{ color: "#9ca3af" }}>
-            Updated: {updatedDate}
-          </span>
-        </div>
+        {/* Questions to ask */}
+        <NilQuestions status={nil.status} />
+
+        {/* About this estimate */}
+        <button
+          onClick={() => setShowTooltip(!showTooltip)}
+          className="inline-flex items-center gap-1 text-[11px] font-medium hover:opacity-70 transition-opacity"
+          style={{ color: "#9ca3af" }}
+          data-testid="nil-info-btn"
+        >
+          <Info className="w-3 h-3" />
+          About this estimate
+        </button>
+
+        {/* Improve this card (info_limited only) */}
+        {isLimited && programId && (
+          <ImproveCardNudge cardType="nil_readiness" programId={programId} />
+        )}
+
+        {/* Disclaimer */}
+        <p className="text-[11px]" style={{ color: "#9ca3af" }} data-testid="nil-disclaimer">
+          NIL opportunities vary and are not guaranteed.
+        </p>
       </div>
     </div>
   );
