@@ -101,9 +101,9 @@ export default function LoginPage({ onAuth }) {
           <div className="relative h-[160px] overflow-hidden" style={{ background: "linear-gradient(135deg, #0f2027 0%, #1a3a4a 40%, #1e4d5e 100%)" }}>
             <img src={BANNER_IMG} alt="" className="absolute inset-0 w-full h-full object-cover mix-blend-soft-light opacity-70" />
             <div className="relative z-10 p-6 pb-4 flex flex-col justify-end h-full">
-              <div className="flex items-center gap-1.5 mb-2">
-                <Sparkles className="w-4 h-4 text-white/80" />
-                <span className="text-white/90 text-sm font-medium">Recruiting HQ</span>
+              <div className="flex items-center gap-2 mb-2">
+                <img src="/images/capymatch-logo.png" alt="CapyMatch" className="w-6 h-6 rounded object-cover" />
+                <span className="text-white/90 text-sm font-medium">CapyMatch</span>
               </div>
               <h2 className="text-[28px] font-bold text-white leading-tight">
                 {mode === "login" ? "Welcome back" : "Get started"}
