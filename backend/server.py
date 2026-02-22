@@ -66,6 +66,36 @@ app.include_router(intelligence_router)
 app.include_router(intelligence_contribute_router)
 
 
+# ─── Serve Audit Report ───
+from fastapi.responses import HTMLResponse
+import markdown
+
+@app.get("/api/audit-report", response_class=HTMLResponse)
+async def serve_audit_report():
+    try:
+        with open("/app/audit_report.md", "r") as f:
+            md_content = f.read()
+        html = markdown.markdown(md_content, extensions=["tables", "fenced_code"])
+        return f"""<!DOCTYPE html><html><head>
+        <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CapyMatch Audit Report</title>
+        <style>
+          body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1a1a2e; line-height: 1.7; }}
+          h1 {{ color: #0d1b2a; border-bottom: 3px solid #2ec4b6; padding-bottom: 12px; }}
+          h2 {{ color: #1b263b; margin-top: 2em; }}
+          h3 {{ color: #415a77; }}
+          table {{ border-collapse: collapse; width: 100%; margin: 16px 0; }}
+          th, td {{ border: 1px solid #ddd; padding: 10px 14px; text-align: left; }}
+          th {{ background: #f0f4f8; font-weight: 600; }}
+          tr:nth-child(even) {{ background: #fafbfc; }}
+          code {{ background: #f0f4f8; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }}
+          strong {{ color: #0d1b2a; }}
+          hr {{ border: none; border-top: 2px solid #e8ecf0; margin: 2em 0; }}
+        </style></head><body>{html}</body></html>"""
+    except FileNotFoundError:
+        return HTMLResponse("<h1>Report not found</h1>", status_code=404)
+
+
 # ─── Stripe Webhook (must be outside router prefix) ───
 
 @app.post("/api/webhook/stripe")
