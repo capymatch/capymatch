@@ -122,10 +122,10 @@ export default function LoginPage({ onAuth }) {
                 <span className="text-white/90 text-sm font-medium">CapyMatch</span>
               </div>
               <h2 className="text-[28px] font-bold text-white leading-tight">
-                {mode === "login" ? "Welcome back" : "Get started"}
+                {forgotMode ? "Reset password" : mode === "login" ? "Welcome back" : "Get started"}
               </h2>
               <p className="text-white/75 text-sm mt-1">
-                {mode === "login" ? "Log in to your CapyMatch" : "Create your CapyMatch account"}
+                {forgotMode ? "We'll help you get back in" : mode === "login" ? "Log in to your CapyMatch" : "Create your CapyMatch account"}
               </p>
             </div>
           </div>
