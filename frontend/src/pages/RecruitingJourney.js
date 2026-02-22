@@ -229,6 +229,12 @@ export default function RecruitingJourney() {
     }
   }, [loading, program, isBasic, scholarshipIntel, scholarshipIntelLoading, fetchScholarshipIntel]);
 
+  useEffect(() => {
+    if (!loading && program && !isBasic && !nilIntel && !nilIntelLoading) {
+      fetchNilIntel();
+    }
+  }, [loading, program, isBasic, nilIntel, nilIntelLoading, fetchNilIntel]);
+
   const updateProgram = async (updates) => {
     try {
       const res = await api.put(`/programs/${programId}`, updates);
