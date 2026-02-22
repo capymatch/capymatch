@@ -44,18 +44,19 @@ const LABEL_QUESTIONS = {
   ],
 };
 
-function NilQuestions({ status }) {
+function NilQuestions({ status, isVague }) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const labelQuestions = LABEL_QUESTIONS[status] || LABEL_QUESTIONS.info_limited;
+  const questionKey = isVague ? "info_limited_vague" : status;
+  const labelQuestions = LABEL_QUESTIONS[questionKey] || LABEL_QUESTIONS.info_limited;
   const allQuestions = [...UNIVERSAL_QUESTIONS, ...labelQuestions];
 
   const handleCopy = () => {
     const text = allQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n");
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
-      toast.success("Questions copied to clipboard");
+      toast.success("Questions copied to clipboard.");
       setTimeout(() => setCopied(false), 2000);
     });
   };
@@ -69,12 +70,17 @@ function NilQuestions({ status }) {
         data-testid="nil-questions-toggle"
       >
         <MessageSquare className="w-3.5 h-3.5" />
-        Questions to ask the coach
+        Questions to ask about NIL
         <ChevronDown
           className="w-3 h-3 transition-transform"
           style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
         />
       </button>
+      {expanded && (
+        <p className="text-[10.5px] leading-relaxed -mt-1" style={{ color: "#9ca3af" }}>
+          These questions focus on NIL education, support, and compliance — not guarantees or compensation.
+        </p>
+      )}
 
       {expanded && (
         <div className="rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
