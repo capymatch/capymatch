@@ -44,6 +44,7 @@ db.tenants.insert_one({
     "owner_user_id": user_id,
     "athlete_name": "Emma Mitchell",
     "subscription_tier": "premium",
+    "plan": "premium",
     "status": "active",
     "created_at": datetime.now(timezone.utc).isoformat(),
     "updated_at": datetime.now(timezone.utc).isoformat(),
