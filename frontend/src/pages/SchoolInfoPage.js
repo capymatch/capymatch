@@ -434,6 +434,16 @@ export default function SchoolInfoPage() {
         {school.on_board && programId && !isBasic && (
           <div data-testid="school-intelligence-section">
             <SectionHeader icon={Sparkles} title="School Intelligence" testId="intelligence-section-header" />
+            {(() => {
+              const missing = [];
+              if (!school.avg_gpa) missing.push("GPA");
+              if (!school.avg_act) missing.push("ACT");
+              return missing.length > 0 ? (
+                <div className="mb-4">
+                  <AcademicCompletenessFlag completeness={{ complete: false, missing }} />
+                </div>
+              ) : null;
+            })()}
             <div className="space-y-4">
               <TimelineStatusCard
                 timeline={timelineIntel?.ui}
