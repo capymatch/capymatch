@@ -471,6 +471,9 @@ def _build_known_unknowns(missing_fields: list, data_quality: dict) -> list:
     if data_quality.get("nil") == "unknown":
         unknowns.append("No NIL-specific data exists. NIL readiness is inferred from division and conference only.")
 
+    if data_quality.get("scholarship") == "unknown":
+        unknowns.append("No scholarship-specific data exists. Aid structure cannot be determined from stored data.")
+
     if "athlete" in sections:
         athlete_missing = sections["athlete"]
         if "grad_year" in athlete_missing:
@@ -492,10 +495,11 @@ def _empty_payload(now: str, missing: list) -> dict:
     """Return the empty-state payload structure."""
     return {
         "school": {}, "athlete": {}, "academics": {}, "roster": {},
-        "timeline": {}, "nil": {}, "recruiting": {},
+        "timeline": {}, "nil": {}, "scholarship": {}, "recruiting": {},
         "sources": [], "data_quality": {
             "school": "unknown", "academics": "unknown", "athlete": "unknown",
             "roster": "unknown", "timeline": "unknown", "nil": "unknown",
+            "scholarship": "unknown",
         },
         "missing_fields": missing,
         "known_unknowns": ["Insufficient data to build intelligence payload."],
