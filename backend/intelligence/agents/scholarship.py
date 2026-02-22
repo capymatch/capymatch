@@ -376,6 +376,8 @@ def min_evidence(ai_evidence: str, is_contributed: bool) -> str:
 def _build_scholarship_unknowns(payload: dict) -> list:
     """Build scholarship-specific unknowns from known_unknowns."""
     raw = payload.get("known_unknowns", [])
+    scholarship_data = payload.get("scholarship", {})
+    has_notes = bool(scholarship_data.get("scholarship_notes"))
     unknowns = []
     seen = set()
 
@@ -389,7 +391,7 @@ def _build_scholarship_unknowns(payload: dict) -> list:
                 "unlock_hint": "Program-specific scholarship notes would enable aid structure analysis.",
             })
 
-    if "scholarship.scholarship_notes" not in seen:
+    if "scholarship.scholarship_notes" not in seen and not has_notes:
         unknowns.append({
             "text": "No scholarship-specific data exists for this program. Aid structure is unknown.",
             "missing_data": "scholarship.scholarship_notes",
