@@ -148,12 +148,9 @@ export default function Layout({ user, onLogout }) {
         {/* Logo */}
         <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "var(--t-sidebar-divider)" }}>
           <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'lg:justify-center lg:w-full' : ''}`}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0"
-              style={{ backgroundColor: "var(--t-sidebar-logo-bg)" }}>
-              <Sparkles className="w-5 h-5" style={{ color: "var(--t-sidebar-logo-icon)" }} strokeWidth={2} />
-            </div>
+            <img src="/images/capymatch-logo.png" alt="CapyMatch" className="w-10 h-10 rounded-xl object-cover shadow-sm flex-shrink-0" />
             <div className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>
-              <span className="font-heading text-lg font-bold block leading-tight" style={{ color: "var(--t-sidebar-brand-text)" }}>Recruiting HQ</span>
+              <span className="font-heading text-lg font-bold block leading-tight" style={{ color: "var(--t-sidebar-brand-text)" }}>CapyMatch</span>
               <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--t-nav-active-text)", opacity: 0.8 }}>
                 {subscription?.tier ? `${TIER_LABELS[subscription.tier] || subscription.tier}` : "Starter"}
               </span>
