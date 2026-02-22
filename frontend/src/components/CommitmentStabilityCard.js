@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { TrendingDown, Info, Check, X } from "lucide-react";
+import { TrendingDown, Info, Check, X, AlertCircle, Loader2 } from "lucide-react";
 
 const STATUS_CONFIG = {
   high: { pill: "#d1fae5", pillText: "#065f46", pillDot: "#10b981", barColor: "#6ee7b7" },
   moderate: { pill: "#fef3c7", pillText: "#78350f", pillDot: "#f59e0b", barColor: "#93c5fd" },
   volatile: { pill: "#fee2e2", pillText: "#7f1d1d", pillDot: "#ef4444", barColor: "#fca5a5" },
+  unknown: { pill: "#f1f5f9", pillText: "#64748b", pillDot: "#94a3b8", barColor: "#cbd5e1" },
 };
 
 function Sparkline({ data, trend }) {
@@ -55,10 +56,63 @@ function Sparkline({ data, trend }) {
   );
 }
 
-export function CommitmentStabilityCard({ stability }) {
+export function CommitmentStabilityCard({ stability, loading }) {
   const [showBadgeTip, setShowBadgeTip] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.08)", border: "1px solid #f0f0f0" }}
+        data-testid="commitment-stability-loading">
+        <div className="p-5 flex items-center gap-3">
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "#1a1a2e" }}>Analyzing commitment stability...</p>
+            <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>Reviewing historical roster patterns</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!stability) return null;
   const cfg = STATUS_CONFIG[stability.status] || STATUS_CONFIG.moderate;
+
+  if (stability.status === "unknown") {
+    return (
+      <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.08)", border: "1px solid #f0f0f0" }}
+        data-testid="commitment-stability-card">
+        <div className="p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingDown className="w-5 h-5" style={{ color: "#94A3B8" }} />
+              <span className="text-lg font-bold tracking-tight" style={{ color: "#1a1a1a" }}>
+                Commitment Stability
+              </span>
+            </div>
+            <span className="px-3.5 py-1 rounded-full text-[13px] font-semibold"
+              style={{ backgroundColor: "#f1f5f9", color: "#64748b" }}
+              data-testid="stability-status-pill">
+              Unknown
+            </span>
+          </div>
+          <div className="rounded-lg px-4 py-3 flex items-start gap-2.5"
+            style={{ background: "rgba(148,163,184,0.06)", border: "1px solid rgba(148,163,184,0.15)" }}
+            data-testid="stability-insufficient-data">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#94A3B8" }} />
+            <p className="text-[13px] leading-relaxed" style={{ color: "#64748B" }}>
+              {stability.meaning || "Commitment stability cannot be assessed without historical roster data."}
+            </p>
+          </div>
+        </div>
+        <div className="px-5 py-3 text-center" style={{ backgroundColor: "#f8f9fa", borderTop: "1px solid #f0f0f0" }}
+          data-testid="stability-disclaimer">
+          <p className="text-[12px]" style={{ color: "#9ca3af" }}>
+            Based on public roster data and historical patterns. Not a prediction.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

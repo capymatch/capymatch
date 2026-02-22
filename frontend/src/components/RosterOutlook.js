@@ -1,4 +1,4 @@
-import { Users, Info, X } from "lucide-react";
+import { Users, Info, X, RefreshCw, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
 
@@ -27,8 +27,24 @@ export function RosterLabel({ roster, onClick }) {
 }
 
 /* ── Full Roster Reality Card for Journey / Detail pages ── */
-export function RosterRealityCard({ roster, dataConfidence }) {
+export function RosterRealityCard({ roster, dataConfidence, loading, onRefresh }) {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="rounded-xl border p-5" style={{ backgroundColor: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+        data-testid="roster-reality-loading">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6366f1" }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "#1a1a2e" }}>Analyzing roster outlook...</p>
+            <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>Reviewing roster data and availability patterns</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!roster) return null;
   const cfg = STATUS_CONFIG[roster.status] || STATUS_CONFIG.unknown;
 
@@ -58,7 +74,14 @@ export function RosterRealityCard({ roster, dataConfidence }) {
                 </div>
               </div>
             </div>
-            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
+            <div className="flex items-center gap-2">
+              {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
+              {onRefresh && (
+                <button onClick={onRefresh} className="p-1.5 rounded-lg hover:bg-gray-100" data-testid="roster-refresh-btn">
+                  <RefreshCw className="w-3.5 h-3.5" style={{ color: "#9ca3af" }} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Estimated Openings */}
