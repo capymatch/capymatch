@@ -245,6 +245,20 @@ class TestNilIntelligenceEndpoint:
             f"Expected ui.meaning='', got {ui.get('meaning')}"
         
         print(f"PASS: ui.meaning is empty for info_limited")
+    
+    def test_ui_contains_is_vague_field(self):
+        """Test ui object contains is_vague field (false for FGCU - deterministic path)"""
+        response = self.session.post(f"{BASE_URL}/api/intelligence/nil/{FGCU_PROGRAM_ID}")
+        assert response.status_code == 200
+        
+        ui = response.json().get("ui", {})
+        
+        assert "is_vague" in ui, \
+            f"Expected 'is_vague' field in ui object, got keys: {list(ui.keys())}"
+        assert ui.get("is_vague") == False, \
+            f"Expected ui.is_vague=False for FGCU, got {ui.get('is_vague')}"
+        
+        print(f"PASS: ui.is_vague=False for FGCU (deterministic path)")
 
 
 class TestNilReadinessAllowedLabels:
