@@ -185,7 +185,7 @@ export default function AthleteProfileQuiz() {
   // ─── Completion Screen ───
   if (showComplete) {
     return (
-      <div className="min-h-screen flex items-start justify-center px-6 pt-10 pb-20" style={{ backgroundColor: "var(--t-bg)" }}>
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }}>
         <div className="w-full max-w-xl">
           {/* Progress bar complete */}
           <div className="mb-10">
@@ -272,7 +272,7 @@ export default function AthleteProfileQuiz() {
   // ─── Intro Screen ───
   if (isIntro) {
     return (
-      <div className="min-h-screen flex items-start justify-center px-6 pt-10 pb-20" style={{ backgroundColor: "var(--t-bg)" }} data-testid="quiz-intro">
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="quiz-intro">
         <div className="w-full max-w-xl">
           {/* Progress header */}
           <div className="mb-10">
@@ -351,7 +351,7 @@ export default function AthleteProfileQuiz() {
 
   // ─── Quiz Steps ───
   return (
-    <div className="min-h-screen flex items-start justify-center px-6 pt-10 pb-20" style={{ backgroundColor: "var(--t-bg)" }} data-testid="athlete-quiz">
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="athlete-quiz">
       <div className="w-full max-w-xl">
         {/* Progress */}
         <div className="mb-10">
