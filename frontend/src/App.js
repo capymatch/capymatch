@@ -175,7 +175,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<Navigate to="/board" replace />} />
       <Route path="/welcome" element={<LandingPage />} />
-      <Route path="/onboarding" element={<AthleteProfileQuiz />} />
+      <Route path="/mockup" element={<MockupPage />} />
       <Route path="/" element={<OnboardingGate><Layout user={user} onLogout={onLogout} /></OnboardingGate>}>
         <Route index element={<Navigate to="/board" replace />} />
         <Route path="board" element={<Dashboard />} />
