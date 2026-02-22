@@ -66,7 +66,11 @@ function SpotlightCard({ program, onClick }) {
   return (
     <div
       className="min-w-[250px] max-w-[250px] rounded-xl border p-5 flex-shrink-0 cursor-pointer transition-all hover:-translate-y-0.5"
-      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+      style={{
+        backgroundColor: isCommitted ? "rgba(251,191,36,0.04)" : "var(--t-surface)",
+        borderColor: isCommitted ? "rgba(251,191,36,0.45)" : "var(--t-border)",
+        boxShadow: isCommitted ? "0 0 16px rgba(251,191,36,0.10)" : undefined,
+      }}
       onClick={onClick}
       data-testid={`spotlight-${program.program_id}`}
     >
@@ -77,15 +81,21 @@ function SpotlightCard({ program, onClick }) {
         </div>
       </div>
       <div className="flex gap-1.5 flex-wrap mb-3">
-        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{ backgroundColor: statusStyle.bg, color: statusStyle.color }}>{program.recruiting_status}</span>
-        {program.next_action_due && new Date(program.next_action_due + "T00:00:00") <= new Date() && (
+        {isCommitted ? (
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-md" style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)", color: "#fff" }}>Committed</span>
+        ) : (
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{ backgroundColor: statusStyle.bg, color: statusStyle.color }}>{program.recruiting_status}</span>
+        )}
+        {!isCommitted && program.next_action_due && new Date(program.next_action_due + "T00:00:00") <= new Date() && (
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{ backgroundColor: "rgba(239,68,68,0.12)", color: "#ef4444" }}>Overdue</span>
         )}
       </div>
-      <div className="pt-3 border-t" style={{ borderColor: "var(--t-border)" }}>
+      <div className="pt-3 border-t" style={{ borderColor: isCommitted ? "rgba(251,191,36,0.25)" : "var(--t-border)" }}>
         <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-          <span className="font-semibold" style={{ color: "#2ec4b6" }}>Next step: </span>
-          {nextStep}
+          <span className="font-semibold" style={{ color: isCommitted ? "#d97706" : "#2ec4b6" }}>
+            {isCommitted ? "Congratulations! " : "Next step: "}
+          </span>
+          {isCommitted ? "You're committed — the hard work paid off!" : nextStep}
         </p>
       </div>
     </div>
