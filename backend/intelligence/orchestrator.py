@@ -36,4 +36,8 @@ async def run_card(db, card_type: str, program_id: str, tenant_id: str) -> dict:
         from intelligence.agents.school_insight import run_school_insight
         return await run_school_insight(payload, program_id)
 
+    if card_type == "timeline_intelligence":
+        from intelligence.agents.timeline import run_timeline_intelligence
+        return await run_timeline_intelligence(payload, program_id)
+
     raise ValueError(f"Unknown card_type: {card_type}")
