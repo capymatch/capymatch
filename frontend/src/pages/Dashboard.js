@@ -368,7 +368,7 @@ export default function Dashboard() {
 
   const interactionDotColor = (type) => {
     const t = (type || "").toLowerCase();
-    if (t.includes("reply") || t.includes("coach")) return "#10b981";
+    if (t.includes("reply") || t.includes("coach") || t === "email_received") return "#10b981";
     if (t.includes("email") || t.includes("follow")) return "#2ec4b6";
     if (t.includes("camp")) return "#f59e0b";
     if (t.includes("visit")) return "#06b6d4";
