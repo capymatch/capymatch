@@ -147,16 +147,8 @@ export default function Layout({ user, onLogout }) {
       >
         {/* Logo */}
         <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "var(--t-sidebar-divider)" }}>
-          <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'lg:justify-center lg:w-full' : ''}`}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden" style={{ backgroundColor: "var(--t-sidebar-logo-bg)" }}>
-              <img src="/images/capymatch-icon.png" alt="" className="w-8 h-8 object-contain" />
-            </div>
-            <div className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>
-              <span className="font-heading text-lg font-bold block leading-tight" style={{ color: "var(--t-sidebar-brand-text)" }}>CapyMatch</span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--t-nav-active-text)", opacity: 0.8 }}>
-                {subscription?.tier ? `${TIER_LABELS[subscription.tier] || subscription.tier}` : "Starter"}
-              </span>
-            </div>
+          <div className={`flex items-center justify-center w-full`}>
+            <img src="/images/capymatch-logo-new.png" alt="CapyMatch" className="h-12 object-contain" />
           </div>
           {/* Collapse button - Desktop only */}
           <button 
