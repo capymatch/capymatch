@@ -109,7 +109,7 @@ export default function LoginPage({ onAuth }) {
                 {mode === "login" ? "Welcome back" : "Get started"}
               </h2>
               <p className="text-white/75 text-sm mt-1">
-                {mode === "login" ? "Log in to your Recruiting HQ" : "Create your Recruiting HQ account"}
+                {mode === "login" ? "Log in to your CapyMatch" : "Create your CapyMatch account"}
               </p>
             </div>
           </div>
