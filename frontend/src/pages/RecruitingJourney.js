@@ -188,6 +188,22 @@ export default function RecruitingJourney() {
     }
   }, [programId, isBasic]);
 
+  const fetchNilIntel = useCallback(async (forceRefresh = false) => {
+    if (isBasic) return;
+    setNilIntelLoading(true);
+    try {
+      const url = forceRefresh
+        ? `/intelligence/nil/${programId}?force=true`
+        : `/intelligence/nil/${programId}`;
+      const res = await api.post(url);
+      setNilIntel(res.data);
+    } catch (err) {
+      console.warn("NIL intel fetch failed:", err);
+    } finally {
+      setNilIntelLoading(false);
+    }
+  }, [programId, isBasic]);
+
   // Fetch AI insight after initial data loads
   useEffect(() => {
     if (!loading && program && !isBasic && !schoolInsight && !insightLoading) {
