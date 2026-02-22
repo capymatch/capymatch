@@ -51,6 +51,7 @@ function ActionRow({ domain, school, detail, badge, badgeBg, badgeColor, onClick
 /* ── Spotlight Card ── */
 function SpotlightCard({ program, onClick }) {
   const colorMap = {
+    "Committed": { bg: "linear-gradient(135deg, rgba(251,191,36,0.18), rgba(245,158,11,0.12))", color: "#b45309", border: "rgba(251,191,36,0.4)" },
     "Active Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
     "Some Interest": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
     "Camp Attended": { bg: "rgba(46,196,182,0.12)", color: "#14b8a6" },
@@ -58,6 +59,7 @@ function SpotlightCard({ program, onClick }) {
     "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
   const statusStyle = colorMap[program.recruiting_status] || { bg: "rgba(107,114,128,0.12)", color: "#4b5563" };
+  const isCommitted = program.recruiting_status === "Committed";
 
   const nextStep = program.next_action || "Review this school's journey and plan your next move.";
 
