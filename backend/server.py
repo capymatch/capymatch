@@ -38,6 +38,7 @@ from routes.team import router as team_router
 from routes.notes import router as notes_router
 from routes.inbound_contacts import router as inbound_contacts_router
 from routes.privacy import router as privacy_router
+from routes.intelligence import router as intelligence_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
