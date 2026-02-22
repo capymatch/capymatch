@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSubscription } from "../lib/subscription";
-import { CreditCard, ChevronRight, Sparkles, Zap, Crown, Lock, Trash2, Loader2, Shield, Bell, Download, Check, X as XIcon } from "lucide-react";
+import { CreditCard, ChevronRight, Sparkles, Zap, Crown, Lock, Trash2, Loader2, Shield, Bell, Download, Check, X as XIcon, User, Pencil } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
@@ -12,6 +12,26 @@ export default function AccountPage() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [pwLoading, setPwLoading] = useState(false);
+
+  // Personal info state
+  const [accountName, setAccountName] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
+  const [originalName, setOriginalName] = useState("");
+  const [originalEmail, setOriginalEmail] = useState("");
+  const [infoLoading, setInfoLoading] = useState(true);
+  const [infoSaving, setInfoSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  useEffect(() => {
+    api.get("/auth/me").then((res) => {
+      setAccountName(res.data.name || "");
+      setAccountEmail(res.data.email || "");
+      setOriginalName(res.data.name || "");
+      setOriginalEmail(res.data.email || "");
+      setIsGoogleUser(res.data.auth_provider === "google");
+    }).catch(() => {}).finally(() => setInfoLoading(false));
+  }, []);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
