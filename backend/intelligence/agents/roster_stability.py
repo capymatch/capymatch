@@ -72,7 +72,6 @@ def _build_unknown_card(payload: dict, program_id: str, now_iso: str) -> dict:
     school = payload.get("school", {})
     recruiting = payload.get("recruiting", {})
     dq = payload.get("data_quality", {})
-    source_lookup = {s["section"]: s.get("source_id", "unknown") for s in payload.get("sources", [])}
 
     current_status = recruiting.get("status", "Unknown")
     interaction_count = recruiting.get("interaction_count", 0)
