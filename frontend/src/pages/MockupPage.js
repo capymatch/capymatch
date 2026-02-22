@@ -17,7 +17,7 @@ export default function MockupPage() {
             style={{ backgroundColor: "#fff", borderColor: "rgba(16,185,129,0.2)", background: "linear-gradient(135deg, rgba(16,185,129,0.04), #fff 60%)" }}>
             <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%)" }} />
             <div className="relative">
-              <img src="/images/capymatch-logo.png" alt="CapyMatch" style={{ width: 72, height: 72, objectFit: "contain", margin: "0 auto 12px", display: "block" }} />
+              <img src="/images/capymatch-celebrate.png" alt="CapyMatch" style={{ width: 72, height: 72, objectFit: "contain", margin: "0 auto 12px", display: "block" }} />
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1a2b2a", marginBottom: 4 }}>Coach Smith is interested!</h3>
               <p style={{ fontSize: 12, color: "#6b7f7a", marginBottom: 16, maxWidth: 320, margin: "0 auto 16px" }}>
                 Replied yesterday — keep the momentum going:
@@ -78,7 +78,7 @@ export default function MockupPage() {
             <div className="absolute top-6 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full"
               style={{ background: "radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%)" }} />
             <div className="relative p-6 sm:p-8 text-center">
-              <img src="/images/capymatch-logo.png" alt="CapyMatch" style={{ width: 80, height: 80, objectFit: "contain", margin: "0 auto 12px", display: "block" }} />
+              <img src="/images/capymatch-celebrate.png" alt="CapyMatch" style={{ width: 80, height: 80, objectFit: "contain", margin: "0 auto 12px", display: "block" }} />
               <p style={{
                 fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 8,
                 background: "linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24)",
