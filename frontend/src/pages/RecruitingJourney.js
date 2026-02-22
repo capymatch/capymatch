@@ -80,11 +80,6 @@ export default function RecruitingJourney() {
         if (found) {
           setMatchScore(found);
           setRiskBadges(found.risk_badges || []);
-          setRecruitingTimeline(found.timeline || null);
-          setRosterOutlook(found.roster || null);
-          setScholarship(found.scholarship || null);
-          setNilReadiness(found.nil || null);
-          setCommitmentStability(found.commitment_stability || null);
           setDataConfidence(found.data_confidence || null);
         }
       }
