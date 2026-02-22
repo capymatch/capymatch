@@ -147,8 +147,8 @@ export default function Layout({ user, onLogout }) {
       >
         {/* Logo */}
         <div className="p-4 lg:p-5 border-b flex items-center justify-between" style={{ borderColor: "var(--t-sidebar-divider)" }}>
-          <div className={`flex items-center justify-center w-full`}>
-            <img src="/images/capymatch-logo-new.png" alt="CapyMatch" className="h-12 object-contain" />
+          <div className="flex-1 flex items-center justify-center">
+            <img src="/images/capymatch-logo-new.png" alt="CapyMatch" className={`object-contain ${sidebarCollapsed ? 'h-8' : 'h-12'}`} />
           </div>
           {/* Collapse button - Desktop only */}
           <button 
