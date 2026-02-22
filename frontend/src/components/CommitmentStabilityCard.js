@@ -104,6 +104,9 @@ export function CommitmentStabilityCard({ stability, loading, programId }) {
               {stability.meaning || "Commitment stability cannot be assessed without historical roster data."}
             </p>
           </div>
+          {programId && (
+            <ImproveCardNudge cardType="roster_stability" programId={programId} />
+          )}
         </div>
         <div className="px-5 py-3 text-center" style={{ backgroundColor: "#f8f9fa", borderTop: "1px solid #f0f0f0" }}
           data-testid="stability-disclaimer">
