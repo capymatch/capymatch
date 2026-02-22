@@ -14,36 +14,34 @@ All 5 micro-agents built, tested, and wired. No cards on old heuristic logic.
 | Scholarship | Mix of Partial and Full / Typically Partial / Walk-On Pathways Common / Unknown | `POST /api/intelligence/scholarship/{id}` |
 | NIL Readiness | Established NIL Support / Emerging NIL Support / NIL Information Limited | `POST /api/intelligence/nil/{id}` |
 
-## Design Principles
-- AI determines ONLY the label; all UI copy hardcoded per label
-- Honest defaults when no stored signals
-- No dollar amounts, no percentages, no guarantees, no ranking
-- Questions-to-ask per card (collapsible + copy). NIL questions focus on education/support/compliance
-- "Improve this card" nudge on Unknown/Limited states → `pending_verification`
+### Timeline Intelligence Guardrails (Feb 2026)
+- **Minimum Evidence Threshold**: AI only fires with >= 3 commit timing data points across cycles. Thin data → "Unknown"
+- **AI Output Constraints**: Must reference evidence, no absolutes, no invented reasoning
+- **Heuristic Separation**: Division-level estimates clearly labeled as "Division Estimate" with "EST." badge
+  - Heuristic labels renamed: "Typically Fills Early", "Standard Window", "Later Opportunities Likely"
+  - All include `is_estimate: true` flag and division-level disclaimer tooltips
+  - Risk badge renamed: "Timeline Awareness" (was "Timeline Risk")
+- **Non-Negotiable**: Intelligence never guesses. "Unknown" is the correct answer when data is missing/insufficient.
+- **email_received** interactions treated as coach replies in signal computation
 
 ## Demo Account — COMPLETE
 - **Email**: demo@capymatch.com / **Password**: demo2026
 - **Athlete**: Emma Mitchell (Junior OH, A5 Volleyball, GA)
 - **Schools**: 10 (Committed, Offer Received, Active Conversation x3, Camp Attended, Some Interest, Contacted, Not Contacted x2)
-- **Timeline**: 30 interactions across all schools, including recent coach replies
-- **Dashboard**: Personalized greeting, 63% response rate, pipeline chart, follow-ups, events
-- **Notes**: 6 private notes across schools
-- **Events**: 3 upcoming (A5 Regional, JVA World Challenge, Penn State Visit)
-- **Creation script**: `/app/backend/create_demo.py`
+- **Dashboard**: Personalized greeting ("Good afternoon, Emma"), 63% response rate, pipeline chart, follow-ups, events
 
 ## Completed Work
 - UI/Branding overhaul to CapyMatch (logo, sidebar, landing page)
 - Celebration cards with capybara mascot
-- Conversation timeline with correct left/right alignment
-- Demo account creation and full audit
-- Dashboard bug fixes (greeting, response rate, pipeline statuses, activity feed)
-- MockupPage cleanup (removed temporary page and routes)
-- email_received treated as coach reply in signals and UI
+- Demo account creation and full audit (Feb 2026)
+- Dashboard bug fixes: greeting, response rate, pipeline statuses, activity feed (Feb 2026)
+- Timeline Intelligence guardrails: min evidence threshold, heuristic separation, estimate labeling (Feb 2026)
+- MockupPage cleanup, Babel plugin null-safety fix (Feb 2026)
 
 ## Prioritized Backlog
 ### P1
 - Admin dashboard for contribution review/verification
-- Phase E of Intelligence Pipeline (next card TBD by user)
+- Phase E of Intelligence Pipeline (next card TBD)
 
 ### P2
 - NCAA Timeline colors (cosmetic)
@@ -51,7 +49,6 @@ All 5 micro-agents built, tested, and wired. No cards on old heuristic logic.
 ### P2+
 - Girls/Boys Volleyball separation | Email templates | Camp/Tournament ROI
 - NIL transaction/payment platform | Family Collaboration Roles
-- Marketing Website | Multi-sport | Mobile App
 
 ## Test Credentials
 - **Demo**: demo@capymatch.com / demo2026
