@@ -4,6 +4,7 @@ Stage 3 — Scholarship Structure Micro-Agent
 Produces the "Scholarship Structure" intelligence card.
 Deterministic when no scholarship_notes data exists (label = "Unknown").
 AI invoked only when real scholarship signals are present in the payload.
+AI determines ONLY the label; all UI copy is hardcoded per label.
 
 Output labels: Mix of Partial and Full | Typically Partial | Walk-On Pathways Common | Unknown
 
@@ -41,6 +42,47 @@ STATUS_KEY_MAP = {
 }
 
 # ---------------------------------------------------------------------------
+# Hardcoded UI copy per label — the AI determines the label only
+# ---------------------------------------------------------------------------
+UI_COPY = {
+    "Unknown": {
+        "status": "unknown",
+        "label": "Unknown",
+        "explanation": "Scholarship structure isn't available for this program in our stored data. We can't determine how athletic aid is typically distributed here.",
+        "guidance": "Ask the coaching staff what aid is common for your position and class year, and what academic/need-based aid families often combine with athletic support.",
+        "tooltip": "Scholarship structures reflect typical program practices and may change year to year. This is not a guarantee of aid.",
+    },
+    "Unknown_vague": {
+        "status": "unknown",
+        "label": "Unknown",
+        "explanation": "We have program notes, but they aren't specific enough to determine the typical scholarship structure.",
+        "guidance": "Ask whether aid is commonly partial, occasionally full, or primarily walk-on with later opportunities — and what that looks like for your position.",
+        "tooltip": "This reflects limited specificity in available notes, not a guarantee of aid.",
+    },
+    "Typically Partial": {
+        "status": "partial",
+        "label": "Typically Partial",
+        "explanation": "Based on the program notes we have, athletic aid is most often offered as partial awards. Amounts can vary by role, timing, and roster needs.",
+        "guidance": "If this school is a priority, ask what a typical package looks like for your position and whether academic aid is commonly stacked.",
+        "tooltip": "This reflects typical patterns from available notes, not a guarantee of aid.",
+    },
+    "Mix of Partial and Full": {
+        "status": "mix",
+        "label": "Mix of Partial and Full",
+        "explanation": "Program notes suggest a mix of partial and occasional larger awards depending on roster needs. Aid decisions vary significantly by year and recruiting class.",
+        "guidance": "Ask directly what profiles tend to receive larger awards and what the staff prioritizes (position needs, academics, impact timeline).",
+        "tooltip": "This reflects typical patterns from available notes, not a guarantee of aid.",
+    },
+    "Walk-On Pathways Common": {
+        "status": "walkon",
+        "label": "Walk-On Pathways Common",
+        "explanation": "Program notes indicate many athletes begin as walk-ons, with potential opportunities to earn aid later. Availability can change by season and roster movement.",
+        "guidance": "Ask how walk-on athletes are evaluated for future aid and what milestones typically lead to support (contribution, development, role).",
+        "tooltip": "Walk-on pathways vary by program and year. This is not a guarantee of future aid.",
+    },
+}
+
+# ---------------------------------------------------------------------------
 # Division context — parent-safe, no numbers, no guarantees
 # ---------------------------------------------------------------------------
 DIVISION_CONTEXT = {
@@ -74,6 +116,24 @@ def _days_since(iso_str: str | None) -> int | None:
         return None
 
 
+def _build_recruiting_position(payload: dict) -> dict:
+    recruiting = payload.get("recruiting", {})
+    created_at = recruiting.get("created_at") or payload.get("now")
+    return {
+        "current_status": recruiting.get("status", "Unknown"),
+        "interaction_count": recruiting.get("interaction_count", 0),
+        "last_interaction": recruiting.get("last_interaction"),
+        "days_on_board": _days_since(created_at) or 0,
+    }
+
+
+def _build_source_lookup(payload: dict) -> dict:
+    return {
+        s["section"]: s.get("source_id", "unknown")
+        for s in payload.get("sources", [])
+    }
+
+
 # ---------------------------------------------------------------------------
 # Core agent
 # ---------------------------------------------------------------------------
@@ -82,49 +142,49 @@ async def run_scholarship_structure(payload: dict, program_id: str) -> dict:
     """
     Produce the Scholarship Structure card.
     Deterministic when no stored scholarship data exists.
+    AI determines only the label when notes exist.
     """
     now_iso = datetime.now(timezone.utc).isoformat()
     scholarship_data = payload.get("scholarship", {})
-
     has_notes = bool(scholarship_data.get("scholarship_notes"))
 
     if has_notes:
-        return await _run_ai_scholarship(payload, program_id)
+        return await _run_ai_scholarship(payload, program_id, now_iso)
 
-    return _build_unknown_card(payload, program_id, now_iso)
+    return _build_card(payload, program_id, now_iso, "Unknown", "none", "none", [], None)
 
 
-def _build_unknown_card(payload: dict, program_id: str, now_iso: str) -> dict:
-    """Build the fully deterministic Unknown card."""
+# ---------------------------------------------------------------------------
+# Card builder — shared by deterministic and AI paths
+# ---------------------------------------------------------------------------
+
+def _build_card(
+    payload: dict,
+    program_id: str,
+    now_iso: str,
+    label: str,
+    evidence: str,
+    basis: str,
+    ai_insights: list,
+    nil_context: str | None,
+    is_vague: bool = False,
+    generated_by: str = "deterministic",
+) -> dict:
     school = payload.get("school", {})
-    recruiting = payload.get("recruiting", {})
     dq = payload.get("data_quality", {})
-
     division = (school.get("division") or "").upper()
-    school_name = school.get("name")
+    source_lookup = _build_source_lookup(payload)
+    recruiting_position = _build_recruiting_position(payload)
+    current_status = recruiting_position["current_status"]
 
-    current_status = recruiting.get("status", "Unknown")
-    interaction_count = recruiting.get("interaction_count", 0)
-    last_interaction = recruiting.get("last_interaction")
-    created_at = recruiting.get("created_at") or payload.get("now")
-    days_on_board = _days_since(created_at) or 0
+    # Pick exact UI copy
+    if is_vague:
+        copy = UI_COPY["Unknown_vague"]
+    else:
+        copy = UI_COPY.get(label, UI_COPY["Unknown"])
 
-    recruiting_position = {
-        "current_status": current_status,
-        "interaction_count": interaction_count,
-        "last_interaction": last_interaction,
-        "days_on_board": days_on_board,
-    }
-
-    source_lookup = {
-        s["section"]: s.get("source_id", "unknown")
-        for s in payload.get("sources", [])
-    }
-
-    # Insights
+    # Insights: start with division context, then AI insights
     insights = []
-
-    # Insight 1: Division-level factual context (parent-safe, no numbers)
     div_context = DIVISION_CONTEXT.get(division)
     if div_context:
         insights.append({
@@ -134,111 +194,89 @@ def _build_unknown_card(payload: dict, program_id: str, now_iso: str) -> dict:
             "evidence": "strong",
         })
 
-    # Insight 2: Missing scholarship data
-    insights.append({
-        "text": "No program-specific scholarship data is stored. Aid structure cannot be determined from available data.",
-        "based_on": ["scholarship"],
-        "citations": [],
-        "evidence": "none",
-    })
+    insights.extend(ai_insights)
 
-    # Unknowns
-    unknowns = _build_scholarship_unknowns(payload)
-    next_action = NEXT_ACTIONS.get(current_status, "Continue building your recruiting profile.")
+    # If no AI insights and no notes, add the missing-data insight
+    if not ai_insights and evidence == "none":
+        insights.append({
+            "text": "No program-specific scholarship data is stored. Aid structure cannot be determined from available data.",
+            "based_on": ["scholarship"],
+            "citations": [],
+            "evidence": "none",
+        })
 
-    # Summary
-    summary = "Scholarship structure unknown for this program. No stored scholarship data."
+    nil_tooltip = "NIL opportunities vary by athlete and situation. This reflects the current known environment." if nil_context else None
 
-    # UI mapping (matches existing ScholarshipStructureCard props)
     ui = {
-        "status": "unknown",
-        "label": "Unknown",
-        "explanation": "Scholarship structure is not available for this program. Specific aid information cannot be determined from stored data.",
-        "nil_context": None,
-        "nil_tooltip": None,
-        "tooltip": "Scholarship structures reflect typical program practices and are not guarantees. Aid decisions are made by coaching staffs and can change year to year.",
+        "status": copy["status"],
+        "label": copy["label"],
+        "explanation": copy["explanation"],
+        "guidance": copy["guidance"],
+        "nil_context": nil_context,
+        "nil_tooltip": nil_tooltip,
+        "tooltip": copy["tooltip"],
     }
 
     return {
         "card_type": "scholarship_structure",
         "status": "ok",
         "school_id": program_id,
-        "school_name": school_name,
+        "school_name": school.get("name"),
         "division": division,
-        "scholarship_label": "Unknown",
-        "scholarship_evidence": "none",
-        "label_basis": "none",
+        "scholarship_label": label if not is_vague else "Unknown",
+        "scholarship_evidence": evidence,
+        "label_basis": basis,
         "recruiting_position": recruiting_position,
         "insights": insights,
-        "unknowns": unknowns,
+        "unknowns": _build_scholarship_unknowns(payload),
         "data_quality": dq,
         "reason": None,
-        "missing_sections": ["scholarship"],
-        "next_action": next_action,
-        "summary": summary,
+        "missing_sections": ["scholarship"] if copy["status"] == "unknown" else None,
+        "next_action": NEXT_ACTIONS.get(current_status, "Continue building your recruiting profile."),
+        "summary": f"Scholarship structure: {copy['label']}.",
         "ui": ui,
         "generated_at": now_iso,
         "cache_ttl_hours": 24,
-        "generated_by": "deterministic",
+        "generated_by": generated_by,
     }
 
 
 # ---------------------------------------------------------------------------
-# AI path (for when real scholarship data exists)
+# AI path — determines label only, copy is hardcoded
 # ---------------------------------------------------------------------------
 
-AI_SYSTEM_PROMPT = """You are a scholarship structure analyst for Recruiting HQ.
-You produce structured JSON assessments for families evaluating volleyball programs.
+AI_SYSTEM_PROMPT = """You are a scholarship structure classifier for Recruiting HQ.
+Your ONLY job is to classify a program's scholarship structure from stored notes.
 
 HARD RULES:
-1. ONLY use stored scholarship data from the payload. Do NOT infer structure from division or conference alone.
+1. ONLY use stored scholarship data from the payload. Do NOT infer from division or conference alone.
 2. scholarship_label MUST be one of: "Mix of Partial and Full", "Typically Partial", "Walk-On Pathways Common", "Unknown".
-3. NEVER include dollar amounts, percentages, or specific scholarship counts (e.g., "12 scholarships").
-4. NEVER use absolute language: "guarantees", "always", "will receive", "full ride", "no spots".
-5. Use range language: "may include", "typically offers", "opportunities may exist".
-6. If scholarship_notes exist but are NON-SPECIFIC (e.g., "scholarships available", "aid offered", or similarly vague), you MUST return label "Unknown".
-7. Only return a non-Unknown label when notes contain SPECIFIC information about scholarship types, structures, or distributions.
-8. evidence: "strong" only when based on specific, detailed scholarship notes. "partial" when notes exist but are vague or non-specific. "none" when no data.
-9. based_on must list exact payload field paths. citations must reference section + source_id.
-10. Return ONLY valid JSON matching the schema. No text outside JSON.
+3. If scholarship_notes are NON-SPECIFIC (e.g., "scholarships available", "aid offered", "offers scholarships", or similarly vague), you MUST return "Unknown" and set "notes_are_vague": true.
+4. Only return a non-Unknown label when notes contain SPECIFIC information about scholarship types, structures, or distributions.
+5. evidence: "strong" when notes are specific and detailed. "partial" when notes exist but are vague.
+6. NEVER include dollar amounts, percentages, or specific scholarship counts in insights.
+7. based_on must list exact payload field paths. citations must reference section + source_id.
+8. Return ONLY valid JSON. No text outside JSON.
 
 OUTPUT SCHEMA:
 {
   "scholarship_label": "Mix of Partial and Full | Typically Partial | Walk-On Pathways Common | Unknown",
-  "nil_context": "string or null (only if notes mention NIL environment)",
+  "notes_are_vague": true | false,
+  "nil_context": "string or null (only if notes explicitly mention NIL environment)",
   "insights": [
-    { "text": "...", "based_on": [...], "citations": [{"section":"...","source_id":"..."}], "evidence": "strong|partial|none" }
-  ],
-  "summary": "Max 25 words, parent-safe."
+    { "text": "...", "based_on": [...], "citations": [{"section":"...","source_id":"..."}], "evidence": "strong|partial" }
+  ]
 }
 
-Produce 2-3 insights maximum. Be conservative — when in doubt, return "Unknown"."""
+Produce 1-2 insights maximum. Be conservative — when in doubt, return "Unknown"."""
 
 
-async def _run_ai_scholarship(payload: dict, program_id: str) -> dict:
-    """AI-powered scholarship analysis when real notes exist."""
-    now_iso = datetime.now(timezone.utc).isoformat()
-    school = payload.get("school", {})
-    recruiting = payload.get("recruiting", {})
-    dq = payload.get("data_quality", {})
-    source_lookup = {
-        s["section"]: s.get("source_id", "unknown")
-        for s in payload.get("sources", [])
-    }
-
-    division = (school.get("division") or "").upper()
-    current_status = recruiting.get("status", "Unknown")
-    interaction_count = recruiting.get("interaction_count", 0)
-    last_interaction = recruiting.get("last_interaction")
-    created_at = recruiting.get("created_at") or payload.get("now")
-    days_on_board = _days_since(created_at) or 0
-
-    recruiting_position = {
-        "current_status": current_status,
-        "interaction_count": interaction_count,
-        "last_interaction": last_interaction,
-        "days_on_board": days_on_board,
-    }
+async def _run_ai_scholarship(payload: dict, program_id: str, now_iso: str) -> dict:
+    """AI determines label from notes; UI copy is hardcoded per label."""
+    source_lookup = _build_source_lookup(payload)
+    scholarship_data = payload.get("scholarship", {})
+    scholarship_source = source_lookup.get("scholarship", "unknown")
+    is_contributed = "pending" in str(scholarship_source).lower() or "user_contrib" in str(scholarship_source).lower()
 
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
@@ -260,32 +298,32 @@ async def _run_ai_scholarship(payload: dict, program_id: str) -> dict:
         ai_output = json.loads(response_text)
     except Exception as e:
         logger.error(f"Scholarship AI error: {e}")
-        return _build_unknown_card(payload, program_id, now_iso)
+        return _build_card(payload, program_id, now_iso, "Unknown", "none", "none", [], None)
 
     # Validate label
     label = ai_output.get("scholarship_label", "Unknown")
     if label not in ALLOWED_LABELS:
         label = "Unknown"
 
-    status_key = STATUS_KEY_MAP.get(label, "unknown")
+    notes_are_vague = ai_output.get("notes_are_vague", False)
+
+    # Force Unknown for vague notes
+    if notes_are_vague:
+        label = "Unknown"
 
     # Determine evidence — contributed data NEVER gets "strong"
-    scholarship_data = payload.get("scholarship", {})
-    scholarship_source = source_lookup.get("scholarship", "unknown")
-    is_contributed = "pending" in str(scholarship_source).lower() or "user_contrib" in str(scholarship_source).lower()
-
     if label == "Unknown":
         evidence = "partial" if scholarship_data.get("scholarship_notes") else "none"
     elif is_contributed:
-        evidence = "partial"  # contributed data stays partial until verified
+        evidence = "partial"
     else:
         evidence = "strong"
 
-    basis = "stored_notes" if label != "Unknown" else ("vague_notes" if evidence == "partial" else "none")
+    basis = "stored_notes" if label != "Unknown" else ("vague_notes" if notes_are_vague else "none")
 
-    # Validate insights
+    # Process insights — downgrade evidence for contributed data
     insights = []
-    for item in ai_output.get("insights", [])[:3]:
+    for item in ai_output.get("insights", [])[:2]:
         if isinstance(item, dict) and "text" in item:
             based_on = item.get("based_on", [])
             citations = item.get("citations", [])
@@ -299,70 +337,20 @@ async def _run_ai_scholarship(payload: dict, program_id: str) -> dict:
                 "text": item["text"],
                 "based_on": based_on,
                 "citations": citations,
-                "evidence": min_evidence(item.get("evidence", evidence), is_contributed),
+                "evidence": _min_evidence(item.get("evidence", evidence), is_contributed),
             })
 
-    # Add division context as factual insight if not already present
-    div_context = DIVISION_CONTEXT.get(division)
-    if div_context and not any("division" in str(i.get("based_on", [])).lower() for i in insights):
-        insights.insert(0, {
-            "text": div_context,
-            "based_on": ["school.division"],
-            "citations": [{"section": "school", "source_id": source_lookup.get("school", "unknown")}],
-            "evidence": "strong",
-        })
-
-    unknowns = _build_scholarship_unknowns(payload)
-    next_action = NEXT_ACTIONS.get(current_status, "Continue building your recruiting profile.")
-    summary = ai_output.get("summary", f"Scholarship structure: {label}.")
-
     nil_context = ai_output.get("nil_context")
-    nil_tooltip = "NIL opportunities vary by athlete and situation. This reflects the current known environment." if nil_context else None
 
-    # Explanation/guidance for UI
-    explanation_map = {
-        "Mix of Partial and Full": "This program may offer a mix of partial and full athletic aid based on available information.",
-        "Typically Partial": "This program typically distributes athletic aid as partial awards based on available information.",
-        "Walk-On Pathways Common": "Many athletes join this program as walk-ons, with opportunities to earn aid based on contribution.",
-        "Unknown": "Scholarship structure is not available for this program. Specific aid information cannot be determined from stored data.",
-    }
-
-    ui = {
-        "status": status_key,
-        "label": label,
-        "explanation": explanation_map.get(label, ""),
-        "nil_context": nil_context,
-        "nil_tooltip": nil_tooltip,
-        "tooltip": "Scholarship structures reflect typical program practices and are not guarantees. Aid decisions are made by coaching staffs and can change year to year.",
-    }
-
-    missing_sections = ["scholarship"] if label == "Unknown" else None
-
-    return {
-        "card_type": "scholarship_structure",
-        "status": "ok",
-        "school_id": program_id,
-        "school_name": school.get("name"),
-        "division": division,
-        "scholarship_label": label,
-        "scholarship_evidence": evidence,
-        "label_basis": basis,
-        "recruiting_position": recruiting_position,
-        "insights": insights,
-        "unknowns": unknowns,
-        "data_quality": dq,
-        "reason": None,
-        "missing_sections": missing_sections,
-        "next_action": next_action,
-        "summary": summary,
-        "ui": ui,
-        "generated_at": now_iso,
-        "cache_ttl_hours": 24,
-        "generated_by": "ai",
-    }
+    return _build_card(
+        payload, program_id, now_iso,
+        label, evidence, basis, insights, nil_context,
+        is_vague=notes_are_vague,
+        generated_by="ai",
+    )
 
 
-def min_evidence(ai_evidence: str, is_contributed: bool) -> str:
+def _min_evidence(ai_evidence: str, is_contributed: bool) -> str:
     """Downgrade evidence if data source is unverified contribution."""
     if is_contributed:
         return "partial" if ai_evidence == "strong" else ai_evidence
@@ -388,14 +376,14 @@ def _build_scholarship_unknowns(payload: dict) -> list:
             unknowns.append({
                 "text": text,
                 "missing_data": "scholarship.scholarship_notes",
-                "unlock_hint": "Program-specific scholarship notes would enable aid structure analysis.",
+                "unlock_hint": "Program-specific scholarship notes (from public sources or verified contributions) would enable this card.",
             })
 
     if "scholarship.scholarship_notes" not in seen and not has_notes:
         unknowns.append({
-            "text": "No scholarship-specific data exists for this program. Aid structure is unknown.",
+            "text": "No scholarship-specific data exists for this program.",
             "missing_data": "scholarship.scholarship_notes",
-            "unlock_hint": "Program-specific scholarship notes would enable aid structure analysis.",
+            "unlock_hint": "Program-specific scholarship notes (from public sources or verified contributions) would enable this card.",
         })
 
     # Athlete-specific
