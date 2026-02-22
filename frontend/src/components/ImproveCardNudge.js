@@ -17,6 +17,10 @@ const CARD_OPTIONS = {
     { type: "link", label: "Add scholarship info link", placeholder: "Athletics financial aid page URL", icon: Link2 },
     { type: "request", label: "Request update", icon: Bell },
   ],
+  nil_readiness: [
+    { type: "link", label: "Add NIL info link", placeholder: "NIL collective or program page URL", icon: Link2 },
+    { type: "request", label: "Request update", icon: Bell },
+  ],
 };
 
 export function ImproveCardNudge({ cardType, programId }) {
