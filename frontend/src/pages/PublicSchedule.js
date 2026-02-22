@@ -471,7 +471,7 @@ export default function PublicSchedule() {
 
       {/* ── Footer ── */}
       <footer className="pb-24 sm:pb-8 pt-4 text-center" style={{ background: "var(--p-bg)" }}>
-        <span className="text-[11px] tracking-wider" style={{ color: "var(--p-text-faint)" }}>Powered by <span className="font-semibold" style={{ color: "var(--p-text-muted)" }}>Recruiting HQ</span></span>
+        <span className="text-[11px] tracking-wider" style={{ color: "var(--p-text-faint)" }}>Powered by <span className="font-semibold" style={{ color: "var(--p-text-muted)" }}>CapyMatch</span></span>
       </footer>
 
       {/* ── Sticky Mobile CTA ── */}

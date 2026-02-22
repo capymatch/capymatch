@@ -5,7 +5,7 @@ import api from "../lib/api";
 const TOUR_STEPS = [
   {
     target: null,
-    title: "Welcome to Recruiting HQ",
+    title: "Welcome to CapyMatch",
     description: "Let's take a quick tour so you know where everything is. This will only take 30 seconds.",
     position: "center",
   },

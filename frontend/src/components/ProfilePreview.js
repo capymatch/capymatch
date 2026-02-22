@@ -211,7 +211,7 @@ export function ProfilePreview({ profile }) {
 
       {/* Footer */}
       <div className="pb-4 pt-1 text-center" style={{ background: "var(--p-bg)" }}>
-        <span className="text-[9px] tracking-wider" style={{ color: "var(--p-text-faint)" }}>Powered by <span className="font-semibold" style={{ color: "var(--p-text-muted)" }}>Recruiting HQ</span></span>
+        <span className="text-[9px] tracking-wider" style={{ color: "var(--p-text-faint)" }}>Powered by <span className="font-semibold" style={{ color: "var(--p-text-muted)" }}>CapyMatch</span></span>
       </div>
     </div>
   );

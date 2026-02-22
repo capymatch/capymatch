@@ -39,7 +39,7 @@ export default function AdminLayout() {
             </div>
             <div>
               <span className="font-semibold text-sm text-white block leading-tight">Admin Panel</span>
-              <span className="text-[10px] uppercase tracking-widest text-white/40">Recruiting HQ</span>
+              <span className="text-[10px] uppercase tracking-widest text-white/40">CapyMatch</span>
             </div>
           </div>
           <button className="lg:hidden p-1.5 rounded-lg hover:bg-white/10" onClick={() => setMobileOpen(false)}>
