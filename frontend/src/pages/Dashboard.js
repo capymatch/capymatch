@@ -289,7 +289,7 @@ export default function Dashboard() {
   // Replies this week
   const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
   const repliesThisWeek = interactions.filter(i =>
-    i.type === "coach_reply" && i.date_time && i.date_time >= weekAgo
+    (i.type === "coach_reply" || i.type === "email_received") && i.date_time && i.date_time >= weekAgo
   );
   const lastReply = repliesThisWeek.length > 0
     ? repliesThisWeek.sort((a, b) => (b.date_time || "").localeCompare(a.date_time || ""))[0]
