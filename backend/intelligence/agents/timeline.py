@@ -107,13 +107,21 @@ async def run_timeline_intelligence(payload: dict, program_id: str) -> dict:
     # Insights (max 2)
     insights = []
 
-    # Insight 1: timeline data gap
-    insights.append({
-        "text": "No program-level commit timing data is available. Timeline patterns cannot be determined from stored data.",
-        "based_on": ["timeline"],
-        "citations": [],
-        "evidence": "none",
-    })
+    # Insight 1: timeline data gap (or sparse data notice)
+    if sparse_signals:
+        insights.append({
+            "text": f"Some commit timing signals exist ({signal_count} data point(s)), but the sample is too small for confident pattern analysis. A minimum of {MIN_SIGNAL_COUNT} data points across recruiting cycles is required.",
+            "based_on": ["timeline.commit_timing_signals"],
+            "citations": [],
+            "evidence": "partial",
+        })
+    else:
+        insights.append({
+            "text": "No program-level commit timing data is available. Timeline patterns cannot be determined from stored data.",
+            "based_on": ["timeline"],
+            "citations": [],
+            "evidence": "none",
+        })
 
     # Insight 2: user's recruiting position
     source_lookup = {s["section"]: s.get("source_id", "unknown") for s in payload.get("sources", [])}
