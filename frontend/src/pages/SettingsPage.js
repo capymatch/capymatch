@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles, Shield, Download, Trash2, Eye, ExternalLink, User, Pencil, Check } from "lucide-react";
+import { Moon, Sun, Monitor, Palette, Mail, CheckCircle, XCircle, Loader2, Sparkles, Shield, Download, Trash2, Eye, ExternalLink } from "lucide-react";
 import api, { BACKEND_URL } from "../lib/api";
 import { toast } from "sonner";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -17,26 +17,6 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [exporting, setExporting] = useState(false);
   const navigate = useNavigate();
-
-  // Personal info state
-  const [accountName, setAccountName] = useState("");
-  const [accountEmail, setAccountEmail] = useState("");
-  const [originalName, setOriginalName] = useState("");
-  const [originalEmail, setOriginalEmail] = useState("");
-  const [infoLoading, setInfoLoading] = useState(true);
-  const [infoSaving, setInfoSaving] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
-
-  useEffect(() => {
-    api.get("/auth/me").then((res) => {
-      setAccountName(res.data.name || "");
-      setAccountEmail(res.data.email || "");
-      setOriginalName(res.data.name || "");
-      setOriginalEmail(res.data.email || "");
-      setIsGoogleUser(res.data.auth_provider === "google");
-    }).catch(() => {}).finally(() => setInfoLoading(false));
-  }, []);
 
   useEffect(() => {
     const gmailResult = searchParams.get("gmail");
