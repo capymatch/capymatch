@@ -11,27 +11,36 @@ const STATUS_CONFIG = {
 };
 
 const UNIVERSAL_QUESTIONS = [
-  "What NIL education or resources does your program provide to athletes?",
-  "How does the coaching staff view NIL in the recruiting process?",
+  "What NIL resources or education does your program provide to athletes?",
+  "Who supports athletes with NIL compliance and guidance at your school?",
 ];
 
 const LABEL_QUESTIONS = {
   info_limited: [
-    "Are there any NIL collectives or organized support groups connected to your program?",
-    "What should incoming athletes know about NIL opportunities at your school?",
-    "How do athletes in your program currently approach NIL — is there a common path?",
-  ],
-  established: [
-    "What does the NIL onboarding process look like for incoming athletes?",
-    "Are there collectives or organized groups that athletes can connect with?",
-    "How do athletes balance NIL commitments with their training and academic schedules?",
-    "What kind of NIL opportunities have been most common for volleyball athletes?",
+    "Does your athletic department provide NIL education or onboarding for new athletes?",
+    "Are athletes connected with compliance staff or advisors for NIL questions?",
+    "At what point in the recruiting or onboarding process do NIL discussions usually happen?",
+    "What steps should families take to stay compliant with NIL rules at your school?",
   ],
   emerging: [
-    "What NIL resources are currently available, and what's being developed?",
-    "Are there any local business partnerships or collectives forming around the program?",
-    "How do you advise athletes who want to explore NIL opportunities?",
-    "What's the coaching staff's perspective on athletes pursuing NIL during the season?",
+    "What kind of NIL guidance or support is available to athletes in your program?",
+    "Are there educational resources to help athletes understand NIL opportunities and responsibilities?",
+    "How do athletes typically learn about compliant NIL opportunities?",
+    "Who should we contact if NIL questions come up during the year?",
+    "How do you help athletes balance NIL activities with team and academic commitments?",
+  ],
+  established: [
+    "What NIL education or programming does your department provide to athletes?",
+    "Are athletes supported by compliance staff or advisors for NIL planning?",
+    "How do you help athletes understand what opportunities are compliant?",
+    "At what point do athletes typically receive NIL guidance after joining the program?",
+    "How do you ensure NIL activities don\u2019t interfere with team expectations or academics?",
+  ],
+  info_limited_vague: [
+    "We\u2019ve seen mentions of NIL support \u2014 could you share how that works in practice?",
+    "What resources are most helpful for athletes new to NIL at your school?",
+    "Who helps athletes navigate NIL compliance questions?",
+    "What should families understand about NIL expectations in your program?",
   ],
 };
 
