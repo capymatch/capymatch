@@ -270,6 +270,7 @@ export default function LoginPage({ onAuth }) {
                 )}
               </button>
             </form>
+            )}
 
             {/* Toggle mode divider */}
             <div className="flex items-center gap-3 my-5">
