@@ -3,6 +3,8 @@ from datetime import datetime, timezone, timedelta
 from database import db
 from auth import get_current_user, get_tenant_id
 from email_service import send_welcome_email
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 import uuid
 import httpx
 import bcrypt
@@ -11,6 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api")
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/auth/register")
