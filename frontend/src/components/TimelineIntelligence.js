@@ -1,6 +1,7 @@
 import { Clock, Info, X, RefreshCw, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
+import { ImproveCardNudge } from "./ImproveCardNudge";
 
 const STATUS_CONFIG = {
   filling_early: { accent: "#F59E0B", bg: "#FFFBEB", text: "#92400E", dotColor: "#F59E0B" },
@@ -27,7 +28,7 @@ export function TimelineLabel({ timeline, onClick }) {
 }
 
 /* ── Full Timeline Status Card for Journey / Detail pages ── */
-export function TimelineStatusCard({ timeline, dataConfidence, loading, onRefresh }) {
+export function TimelineStatusCard({ timeline, dataConfidence, loading, onRefresh, programId }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   if (loading) {
