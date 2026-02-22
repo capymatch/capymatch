@@ -12,12 +12,6 @@ import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
 import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
-import { TimelineStatusCard } from "../components/TimelineIntelligence";
-import { RosterRealityCard } from "../components/RosterOutlook";
-import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
-import { NilReadinessCard } from "../components/NilReadiness";
-import { SchoolInsightCard } from "../components/SchoolInsightCard";
-import { CommitmentStabilityCard } from "../components/CommitmentStabilityCard";
 import { AcademicCompletenessFlag } from "../components/TrustIndicators";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
