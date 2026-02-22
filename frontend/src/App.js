@@ -29,6 +29,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
+import LandingPage from "./pages/LandingPage";
 import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
 import { onSubscriptionError, onAuthFail } from "./lib/api";
