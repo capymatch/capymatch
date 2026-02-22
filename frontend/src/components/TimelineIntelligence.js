@@ -128,6 +128,10 @@ export function TimelineStatusCard({ timeline, dataConfidence, loading, onRefres
             )}
           </div>
 
+          {timeline.status === "unknown" && programId && (
+            <ImproveCardNudge cardType="timeline_intelligence" programId={programId} />
+          )}
+
           <ThisMayChangeCopy />
         </div>
       </div>
