@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 
 class VolleyballCRMTester:
-    def __init__(self, base_url="https://school-match-2.preview.emergentagent.com", session_token="test_session_1770863154873"):
+    def __init__(self, base_url="https://athlete-decisions.preview.emergentagent.com", session_token="test_session_1770863154873"):
         self.base_url = base_url
         self.session_token = session_token
         self.headers = {
