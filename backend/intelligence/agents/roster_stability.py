@@ -189,7 +189,6 @@ async def _run_ai_roster(payload: dict, program_id: str, has_stability_data: boo
     """AI-powered roster analysis when real data exists."""
     now_iso = datetime.now(timezone.utc).isoformat()
     school = payload.get("school", {})
-    roster_data = payload.get("roster", {})
     recruiting = payload.get("recruiting", {})
     dq = payload.get("data_quality", {})
     source_lookup = {s["section"]: s.get("source_id", "unknown") for s in payload.get("sources", [])}
