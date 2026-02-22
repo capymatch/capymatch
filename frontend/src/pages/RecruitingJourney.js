@@ -415,6 +415,7 @@ export default function RecruitingJourney() {
             loading={timelineIntelLoading}
             onRefresh={() => fetchTimelineIntel(true)}
             dataConfidence={timelineIntel?.data_quality}
+            programId={programId}
           />
         </div>
       )}
@@ -427,6 +428,7 @@ export default function RecruitingJourney() {
             loading={rosterIntelLoading}
             onRefresh={() => fetchRosterIntel(true)}
             dataConfidence={rosterIntel?.data_quality}
+            programId={programId}
           />
         </div>
       )}
@@ -465,6 +467,7 @@ export default function RecruitingJourney() {
                 : "N/A",
             } : null}
             loading={rosterIntelLoading}
+            programId={programId}
           />
         </div>
       )}
