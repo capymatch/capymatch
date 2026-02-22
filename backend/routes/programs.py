@@ -41,14 +41,14 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
         if dt and (last_activity_date is None or dt > last_activity_date):
             last_activity_date = dt
 
-        # Count outreach — everything except coach_reply is athlete outreach
-        if ix_type != "coach_reply":
+        # Count outreach — everything except coach replies is athlete outreach
+        if ix_type not in ("coach_reply", "email_received"):
             outreach_count += 1
             if dt and (last_outreach_date is None or dt > last_outreach_date):
                 last_outreach_date = dt
 
-        # Only explicit coach_reply interactions count as actual coach replies
-        if ix_type == "coach_reply":
+        # Coach replies include explicit coach_reply and email_received (Gmail inbound)
+        if ix_type in ("coach_reply", "email_received"):
             has_coach_reply = True
             if dt and (last_reply_date is None or dt > last_reply_date):
                 last_reply_date = dt
