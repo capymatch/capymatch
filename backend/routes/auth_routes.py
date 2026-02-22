@@ -229,3 +229,61 @@ async def change_password(request: Request):
     hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
     await db.users.update_one({"user_id": user["user_id"]}, {"$set": {"password_hash": hashed}})
     return {"ok": True}
+
+
+@router.post("/auth/forgot-password")
+async def forgot_password(request: Request):
+    body = await request.json()
+    email = (body.get("email") or "").strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    user = await db.users.find_one({"email": email})
+    # Always return success to prevent email enumeration
+    if not user or not user.get("password_hash"):
+        return {"ok": True}
+
+    token = uuid.uuid4().hex
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+
+    await db.password_resets.delete_many({"user_id": user["user_id"]})
+    await db.password_resets.insert_one({
+        "user_id": user["user_id"],
+        "token": token,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    reset_url = f"/reset-password/{token}"
+    logger.info(f"[Password Reset] Token generated for {email}: {reset_url}")
+
+    return {"ok": True}
+
+
+@router.post("/auth/reset-password")
+async def reset_password(request: Request):
+    body = await request.json()
+    token = (body.get("token") or "").strip()
+    new_password = body.get("new_password") or ""
+
+    if not token:
+        raise HTTPException(status_code=400, detail="Reset token is required")
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+
+    reset = await db.password_resets.find_one({"token": token})
+    if not reset:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset link")
+
+    expires_at = datetime.fromisoformat(reset["expires_at"].replace("Z", "+00:00"))
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if datetime.now(timezone.utc) > expires_at:
+        await db.password_resets.delete_one({"token": token})
+        raise HTTPException(status_code=400, detail="This reset link has expired. Please request a new one.")
+
+    hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    await db.users.update_one({"user_id": reset["user_id"]}, {"$set": {"password_hash": hashed}})
+    await db.password_resets.delete_many({"user_id": reset["user_id"]})
+
+    return {"ok": True}
