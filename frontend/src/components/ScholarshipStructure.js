@@ -85,14 +85,17 @@ function ScholarshipQuestions({ status }) {
               <li
                 key={i}
                 className="px-3.5 py-2.5 text-[12.5px] leading-relaxed"
-                style={{ color: "#374151", background: i < UNIVERSAL_QUESTIONS.length ? "rgba(99,102,241,0.03)" : "#fff" }}
+                style={{ color: "#374151", background: i < UNIVERSAL_QUESTIONS.length ? "var(--accent-subtle, rgba(99,102,241,0.03))" : "#fff" }}
                 data-testid={`scholarship-question-${i}`}
               >
                 {q}
               </li>
             ))}
           </ul>
-          <div className="px-3.5 py-2 flex justify-end" style={{ background: "#f9fafb", borderTop: "1px solid #f3f4f6" }}>
+          <div className="px-3.5 py-2 flex items-center justify-between" style={{ background: "#f9fafb", borderTop: "1px solid #f3f4f6" }}>
+            <p className="text-[10.5px] leading-relaxed" style={{ color: "#9ca3af" }}>
+              These questions are meant to guide the conversation. Scholarship and aid decisions vary by year and are not guaranteed.
+            </p>
             <button
               onClick={handleCopy}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors"
