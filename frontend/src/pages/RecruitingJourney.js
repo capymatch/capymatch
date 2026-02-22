@@ -170,6 +170,22 @@ export default function RecruitingJourney() {
     }
   }, [programId, isBasic]);
 
+  const fetchScholarshipIntel = useCallback(async (forceRefresh = false) => {
+    if (isBasic) return;
+    setScholarshipIntelLoading(true);
+    try {
+      const url = forceRefresh
+        ? `/intelligence/scholarship/${programId}?force=true`
+        : `/intelligence/scholarship/${programId}`;
+      const res = await api.post(url);
+      setScholarshipIntel(res.data);
+    } catch (err) {
+      console.warn("Scholarship intel fetch failed:", err);
+    } finally {
+      setScholarshipIntelLoading(false);
+    }
+  }, [programId, isBasic]);
+
   // Fetch AI insight after initial data loads
   useEffect(() => {
     if (!loading && program && !isBasic && !schoolInsight && !insightLoading) {
@@ -188,6 +204,12 @@ export default function RecruitingJourney() {
       fetchRosterIntel();
     }
   }, [loading, program, isBasic, rosterIntel, rosterIntelLoading, fetchRosterIntel]);
+
+  useEffect(() => {
+    if (!loading && program && !isBasic && !scholarshipIntel && !scholarshipIntelLoading) {
+      fetchScholarshipIntel();
+    }
+  }, [loading, program, isBasic, scholarshipIntel, scholarshipIntelLoading, fetchScholarshipIntel]);
 
   const updateProgram = async (updates) => {
     try {
