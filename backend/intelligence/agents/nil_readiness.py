@@ -233,6 +233,7 @@ def _build_card(
         "guidance": copy["guidance"],
         "tooltip": copy["tooltip"],
         "context_tags": context_tags,
+        "is_vague": is_vague,
     }
 
     return {
