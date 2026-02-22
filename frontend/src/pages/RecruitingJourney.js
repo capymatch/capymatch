@@ -318,95 +318,25 @@ export default function RecruitingJourney() {
         </div>
       )}
 
-      {/* Timeline Intelligence Card */}
-      {!isBasic && (
-        <div className="mt-5" data-testid="journey-timeline-card">
-          <TimelineStatusCard
-            timeline={timelineIntel?.ui}
-            loading={timelineIntelLoading}
-            onRefresh={() => fetchTimelineIntel(true)}
-            dataConfidence={timelineIntel?.data_quality}
-            programId={programId}
-          />
-        </div>
-      )}
-
-      {/* Roster Reality Card */}
-      {!isBasic && (
-        <div className="mt-4" data-testid="journey-roster-card">
-          <RosterRealityCard
-            roster={rosterIntel?.ui_roster}
-            loading={rosterIntelLoading}
-            onRefresh={() => fetchRosterIntel(true)}
-            dataConfidence={rosterIntel?.data_quality}
-            programId={programId}
-          />
-        </div>
-      )}
-
-      {/* Scholarship Structure Card */}
-      {!isBasic && (
-        <div className="mt-4" data-testid="journey-scholarship-card">
-          <ScholarshipStructureCard
-            scholarship={scholarshipIntel?.ui}
-            loading={scholarshipIntelLoading}
-            onRefresh={() => fetchScholarshipIntel(true)}
-            dataConfidence={scholarshipIntel?.data_quality}
-            programId={programId}
-          />
-        </div>
-      )}
-
-      {/* NIL Readiness Card */}
-      {!isBasic && (
-        <div className="mt-4" data-testid="journey-nil-card">
-          <NilReadinessCard
-            nil={nilIntel?.ui}
-            loading={nilIntelLoading}
-            onRefresh={() => fetchNilIntel(true)}
-            dataConfidence={nilIntel?.data_quality}
-            programId={programId}
-          />
-        </div>
-      )}
-
-      {/* Commitment Stability Index */}
-      {!isBasic && (rosterIntel || rosterIntelLoading) && (
-        <div className="mt-4" data-testid="journey-stability-card">
-          <CommitmentStabilityCard
-            stability={rosterIntel ? {
-              status: rosterIntel.ui_stability?.status || "unknown",
-              label: rosterIntel.stability_label || "Unknown",
-              retention_rate: rosterIntel.ui_stability?.retention_rate,
-              sparkline: rosterIntel.ui_stability?.history,
-              trend: rosterIntel.ui_stability?.trend,
-              signals: (rosterIntel.ui_stability?.signals || []).map(s => typeof s === "string" ? s : s.text),
-              meaning: rosterIntel.ui_stability?.meaning || "Commitment stability data not available.",
-              tags: rosterIntel.ui_stability?.context_tags || [],
-              tooltip: `Based on ${rosterIntel.stability_evidence === "none" ? "insufficient" : "available"} historical data.`,
-              confidence: rosterIntel.data_quality?.overall || "Unknown",
-              last_updated: rosterIntel.generated_at
-                ? new Date(rosterIntel.generated_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
-                : "N/A",
-            } : null}
-            loading={rosterIntelLoading}
-            programId={programId}
-          />
-        </div>
-      )}
-
-
-      {/* AI School Insight Card */}
-      {!isBasic && (
-        <div className="mt-4" data-testid="journey-insight-card">
-          <SchoolInsightCard
-            insight={schoolInsight}
-            loading={insightLoading}
-            onRefresh={() => fetchInsight(true)}
-            dataConfidence={dataConfidence}
-            program={program}
-          />
-        </div>
+      {/* School Intelligence Link */}
+      {!isBasic && program?.domain && (
+        <button
+          onClick={() => navigate(`/school/${program.domain}`)}
+          className="mt-5 w-full rounded-xl border p-4 flex items-center justify-between group transition-all hover:border-[#2ec4b6]/40"
+          style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
+          data-testid="view-school-intel-btn"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
+              <Target className="w-4.5 h-4.5 text-[#2ec4b6]" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>School Intelligence</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Timeline, roster, scholarship, NIL, and more</p>
+            </div>
+          </div>
+          <ChevronDown className="w-4 h-4 -rotate-90 group-hover:translate-x-0.5 transition-transform" style={{ color: "var(--t-text-muted)" }} />
+        </button>
       )}
 
       {isFollowUpOverdue && !activeForm && (
