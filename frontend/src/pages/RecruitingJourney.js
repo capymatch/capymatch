@@ -48,6 +48,10 @@ export default function RecruitingJourney() {
   const [commitmentStability, setCommitmentStability] = useState(null);
   const [schoolInsight, setSchoolInsight] = useState(null);
   const [insightLoading, setInsightLoading] = useState(false);
+  const [timelineIntel, setTimelineIntel] = useState(null);
+  const [timelineIntelLoading, setTimelineIntelLoading] = useState(false);
+  const [rosterIntel, setRosterIntel] = useState(null);
+  const [rosterIntelLoading, setRosterIntelLoading] = useState(false);
   const [dataConfidence, setDataConfidence] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
@@ -132,12 +136,56 @@ export default function RecruitingJourney() {
     }
   }, [programId, isBasic]);
 
+  const fetchTimelineIntel = useCallback(async (forceRefresh = false) => {
+    if (isBasic) return;
+    setTimelineIntelLoading(true);
+    try {
+      const url = forceRefresh
+        ? `/intelligence/timeline/${programId}?force=true`
+        : `/intelligence/timeline/${programId}`;
+      const res = await api.post(url);
+      setTimelineIntel(res.data);
+    } catch (err) {
+      console.warn("Timeline intel fetch failed:", err);
+    } finally {
+      setTimelineIntelLoading(false);
+    }
+  }, [programId, isBasic]);
+
+  const fetchRosterIntel = useCallback(async (forceRefresh = false) => {
+    if (isBasic) return;
+    setRosterIntelLoading(true);
+    try {
+      const url = forceRefresh
+        ? `/intelligence/roster/${programId}?force=true`
+        : `/intelligence/roster/${programId}`;
+      const res = await api.post(url);
+      setRosterIntel(res.data);
+    } catch (err) {
+      console.warn("Roster intel fetch failed:", err);
+    } finally {
+      setRosterIntelLoading(false);
+    }
+  }, [programId, isBasic]);
+
   // Fetch AI insight after initial data loads
   useEffect(() => {
     if (!loading && program && !isBasic && !schoolInsight && !insightLoading) {
       fetchInsight();
     }
   }, [loading, program, isBasic, schoolInsight, insightLoading, fetchInsight]);
+
+  useEffect(() => {
+    if (!loading && program && !isBasic && !timelineIntel && !timelineIntelLoading) {
+      fetchTimelineIntel();
+    }
+  }, [loading, program, isBasic, timelineIntel, timelineIntelLoading, fetchTimelineIntel]);
+
+  useEffect(() => {
+    if (!loading && program && !isBasic && !rosterIntel && !rosterIntelLoading) {
+      fetchRosterIntel();
+    }
+  }, [loading, program, isBasic, rosterIntel, rosterIntelLoading, fetchRosterIntel]);
 
   const updateProgram = async (updates) => {
     try {
@@ -360,16 +408,26 @@ export default function RecruitingJourney() {
       )}
 
       {/* Timeline Intelligence Card */}
-      {recruitingTimeline && (
+      {!isBasic && (
         <div className="mt-5" data-testid="journey-timeline-card">
-          <TimelineStatusCard timeline={recruitingTimeline} dataConfidence={dataConfidence} />
+          <TimelineStatusCard
+            timeline={timelineIntel?.ui}
+            loading={timelineIntelLoading}
+            onRefresh={() => fetchTimelineIntel(true)}
+            dataConfidence={timelineIntel?.data_quality}
+          />
         </div>
       )}
 
       {/* Roster Reality Card */}
-      {rosterOutlook && (
+      {!isBasic && (
         <div className="mt-4" data-testid="journey-roster-card">
-          <RosterRealityCard roster={rosterOutlook} dataConfidence={dataConfidence} />
+          <RosterRealityCard
+            roster={rosterIntel?.ui_roster}
+            loading={rosterIntelLoading}
+            onRefresh={() => fetchRosterIntel(true)}
+            dataConfidence={rosterIntel?.data_quality}
+          />
         </div>
       )}
 
@@ -388,9 +446,26 @@ export default function RecruitingJourney() {
       )}
 
       {/* Commitment Stability Index */}
-      {!isBasic && commitmentStability && (
+      {!isBasic && (rosterIntel || rosterIntelLoading) && (
         <div className="mt-4" data-testid="journey-stability-card">
-          <CommitmentStabilityCard stability={commitmentStability} />
+          <CommitmentStabilityCard
+            stability={rosterIntel ? {
+              status: rosterIntel.ui_stability?.status || "unknown",
+              label: rosterIntel.stability_label || "Unknown",
+              retention_rate: rosterIntel.ui_stability?.retention_rate,
+              sparkline: rosterIntel.ui_stability?.history,
+              trend: rosterIntel.ui_stability?.trend,
+              signals: (rosterIntel.ui_stability?.signals || []).map(s => typeof s === "string" ? s : s.text),
+              meaning: rosterIntel.ui_stability?.meaning || "Commitment stability data not available.",
+              tags: rosterIntel.ui_stability?.context_tags || [],
+              tooltip: `Based on ${rosterIntel.stability_evidence === "none" ? "insufficient" : "available"} historical data.`,
+              confidence: rosterIntel.data_quality?.overall || "Unknown",
+              last_updated: rosterIntel.generated_at
+                ? new Date(rosterIntel.generated_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+                : "N/A",
+            } : null}
+            loading={rosterIntelLoading}
+          />
         </div>
       )}
 
