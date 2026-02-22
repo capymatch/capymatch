@@ -627,54 +627,60 @@ def _compute_timeline_status(school, profile):
         return {
             "status": "unknown",
             "label": "Timeline Pending",
+            "is_estimate": True,
             "explanation": "Timeline information is still being evaluated for this program.",
             "guidance": "Complete your profile with your graduation year to see personalized timeline insights.",
-            "tooltip": "Timeline insights improve as more public recruiting data becomes available.",
+            "tooltip": "This is a general estimate based on division-level patterns, not program-specific data.",
         }
 
     # Filling Early: D1 programs with athlete junior year or closer, or D2 with athlete senior year
     if division == "D1" and years_out <= 2:
         return {
             "status": "filling_early",
-            "label": "Filling Early",
-            "explanation": "This program often commits athletes earlier than average.",
+            "label": "Typically Fills Early",
+            "is_estimate": True,
+            "explanation": "D1 programs at this stage of your recruiting timeline often commit athletes earlier than average.",
             "guidance": "If this school is a priority, earlier outreach and follow-up may be important.",
-            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+            "tooltip": "This is a general division-level estimate, not based on program-specific commit data. Actual timelines vary by program.",
         }
     if division == "D2" and years_out <= 1:
         return {
             "status": "filling_early",
-            "label": "Filling Early",
-            "explanation": "This program often commits athletes earlier than average.",
+            "label": "Typically Fills Early",
+            "is_estimate": True,
+            "explanation": "D2 programs at this stage of your recruiting timeline often commit athletes earlier than average.",
             "guidance": "If this school is a priority, earlier outreach and follow-up may be important.",
-            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+            "tooltip": "This is a general division-level estimate, not based on program-specific commit data. Actual timelines vary by program.",
         }
 
     # Standard: D1 with more time, or D2 with some time
     if division == "D1" and years_out <= 4:
         return {
             "status": "standard",
-            "label": "Standard",
-            "explanation": "This program typically fills spots throughout the normal recruiting window.",
+            "label": "Standard Window",
+            "is_estimate": True,
+            "explanation": "D1 programs at this point in the cycle typically fill spots within the standard recruiting window.",
             "guidance": "Outreach within the next few months is recommended to stay competitive.",
-            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+            "tooltip": "This is a general division-level estimate, not based on program-specific commit data. Actual timelines vary by program.",
         }
     if division == "D2" and years_out <= 3:
         return {
             "status": "standard",
-            "label": "Standard",
-            "explanation": "This program typically fills spots throughout the normal recruiting window.",
+            "label": "Standard Window",
+            "is_estimate": True,
+            "explanation": "D2 programs at this point in the cycle typically fill spots within the standard recruiting window.",
             "guidance": "Outreach within the next few months is recommended to stay competitive.",
-            "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+            "tooltip": "This is a general division-level estimate, not based on program-specific commit data. Actual timelines vary by program.",
         }
 
     # Late Opportunities: D3, NAIA, JUCO, or early in recruitment cycle
     return {
         "status": "late",
-        "label": "Late Opportunities",
-        "explanation": "This program often has roster openings later in the recruiting cycle.",
+        "label": "Later Opportunities Likely",
+        "is_estimate": True,
+        "explanation": "Programs at this division level often have roster openings later in the recruiting cycle.",
         "guidance": "You can continue building your profile and reach out as opportunities arise.",
-        "tooltip": "Recruiting timelines are estimated using historical commitment patterns, roster changes, and public program data. Timelines can change year to year.",
+        "tooltip": "This is a general division-level estimate, not based on program-specific commit data. Actual timelines vary by program.",
     }
 
 
