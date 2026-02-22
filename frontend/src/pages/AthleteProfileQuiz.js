@@ -201,7 +201,7 @@ export default function AthleteProfileQuiz() {
             </div>
           </div>
 
-          <div className="rounded-2xl border p-10 text-center relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="quiz-complete">
+          <div className="rounded-2xl border p-10 text-center relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", minHeight: "50vh" }} data-testid="quiz-complete">
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-500/40 to-transparent" />
             <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl" style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(168,85,247,0.1))", boxShadow: "0 0 40px rgba(52,211,153,0.15)" }}>
               {"\uD83C\uDF89"}
@@ -290,7 +290,7 @@ export default function AthleteProfileQuiz() {
           </div>
 
           {/* Intro Card */}
-          <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", minHeight: "50vh" }}>
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
             
             {/* Icon */}
@@ -371,7 +371,7 @@ export default function AthleteProfileQuiz() {
         </div>
 
         {/* Question Card */}
-        <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", minHeight: "50vh" }}>
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
           <span className="text-4xl block mb-5">{q.emoji}</span>
           <p className="text-[10px] uppercase tracking-[1.5px] font-semibold mb-2" style={{ color: "var(--t-text-muted)" }}>Question {step + 1} of {QUESTIONS.length}</p>
