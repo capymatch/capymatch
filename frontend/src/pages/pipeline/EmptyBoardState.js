@@ -215,7 +215,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
     <div className="flex flex-col gap-5" data-testid="empty-board-state">
 
       {/* ═══ Welcome Hero Card ═══ */}
-      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", minHeight: "50vh" }} data-testid="welcome-hero">
+      <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", minHeight: "55vh" }} data-testid="welcome-hero">
 
         {/* Progress Strip */}
         <div className="flex items-center gap-4 px-5 py-3 border-b overflow-x-auto" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt, var(--t-surface))" }}>
