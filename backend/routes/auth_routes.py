@@ -237,6 +237,7 @@ async def change_password(request: Request):
 
 
 @router.post("/auth/forgot-password")
+@limiter.limit("3/minute")
 async def forgot_password(request: Request):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
