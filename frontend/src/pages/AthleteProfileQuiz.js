@@ -174,8 +174,8 @@ export default function AthleteProfileQuiz() {
         sat_score: academics.sat_score ? parseInt(academics.sat_score) : null,
         academic_interests: answers.academic_interests,
       });
-      const res = await api.get("/match-scores");
-      setMatchScores((res.data?.scores || []).slice(0, 3));
+      const res = await api.get("/suggested-schools?limit=3");
+      setMatchScores((res.data?.suggestions || []).slice(0, 3));
       setShowComplete(true);
     } catch {
       toast.error("Failed to save profile");
