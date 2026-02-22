@@ -48,4 +48,8 @@ async def run_card(db, card_type: str, program_id: str, tenant_id: str) -> dict:
         from intelligence.agents.scholarship import run_scholarship_structure
         return await run_scholarship_structure(payload, program_id)
 
+    if card_type == "nil_readiness":
+        from intelligence.agents.nil_readiness import run_nil_readiness
+        return await run_nil_readiness(payload, program_id)
+
     raise ValueError(f"Unknown card_type: {card_type}")
