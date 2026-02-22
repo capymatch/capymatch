@@ -308,17 +308,7 @@ export default function RecruitingJourney() {
         </div>
       ) : null}
 
-      {/* Below-hero content */}
-      {(!isCommitted || showJourneyDetails) && (<>
-
-      {/* Academic Data Completeness Warning */}
-      {dataConfidence?.academic_completeness && !dataConfidence.academic_completeness.complete && (
-        <div className="mt-5" data-testid="journey-academic-completeness">
-          <AcademicCompletenessFlag completeness={dataConfidence.academic_completeness} />
-        </div>
-      )}
-
-      {/* School Intelligence Link */}
+      {/* School Intelligence Link — always visible */}
       {!isBasic && program?.domain && (
         <button
           onClick={() => navigate(`/school/${program.domain}`)}
@@ -337,6 +327,16 @@ export default function RecruitingJourney() {
           </div>
           <ChevronDown className="w-4 h-4 -rotate-90 group-hover:translate-x-0.5 transition-transform" style={{ color: "var(--t-text-muted)" }} />
         </button>
+      )}
+
+      {/* Below-hero content */}
+      {(!isCommitted || showJourneyDetails) && (<>
+
+      {/* Academic Data Completeness Warning */}
+      {dataConfidence?.academic_completeness && !dataConfidence.academic_completeness.complete && (
+        <div className="mt-5" data-testid="journey-academic-completeness">
+          <AcademicCompletenessFlag completeness={dataConfidence.academic_completeness} />
+        </div>
       )}
 
       {isFollowUpOverdue && !activeForm && (
