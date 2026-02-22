@@ -234,7 +234,7 @@ export default function AthleteProfileQuiz() {
             {matchScores.length > 0 && (
               <div className="rounded-xl border p-5 text-left" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-4 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />Top Matches from Your Pipeline
+                  <Sparkles className="w-3.5 h-3.5" />Top Suggested Matches
                 </p>
                 <div className="space-y-1">
                   {matchScores.map(m => (
