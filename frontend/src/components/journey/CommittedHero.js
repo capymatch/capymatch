@@ -36,10 +36,10 @@ export function CommittedHero({ program }) {
           }} />
         ))}
       </div>
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-52 h-52 rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(251,191,36,0.12) 0%, transparent 70%)" }} />
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(251,191,36,0.14) 0%, transparent 70%)" }} />
       <div className="relative p-6 sm:p-8 text-center">
-        <div className="mb-4"><img src="/images/capymatch-celebrate.png" alt="" style={{ width: 180, height: 180, objectFit: "contain", margin: "0 auto", display: "block" }} /></div>
+        <div className="mb-4"><img src="/images/capymatch-celebrate.png" alt="" style={{ width: 280, height: 280, objectFit: "contain", margin: "0 auto", display: "block" }} /></div>
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
           style={{
             background: "linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24)",
