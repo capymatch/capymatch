@@ -13,7 +13,7 @@ export function CelebrationHero({ program, coaches, onEmail, onLog, onCall }) {
       data-testid="celebration-hero">
       <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%)" }} />
       <div className="relative">
-        <div className="text-3xl mb-2">&#127881;</div>
+        <div className="text-3xl mb-2"><img src="/images/capymatch-celebrate.png" alt="" style={{ width: 72, height: 72, objectFit: "contain", margin: "0 auto", display: "block" }} /></div>
         <h3 className="text-base font-bold mb-1" style={{ color: "var(--t-text)" }}>{coachName} is interested!</h3>
         <p className="text-xs mb-4 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
           Replied {timeText} — keep the momentum going:

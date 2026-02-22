@@ -21,7 +21,7 @@ export function FirstReplyCelebration() {
   return (
     <div data-testid="first-reply-celebration" className="fixed inset-0 z-[200] flex items-center justify-center" style={{ background: "rgba(26,26,46,0.85)", backdropFilter: "blur(12px)" }} onClick={dismiss}>
       <div className="relative text-center px-8 py-12 max-w-md" style={{ animation: "celebrationScale 0.5s ease" }} onClick={e => e.stopPropagation()}>
-        <div className="text-7xl mb-4" style={{ animation: "celebrationBounce 0.6s ease 0.3s both" }}>&#127881;</div>
+        <div className="mb-4" style={{ animation: "celebrationBounce 0.6s ease 0.3s both" }}><img src="/images/capymatch-celebrate.png" alt="" style={{ width: 120, height: 120, objectFit: "contain", margin: "0 auto", display: "block" }} /></div>
         <h2 className="text-3xl font-extrabold text-white mb-2" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
           A Coach Replied!
         </h2>
