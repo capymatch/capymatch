@@ -332,13 +332,6 @@ export default function RecruitingJourney() {
       {/* Below-hero content */}
       {(!isCommitted || showJourneyDetails) && (<>
 
-      {/* Academic Data Completeness Warning */}
-      {dataConfidence?.academic_completeness && !dataConfidence.academic_completeness.complete && (
-        <div className="mt-5" data-testid="journey-academic-completeness">
-          <AcademicCompletenessFlag completeness={dataConfidence.academic_completeness} />
-        </div>
-      )}
-
       {isFollowUpOverdue && !activeForm && (
         <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
           data-testid="overdue-followup-card">
