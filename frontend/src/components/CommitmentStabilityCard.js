@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TrendingDown, Info, Check, X, AlertCircle, Loader2 } from "lucide-react";
+import { ImproveCardNudge } from "./ImproveCardNudge";
 
 const STATUS_CONFIG = {
   high: { pill: "#d1fae5", pillText: "#065f46", pillDot: "#10b981", barColor: "#6ee7b7" },
@@ -56,7 +57,7 @@ function Sparkline({ data, trend }) {
   );
 }
 
-export function CommitmentStabilityCard({ stability, loading }) {
+export function CommitmentStabilityCard({ stability, loading, programId }) {
   const [showBadgeTip, setShowBadgeTip] = useState(false);
 
   if (loading) {
