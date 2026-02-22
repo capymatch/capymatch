@@ -139,7 +139,7 @@ async def run_timeline_intelligence(payload: dict, program_id: str) -> dict:
     if interaction_count > 0:
         summary = f"Timeline patterns unknown for this program. {interaction_count} interaction(s) logged so far."
     else:
-        summary = f"Timeline patterns unknown for this program. No outreach initiated."
+        summary = "Timeline patterns unknown for this program. No outreach initiated."
 
     # UI mapping (so TimelineStatusCard works without frontend changes)
     ui = {
