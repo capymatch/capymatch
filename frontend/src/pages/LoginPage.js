@@ -181,13 +181,13 @@ export default function LoginPage({ onAuth }) {
                 </button>
               </div>
 
-              {mode === "login" && (
+              {mode === "login" && !forgotMode && (
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
                     <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 accent-teal-700" />
                     <span className="text-[13px]">Remember me</span>
                   </label>
-                  <button type="button" className="text-[13px] text-teal-700 hover:text-teal-800 font-medium transition-colors">
+                  <button type="button" onClick={() => { setForgotMode(true); setForgotEmail(email); setForgotSent(false); }} className="text-[13px] text-teal-700 hover:text-teal-800 font-medium transition-colors" data-testid="forgot-password-link">
                     Forgot password?
                   </button>
                 </div>
