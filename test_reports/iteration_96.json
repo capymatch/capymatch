@@ -1,0 +1,80 @@
+{
+  "summary": "Completed testing of Personal Info update feature on Account page. All backend API tests (12/12) passed. All frontend UI tests passed. Feature is working correctly.",
+  "test_results": {
+    "BACKEND_API_TESTS": {
+      "total_tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "tests": [
+        {"name": "test_01_get_current_user_info", "status": "PASS", "details": "GET /api/auth/me returns user info including auth_provider"},
+        {"name": "test_02_update_name_success", "status": "PASS", "details": "Name update works, verified via GET /auth/me"},
+        {"name": "test_03_revert_name_to_original", "status": "PASS", "details": "Name reverted to Sarah Mitchell"},
+        {"name": "test_04_empty_name_returns_400", "status": "PASS", "details": "Empty name correctly rejected"},
+        {"name": "test_05_whitespace_name_returns_400", "status": "PASS", "details": "Whitespace-only name correctly rejected"},
+        {"name": "test_06_empty_email_returns_400", "status": "PASS", "details": "Empty email correctly rejected"},
+        {"name": "test_07_invalid_email_format_returns_400", "status": "PASS", "details": "Invalid email format correctly rejected"},
+        {"name": "test_08_invalid_email_no_domain", "status": "PASS", "details": "Invalid email without domain rejected"},
+        {"name": "test_09_duplicate_email_returns_409", "status": "PASS", "details": "Duplicate email returns 409 conflict"},
+        {"name": "test_10_update_email_success", "status": "PASS", "details": "Email update works for local auth user"},
+        {"name": "test_11_unauthenticated_request_returns_401", "status": "PASS", "details": "Unauthenticated request returns 401"},
+        {"name": "test_12_final_state_check", "status": "PASS", "details": "Final state verified - demo user restored"}
+      ]
+    },
+    "FRONTEND_UI_TESTS": {
+      "total_tests": 7,
+      "passed": 7,
+      "failed": 0,
+      "tests": [
+        {"name": "Personal Info card display", "status": "PASS", "details": "Personal Info card shows name (Sarah Mitchell) and email (demo@capymatch.com) correctly"},
+        {"name": "Edit button reveals form", "status": "PASS", "details": "Clicking Edit button shows editable form with name and email inputs"},
+        {"name": "Cancel button reverts changes", "status": "PASS", "details": "Cancel button correctly reverts changes and exits edit mode"},
+        {"name": "Save Changes updates name", "status": "PASS", "details": "Save Changes button calls API and updates name to 'Test Updated Name'"},
+        {"name": "Updated value displays correctly", "status": "PASS", "details": "After save, display view shows updated name"},
+        {"name": "Success toast notification", "status": "PASS", "details": "Toast notification 'Account info updated' shown after successful save"},
+        {"name": "Name revert to original", "status": "PASS", "details": "Name successfully reverted to 'Sarah Mitchell'"}
+      ]
+    },
+    "GOOGLE_AUTH_USER_BEHAVIOR": {
+      "status": "VERIFIED_BY_CODE_REVIEW",
+      "details": "Code correctly implements: email input disabled when isGoogleUser=true, explanation text shown 'Email is managed by Google and cannot be changed here.'"
+    }
+  },
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_update_account.py",
+    "/app/test_reports/pytest/update_account_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend PUT /api/auth/update-account correctly validates: empty name (400), empty email (400), invalid email format (400), duplicate email (409)",
+    "Backend correctly updates users, tenants, and athlete_profiles collections",
+    "Frontend correctly implements isGoogleUser check - email input disabled with explanation text for Google auth users",
+    "All data-testid attributes present: personal-info-card, edit-personal-info-btn, account-name-input, account-email-input, save-personal-info-btn, cancel-edit-personal-info-btn, account-name-display, account-email-display"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_update_account.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% (7/7 tests passed)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026",
+      "name": "Sarah Mitchell"
+    }
+  },
+  "seed_data_creation": "None - used existing demo user",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Personal Info update feature fully tested. Demo user is local auth (auth_provider=local). Backend updates 3 collections: users, tenants, athlete_profiles. Google auth users have email field disabled. Feature navigation: Click user avatar dropdown > Account."
+}
