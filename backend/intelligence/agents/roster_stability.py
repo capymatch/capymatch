@@ -55,31 +55,15 @@ async def run_roster_stability(payload: dict, program_id: str) -> dict:
     Deterministic when no stored roster data exists.
     """
     now_iso = datetime.now(timezone.utc).isoformat()
-    school = payload.get("school", {})
     roster_data = payload.get("roster", {})
-    recruiting = payload.get("recruiting", {})
-    dq = payload.get("data_quality", {})
 
-    school_name = school.get("name")
-    division = school.get("division")
-
-    # ------------------------------------------------------------------
-    # Check for real stored data
-    # ------------------------------------------------------------------
     has_roster = bool(roster_data.get("roster_size"))
-    has_class_dist = bool(roster_data.get("class_distribution"))
-    has_history = bool(roster_data.get("roster_snapshots") or roster_data.get("roster_history"))
-
-    # Count historical snapshots for commitment stability
     snapshots = roster_data.get("roster_snapshots") or []
     has_stability_data = len(snapshots) >= 2
 
     if has_roster:
         return await _run_ai_roster(payload, program_id, has_stability_data)
 
-    # ------------------------------------------------------------------
-    # Deterministic path: no roster data → Unknown
-    # ------------------------------------------------------------------
     return _build_unknown_card(payload, program_id, now_iso)
 
 
