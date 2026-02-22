@@ -59,7 +59,14 @@ export function ScholarshipStructureCard({ scholarship, dataConfidence, loading,
                 </div>
               </div>
             </div>
-            {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
+            <div className="flex items-center gap-2">
+              {dataConfidence?.level && <DataConfidenceBadge level={dataConfidence.level} />}
+              {onRefresh && (
+                <button onClick={onRefresh} className="p-1.5 rounded-lg hover:bg-gray-100" data-testid="scholarship-refresh-btn">
+                  <RefreshCw className="w-3.5 h-3.5" style={{ color: "#9ca3af" }} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Explanation */}
@@ -126,6 +133,10 @@ export function ScholarshipStructureCard({ scholarship, dataConfidence, loading,
               </div>
             )}
           </div>
+
+          {scholarship.status === "unknown" && programId && (
+            <ImproveCardNudge cardType="scholarship_structure" programId={programId} />
+          )}
 
           <ThisMayChangeCopy />
         </div>
