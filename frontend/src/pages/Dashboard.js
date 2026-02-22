@@ -380,6 +380,7 @@ export default function Dashboard() {
     const t = (ix.type || "").toLowerCase();
     const school = ix.university_name || "";
     if (t.includes("coach_reply") || t.includes("reply")) return { text: "Coach replied — ", highlight: school };
+    if (t === "email_received") return { text: "Coach replied — ", highlight: school };
     if (t.includes("email") || t.includes("intro")) return { text: "Sent email to ", highlight: school };
     if (t.includes("follow")) return { text: "Sent follow-up to ", highlight: school };
     if (t.includes("visit")) return { text: "Campus visit at ", highlight: school };
