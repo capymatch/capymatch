@@ -1,6 +1,7 @@
 import { Users, Info, X, RefreshCw, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { DataConfidenceBadge, ThisMayChangeCopy } from "./TrustIndicators";
+import { ImproveCardNudge } from "./ImproveCardNudge";
 
 const STATUS_CONFIG = {
   open:    { accent: "#16A34A", bg: "#F0FDF4", text: "#166534" },
@@ -27,7 +28,7 @@ export function RosterLabel({ roster, onClick }) {
 }
 
 /* ── Full Roster Reality Card for Journey / Detail pages ── */
-export function RosterRealityCard({ roster, dataConfidence, loading, onRefresh }) {
+export function RosterRealityCard({ roster, dataConfidence, loading, onRefresh, programId }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   if (loading) {
