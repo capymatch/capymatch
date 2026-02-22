@@ -607,7 +607,7 @@ async def get_program_journey(program_id: str, request: Request):
             "title": title,
             "date": i.get("date_time") or i.get("created_at"),
             "content": i.get("notes") or i.get("message_copy"),
-            "coach_name": "" if itype_lower != "coach_reply" else "Coach",
+            "coach_name": i.get("coach_name", "Coach") if is_coach_msg else "",
         })
     
     # 2. Get events linked to this program
