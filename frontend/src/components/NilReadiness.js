@@ -257,7 +257,7 @@ export function NilReadinessCard({ nil, dataConfidence, loading, onRefresh, prog
         </div>
 
         {/* Questions to ask */}
-        <NilQuestions status={nil.status} />
+        <NilQuestions status={nil.status} isVague={nil.is_vague} />
 
         {/* About this estimate */}
         <button
