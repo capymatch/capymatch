@@ -13,6 +13,7 @@ import { RosterRealityCard } from "../components/RosterOutlook";
 import { ScholarshipStructureCard } from "../components/ScholarshipStructure";
 import { NilReadinessCard } from "../components/NilReadiness";
 import { SchoolInsightCard } from "../components/SchoolInsightCard";
+import { AcademicCompletenessFlag } from "../components/TrustIndicators";
 
 /* ── Match Ring (dark hero) ── */
 function MatchRing({ score }) {
