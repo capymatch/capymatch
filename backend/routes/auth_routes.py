@@ -17,6 +17,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/auth/register")
+@limiter.limit("5/minute")
 async def register(request: Request, response: Response):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
