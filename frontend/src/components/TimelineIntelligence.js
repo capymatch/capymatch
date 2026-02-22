@@ -14,6 +14,7 @@ const STATUS_CONFIG = {
 export function TimelineLabel({ timeline, onClick }) {
   if (!timeline) return null;
   const cfg = STATUS_CONFIG[timeline.status] || STATUS_CONFIG.unknown;
+  const isEstimate = timeline.is_estimate === true;
   return (
     <button
       onClick={onClick}
@@ -22,7 +23,15 @@ export function TimelineLabel({ timeline, onClick }) {
       data-testid="timeline-label"
     >
       <Clock className="w-3 h-3" style={{ color: cfg.accent }} />
-      Recruiting Timeline: {timeline.label}
+      {isEstimate ? "Division Estimate" : "Recruiting Timeline"}: {timeline.label}
+      {isEstimate && (
+        <span
+          className="ml-1 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider"
+          style={{ backgroundColor: "rgba(148,163,184,0.15)", color: "#94a3b8" }}
+        >
+          Est.
+        </span>
+      )}
     </button>
   );
 }
