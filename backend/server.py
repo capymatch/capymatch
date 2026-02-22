@@ -61,6 +61,7 @@ app.include_router(team_router)
 app.include_router(notes_router)
 app.include_router(inbound_contacts_router)
 app.include_router(privacy_router)
+app.include_router(intelligence_router)
 
 
 # ─── Stripe Webhook (must be outside router prefix) ───
