@@ -120,10 +120,10 @@ export default function RecruitingJourney() {
     if (isBasic) return;
     setInsightLoading(true);
     try {
-      if (forceRefresh) {
-        await api.delete(`/ai/school-insight/${programId}/cache`).catch(() => {});
-      }
-      const res = await api.post(`/ai/school-insight/${programId}`);
+      const url = forceRefresh
+        ? `/intelligence/school-insight/${programId}?force=true`
+        : `/intelligence/school-insight/${programId}`;
+      const res = await api.post(url);
       setSchoolInsight(res.data);
     } catch (err) {
       console.warn("Insight fetch failed:", err);
