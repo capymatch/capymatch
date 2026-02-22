@@ -21,35 +21,26 @@ A public-facing Volleyball Recruiting CRM evolving into a decision-support syste
 | Agent: Roster/Stability | Done + Wired | `backend/intelligence/agents/roster_stability.py` |
 | Agent: Scholarship | Done + Wired | `backend/intelligence/agents/scholarship.py` |
 
-## What's Been Implemented
-- Dynamic Recruiting Board with 5-stage funnel
-- University Knowledge Base (scraping + enrichment)
-- Match scoring system with risk badges
-- Email integration (Gmail API)
-- Subscription engine with Stripe
-- Admin area
-- Coach Watch (staff change detection)
-- Notes system (per-school)
-- Intelligence Pipeline (Stages 1-3) with 4 micro-agents
-- All 4 intelligence cards wired to pipeline endpoints
-- "Improve this card" data enrichment nudge on Unknown-state cards
-- User contribution system (link, upload, request) with pending_verification
+## Scholarship Agent Design
+- **AI determines label only** — all UI copy (explanation, guidance, tooltip) is hardcoded in `UI_COPY` dict
+- **5 states**: Unknown, Unknown_vague, Typically Partial, Mix of Partial and Full, Walk-On Pathways Common
+- **Rules**: No dollars, no percentages, no guarantees. Vague notes → "Unknown" with evidence "partial"
+- **Contributed data NEVER upgrades to evidence "strong"** until admin-verified
+- **Division context** is factual and non-numeric
 
-## Key API Endpoints (Intelligence)
-- `POST /api/intelligence/school-insight/{program_id}` — Why This School card
-- `POST /api/intelligence/timeline/{program_id}` — Timeline Intelligence card
-- `POST /api/intelligence/roster/{program_id}` — Roster Reality + Commitment Stability cards
-- `POST /api/intelligence/scholarship/{program_id}` — Scholarship Structure card
-- `POST /api/intelligence/contribute` — User data contributions (link/request)
-- `POST /api/intelligence/contribute/upload` — File upload contributions
+## Data Enrichment System
+- "Improve this card" nudge on Unknown-state cards
+- Options: Add source link, Upload file (CSV/screenshot/PDF), Request update
+- All contributions stored as `pending_verification` in `intelligence_contributions` collection
+- Contributions do NOT affect insights until admin-verified
 
-## Scholarship Agent Rules
-- Labels: "Mix of Partial and Full" | "Typically Partial" | "Walk-On Pathways Common" | "Unknown"
-- No dollar amounts, no percentages, no guarantees
-- Vague scholarship_notes → label "Unknown" with evidence "partial"
-- Contributed data NEVER upgrades to evidence "strong" until admin-verified
-- Division context is factual, non-numeric: "Division I athletic aid may include partial awards..."
-- status always "ok" (insufficient_data only for broken payload)
+## Key API Endpoints
+- `POST /api/intelligence/school-insight/{program_id}`
+- `POST /api/intelligence/timeline/{program_id}`
+- `POST /api/intelligence/roster/{program_id}`
+- `POST /api/intelligence/scholarship/{program_id}`
+- `POST /api/intelligence/contribute` (link/request)
+- `POST /api/intelligence/contribute/upload` (file)
 
 ## Prioritized Backlog
 
@@ -60,6 +51,7 @@ A public-facing Volleyball Recruiting CRM evolving into a decision-support syste
 - NCAA Timeline colors (cosmetic, consistently deprioritized)
 
 ### P2 — Future Features
+- Admin dashboard for reviewing pending contributions
 - Separate Girls/Boys Volleyball data
 - Email templates & bulk outreach
 - Camp/Tournament ROI tracker
@@ -74,12 +66,13 @@ A public-facing Volleyball Recruiting CRM evolving into a decision-support syste
 
 ## Key Files
 - `frontend/src/pages/RecruitingJourney.js` — Main journey page
-- `frontend/src/components/ScholarshipStructure.js` — Scholarship card
+- `frontend/src/components/ScholarshipStructure.js` — Scholarship card with guidance block
 - `frontend/src/components/TimelineIntelligence.js` — Timeline card
 - `frontend/src/components/RosterOutlook.js` — Roster card
 - `frontend/src/components/CommitmentStabilityCard.js` — Stability card
 - `frontend/src/components/SchoolInsightCard.js` — School insight card
-- `frontend/src/components/ImproveCardNudge.js` — Data enrichment nudge
+- `frontend/src/components/ImproveCardNudge.js` — Data enrichment nudge component
 - `backend/routes/intelligence.py` — Intelligence API endpoints
 - `backend/routes/intelligence_contribute.py` — Contribution endpoints
+- `backend/intelligence/agents/scholarship.py` — Scholarship agent with UI_COPY dict
 - `backend/intelligence/` — Full pipeline directory
