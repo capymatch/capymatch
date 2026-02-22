@@ -82,3 +82,15 @@ async def get_roster_stability(program_id: str, request: Request):
         return await _run_cached_card("roster_stability", program_id, tenant_id, force)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Intelligence pipeline error: {str(e)}")
+
+
+@router.post("/scholarship/{program_id}")
+async def get_scholarship_structure(program_id: str, request: Request):
+    """Generate the 'Scholarship Structure' intelligence card."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    force = request.query_params.get("force", "false").lower() == "true"
+    try:
+        return await _run_cached_card("scholarship_structure", program_id, tenant_id, force)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Intelligence pipeline error: {str(e)}")
