@@ -324,9 +324,19 @@ export default function Dashboard() {
     return aOverdue - bOverdue || (b.updated_at || "").localeCompare(a.updated_at || "");
   });
 
-  // Pipeline status counts
+  // Pipeline status counts — group related statuses for the funnel view
   const statusMap = {};
-  programs.forEach(p => { const s = p.recruiting_status || "Not Contacted"; statusMap[s] = (statusMap[s] || 0) + 1; });
+  const statusGroups = {
+    "Not Contacted": ["Not Contacted"],
+    "Contacted": ["Contacted", "No Response Yet", "Video Viewed", "Applied", "Some Interest", "Camp Attended"],
+    "Active Conversation": ["Active Conversation"],
+    "Offer Received": ["Offer Received", "Offer / Commit Talk"],
+    "Committed": ["Committed"],
+    "Not a Fit / Closed": ["Not a Fit / Closed", "Not Interested"],
+  };
+  Object.entries(statusGroups).forEach(([groupKey, statuses]) => {
+    statusMap[groupKey] = programs.filter(p => statuses.includes(p.recruiting_status)).length;
+  });
   const pipelineStatuses = [
     { key: "Not Contacted", label: "Not\nContacted", color: "#6b7280" },
     { key: "Contacted", label: "Contacted", color: "#3b82f6" },
