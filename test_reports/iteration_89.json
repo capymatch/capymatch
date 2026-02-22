@@ -1,0 +1,92 @@
+{
+  "summary": "Completed comprehensive testing of Scholarship Structure Intelligence Pipeline with hardcoded UI copy. All 30 backend tests pass (100%). All frontend tests pass. FGCU returns 'Mix of Partial and Full' label with exact hardcoded copy for explanation/guidance/tooltip. No dollar amounts, percentages, or scholarship counts in response. Improve card nudge correctly hidden for non-Unknown scholarship cards.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "scholarship_hardcoded_copy": {
+      "test_fgcu_returns_mix_of_partial_and_full": "PASS - Returns 'Mix of Partial and Full' label",
+      "test_explanation_matches_exact_copy": "PASS - 'Program notes suggest a mix of partial and occasional larger awards...'",
+      "test_guidance_matches_exact_copy": "PASS - 'Ask directly what profiles tend to receive larger awards...'",
+      "test_tooltip_matches_exact_copy": "PASS - 'This reflects typical patterns from available notes, not a guarantee of aid.'",
+      "test_status_matches_label": "PASS - ui.status='mix' for 'Mix of Partial and Full'",
+      "test_no_dollar_amounts_in_response": "PASS - No $ in response",
+      "test_no_percentage_values_in_ui": "PASS - No percentages in UI copy",
+      "test_no_scholarship_counts_in_response": "PASS - No 'X scholarships' pattern",
+      "test_ui_has_guidance_field": "PASS - guidance field present for 'What this means for you' block",
+      "test_response_generated_by_ai": "PASS - generated_by='ai' when notes exist",
+      "test_evidence_is_strong_for_stored_notes": "PASS - scholarship_evidence='strong'",
+      "test_label_basis_is_stored_notes": "PASS - label_basis='stored_notes'"
+    },
+    "scholarship_and_contributions": {
+      "test_scholarship_returns_200": "PASS",
+      "test_scholarship_response_shape": "PASS - card_type='scholarship_structure', ui object present",
+      "test_scholarship_no_dollar_amounts": "PASS",
+      "test_scholarship_valid_labels": "PASS",
+      "test_scholarship_force_refresh": "PASS - ?force=true bypasses cache",
+      "test_scholarship_requires_auth": "PASS - Returns 401 without auth",
+      "test_contribute_link_success": "PASS - status='pending_verification'",
+      "test_contribute_request_success": "PASS",
+      "test_contribute_missing_fields": "PASS - Returns 400",
+      "test_contribute_invalid_type": "PASS - Returns 400",
+      "test_contribute_link_requires_data": "PASS - Returns 400 for empty URL",
+      "test_contribute_requires_auth": "PASS - Returns 401",
+      "test_upload_csv_success": "PASS",
+      "test_upload_invalid_extension": "PASS - Rejects .exe with 400",
+      "test_upload_requires_auth": "PASS - Returns 401",
+      "test_timeline_endpoint_works": "PASS - Existing endpoint unchanged",
+      "test_roster_endpoint_works": "PASS - Existing endpoint unchanged",
+      "test_school_insight_endpoint_works": "PASS - Existing endpoint unchanged"
+    },
+    "frontend": {
+      "scholarship_card_displays": "PASS - ScholarshipStructureCard renders",
+      "scholarship_label_mix_of_partial_and_full": "PASS - Correct label shown",
+      "scholarship_explanation_text": "PASS - Matches exact hardcoded copy",
+      "scholarship_guidance_block_visible": "PASS - 'What this means for you' header present",
+      "scholarship_guidance_text": "PASS - Matches exact hardcoded copy",
+      "scholarship_tooltip_text": "PASS - Matches exact hardcoded copy",
+      "improve_nudge_hidden_for_non_unknown": "PASS - Not shown for 'Mix of Partial and Full'",
+      "improve_nudge_shown_for_unknown_timeline": "PASS - Shows 'Improve this card' button",
+      "improve_nudge_shown_for_unknown_roster": "PASS - Shows 'Improve this card' button",
+      "refresh_button_works": "PASS - Triggers loading state and re-renders",
+      "all_cards_render": "PASS - Timeline, Roster, Stability, School Insight all visible"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_scholarship_hardcoded_copy.py",
+    "/app/backend/tests/test_scholarship_and_contributions.py",
+    "/app/test_reports/pytest/scholarship_hardcoded_copy_results.xml",
+    "/app/test_reports/pytest/scholarship_structure_hardcoded_copy_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "UI_COPY dict in scholarship.py correctly implements 5 label states with hardcoded explanation/guidance/tooltip",
+    "AI determines ONLY the label via claude-sonnet-4-5-20250929 - all UI text comes from hardcoded dict",
+    "ScholarshipStructureCard.js correctly renders guidance block with 'What this means for you' header",
+    "ImproveCardNudge correctly shows only when scholarship.status === 'unknown'",
+    "Force refresh with ?force=true correctly bypasses cache and regenerates data",
+    "No dollar amounts, percentages, or scholarship counts in any response - rules enforced"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_scholarship_hardcoded_copy.py"
+  ],
+  "success_rate": {
+    "backend": "100% (30/30 tests passed)",
+    "frontend": "100% (all tests passed)"
+  },
+  "test_credentials": {
+    "email": "douglas@yeslms.com",
+    "password": "password",
+    "program_tested": "prog_3fe70bce8e71 (Florida Gulf Coast University - D1 with scholarship_notes)"
+  },
+  "seed_data_creation": "None - used existing FGCU data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Scholarship Structure Intelligence Pipeline fully tested with hardcoded UI copy validation. FGCU returns 'Mix of Partial and Full' via AI path with exact copy matching UI_COPY dict. Five label states exist: Unknown, Unknown_vague, Typically Partial, Mix of Partial and Full, Walk-On Pathways Common. Each has hardcoded explanation/guidance/tooltip. Frontend ScholarshipStructureCard shows 'What this means for you' guidance block. Improve nudge only appears on Unknown status cards. All previously wired cards (Timeline, Roster, Stability, School Insight) continue to work."
+}
