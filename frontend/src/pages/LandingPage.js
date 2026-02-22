@@ -17,9 +17,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-40 border-b" style={{ backgroundColor: "rgba(248,250,249,0.85)", backdropFilter: "blur(16px)", borderColor: "#e8eeeb" }}>
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#2ec4b6" }}>
-              <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
-            </div>
+            <img src="/images/capymatch-logo.png" alt="CapyMatch" className="w-8 h-8 rounded-lg object-cover" />
             <span className="font-bold text-[15px] tracking-tight" style={{ color: "#1a2b2a" }}>CapyMatch</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
