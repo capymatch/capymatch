@@ -52,6 +52,8 @@ export default function RecruitingJourney() {
   const [timelineIntelLoading, setTimelineIntelLoading] = useState(false);
   const [rosterIntel, setRosterIntel] = useState(null);
   const [rosterIntelLoading, setRosterIntelLoading] = useState(false);
+  const [scholarshipIntel, setScholarshipIntel] = useState(null);
+  const [scholarshipIntelLoading, setScholarshipIntelLoading] = useState(false);
   const [dataConfidence, setDataConfidence] = useState(null);
   const [profileComplete, setProfileComplete] = useState(true);
   const [notesCount, setNotesCount] = useState(0);
