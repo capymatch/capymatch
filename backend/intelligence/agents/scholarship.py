@@ -245,7 +245,7 @@ def _build_card(
 # AI path — determines label only, copy is hardcoded
 # ---------------------------------------------------------------------------
 
-AI_SYSTEM_PROMPT = """You are a scholarship structure classifier for Recruiting HQ.
+AI_SYSTEM_PROMPT = """You are a scholarship structure classifier for CapyMatch.
 Your ONLY job is to classify a program's scholarship structure from stored notes.
 
 HARD RULES:

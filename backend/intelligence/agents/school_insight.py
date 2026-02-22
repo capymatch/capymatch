@@ -19,7 +19,7 @@ logger = logging.getLogger("intelligence.agents.school_insight")
 # Prompt template
 # ---------------------------------------------------------------------------
 
-SYSTEM_PROMPT = """You are a college recruiting analyst for Recruiting HQ.
+SYSTEM_PROMPT = """You are a college recruiting analyst for CapyMatch.
 You produce structured JSON assessments for families evaluating volleyball programs.
 
 HARD RULES (violating any rule invalidates your output):

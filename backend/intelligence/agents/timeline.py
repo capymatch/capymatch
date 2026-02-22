@@ -193,7 +193,7 @@ async def run_timeline_intelligence(payload: dict, program_id: str) -> dict:
 # AI path (for when real timeline data exists — future)
 # ---------------------------------------------------------------------------
 
-AI_SYSTEM_PROMPT = """You are a recruiting timeline analyst for Recruiting HQ.
+AI_SYSTEM_PROMPT = """You are a recruiting timeline analyst for CapyMatch.
 You produce structured JSON timeline assessments for families evaluating volleyball programs.
 
 HARD RULES:

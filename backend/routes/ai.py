@@ -1300,7 +1300,7 @@ async def get_school_insight(program_id: str, request: Request):
         "sources": sources,
     }, indent=2)
 
-    system_message = """You are the "Recruiting HQ Source-Aware Intelligence Agent."
+    system_message = """You are the "CapyMatch Source-Aware Intelligence Agent."
 
 Your job is to generate recruiting insights that families can trust. You must be conservative, transparent, and never invent facts.
 

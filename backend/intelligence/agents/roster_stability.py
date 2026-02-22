@@ -156,7 +156,7 @@ def _build_unknown_card(payload: dict, program_id: str, now_iso: str) -> dict:
 # AI path (for when real roster data exists — future)
 # ---------------------------------------------------------------------------
 
-AI_SYSTEM_PROMPT = """You are a roster and commitment stability analyst for Recruiting HQ.
+AI_SYSTEM_PROMPT = """You are a roster and commitment stability analyst for CapyMatch.
 You produce structured JSON assessments for families evaluating volleyball programs.
 
 HARD RULES:

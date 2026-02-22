@@ -263,7 +263,7 @@ def _build_card(
 # AI path
 # ---------------------------------------------------------------------------
 
-AI_SYSTEM_PROMPT = """You are a NIL (Name, Image, Likeness) environment classifier for Recruiting HQ.
+AI_SYSTEM_PROMPT = """You are a NIL (Name, Image, Likeness) environment classifier for CapyMatch.
 Your ONLY job is to classify a program's NIL support level from stored notes.
 
 HARD RULES:
