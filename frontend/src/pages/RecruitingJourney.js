@@ -495,9 +495,15 @@ export default function RecruitingJourney() {
       )}
 
       {/* NIL Readiness Card */}
-      {nilReadiness && (
+      {!isBasic && (
         <div className="mt-4" data-testid="journey-nil-card">
-          <NilReadinessCard nil={nilReadiness} dataConfidence={dataConfidence} timeline={recruitingTimeline} />
+          <NilReadinessCard
+            nil={nilIntel?.ui}
+            loading={nilIntelLoading}
+            onRefresh={() => fetchNilIntel(true)}
+            dataConfidence={nilIntel?.data_quality}
+            programId={programId}
+          />
         </div>
       )}
 
