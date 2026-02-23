@@ -14,60 +14,49 @@ All 5 micro-agents built, tested, and wired. Three-stage architecture: Schema Ma
 | Scholarship | Mix of Partial and Full / Typically Partial / Walk-On Pathways Common / Unknown | `POST /api/intelligence/scholarship/{id}` |
 | NIL Readiness | Established NIL Support / Emerging NIL Support / NIL Information Limited | `POST /api/intelligence/nil/{id}` |
 
-### Intelligence Guardrails
-- Min evidence threshold: 3+ data points before AI fires
-- Heuristic estimates labeled "Division Estimate (EST.)"
-- Timeline Awareness badge (not Timeline Risk)
-- All cards: Unknown when data missing, never inferred
-
-### Intelligence Cards Location
-- Rendered on School Detail page (/school/:domain)
-- Journey page has compact "School Intelligence" link -> navigates to School Detail
-- Gated by: on_board && programId && !isBasic
-
 ## Page Architecture
 - **Dashboard** (/board) — Overview with pipeline, actions, activity feed
 - **My Schools** (/pipeline) — Pipeline board with status grouping
-- **Journey** (/journey/:programId) — Relationship management (actions, timeline, checklist)
-- **School Detail** (/school/:domain) — Research hub (stats, intelligence cards)
-- **Find Schools** (/find-schools) — Discovery with 1,053 universities
+- **Journey** (/journey/:programId) — Relationship management
+- **School Detail** (/school/:domain) — Research hub with intelligence cards
+- **Find Schools** (/knowledge-base) — Discovery with 1,053 universities
 - **Calendar** — Events and upcoming items
+- **Billing** (/billing) — Subscription management, billing history, cancel/reactivate
 
 ## Subscription & Payments — COMPLETE (Feb 23, 2026)
 ### Stripe Integration
-- **Backend**: `POST /api/stripe/checkout` creates Stripe Checkout sessions, `GET /api/stripe/checkout/status/{session_id}` polls payment status
+- **Checkout**: `POST /api/stripe/checkout` creates Stripe Checkout sessions
+- **Status**: `GET /api/stripe/checkout/status/{session_id}` polls payment status with auto-upgrade
 - **Webhook**: `POST /api/webhook/stripe` processes completed payments as backup
-- **Frontend**: UpgradeModal triggers checkout, PaymentSuccess page confirms payment
-- **Library**: Uses `emergentintegrations.payments.stripe.checkout` with `sk_test_emergent`
-- **Prices**: Starter $0/mo, Pro $29/mo, Premium $49/mo (consistent across all display and charge points)
-- **Feature Gating**: Existing subscription system in `subscriptions.py` enforces limits per tier
-- **Testing**: 15/15 backend tests passed, frontend flows verified
+- **Billing**: `GET /api/stripe/billing-history` returns transactions and subscription info
+- **Cancel**: `POST /api/stripe/cancel` end-of-period cancellation (30-day grace)
+- **Reactivate**: `POST /api/stripe/reactivate` undo pending cancellation
+- **Library**: `emergentintegrations.payments.stripe.checkout` with `sk_test_emergent`
+
+### Billing Page (Feb 23, 2026)
+- Accessible from top-right profile dropdown ("Billing" link)
+- Current Plan card with tier icon, price, and cancel option
+- Billing History table with date, plan, amount, status, transaction ID
+- Cancel flow: confirmation dialog -> end-of-period cancellation with 30-day grace
+- Cancellation notice with expiry date and "Keep my plan" reactivation button
+- Tested: 8/8 backend + all frontend flows passed (iteration_98)
 
 ### Subscription Tiers
-| Tier | Price | Schools | AI Drafts | Gmail | Key Features |
-|------|-------|---------|-----------|-------|-------------|
-| Starter | Free | 5 | 0 | Yes | Basic pipeline, profile, search |
-| Pro | $29/mo | 25 | 10/mo | Yes | Follow-ups, AI next steps, drafts |
-| Premium | $49/mo | Unlimited | Unlimited | Yes | Coach watch, analytics, insights |
+| Tier | Price | Schools | AI Drafts | Key Features |
+|------|-------|---------|-----------|-------------|
+| Starter | Free | 5 | 0 | Basic pipeline, profile, search |
+| Pro | $29/mo | 25 | 10/mo | Follow-ups, AI next steps, drafts |
+| Premium | $49/mo | Unlimited | Unlimited | Coach watch, analytics, insights |
 
 ## Pre-Launch Audit (Feb 22, 2026) — CONDITIONAL GO
 - 18/18 API endpoints healthy
-- 10/10 frontend E2E flows pass
-- Security: Tenant isolation confirmed, bcrypt passwords, httponly secure cookies
+- Security: Tenant isolation, bcrypt passwords, httponly secure cookies
 - AI guardrails enforced across all intelligence agents
-- Database cleaned: orphaned test records removed
-- Branding fully updated to CapyMatch (no Recruiting HQ references)
-
-### Conditions for Full GO
-1. Set explicit CORS_ORIGINS in production
-2. Configure production Resend domain for emails
-3. Add rate limiting before high traffic
 
 ## Demo Account
 - **Email**: demo@capymatch.com / **Password**: demo2026
 - **Tier**: Premium
 - **Athlete**: Emma Mitchell (Junior OH, A5 Volleyball, GA)
-- **Schools**: 10 across all recruiting statuses
 
 ## Test Credentials
 - **Demo**: demo@capymatch.com / demo2026
@@ -82,7 +71,7 @@ All 5 micro-agents built, tested, and wired. Three-stage architecture: Schema Ma
 ### P2
 - NCAA Timeline colors (cosmetic, recurring)
 - Add rate limiting to API endpoints
-- Add database indexes for knowledge_base performance
+- Consolidate AccountPage and SettingsPage overlapping content
 
 ### P2+
 - Girls/Boys Volleyball separation
