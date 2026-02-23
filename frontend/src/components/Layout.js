@@ -4,7 +4,7 @@ import {
   LayoutGrid, GraduationCap, Settings, 
   Bell, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, ChevronRight, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
-  Video, TrendingUp, LogOut, CreditCard, Crown, Sun, Moon
+  Video, TrendingUp, LogOut, CreditCard, Crown, Sun, Moon, Receipt
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -535,6 +535,17 @@ export default function Layout({ user, onLogout }) {
                     >
                       <CreditCard className="w-4 h-4" strokeWidth={1.5} />
                       Account
+                    </button>
+                    <button
+                      onClick={() => { setProfileOpen(false); navigate("/billing"); }}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-left"
+                      style={{ color: "var(--t-text-secondary)" }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                      data-testid="profile-billing-link"
+                    >
+                      <Receipt className="w-4 h-4" strokeWidth={1.5} />
+                      Billing
                     </button>
                     <div className="border-t my-1" style={{ borderColor: "var(--t-border)" }} />
                     <button
