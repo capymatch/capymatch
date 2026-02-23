@@ -296,7 +296,8 @@ export default function Layout({ user, onLogout }) {
           </div>
         </nav>
 
-        {/* Subscription Badge + Admin Link */}
+        {/* Admin Link — only for admin users */}
+        {user?.email === "douglas@yeslms.com" && (
         <div className="px-4 pb-2 mt-auto">
           <div className="border-t mb-3" style={{ borderColor: "var(--t-sidebar-divider)" }} />
           <NavLink
@@ -314,6 +315,7 @@ export default function Layout({ user, onLogout }) {
             <span className={`${sidebarCollapsed ? 'lg:hidden' : ''}`}>Admin</span>
           </NavLink>
         </div>
+        )}
 
         {/* Bottom spacing */}
         <div className="p-4" />
