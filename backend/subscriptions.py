@@ -153,7 +153,7 @@ async def enforce_ai_limit(tenant_id: str, subscription: dict):
             detail={
                 "error": "subscription_limit",
                 "feature": "ai_drafts",
-                "message": "AI email drafts are available on Pro and Premium plans.",
+                "message": "AI email drafts help you write personalized coach emails in seconds. Upgrade to Pro to unlock 10 drafts/month.",
                 "current": 0,
                 "limit": 0,
                 "upgrade_to": "pro",
@@ -168,7 +168,7 @@ async def enforce_ai_limit(tenant_id: str, subscription: dict):
             detail={
                 "error": "subscription_limit",
                 "feature": "ai_drafts",
-                "message": f"You've used all {limit} AI drafts this month. Upgrade for more.",
+                "message": f"You've used all {limit} AI drafts this month. Upgrade to Premium for unlimited drafts.",
                 "current": used,
                 "limit": limit,
                 "upgrade_to": "premium",
