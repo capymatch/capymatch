@@ -100,7 +100,7 @@ function TierCard({ tier, isCurrent, isPopular, checkoutLoading, onUpgrade }) {
   );
 }
 
-export default function UpgradeModal({ isOpen, onClose, feature, currentTier = "basic" }) {
+export default function UpgradeModal({ isOpen, onClose, feature, message, currentTier = "basic" }) {
   const [tiers, setTiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
