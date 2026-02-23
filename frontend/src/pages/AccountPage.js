@@ -174,7 +174,7 @@ export default function AccountPage() {
                 <div>
                   <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{subscription.label} Plan</p>
                   <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-                    {subscription.tier === "basic" ? "Free" : subscription.tier === "pro" ? "$19/month" : "$39/month"}
+                    {subscription.tier === "basic" ? "Free" : subscription.tier === "pro" ? "$29/month" : "$49/month"}
                   </p>
                 </div>
               </div>
