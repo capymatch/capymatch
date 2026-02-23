@@ -352,84 +352,245 @@ function InlineMarkReplied({ program, onSaved, onCancel }) {
   );
 }
 
-/* ═══ Compact School Row ═══ */
+/* ═══ Rich School Card ═══ */
 function SchoolRow({ p, navigate, matchScore, onMarkReplied }) {
+  const [expanded, setExpanded] = useState(false);
   const stage = p.board_group || "needs_outreach";
   const { text: subtitle, urgent } = getSubtitle(p);
   const quickAction = getQuickAction(stage);
   const isUrgent = stage === "overdue";
   const isConvo = stage === "in_conversation";
+  const isWaiting = stage === "waiting_on_reply";
+  const stageCfg = STAGES[stage] || STAGES.needs_outreach;
 
-  // Extra info
+  const signals = p.signals || {};
+  const coachName = p.coach_name || p.primary_coach || "";
+  const coachEmail = p.coach_email || "";
   const conf = p.conference || "";
-  const loc = p.location || p.city_state || "";
-  const extra = [conf, loc].filter(Boolean).join(" · ");
-  const subParts = [subtitle, extra].filter(Boolean).join(" · ");
+  const stateName = p.state || "";
+  const meta = [conf, stateName].filter(Boolean).join(" · ");
+  const hasNotes = !!p.notes;
+  const hasNextAction = !!p.next_action;
+  const matchPct = matchScore?.match_score;
+
+  // Status label mapping
+  const statusLabels = {
+    "Not Contacted": { label: "Not Contacted", bg: "rgba(107,114,128,0.08)", color: "#6b7280" },
+    "Initial Contact": { label: "Initial Contact", bg: "rgba(46,196,182,0.08)", color: "#2ec4b6" },
+    "In Conversation": { label: "In Conversation", bg: "rgba(16,185,129,0.08)", color: "#10b981" },
+    "Active Conversation": { label: "Active Convo", bg: "rgba(16,185,129,0.08)", color: "#10b981" },
+    "Camp Attended": { label: "Camp Attended", bg: "rgba(139,92,246,0.08)", color: "#8b5cf6" },
+    "Offer Received": { label: "Offer Received", bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
+    "Committed": { label: "Committed", bg: "rgba(22,163,74,0.08)", color: "#16a34a" },
+    "Some Interest": { label: "Some Interest", bg: "rgba(59,130,246,0.08)", color: "#3b82f6" },
+  };
+  const statusStyle = statusLabels[p.recruiting_status] || { label: p.recruiting_status || "Unknown", bg: "rgba(107,114,128,0.06)", color: "#6b7280" };
 
   return (
     <div
-      className="group flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all hover:shadow-sm"
-      style={{
-        backgroundColor: "var(--t-surface)",
-        borderColor: "var(--t-border)",
-        borderLeft: isUrgent ? "3px solid #dc2626" : undefined,
-      }}
-      onClick={() => navigate(`/journey/${p.program_id}`)}
+      className="group rounded-xl border overflow-hidden transition-all hover:shadow-md"
+      style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
       data-testid={`school-card-${p.program_id}`}
     >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={20} />
-          <span className="font-semibold text-[13px] truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
-          {matchScore?.match_score && (
-            <span className="text-[10px] font-bold" style={{ color: "var(--t-text-muted, #999)" }}>{matchScore.match_score}%</span>
+      <div className="flex">
+        {/* Left stage bar */}
+        <div
+          className="w-1.5 flex-shrink-0"
+          style={{ backgroundColor: stageCfg.ring }}
+        />
+
+        {/* Card content */}
+        <div className="flex-1 min-w-0 px-4 py-3">
+          {/* Row 1: School name + badges */}
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={32} />
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    onClick={() => navigate(`/journey/${p.program_id}`)}
+                    className="font-bold text-sm hover:underline text-left truncate"
+                    style={{ color: "var(--t-text)" }}
+                  >
+                    {p.university_name}
+                  </button>
+                  {p.division && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>
+                      {p.division}
+                    </span>
+                  )}
+                </div>
+                {meta && (
+                  <div className="flex items-center gap-1 text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                    <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
+                    <span className="truncate">{meta}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Stage badge — top right */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {urgent && (
+                <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626" }}>
+                  <AlertTriangle className="w-3 h-3" />
+                  {subtitle}
+                </span>
+              )}
+              {!urgent && isWaiting && (
+                <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(245,158,11,0.08)", color: "#f59e0b" }}>
+                  <Clock className="w-3 h-3" />
+                  {subtitle.split(" · ")[0]}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Row 2: Coach info */}
+          {(coachName || coachEmail) && (
+            <div className="flex items-center gap-3 mb-2.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+              {coachName && (
+                <span className="flex items-center gap-1">
+                  <svg className="w-3 h-3 flex-shrink-0 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  {coachName}
+                </span>
+              )}
+              {coachEmail && (
+                <a
+                  href={`mailto:${coachEmail}`}
+                  className="flex items-center gap-1 hover:underline truncate"
+                  style={{ color: "#2ec4b6" }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <svg className="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  {coachEmail}
+                </a>
+              )}
+            </div>
           )}
-          {p.division && (
-            <span className="text-[9px] font-bold px-1.5 py-px rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>
-              {p.division}
-            </span>
-          )}
-          {isConvo && (
-            <span className="text-[9px] font-semibold px-1.5 py-px rounded" style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.1)" }}>
-              Active
-            </span>
+
+          {/* Row 3: Metrics bar */}
+          <div className="flex items-center gap-4 flex-wrap">
+            {/* Recruiting status */}
+            <div className="flex flex-col">
+              <span className="text-[9px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--t-text-muted)" }}>Status</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: statusStyle.bg, color: statusStyle.color }}>
+                {statusStyle.label}
+              </span>
+            </div>
+
+            {/* Match score */}
+            {matchPct != null && (
+              <div className="flex flex-col items-center">
+                <span className="text-[9px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--t-text-muted)" }}>Match</span>
+                <div className="flex items-center gap-1">
+                  <div className="w-8 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--t-border)" }}>
+                    <div className="h-full rounded-full" style={{ width: `${Math.min(matchPct, 100)}%`, background: matchPct >= 50 ? "#16a34a" : matchPct >= 25 ? "#f59e0b" : "#6b7280" }} />
+                  </div>
+                  <span className="text-[11px] font-bold" style={{ color: "var(--t-text)" }}>{matchPct}%</span>
+                </div>
+              </div>
+            )}
+
+            {/* Outreach count */}
+            <div className="flex flex-col items-center">
+              <span className="text-[9px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--t-text-muted)" }}>Outreach</span>
+              <span className="text-[11px] font-bold" style={{ color: "var(--t-text)" }}>{signals.outreach_count || 0}</span>
+            </div>
+
+            {/* Interactions */}
+            <div className="flex flex-col items-center">
+              <span className="text-[9px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--t-text-muted)" }}>Activity</span>
+              <span className="text-[11px] font-bold" style={{ color: "var(--t-text)" }}>{signals.total_interactions || 0}</span>
+            </div>
+
+            {/* Last activity */}
+            {signals.days_since_activity != null && (
+              <div className="flex flex-col items-center">
+                <span className="text-[9px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "var(--t-text-muted)" }}>Last Active</span>
+                <span className="text-[11px] font-bold" style={{ color: signals.days_since_activity > 7 ? "#f59e0b" : "var(--t-text)" }}>
+                  {signals.days_since_activity === 0 ? "Today" : `${signals.days_since_activity}d ago`}
+                </span>
+              </div>
+            )}
+
+            {/* Spacer + Actions */}
+            <div className="flex items-center gap-1.5 ml-auto flex-shrink-0" onClick={e => e.stopPropagation()}>
+              {isWaiting && (
+                <button
+                  className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                  style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.12)" }}
+                  onClick={() => onMarkReplied(p)}
+                  data-testid={`quick-mark-replied-${p.program_id}`}
+                >
+                  <CheckCircle2 className="w-3 h-3" />Replied
+                </button>
+              )}
+              {quickAction && (
+                <button
+                  className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                  style={{
+                    background: isUrgent ? "rgba(220,38,38,0.06)" : "rgba(46,196,182,0.07)",
+                    color: isUrgent ? "#dc2626" : "#2ec4b6",
+                    border: `1px solid ${isUrgent ? "rgba(220,38,38,0.12)" : "rgba(46,196,182,0.12)"}`,
+                  }}
+                  onClick={() => navigate(`/journey/${p.program_id}`)}
+                  data-testid={`quick-action-${p.program_id}`}
+                >
+                  <Send className="w-3 h-3" />{quickAction.label}
+                </button>
+              )}
+              <button
+                onClick={() => navigate(`/journey/${p.program_id}`)}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors"
+                style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-secondary)", border: "1px solid var(--t-border)" }}
+                data-testid={`view-journey-${p.program_id}`}
+              >
+                Journey <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
+          {/* Expandable section: Notes + Next Action */}
+          {(hasNotes || hasNextAction) && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
+                className="flex items-center gap-1 mt-2 text-[10px] font-semibold transition-colors"
+                style={{ color: "var(--t-text-muted)" }}
+                data-testid={`expand-${p.program_id}`}
+              >
+                <ChevronRight className={`w-3 h-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
+                {expanded ? "Show less" : "Show more"}
+              </button>
+              {expanded && (
+                <div className="mt-2 space-y-1.5 text-[11px] pl-1 border-l-2" style={{ borderColor: "var(--t-border)", marginLeft: 2 }}>
+                  {hasNextAction && (
+                    <div className="flex items-start gap-1.5 pl-2">
+                      <Lightbulb className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} />
+                      <div>
+                        <span className="font-semibold" style={{ color: "var(--t-text)" }}>Next: </span>
+                        <span style={{ color: "var(--t-text-muted)" }}>{p.next_action}</span>
+                        {p.next_action_due && (
+                          <span className="ml-1 text-[10px] font-medium" style={{ color: "#f59e0b" }}>
+                            (Due {new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {hasNotes && (
+                    <div className="flex items-start gap-1.5 pl-2">
+                      <MessageSquare className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--t-text-muted)" }} />
+                      <span style={{ color: "var(--t-text-muted)" }}>{p.notes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
-        <div className="text-[11px] mt-px truncate" style={{ color: "var(--t-text-muted)" }}>
-          {urgent ? <span style={{ color: "#dc2626", fontWeight: 500 }}>{subtitle}</span> : subParts}
-          {!urgent && subtitle !== subParts && extra && ""}
-        </div>
       </div>
-
-      {/* Quick actions */}
-      <div className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
-        {stage === "waiting_on_reply" && (
-          <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-colors"
-            style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.08)" }}
-            onClick={() => onMarkReplied(p)}
-            data-testid={`quick-mark-replied-${p.program_id}`}
-          >
-            <CheckCircle2 className="w-3 h-3" />Mark Replied
-          </button>
-        )}
-        {quickAction && (
-          <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-colors"
-            style={{
-              background: isUrgent ? "rgba(220,38,38,0.06)" : "rgba(46,196,182,0.07)",
-              color: isUrgent ? "#dc2626" : "#2ec4b6",
-              border: `1px solid ${isUrgent ? "rgba(220,38,38,0.08)" : "rgba(46,196,182,0.08)"}`,
-            }}
-            onClick={() => navigate(`/journey/${p.program_id}`)}
-            data-testid={`quick-action-${p.program_id}`}
-          >
-            <Send className="w-3 h-3" />{quickAction.label}
-          </button>
-        )}
-      </div>
-
-      <ChevronRight className="w-3.5 h-3.5 opacity-25 group-hover:opacity-70 transition-opacity flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
     </div>
   );
 }
