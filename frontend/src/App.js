@@ -74,7 +74,7 @@ function OAuthCallback({ onAuth }) {
       fetch(`${API_BASE}/auth/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
+        credentials: "include",
         body: JSON.stringify({ session_id: sessionId }),
       })
         .then(async res => {
