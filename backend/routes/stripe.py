@@ -172,3 +172,113 @@ async def get_checkout_status(session_id: str, request: Request):
         "currency": status.currency,
         "plan": txn["plan"],
     }
+
+
+@router.get("/billing-history")
+async def get_billing_history(request: Request):
+    """Get the current user's payment history and subscription status."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    # Get payment transactions
+    txns = await db.payment_transactions.find(
+        {"tenant_id": tenant_id},
+        {"_id": 0},
+    ).sort("created_at", -1).to_list(50)
+
+    # Get tenant info for cancellation status
+    tenant = await db.tenants.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    cancel_at_period_end = tenant.get("cancel_at_period_end", False) if tenant else False
+    plan_expires_at = tenant.get("plan_expires_at") if tenant else None
+
+    # Get current subscription
+    subscription = await get_user_subscription(tenant_id)
+
+    return {
+        "transactions": txns,
+        "subscription": {
+            "tier": subscription["tier"],
+            "label": subscription["label"],
+            "price": subscription.get("price", 0),
+        },
+        "cancel_at_period_end": cancel_at_period_end,
+        "plan_expires_at": plan_expires_at,
+    }
+
+
+@router.post("/cancel")
+async def cancel_subscription(request: Request):
+    """Cancel subscription at end of billing period (keeps access until expiry)."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    subscription = await get_user_subscription(tenant_id)
+    if subscription["tier"] == "basic":
+        raise HTTPException(status_code=400, detail="You are already on the free plan.")
+
+    tenant = await db.tenants.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    if tenant and tenant.get("cancel_at_period_end"):
+        raise HTTPException(status_code=400, detail="Cancellation is already scheduled.")
+
+    # Set cancellation: plan expires 30 days from now (end of billing period)
+    now = datetime.now(timezone.utc)
+    expires_at = (now + timedelta(days=30)).isoformat()
+
+    await db.tenants.update_one(
+        {"tenant_id": tenant_id},
+        {"$set": {
+            "cancel_at_period_end": True,
+            "plan_expires_at": expires_at,
+            "updated_at": now.isoformat(),
+        }},
+    )
+
+    # Audit log
+    await db.subscription_logs.insert_one({
+        "log_id": f"sublog_{uuid.uuid4().hex[:12]}",
+        "user_id": user["user_id"],
+        "tenant_id": tenant_id,
+        "old_plan": subscription["tier"],
+        "new_plan": "basic (scheduled)",
+        "reason": "User requested cancellation",
+        "changed_by": "user",
+        "created_at": now.isoformat(),
+    })
+
+    logger.info(f"Subscription cancellation scheduled: {tenant_id} ({subscription['tier']} -> basic at {expires_at})")
+
+    return {
+        "message": f"Your {subscription['label']} plan will remain active until the end of your billing period.",
+        "plan_expires_at": expires_at,
+    }
+
+
+@router.post("/reactivate")
+async def reactivate_subscription(request: Request):
+    """Cancel a pending cancellation and keep the current plan."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    tenant = await db.tenants.find_one({"tenant_id": tenant_id}, {"_id": 0})
+    if not tenant or not tenant.get("cancel_at_period_end"):
+        raise HTTPException(status_code=400, detail="No pending cancellation found.")
+
+    now = datetime.now(timezone.utc).isoformat()
+    await db.tenants.update_one(
+        {"tenant_id": tenant_id},
+        {"$set": {"cancel_at_period_end": False, "plan_expires_at": None, "updated_at": now}},
+    )
+
+    await db.subscription_logs.insert_one({
+        "log_id": f"sublog_{uuid.uuid4().hex[:12]}",
+        "user_id": user["user_id"],
+        "tenant_id": tenant_id,
+        "old_plan": tenant.get("plan", "basic"),
+        "new_plan": tenant.get("plan", "basic"),
+        "reason": "User reactivated subscription",
+        "changed_by": "user",
+        "created_at": now,
+    })
+
+    logger.info(f"Subscription reactivated: {tenant_id}")
+    return {"message": "Your subscription has been reactivated. No changes will be made to your plan."}
