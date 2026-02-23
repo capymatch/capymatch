@@ -252,6 +252,7 @@ function SubscriptionGuard({ children }) {
         isOpen={!!upgradeInfo}
         onClose={() => setUpgradeInfo(null)}
         feature={upgradeInfo?.feature}
+        message={upgradeInfo?.message}
         currentTier={subscription?.tier || "basic"}
       />
     </>
