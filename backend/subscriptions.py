@@ -125,15 +125,21 @@ async def enforce_school_limit(tenant_id: str, subscription: dict):
         return
     current_count = await db.programs.count_documents({"tenant_id": tenant_id})
     if current_count >= max_schools:
+        if subscription["tier"] == "basic":
+            msg = f"You've reached {max_schools} schools. Most families track 20–40 schools. Upgrade to Pro to keep your recruiting organized in one place."
+            upgrade_to = "pro"
+        else:
+            msg = f"You've reached your {subscription['label']} plan limit of {max_schools} schools. Upgrade to Premium for unlimited school tracking."
+            upgrade_to = "premium"
         raise HTTPException(
             status_code=403,
             detail={
                 "error": "subscription_limit",
                 "feature": "max_schools",
-                "message": f"You've reached your {subscription['label']} plan limit of {max_schools} schools. Upgrade to track more.",
+                "message": msg,
                 "current": current_count,
                 "limit": max_schools,
-                "upgrade_to": "pro" if subscription["tier"] == "basic" else "premium",
+                "upgrade_to": upgrade_to,
             },
         )
 
