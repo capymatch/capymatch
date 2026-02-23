@@ -215,6 +215,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
       <Route path="/login" element={<LoginPage onAuth={onAuth} />} />
+      <Route path="/signup" element={<LoginPage onAuth={onAuth} defaultMode="register" />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/welcome" element={<LandingPage />} />
       {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
