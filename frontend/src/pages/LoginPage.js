@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Lock, Eye, EyeOff, Loader2, Mail, ChevronLeft, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2, ChevronLeft, CheckCircle } from "lucide-react";
 import api from "../lib/api";
 
 export default function LoginPage({ onAuth, defaultMode = "login" }) {
@@ -49,11 +49,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
     }
   };
 
-  const title = forgotMode
-    ? "Reset your password"
-    : mode === "login"
-    ? "Log in to your account"
-    : "Create your account";
+  const isLogin = mode === "login";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10" style={{ background: "#f7f7f7" }} data-testid="login-page">
@@ -69,11 +65,22 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
         </div>
 
         {/* Headline */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-7">
           <h1 className="text-2xl font-bold text-gray-900 mb-1" data-testid="login-headline">
-            Your recruiting journey.
+            {forgotMode ? "Reset your password" : isLogin ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-lg text-gray-500">{title}</p>
+          <p className="text-base text-gray-500">
+            {forgotMode
+              ? "We'll send you a reset link"
+              : isLogin
+              ? "Log in to CapyMatch"
+              : "Sign up for CapyMatch"}
+          </p>
+          {!forgotMode && (
+            <p className="text-sm text-gray-400 mt-1">
+              Free forever for your first 5 schools &bull; No card needed
+            </p>
+          )}
         </div>
 
         {/* Forgot Password Flow */}
@@ -101,15 +108,14 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   Enter your email and we'll send you a reset link.
                 </p>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                   <input
                     type="email"
-                    placeholder="Enter your email address..."
+                    placeholder="your.email@example.com"
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     required
                     data-testid="forgot-email-input"
-                    className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
                     autoFocus
                   />
                 </div>
@@ -117,7 +123,8 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   type="submit"
                   disabled={forgotLoading}
                   data-testid="forgot-submit-btn"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: "#2ec4b6" }}
                 >
                   {forgotLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
                 </button>
@@ -134,100 +141,85 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
           </div>
         ) : (
           <>
-            {/* ── Log in with ── */}
+            {/* Google Button */}
+            <button
+              onClick={handleGoogle}
+              data-testid="google-login-btn"
+              className="w-full flex items-center justify-center gap-3 font-medium py-2.5 px-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-all text-gray-700 text-sm mb-5"
+            >
+              <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+              Continue with Google
+            </button>
+
+            {/* Separator */}
             <div className="flex items-center gap-3 mb-5">
               <div className="flex-1 h-px bg-gray-300" />
-              <span className="text-sm text-gray-500 whitespace-nowrap">Log in with</span>
+              <span className="text-sm text-gray-400 whitespace-nowrap">
+                {isLogin ? "or log in with email" : "or sign up with email"}
+              </span>
               <div className="flex-1 h-px bg-gray-300" />
             </div>
 
-            {/* Social Buttons */}
-            <div className="flex justify-center mb-6">
-              <button
-                onClick={handleGoogle}
-                data-testid="google-login-btn"
-                className="flex flex-col items-center justify-center gap-2 w-[140px] h-[80px] rounded-lg border border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all cursor-pointer"
-              >
-                <svg className="w-6 h-6" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                <span className="text-sm font-medium text-gray-700">Google</span>
-              </button>
-            </div>
-
-            {/* ── or continue with ── */}
-            <div className="flex items-center gap-3 mb-5">
-              <div className="flex-1 h-px bg-gray-300" />
-              <span className="text-sm text-gray-500 whitespace-nowrap">or continue with</span>
-              <div className="flex-1 h-px bg-gray-300" />
-            </div>
-
-            {/* Email/Password Form */}
+            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {mode === "register" && (
+              {!isLogin && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
                   <input
                     type="text"
-                    placeholder="Enter your full name..."
+                    placeholder="Full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                     data-testid="register-name-input"
-                    className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                 <input
                   type="email"
-                  placeholder="Enter your email address..."
+                  placeholder="your.email@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="login-email-input"
-                  className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
                 />
-                {mode === "register" && (
-                  <p className="text-xs text-gray-400 mt-1.5">Use a personal or family email to get started</p>
-                )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPw ? "text" : "password"}
-                    placeholder={mode === "register" ? "Create a password (6+ characters)" : "Enter your password..."}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    data-testid="login-password-input"
-                    className="w-full px-3.5 py-2.5 pr-10 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all bg-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                    data-testid="toggle-password-visibility"
-                  >
-                    {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  data-testid="login-password-input"
+                  className="w-full px-3.5 py-2.5 pr-10 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  data-testid="toggle-password-visibility"
+                >
+                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
 
-              {mode === "login" && (
+              {isLogin && (
                 <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={() => { setForgotMode(true); setForgotEmail(email); setForgotSent(false); }}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    className="text-sm text-teal-700 hover:text-teal-800 font-medium transition-colors"
                     data-testid="forgot-password-link"
                   >
                     Forgot password?
@@ -243,33 +235,34 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                 type="submit"
                 disabled={loading}
                 data-testid="auth-submit-btn"
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50"
+                style={{ backgroundColor: "#2ec4b6" }}
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  mode === "register" ? "Continue" : "Continue"
+                  isLogin ? "Log In" : "Create Account"
                 )}
               </button>
             </form>
 
             {/* Toggle Mode */}
-            <p className="text-center text-sm text-gray-500 mt-5">
-              {mode === "login" ? (
-                <>Don't have an account?{" "}
+            <p className="text-center text-sm text-gray-500 mt-6">
+              {isLogin ? (
+                <>New to CapyMatch?{" "}
                   <button
                     onClick={() => { setMode("register"); setError(""); }}
-                    className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                    className="text-teal-700 hover:text-teal-800 font-semibold transition-colors"
                     data-testid="switch-to-register"
                   >
-                    Sign up
+                    Create your free account
                   </button>
                 </>
               ) : (
                 <>Already have an account?{" "}
                   <button
                     onClick={() => { setMode("login"); setError(""); }}
-                    className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                    className="text-teal-700 hover:text-teal-800 font-semibold transition-colors"
                     data-testid="switch-to-login"
                   >
                     Log in
@@ -280,12 +273,11 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
           </>
         )}
 
-        {/* Terms */}
-        <p className="text-center text-xs text-gray-400 mt-8 leading-relaxed">
-          By continuing, you acknowledge that you understand<br />
-          and agree to the{" "}
-          <button className="text-gray-500 underline hover:text-gray-700 transition-colors">Terms & Conditions</button>
-          {" "}and{" "}
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-400 mt-8">
+          By signing in, you agree to our{" "}
+          <button className="text-gray-500 underline hover:text-gray-700 transition-colors">Terms</button>
+          {" "}&amp;{" "}
           <button className="text-gray-500 underline hover:text-gray-700 transition-colors">Privacy Policy</button>
         </p>
       </div>
