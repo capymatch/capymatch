@@ -4,8 +4,8 @@ import api from "../lib/api";
 
 const BANNER_IMG = "https://static.prod-images.emergentagent.com/jobs/9e6ea980-8158-4981-b7bd-5e0116513214/images/f7dc0782833b6c45f432631fe3a1b15f484365361d0515f6847bd9b496686c2d.png";
 
-export default function LoginPage({ onAuth }) {
-  const [mode, setMode] = useState("login");
+export default function LoginPage({ onAuth, defaultMode = "login" }) {
+  const [mode, setMode] = useState(defaultMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
