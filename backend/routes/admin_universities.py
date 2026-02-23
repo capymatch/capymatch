@@ -1,13 +1,14 @@
-from fastapi import APIRouter, HTTPException, Request, UploadFile, File
+from fastapi import APIRouter, HTTPException, Request, UploadFile, File, Depends
 from fastapi.responses import StreamingResponse
 from typing import Optional
 from datetime import datetime, timezone
 from database import db
+from admin_guard import require_admin
 import uuid
 import csv
 import io
 
-router = APIRouter(prefix="/api/admin/universities")
+router = APIRouter(prefix="/api/admin/universities", dependencies=[Depends(require_admin)])
 
 UNIVERSITY_FIELDS = [
     "university_name", "division", "conference", "region", "website",
