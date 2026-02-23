@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Loader2, ChevronLeft, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2, ChevronLeft, CheckCircle, Lock } from "lucide-react";
 import api from "../lib/api";
 
 export default function LoginPage({ onAuth, defaultMode = "login" }) {
@@ -54,18 +54,18 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10" style={{ background: "#f7f7f7" }} data-testid="login-page">
       <div className="w-full max-w-[440px]">
-        {/* Logo */}
+        {/* Logo — scales on mobile */}
         <div className="flex justify-center mb-6">
           <img
             src="/images/capymatch-logo-new.png"
             alt="CapyMatch"
-            className="h-28 object-contain"
+            className="h-28 max-w-[100px] sm:max-w-none sm:h-28 object-contain"
             data-testid="login-logo"
           />
         </div>
 
         {/* Headline */}
-        <div className="text-center mb-7">
+        <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-1" data-testid="login-headline">
             {forgotMode ? "Reset your password" : isLogin ? "Welcome back" : "Create your account"}
           </h1>
@@ -73,11 +73,11 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
             {forgotMode
               ? "We'll send you a reset link"
               : isLogin
-              ? "Log in to CapyMatch"
-              : "Sign up for CapyMatch"}
+              ? "Log in to your CapyMatch account"
+              : "Sign up for your CapyMatch account"}
           </p>
           {!forgotMode && (
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 mt-1.5">
               Free forever for your first 5 schools &bull; No card needed
             </p>
           )}
@@ -96,7 +96,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                 <button
                   type="button"
                   onClick={() => { setForgotMode(false); setForgotSent(false); }}
-                  className="mt-6 flex items-center gap-1.5 mx-auto text-sm font-medium text-teal-700 hover:text-teal-800 transition-colors"
+                  className="mt-6 flex items-center gap-1.5 mx-auto text-sm font-semibold text-teal-700 hover:text-teal-800 hover:underline transition-colors"
                   data-testid="back-to-login-btn"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back to sign in
@@ -123,7 +123,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   type="submit"
                   disabled={forgotLoading}
                   data-testid="forgot-submit-btn"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50 hover:brightness-110"
                   style={{ backgroundColor: "#2ec4b6" }}
                 >
                   {forgotLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
@@ -131,7 +131,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                 <button
                   type="button"
                   onClick={() => setForgotMode(false)}
-                  className="w-full flex items-center justify-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-700 hover:underline transition-colors"
                   data-testid="back-to-login-from-forgot"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back to sign in
@@ -145,7 +145,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
             <button
               onClick={handleGoogle}
               data-testid="google-login-btn"
-              className="w-full flex items-center justify-center gap-3 font-medium py-2.5 px-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-all text-gray-700 text-sm mb-5"
+              className="w-full flex items-center justify-center gap-3 font-medium py-2.5 px-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all text-gray-700 text-sm"
             >
               <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -156,11 +156,11 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               Continue with Google
             </button>
 
-            {/* Separator */}
-            <div className="flex items-center gap-3 mb-5">
+            {/* Separator — extra breathing room */}
+            <div className="flex items-center gap-3 my-7">
               <div className="flex-1 h-px bg-gray-300" />
               <span className="text-sm text-gray-400 whitespace-nowrap">
-                {isLogin ? "or log in with email" : "or sign up with email"}
+                {isLogin ? "Or log in with email" : "Or sign up with email"}
               </span>
               <div className="flex-1 h-px bg-gray-300" />
             </div>
@@ -215,11 +215,14 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               </div>
 
               {isLogin && (
-                <div className="flex justify-end">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1 text-xs text-gray-400">
+                    <Lock className="w-3 h-3" /> Secure login
+                  </span>
                   <button
                     type="button"
                     onClick={() => { setForgotMode(true); setForgotEmail(email); setForgotSent(false); }}
-                    className="text-sm text-teal-700 hover:text-teal-800 font-medium transition-colors"
+                    className="text-sm text-teal-700 hover:text-teal-800 font-semibold hover:underline transition-colors"
                     data-testid="forgot-password-link"
                   >
                     Forgot password?
@@ -235,8 +238,10 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                 type="submit"
                 disabled={loading}
                 data-testid="auth-submit-btn"
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
                 style={{ backgroundColor: "#2ec4b6" }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = "#27b0a3"}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -244,41 +249,29 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   isLogin ? "Log In" : "Create Account"
                 )}
               </button>
-            </form>
 
-            {/* Toggle Mode */}
-            <p className="text-center text-sm text-gray-500 mt-6">
-              {isLogin ? (
-                <>New to CapyMatch?{" "}
-                  <button
-                    onClick={() => { setMode("register"); setError(""); }}
-                    className="text-teal-700 hover:text-teal-800 font-semibold transition-colors"
-                    data-testid="switch-to-register"
-                  >
-                    Create your free account
-                  </button>
-                </>
-              ) : (
-                <>Already have an account?{" "}
-                  <button
-                    onClick={() => { setMode("login"); setError(""); }}
-                    className="text-teal-700 hover:text-teal-800 font-semibold transition-colors"
-                    data-testid="switch-to-login"
-                  >
-                    Log in
-                  </button>
-                </>
-              )}
-            </p>
+              {/* Toggle — full-width outlined button */}
+              <button
+                type="button"
+                onClick={() => { setMode(isLogin ? "register" : "login"); setError(""); }}
+                data-testid={isLogin ? "switch-to-register" : "switch-to-login"}
+                className="w-full flex items-center justify-center py-2.5 rounded-lg text-sm font-semibold border transition-all hover:shadow-sm active:scale-[0.99]"
+                style={{ color: "#2ec4b6", borderColor: "#2ec4b6" }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(46,196,182,0.06)"; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
+              >
+                {isLogin ? "New to CapyMatch? Create your free account" : "Already have an account? Log in"}
+              </button>
+            </form>
           </>
         )}
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-8">
           By signing in, you agree to our{" "}
-          <button className="text-gray-500 underline hover:text-gray-700 transition-colors">Terms</button>
+          <button className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Terms</button>
           {" "}&amp;{" "}
-          <button className="text-gray-500 underline hover:text-gray-700 transition-colors">Privacy Policy</button>
+          <button className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Privacy Policy</button>
         </p>
       </div>
     </div>
