@@ -54,7 +54,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10" style={{ background: "#f7f7f7" }} data-testid="login-page">
       <div className="w-full max-w-[440px]">
-        {/* Logo — scales on mobile */}
+        {/* Logo */}
         <div className="flex justify-center mb-6">
           <img
             src="/images/capymatch-logo-new.png"
@@ -65,19 +65,19 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
         </div>
 
         {/* Headline */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1" data-testid="login-headline">
+        <div className="text-center mb-9">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1.5" data-testid="login-headline">
             {forgotMode ? "Reset your password" : isLogin ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-base text-gray-500">
+          <p className="text-lg font-medium text-gray-600">
             {forgotMode
               ? "We'll send you a reset link"
               : isLogin
-              ? "Log in to your CapyMatch account"
-              : "Sign up for your CapyMatch account"}
+              ? "Log in to CapyMatch"
+              : "Sign up for CapyMatch"}
           </p>
           {!forgotMode && (
-            <p className="text-sm text-gray-400 mt-1.5">
+            <p className="text-sm text-gray-400 mt-2">
               Free forever for your first 5 schools &bull; No card needed
             </p>
           )}
@@ -123,8 +123,10 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   type="submit"
                   disabled={forgotLoading}
                   data-testid="forgot-submit-btn"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-50 hover:brightness-110"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
                   style={{ backgroundColor: "#2ec4b6" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#27b0a3"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
                 >
                   {forgotLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
                 </button>
@@ -144,6 +146,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
             {/* Google Button */}
             <button
               onClick={handleGoogle}
+              aria-label="Log in with Google"
               data-testid="google-login-btn"
               className="w-full flex items-center justify-center gap-3 font-medium py-2.5 px-4 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all text-gray-700 text-sm"
             >
@@ -156,19 +159,19 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               Continue with Google
             </button>
 
-            {/* Separator — extra breathing room */}
-            <div className="flex items-center gap-3 my-7">
+            {/* Separator — generous spacing */}
+            <div className="flex items-center gap-3 mt-8 mb-8">
               <div className="flex-1 h-px bg-gray-300" />
               <span className="text-sm text-gray-400 whitespace-nowrap">
-                {isLogin ? "Or log in with email" : "Or sign up with email"}
+                {isLogin ? "or use email" : "or sign up with email"}
               </span>
               <div className="flex-1 h-px bg-gray-300" />
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <div>
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                {!isLogin && (
                   <input
                     type="text"
                     placeholder="Full name"
@@ -178,10 +181,8 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                     data-testid="register-name-input"
                     className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
                   />
-                </div>
-              )}
+                )}
 
-              <div>
                 <input
                   type="email"
                   placeholder="your.email@example.com"
@@ -191,38 +192,42 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   data-testid="login-email-input"
                   className="w-full px-3.5 py-2.5 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
                 />
+
+                <div className="relative">
+                  <input
+                    type={showPw ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    data-testid="login-password-input"
+                    className="w-full px-3.5 py-2.5 pr-10 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw(!showPw)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    data-testid="toggle-password-visibility"
+                  >
+                    {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
-              <div className="relative">
-                <input
-                  type={showPw ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  data-testid="login-password-input"
-                  className="w-full px-3.5 py-2.5 pr-10 rounded-lg text-sm text-gray-900 placeholder-gray-400 border border-gray-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 focus:outline-none transition-all bg-white"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  data-testid="toggle-password-visibility"
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-
+              {/* Secure login + Forgot — extra top spacing */}
               {isLogin && (
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-5">
                   <span className="flex items-center gap-1 text-xs text-gray-400">
                     <Lock className="w-3 h-3" /> Secure login
                   </span>
                   <button
                     type="button"
                     onClick={() => { setForgotMode(true); setForgotEmail(email); setForgotSent(false); }}
-                    className="text-sm text-teal-700 hover:text-teal-800 font-semibold hover:underline transition-colors"
+                    className="text-sm font-semibold transition-colors"
+                    style={{ color: "#0d9488" }}
+                    onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; e.currentTarget.style.color = "#0f766e"; }}
+                    onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; e.currentTarget.style.color = "#0d9488"; }}
                     data-testid="forgot-password-link"
                   >
                     Forgot password?
@@ -231,37 +236,39 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               )}
 
               {error && (
-                <p className="text-red-500 text-xs bg-red-50 px-3 py-2 rounded-lg" data-testid="auth-error-msg">{error}</p>
+                <p className="text-red-500 text-xs bg-red-50 px-3 py-2 rounded-lg mt-4" data-testid="auth-error-msg">{error}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                data-testid="auth-submit-btn"
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
-                style={{ backgroundColor: "#2ec4b6" }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = "#27b0a3"}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
-              >
-                {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  isLogin ? "Log In" : "Create Account"
-                )}
-              </button>
+              {/* Buttons */}
+              <div className="mt-6 space-y-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  data-testid="auth-submit-btn"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
+                  style={{ backgroundColor: "#2ec4b6" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#239e93"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    isLogin ? "Log In" : "Create Account"
+                  )}
+                </button>
 
-              {/* Toggle — full-width outlined button */}
-              <button
-                type="button"
-                onClick={() => { setMode(isLogin ? "register" : "login"); setError(""); }}
-                data-testid={isLogin ? "switch-to-register" : "switch-to-login"}
-                className="w-full flex items-center justify-center py-2.5 rounded-lg text-sm font-semibold border transition-all hover:shadow-sm active:scale-[0.99]"
-                style={{ color: "#2ec4b6", borderColor: "#2ec4b6" }}
-                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(46,196,182,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; }}
-              >
-                {isLogin ? "New to CapyMatch? Create your free account" : "Already have an account? Log in"}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => { setMode(isLogin ? "register" : "login"); setError(""); }}
+                  data-testid={isLogin ? "switch-to-register" : "switch-to-login"}
+                  className="w-full flex items-center justify-center py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.99]"
+                  style={{ color: "#2ec4b6", borderWidth: "1.5px", borderStyle: "solid", borderColor: "#2ec4b6", backgroundColor: "transparent" }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#2ec4b6"; e.currentTarget.style.color = "#fff"; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2ec4b6"; }}
+                >
+                  {isLogin ? "New to CapyMatch? Create your free account" : "Already have an account? Log in"}
+                </button>
+              </div>
             </form>
           </>
         )}
