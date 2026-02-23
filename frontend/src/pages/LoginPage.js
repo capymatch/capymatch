@@ -77,7 +77,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               : "Sign up for CapyMatch"}
           </p>
           {!forgotMode && (
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-xs text-gray-400 mt-3">
               Free forever for your first 5 schools &bull; No card needed
             </p>
           )}
@@ -163,7 +163,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
             <div className="flex items-center gap-3 mt-8 mb-8">
               <div className="flex-1 h-px bg-gray-300" />
               <span className="text-sm text-gray-400 whitespace-nowrap">
-                {isLogin ? "or use email" : "or sign up with email"}
+                {isLogin ? "or log in with email" : "or sign up with email"}
               </span>
               <div className="flex-1 h-px bg-gray-300" />
             </div>
@@ -247,7 +247,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   data-testid="auth-submit-btn"
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
                   style={{ backgroundColor: "#2ec4b6" }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#239e93"}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#00897B"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
                 >
                   {loading ? (
@@ -261,7 +261,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   type="button"
                   onClick={() => { setMode(isLogin ? "register" : "login"); setError(""); }}
                   data-testid={isLogin ? "switch-to-register" : "switch-to-login"}
-                  className="w-full flex items-center justify-center py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.99]"
+                  className="w-full flex items-center justify-center py-3 rounded-lg text-sm font-semibold transition-all active:scale-[0.99]"
                   style={{ color: "#2ec4b6", borderWidth: "1.5px", borderStyle: "solid", borderColor: "#2ec4b6", backgroundColor: "transparent" }}
                   onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#2ec4b6"; e.currentTarget.style.color = "#fff"; }}
                   onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2ec4b6"; }}
