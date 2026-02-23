@@ -63,7 +63,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
           <img
             src="/images/capymatch-logo-new.png"
             alt="CapyMatch"
-            className="h-12 object-contain"
+            className="h-24 object-contain"
             data-testid="login-logo"
           />
         </div>
