@@ -1,13 +1,14 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from typing import Optional
 from datetime import datetime, timezone, timedelta
 from database import db
 from subscriptions import SUBSCRIPTION_TIERS
 from ws_manager import manager
+from admin_guard import require_admin
 import uuid
 import os
 
-router = APIRouter(prefix="/api/admin")
+router = APIRouter(prefix="/api/admin", dependencies=[Depends(require_admin)])
 
 
 @router.get("/stats")
