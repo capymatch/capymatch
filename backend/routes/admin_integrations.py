@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from datetime import datetime, timezone
 from database import db
+from admin_guard import require_admin
 import os
 import logging
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/admin/integrations")
+router = APIRouter(prefix="/api/admin/integrations", dependencies=[Depends(require_admin)])
 
 
 @router.get("")
