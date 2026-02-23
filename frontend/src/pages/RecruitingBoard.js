@@ -925,7 +925,7 @@ export default function RecruitingBoard() {
           {STAGE_ORDER.filter(stage => groupedByStage[stage]?.length > 0).map(stage => (
             <React.Fragment key={stage}>
               {!activeFilter && <SectionLabel stage={stage} count={groupedByStage[stage].length} />}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2.5">
                 {groupedByStage[stage].map(p => (
                   <SchoolRow key={p.program_id} p={p} navigate={navigate} matchScore={matchScores[p.program_id]} onMarkReplied={(prog) => setMarkRepliedProgram(prog)} />
                 ))}
