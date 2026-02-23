@@ -6,12 +6,13 @@ Status flow: pending_verification → verified → promoted | rejected
 Promotion writes data into the university knowledge base with provenance.
 """
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from datetime import datetime, timezone
 from database import db
 from bson import ObjectId
+from admin_guard import require_admin
 
-router = APIRouter(prefix="/api/admin/contributions")
+router = APIRouter(prefix="/api/admin/contributions", dependencies=[Depends(require_admin)])
 
 
 def _serialize(doc: dict) -> dict:
