@@ -26,6 +26,7 @@ import PublicSchedule from "./pages/PublicSchedule";
 import ProfilePage from "./pages/ProfilePage";
 import AthleteProfileQuiz from "./pages/AthleteProfileQuiz";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import BillingPage from "./pages/BillingPage";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import LoginPage from "./pages/LoginPage";
@@ -195,6 +196,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="privacy" element={<PrivacyPolicyPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
+        <Route path="billing" element={<BillingPage />} />
       </Route>
       <Route path="/admin" element={user?.email === "douglas@yeslms.com" ? <AdminLayout /> : <Navigate to="/board" replace />}>
         <Route index element={<AdminDashboard />} />
