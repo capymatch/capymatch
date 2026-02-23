@@ -107,7 +107,8 @@ async def serve_audit_report():
 @app.post("/api/webhook/stripe")
 async def stripe_webhook(request: Request):
     from emergentintegrations.payments.stripe.checkout import StripeCheckout
-    import os
+    from datetime import datetime, timezone
+    import uuid as _uuid
     api_key = os.environ.get("STRIPE_API_KEY")
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
@@ -116,9 +117,48 @@ async def stripe_webhook(request: Request):
     sig = request.headers.get("Stripe-Signature", "")
     try:
         event = await stripe_checkout.handle_webhook(body, sig)
-        logging.getLogger(__name__).info(f"Stripe webhook: {event.event_type} session={event.session_id}")
+        logger.info(f"Stripe webhook: {event.event_type} session={event.session_id}")
+
+        # Process completed checkout as backup (polling handles immediate feedback)
+        if event.event_type in ("checkout.session.completed", "payment_intent.succeeded"):
+            session_id = event.session_id
+            txn = await db.payment_transactions.find_one(
+                {"session_id": session_id, "payment_status": {"$ne": "paid"}},
+                {"_id": 0},
+            )
+            if txn:
+                now = datetime.now(timezone.utc).isoformat()
+                plan = txn["plan"]
+                tenant_id = txn["tenant_id"]
+                user_id = txn["user_id"]
+
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {"payment_status": "paid", "status": "complete", "updated_at": now}},
+                )
+
+                tenant = await db.tenants.find_one({"tenant_id": tenant_id}, {"_id": 0})
+                old_plan = tenant.get("plan", "basic") if tenant else "basic"
+
+                await db.tenants.update_one(
+                    {"tenant_id": tenant_id},
+                    {"$set": {"plan": plan, "updated_at": now}},
+                )
+
+                await db.subscription_logs.insert_one({
+                    "log_id": f"sublog_{_uuid.uuid4().hex[:12]}",
+                    "user_id": user_id,
+                    "tenant_id": tenant_id,
+                    "old_plan": old_plan,
+                    "new_plan": plan,
+                    "reason": "Stripe webhook",
+                    "changed_by": "stripe_webhook",
+                    "session_id": session_id,
+                    "created_at": now,
+                })
+                logger.info(f"Webhook: upgraded {tenant_id} from {old_plan} to {plan}")
     except Exception as e:
-        logging.getLogger(__name__).error(f"Stripe webhook error: {e}")
+        logger.error(f"Stripe webhook error: {e}")
     return {"ok": True}
 
 # ─── Background Task: Auto-detect coach replies ───

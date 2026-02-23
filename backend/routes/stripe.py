@@ -14,10 +14,10 @@ router = APIRouter(prefix="/api/stripe")
 
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 
-# Fixed plan prices — never accept amounts from frontend
+# Fixed plan prices — must match SUBSCRIPTION_TIERS in subscriptions.py
 PLAN_PRICES = {
-    "pro": 19.00,
-    "premium": 39.00,
+    "pro": 29.00,
+    "premium": 49.00,
 }
 
 
