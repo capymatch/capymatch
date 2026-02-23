@@ -245,7 +245,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   type="submit"
                   disabled={loading}
                   data-testid="auth-submit-btn"
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
                   style={{ backgroundColor: "#2ec4b6" }}
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = "#00897B"}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
