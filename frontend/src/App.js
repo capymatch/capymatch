@@ -68,68 +68,32 @@ function OAuthCallback({ onAuth }) {
 
     setStatus("loading");
 
-    // Try session exchange - use both same-origin and cross-origin approaches
-    const SAME_ORIGIN_URL = window.location.origin + "/api/auth/session";
-    const CROSS_ORIGIN_URL = (process.env.REACT_APP_BACKEND_URL || window.location.origin) + "/api/auth/session";
-
-    const tryExchange = (url, label) => {
-      console.log(`[OAuth] Trying ${label}: ${url}`);
-      return fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
-      }).then(async res => {
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw { status: res.status, detail: data?.detail || res.statusText, url, label };
-        return data;
-      });
-    };
-
-    // Session exchange with retry + fallback
-    const exchangeSession = async (retries = 4) => {
-      const attempt = 5 - retries;
-      console.log(`[OAuth] Exchange attempt ${attempt}, retries left: ${retries}`);
-
-      try {
-        // Try same-origin first (works if custom domain has backend proxy)
-        const data = await tryExchange(SAME_ORIGIN_URL, "same-origin");
-        console.log("[OAuth] Same-origin success:", data?.email);
-        onAuth(data);
-        navigate("/board", { replace: true });
-      } catch (sameOriginErr) {
-        console.warn("[OAuth] Same-origin failed:", sameOriginErr);
-
-        // If same-origin and cross-origin are different URLs, try cross-origin
-        if (SAME_ORIGIN_URL !== CROSS_ORIGIN_URL) {
-          try {
-            const data = await tryExchange(CROSS_ORIGIN_URL, "cross-origin");
-            console.log("[OAuth] Cross-origin success:", data?.email);
-            onAuth(data);
-            navigate("/board", { replace: true });
+    // Use the shared api instance (same URL as login/register — works on all domains)
+    const exchangeSession = (retries = 3) => {
+      const attempt = 4 - retries;
+      console.log(`[OAuth] Exchange attempt ${attempt}`);
+      api.post("/auth/session", { session_id: sessionId })
+        .then(res => {
+          console.log("[OAuth] Success:", res.data?.email);
+          onAuth(res.data);
+          navigate("/board", { replace: true });
+        })
+        .catch(err => {
+          const status = err?.response?.status;
+          const detail = err?.response?.data?.detail || err?.message || "Unknown error";
+          console.error(`[OAuth] Error: ${status} ${detail}`);
+          if (retries > 0 && (!status || status === 401 || status >= 500)) {
+            setTimeout(() => exchangeSession(retries - 1), 2000);
             return;
-          } catch (crossOriginErr) {
-            console.warn("[OAuth] Cross-origin also failed:", crossOriginErr);
           }
-        }
-
-        // Retry logic
-        if (retries > 0) {
-          console.log(`[OAuth] Retrying in 2s... (${retries} left)`);
-          setTimeout(() => exchangeSession(retries - 1), 2000);
-          return;
-        }
-
-        // All retries exhausted - show detailed error
-        const errInfo = sameOriginErr;
-        const debugMsg = `Status: ${errInfo?.status || "network error"} | URL: ${errInfo?.url || SAME_ORIGIN_URL} | Detail: ${errInfo?.detail || errInfo?.message || "Failed to fetch"}`;
-        setStatus("error");
-        setErrorMsg(debugMsg);
-        setTimeout(() => navigate("/login", { replace: true }), 8000);
-      }
+          setStatus("error");
+          setErrorMsg(detail);
+          setTimeout(() => navigate("/login", { replace: true }), 5000);
+        });
     };
 
-    // Small initial delay to let session data propagate
-    setTimeout(() => exchangeSession(), 1000);
+    // Small delay for session data propagation
+    setTimeout(() => exchangeSession(), 500);
   }, [navigate, onAuth]);
 
   return (
