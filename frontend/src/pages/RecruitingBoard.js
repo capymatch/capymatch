@@ -690,6 +690,18 @@ export default function RecruitingBoard() {
         </div>
       </div>
 
+      {/* ── Progress Ring + Hero Card ── */}
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4 items-stretch" data-testid="pipeline-snapshot">
+        <div className="rounded-xl border p-4 md:p-5 flex items-center justify-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <ProgressRing sectionCounts={sectionCounts} total={total} />
+        </div>
+        <div className="flex-1 min-w-0">
+          {focusProgram
+            ? <HeroCard program={focusProgram} navigate={navigate} />
+            : <AllCaughtUpCard navigate={navigate} />}
+        </div>
+      </div>
+
       {/* ── Advanced Filters ── */}
       {showFilters && (
         <div className="flex flex-wrap items-center gap-2" data-testid="board-filters">
