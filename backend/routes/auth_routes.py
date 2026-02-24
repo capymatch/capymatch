@@ -27,7 +27,6 @@ limiter = Limiter(key_func=_get_client_ip)
 
 
 @router.post("/auth/register")
-@limiter.limit("5/minute")
 async def register(request: Request, response: Response):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
@@ -72,7 +71,6 @@ async def register(request: Request, response: Response):
 
 
 @router.post("/auth/login")
-@limiter.limit("10/minute")
 async def login(request: Request, response: Response):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
