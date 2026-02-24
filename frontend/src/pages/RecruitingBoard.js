@@ -313,6 +313,148 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
   );
 }
 
+/* ── Progress Ring ── */
+const RING_STAGES = [
+  { key: "outreach", label: "Outreach", color: "#2ec4b6" },
+  { key: "waiting", label: "Waiting", color: "#f59e0b" },
+  { key: "convo", label: "In Convo", color: "#16a34a" },
+  { key: "committed", label: "Committed", color: "#d97706" },
+];
+
+function ProgressRing({ sectionCounts, total }) {
+  const active = RING_STAGES.filter(s => (sectionCounts[s.key] || 0) > 0);
+  const stops = [];
+  let acc = 0;
+  active.forEach(s => {
+    const pct = (sectionCounts[s.key] || 0) / Math.max(total, 1) * 100;
+    stops.push(`${s.color} ${acc}% ${acc + pct}%`);
+    acc += pct;
+  });
+  if (acc < 100) stops.push(`var(--t-border, #e5e7eb) ${acc}% 100%`);
+  const gradient = stops.length > 0 ? `conic-gradient(from 0deg, ${stops.join(", ")})` : `conic-gradient(var(--t-border) 0% 100%)`;
+
+  return (
+    <div className="flex items-center gap-4" data-testid="progress-ring">
+      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
+        <div className="w-[76px] h-[76px] md:w-[108px] md:h-[108px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
+          <span className="text-xl md:text-3xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
+          <span className="text-[9px] md:text-xs" style={{ color: "var(--t-text-muted)" }}>schools</span>
+        </div>
+      </div>
+      <div className="flex flex-col gap-y-1.5">
+        {active.map(s => (
+          <div key={s.key} className="flex items-center gap-1.5 text-[10px] md:text-sm">
+            <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
+            <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{sectionCounts[s.key] || 0}</span>
+            <span style={{ color: "var(--t-text-muted)" }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Hero Card helpers ── */
+function getHeroAdvice(p) {
+  if (!p) return "";
+  const g = p.board_group;
+  const s = p.signals || {};
+  if (g === "overdue") {
+    const days = p.next_action_due ? Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000)) : "several";
+    return `Coach hasn't heard from you in ${days} days. Send a short follow-up mentioning your recent results.`;
+  }
+  if (g === "needs_outreach") return "This school matches your profile well. Send an introductory email with your highlight reel.";
+  if (g === "waiting_on_reply") {
+    const d = s.days_since_outreach;
+    return d > 5 ? "It's been a while since your outreach. Consider a brief follow-up." : "Give the coach a bit more time, then follow up.";
+  }
+  if (g === "in_conversation") return "You've got momentum — keep the conversation going.";
+  return "";
+}
+
+function HeroCard({ program, navigate }) {
+  if (!program) return null;
+  const p = program;
+  const stage = p.board_group;
+  const isUrgent = stage === "overdue";
+  const isWaiting = stage === "waiting_on_reply";
+  const advice = getHeroAdvice(p);
+
+  const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : isWaiting ? "Keeping Warm" : "Momentum";
+  const kickerColor = isUrgent ? "#f87171" : "#2ec4b6";
+
+  let urgencyText = "";
+  if (isUrgent && p.next_action_due) {
+    const days = Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000));
+    urgencyText = `${days} day${days !== 1 ? "s" : ""} overdue`;
+  } else if (isWaiting && p.next_action_due) {
+    const d = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000);
+    urgencyText = d > 0 ? `Due in ${d} day${d !== 1 ? "s" : ""}` : "Due today";
+  }
+
+  const quickLabel = (isUrgent || isWaiting) ? "Follow Up" : stage === "needs_outreach" ? "Start Outreach" : "View Journey";
+
+  return (
+    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
+            {isUrgent && <AlertTriangle className="w-3 h-3" />}
+            {isWaiting && <Clock className="w-3 h-3" />}
+            {kicker}
+          </span>
+          {urgencyText && (
+            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: `${kickerColor}20` }}>
+              {urgencyText}
+            </span>
+          )}
+        </div>
+        <div className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white flex items-center gap-2">
+          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={28} />
+          {p.university_name}
+        </div>
+        <div className="flex items-center gap-2 mb-2.5">
+          {p.division && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(46,196,182,0.12)", color: "rgba(255,255,255,0.6)" }}>{p.division}</span>}
+          {p.conference && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{p.conference}</span>}
+        </div>
+        {advice && (
+          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.12)", borderLeft: "3px solid #2ec4b6" }}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} />
+            <div>
+              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
+              <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
+        <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
+          style={{ background: "#2ec4b6", color: "white", border: "none" }}
+          onClick={() => navigate(`/journey/${p.program_id}`)} data-testid="hero-action-btn">
+          <Send className="w-3 h-3" />{quickLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AllCaughtUpCard({ navigate }) {
+  return (
+    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="all-caught-up">
+      <div className="flex-1 min-w-0">
+        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#4ade80" }}>All Caught Up</span>
+        <p className="text-lg font-extrabold text-white mb-1 leading-tight">You're on top of recruiting!</p>
+        <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
+      </div>
+      <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
+        style={{ background: "#2ec4b6", color: "white", border: "none" }}
+        onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
+        <Plus className="w-3 h-3" />Add School
+      </button>
+    </div>
+  );
+}
+
 /* ── Pipeline Section ── */
 function PipelineSection({ sectionCfg, programs, matchScores, navigate, expandAll }) {
   const [collapsed, setCollapsed] = useState(false);
