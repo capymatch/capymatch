@@ -67,10 +67,12 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    const API_BASE = (process.env.REACT_APP_BACKEND_URL || window.location.origin) + "/api";
+    // Always use same-origin to avoid cross-domain issues on custom domains
+    const API_BASE = window.location.origin + "/api";
 
     // Session exchange with retry (session data may take a moment to propagate)
-    const exchangeSession = (retries = 2) => {
+    const exchangeSession = (retries = 3) => {
+      console.log("[OAuth] Exchanging session via:", API_BASE + "/auth/session");
       fetch(`${API_BASE}/auth/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
