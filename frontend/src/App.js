@@ -67,14 +67,13 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    const API_BASE = window.location.origin + "/api";
+    const API_BASE = (process.env.REACT_APP_BACKEND_URL || window.location.origin) + "/api";
 
     // Session exchange with retry (session data may take a moment to propagate)
     const exchangeSession = (retries = 2) => {
       fetch(`${API_BASE}/auth/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ session_id: sessionId }),
       })
         .then(async res => {
