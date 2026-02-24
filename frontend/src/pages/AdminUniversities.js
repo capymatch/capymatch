@@ -296,7 +296,7 @@ export default function AdminUniversities() {
   useEffect(() => { fetchHealth(); }, []);
 
   const handleExport = () => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/admin/universities/export`;
+    const url = `${window.location.origin}/api/admin/universities/export`;
     window.open(url, "_blank");
   };
 
