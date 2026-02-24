@@ -318,7 +318,7 @@ export default function ProfilePage() {
           <Field testId="field-grad-year" label="Graduation Year" value={profile.graduation_year} onChange={v => updateField("graduation_year", v)} />
           <Field testId="field-position" label="Position" value={profile.position} onChange={v => updateField("position", v)} coachVisible />
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-3 sm:grid-cols-3 gap-2.5">
           <Field testId="field-height" label="Height" value={profile.height} onChange={v => updateField("height", v)} coachVisible />
           <Field testId="field-weight" label="Weight (lbs)" value={profile.weight} onChange={v => updateField("weight", v)} />
           <Field testId="field-jersey" label="Jersey #" value={profile.jersey_number} onChange={v => updateField("jersey_number", v)} />
@@ -331,12 +331,12 @@ export default function ProfilePage() {
         title="Athletic Measurables" summary={measSummary}
         status={sectionStatus(["standing_reach", "approach_touch", "block_touch"])}
         statusColor={sectionStatus(["standing_reach", "approach_touch", "block_touch"])}>
-        <div className="grid grid-cols-3 gap-2.5 mb-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-2.5">
           <Field testId="field-handed" label="Handed" value={profile.handed} onChange={v => updateField("handed", v)} type="select" />
           <Field testId="field-standing-reach" label="Standing Reach" value={profile.standing_reach} onChange={v => updateField("standing_reach", v)} coachVisible />
           <Field testId="field-approach-touch" label="Approach Touch" value={profile.approach_touch} onChange={v => updateField("approach_touch", v)} coachVisible />
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           <Field testId="field-block-touch" label="Block Touch" value={profile.block_touch} onChange={v => updateField("block_touch", v)} coachVisible />
           <Field testId="field-wingspan" label="Wingspan" value={profile.wingspan} onChange={v => updateField("wingspan", v)} />
           <Field testId="field-gpa" label="GPA" value={profile.gpa} onChange={v => updateField("gpa", v)} coachVisible />
