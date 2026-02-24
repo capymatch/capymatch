@@ -13,7 +13,6 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 - **Landing**: `capymatch.com` → readdy.ai marketing site
 - **App**: `app.capymatch.com` → Emergent-hosted CRM app
 - **Preview**: `volleyball-crm.preview.emergentagent.com` → dev/preview
-- API calls use `REACT_APP_BACKEND_URL` (preview URL) as base
 
 ## What's Been Implemented
 
@@ -37,20 +36,18 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 17. Pipeline UI Redesign — Rich expandable cards, progress ring, hero card
 18. Bearer token auth for cross-domain support
 19. Mobile sidebar overlay fix
+20. Google OAuth + Login production fix (load_dotenv override fix)
+21. CORS cleanup + MongoDB timeout
+22. Darker teal color scheme (#2ec4b6 → #1a8a80)
+23. Mobile-friendly Gmail consent modal & Athlete profile quiz
+24. **Questionnaire Tracking** (Feb 24, 2026) — Questionnaire section on journey page with "Open Form" link and "Mark Complete" toggle. Pipeline board shows Form/Form done badge.
 
-### Recent Fixes (Feb 24, 2026)
-20. **Google OAuth + Login production fix** — Fixed `load_dotenv(override=True)` overwriting Kubernetes production env vars, causing MongoDB to hang on production
-21. **CORS cleanup** — Removed invalid `allow_credentials=True` + wildcard origin combo, removed leftover `set_cookie()` from auth endpoints
-22. **MongoDB timeout** — Added `serverSelectionTimeoutMS=5000` to prevent infinite hangs
-23. **Darker teal color scheme** — Changed accent from `#2ec4b6` to `#1a8a80` across entire app (Tailwind config override + global hex replace)
-24. **Login page text darkened** — Inactive text bumped from gray-400 to gray-500
-25. **Onboarding stepper darkened** — Inactive steps, labels, borders, connecting lines all darkened
-
-### Auth System
-- Backend returns `session_token` in register/login/OAuth exchange responses
-- Frontend stores token in `localStorage`, sends as `Authorization: Bearer <token>`
-- CORS: `allow_credentials=False`, `allow_origins=["*"]`
-- `load_dotenv(override=False)` — preserves production Kubernetes env vars
+### Questionnaire Tracking Feature
+- Backend: `PATCH /api/programs/{id}/questionnaire` toggles completion
+- Backend: Programs enriched with `questionnaire_url` from `university_knowledge_base`
+- Frontend Journey: Own section card with ExternalLink + CheckCircle toggle
+- Frontend Pipeline: ClipboardCheck badge (amber pending / green done)
+- Data: `questionnaire_completed`, `questionnaire_completed_at` on programs collection
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring 5+ times, cosmetic)
@@ -67,7 +64,6 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 - Email templates & bulk outreach functionality
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
-- N+1 query optimization in programs.py and dashboard.py
 
 ### Refactoring
 - Consolidate overlapping AccountPage / SettingsPage
