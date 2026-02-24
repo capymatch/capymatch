@@ -224,7 +224,7 @@ export default function ProfilePage() {
     <div data-testid="profile-edit-panel">
       {/* Onboarding banner */}
       {fromOnboarding && (
-        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="onboarding-banner">
+        <div className="rounded-xl border p-4 mb-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="onboarding-banner">
           <div>
             <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
               {canContinue ? "Looking good! Continue when ready." : `Fill in the essentials (${essentialsFilled}/4)`}
@@ -247,7 +247,7 @@ export default function ProfilePage() {
 
       {/* Journey banner */}
       {fromJourney && (
-        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="journey-banner">
+        <div className="rounded-xl border p-4 mb-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="journey-banner">
           <div>
             <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>Update your profile, then head back</p>
             <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Changes save automatically. Your profile powers AI-generated emails to coaches.</p>
