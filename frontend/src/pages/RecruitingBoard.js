@@ -661,6 +661,13 @@ export default function RecruitingBoard() {
 
   const expandAll = viewMode === "expanded";
 
+  // Focus program = most urgent school for hero card
+  const focusPriority = ["overdue", "waiting_on_reply", "needs_outreach", "in_conversation"];
+  const focusProgram = focusPriority.reduce(
+    (found, stage) => found || activePrograms.find(p => p.board_group === stage && p.recruiting_status !== "Committed"),
+    null
+  );
+
   return (
     <div className="flex flex-col gap-5" data-testid="recruiting-board">
       {/* ── Header ── */}
