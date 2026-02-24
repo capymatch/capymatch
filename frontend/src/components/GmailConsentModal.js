@@ -47,21 +47,21 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#22c55e" }} />
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Send emails to coaches on your behalf</p>
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Only when you compose and hit send</p>
+                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Only when you compose an email and click Send</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#22c55e" }} />
                 <div>
-                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Read email headers to detect coach replies</p>
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>We check who emailed you, not what they said</p>
+                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Read recruiting-related emails you choose to sync</p>
+                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>We access messages and threads so we can organize conversations by school and timeline</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#22c55e" }} />
                 <div>
-                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Auto-detect inbound coach interest</p>
-                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>You can turn this off anytime in Settings</p>
+                  <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Detect inbound coach responses and activity</p>
+                  <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Used to update your recruiting journey automatically (You can turn this off anytime in Settings)</p>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
             <div className="space-y-2.5">
               <div className="flex items-start gap-3">
                 <X className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
-                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>Read, store, or share the content of your emails</p>
+                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>Read or analyze emails unrelated to recruiting</p>
               </div>
               <div className="flex items-start gap-3">
                 <X className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
@@ -81,15 +81,19 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
               </div>
               <div className="flex items-start gap-3">
                 <X className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
-                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>Share your data with third parties</p>
+                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>Sell or share your email data with third parties</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <X className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#ef4444" }} />
+                <p className="text-sm" style={{ color: "var(--t-text-secondary)" }}>Use your Gmail content for advertising</p>
               </div>
             </div>
           </div>
 
           {/* Encrypted badge */}
           <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-lg" style={{ background: "var(--t-surface-alt)" }}>
-            <Shield className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />
-            <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Your Gmail credentials are encrypted at rest. You can disconnect anytime.</p>
+            <Shield className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#1a8a80" }} />
+            <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Your Gmail access is encrypted and secure. You can disconnect Gmail at any time from Settings or your Google account.</p>
           </div>
 
           {/* Agreement checkbox */}
