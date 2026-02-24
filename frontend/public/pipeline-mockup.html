@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CapyMatch Pipeline Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f5f5f5; color: #1a1a1a; }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .page-title { font-size: 22px; font-weight: 800; margin-bottom: 24px; color: #111; }
+
+  /* ── Filters ── */
+  .filters { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 7px 16px; border-radius: 20px; border: 1.5px solid #e0e0e0;
+    font-size: 13px; font-weight: 600; cursor: pointer; background: #fff;
+    color: #555; transition: all .15s;
+  }
+  .filter-btn:hover { border-color: #bbb; }
+  .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .filter-count { font-weight: 800; margin-left: 4px; }
+
+  /* ── View Toggle ── */
+  .view-toggle { display: flex; gap: 4px; margin-left: auto; background: #e8e8e8; border-radius: 8px; padding: 3px; }
+  .view-btn {
+    padding: 6px 14px; border-radius: 6px; border: none; font-size: 12px;
+    font-weight: 600; cursor: pointer; background: transparent; color: #777; transition: all .15s;
+  }
+  .view-btn.active { background: #fff; color: #111; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+  /* ── Section ── */
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    cursor: pointer; user-select: none;
+  }
+  .section-header:hover .section-chevron { opacity: 1; }
+  .section-chevron { width: 16px; height: 16px; transition: all .2s; opacity: .5; }
+  .section-chevron.collapsed { transform: rotate(-90deg); }
+  .section-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase;
+  }
+  .section-count {
+    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  }
+  .section-line { flex: 1; height: 1px; }
+
+  /* Section colors */
+  .section.outreach .section-label { color: #2ec4b6; }
+  .section.outreach .section-count { background: rgba(46,196,182,.1); color: #2ec4b6; }
+  .section.outreach .section-line { background: rgba(46,196,182,.2); }
+
+  .section.waiting .section-label { color: #f59e0b; }
+  .section.waiting .section-count { background: rgba(245,158,11,.1); color: #f59e0b; }
+  .section.waiting .section-line { background: rgba(245,158,11,.2); }
+
+  .section.convo .section-label { color: #16a34a; }
+  .section.convo .section-count { background: rgba(22,163,74,.1); color: #16a34a; }
+  .section.convo .section-line { background: rgba(22,163,74,.2); }
+
+  .section.committed .section-label { color: #d97706; }
+  .section.committed .section-count { background: rgba(217,119,6,.1); color: #d97706; }
+  .section.committed .section-line { background: rgba(217,119,6,.2); }
+
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ── Card ── */
+  .card {
+    display: flex; background: #fff; border-radius: 12px; border: 1px solid #e8e8e8;
+    overflow: hidden; transition: all .2s; cursor: pointer;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); border-color: #ddd; }
+
+  .card-bar { width: 4px; flex-shrink: 0; }
+  .card-bar.teal { background: #2ec4b6; }
+  .card-bar.amber { background: #f59e0b; }
+  .card-bar.green { background: #16a34a; }
+  .card-bar.gold { background: #d97706; }
+
+  .card-body { flex: 1; padding: 14px 18px; min-width: 0; }
+
+  /* ── Compact Row (default) ── */
+  .compact-row { display: flex; align-items: center; gap: 12px; }
+  .school-logo {
+    width: 34px; height: 34px; border-radius: 8px; background: #f0f0f0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #888; flex-shrink: 0;
+    border: 1px solid #e8e8e8; overflow: hidden;
+  }
+  .school-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .school-main { flex: 1; min-width: 0; }
+  .school-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .school-name { font-size: 14px; font-weight: 700; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge {
+    font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+    background: #f0f0f0; color: #777; border: 1px solid #e0e0e0; white-space: nowrap;
+  }
+  .school-meta { font-size: 11px; color: #999; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+  .school-meta svg { width: 10px; height: 10px; }
+
+  .compact-stats { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .stat { text-align: center; }
+  .stat-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bbb; margin-bottom: 2px; }
+  .stat-value { font-size: 13px; font-weight: 700; color: #333; }
+  .stat-value.warn { color: #f59e0b; }
+
+  .compact-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+  .btn-sm {
+    padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;
+    border: 1px solid; cursor: pointer; transition: all .15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .btn-sm svg { width: 12px; height: 12px; }
+  .btn-primary { background: #2ec4b6; color: #fff; border-color: #2ec4b6; }
+  .btn-primary:hover { background: #27b0a3; }
+  .btn-outline { background: #fff; color: #555; border-color: #ddd; }
+  .btn-outline:hover { border-color: #bbb; background: #fafafa; }
+  .btn-success { background: #fff; color: #16a34a; border-color: #d1fae5; }
+  .btn-success:hover { background: #f0fdf4; }
+  .btn-warn { background: #fff; color: #f59e0b; border-color: #fef3c7; }
+  .btn-warn:hover { background: #fffbeb; }
+
+  .expand-chevron { width: 16px; height: 16px; color: #ccc; transition: all .2s; flex-shrink: 0; }
+  .card.expanded .expand-chevron { transform: rotate(90deg); color: #888; }
+
+  /* ── Expanded Content ── */
+  .expanded-content { display: none; margin-top: 14px; }
+  .card.expanded .expanded-content { display: block; }
+
+  .info-blocks { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .info-block {
+    background: #f9f9f9; border-radius: 10px; padding: 12px 14px;
+    border: 1px solid #f0f0f0;
+  }
+  .info-block-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px;
+    color: #aaa; margin-bottom: 6px;
+  }
+  .info-block-main { font-size: 13px; font-weight: 600; color: #222; }
+  .info-block-sub { font-size: 11px; color: #888; margin-top: 3px; }
+  .info-block-sub a { color: #2ec4b6; text-decoration: none; }
+  .info-block-sub a:hover { text-decoration: underline; }
+
+  .match-bar { width: 100%; height: 6px; border-radius: 3px; background: #eee; margin-top: 6px; }
+  .match-fill { height: 100%; border-radius: 3px; transition: width .3s; }
+
+  .notes-row {
+    display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px;
+    background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; margin-bottom: 12px;
+  }
+  .notes-row svg { width: 14px; height: 14px; color: #ccc; flex-shrink: 0; margin-top: 1px; }
+  .notes-text { font-size: 12px; color: #666; line-height: 1.5; font-style: italic; }
+
+  .timeline { margin-bottom: 12px; }
+  .timeline-item {
+    display: flex; gap: 10px; padding: 6px 0; font-size: 11px;
+    border-left: 2px solid #eee; margin-left: 6px; padding-left: 14px;
+    position: relative;
+  }
+  .timeline-item::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: #ddd; position: absolute; left: -5px; top: 9px;
+  }
+  .timeline-item.recent::before { background: #2ec4b6; }
+  .timeline-date { color: #aaa; font-weight: 600; white-space: nowrap; min-width: 80px; }
+  .timeline-text { color: #555; }
+
+  .expanded-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
+  /* ── Urgency badge ── */
+  .urgency-badge {
+    font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 12px;
+    white-space: nowrap; display: flex; align-items: center; gap: 4px;
+  }
+  .urgency-badge svg { width: 11px; height: 11px; }
+  .urgency-badge.amber { background: rgba(245,158,11,.08); color: #d97706; }
+  .urgency-badge.red { background: rgba(220,38,38,.08); color: #dc2626; }
+  .urgency-badge.green { background: rgba(22,163,74,.08); color: #16a34a; }
+
+  /* ── Status pill ── */
+  .status-pill {
+    font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 12px;
+    white-space: nowrap;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .compact-stats { display: none; }
+    .compact-actions .btn-sm span { display: none; }
+    .info-blocks { grid-template-columns: 1fr; }
+    .expanded-actions { justify-content: stretch; }
+    .expanded-actions .btn-sm { flex: 1; justify-content: center; }
+  }
+
+  /* ── Tooltip ── */
+  .mockup-banner {
+    background: #1a1a1a; color: #fff; text-align: center; padding: 10px 16px;
+    font-size: 12px; font-weight: 600; letter-spacing: .5px;
+  }
+  .mockup-banner span { color: #2ec4b6; }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">MOCKUP — <span>Click any card to expand/collapse</span> — Not connected to real data</div>
+
+<div class="page">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+    <h1 class="page-title" style="margin-bottom:0;">My Schools</h1>
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('compact')">Compact</button>
+      <button class="view-btn" onclick="setView('expanded')">Expanded</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterAll(this)">All<span class="filter-count">20</span></button>
+    <button class="filter-btn" onclick="filterSection(this,'outreach')">Outreach<span class="filter-count">4</span></button>
+    <button class="filter-btn" onclick="filterSection(this,'waiting')">Waiting<span class="filter-count">6</span></button>
+    <button class="filter-btn" onclick="filterSection(this,'convo')">In Convo<span class="filter-count">8</span></button>
+    <button class="filter-btn" onclick="filterSection(this,'committed')">Committed<span class="filter-count">2</span></button>
+  </div>
+
+  <!-- NEEDS OUTREACH -->
+  <div class="section outreach" data-section="outreach">
+    <div class="section-header" onclick="toggleSection(this)">
+      <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      <span class="section-label">Needs Outreach</span>
+      <span class="section-count">4</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards" id="outreach-cards"></div>
+  </div>
+
+  <!-- WAITING ON REPLY -->
+  <div class="section waiting" data-section="waiting">
+    <div class="section-header" onclick="toggleSection(this)">
+      <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      <span class="section-label">Waiting on Reply</span>
+      <span class="section-count">6</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards" id="waiting-cards"></div>
+  </div>
+
+  <!-- IN CONVERSATION -->
+  <div class="section convo" data-section="convo">
+    <div class="section-header" onclick="toggleSection(this)">
+      <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      <span class="section-label">In Conversation</span>
+      <span class="section-count">8</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards" id="convo-cards"></div>
+  </div>
+
+  <!-- COMMITTED -->
+  <div class="section committed" data-section="committed">
+    <div class="section-header" onclick="toggleSection(this)">
+      <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      <span class="section-label">Committed</span>
+      <span class="section-count">2</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards" id="committed-cards"></div>
+  </div>
+</div>
+
+<script>
+const SCHOOLS = [
+  // Needs Outreach
+  { name:"Johns Hopkins University", abbr:"JHU", div:"D3", conf:"Centennial", state:"MD", coach:"Beth Dill", email:"volleyball@jhu.edu", status:"Not Contacted", match:16, outreach:0, replies:0, activity:null, notes:"Strong academic program. Good D3 option.", bar:"teal", section:"outreach" },
+  { name:"University of Tampa", abbr:"UT", div:"D2", conf:"SSC", state:"FL", coach:"Chris Catanach", email:"volleyball@ut.edu", status:"Not Contacted", match:18, outreach:0, replies:0, activity:null, notes:"Top D2 program. Great location.", bar:"teal", section:"outreach" },
+  { name:"Emory University", abbr:"EU", div:"D3", conf:"UAA", state:"GA", coach:"Jenny McDowell", email:"volleyball@emory.edu", status:"Not Contacted", match:17, outreach:0, replies:0, activity:null, notes:"Excellent academics, local program.", bar:"teal", section:"outreach" },
+  { name:"NYU", abbr:"NYU", div:"D3", conf:"UAA", state:"NY", coach:"Maria Pepe", email:"volleyball@nyu.edu", status:"Not Contacted", match:15, outreach:0, replies:0, activity:null, notes:"NYC location is a draw.", bar:"teal", section:"outreach" },
+
+  // Waiting on Reply
+  { name:"Lewis University", abbr:"LEW", div:"D2", conf:"GLVC", state:"IL", coach:"Dan Friend", email:"volleyball@lewisu.edu", status:"Contacted", match:18, outreach:1, replies:0, activity:"16d ago", daysAgo:16, urgent:"Due in 2 days", notes:"Reached out about campus visit. Waiting for schedule confirmation.", bar:"amber", section:"waiting", timeline:[{d:"Feb 7",t:"Sent intro email to Coach Friend",recent:true},{d:"Feb 1",t:"Added to pipeline from Find Schools"}] },
+  { name:"University of Florida", abbr:"UF", div:"D1", conf:"SEC", state:"FL", coach:"Mary Wise", email:"volleyball@ufl.edu", status:"Camp Attended", match:18, outreach:3, replies:0, activity:"15d ago", daysAgo:15, urgent:"Due Feb 25", notes:"Attended summer camp. Coach watched Emma closely. Following up.", bar:"amber", section:"waiting", timeline:[{d:"Feb 8",t:"Sent follow-up after camp",recent:true},{d:"Jan 15",t:"Attended winter camp"},{d:"Dec 20",t:"Initial outreach email"}] },
+  { name:"Georgia Tech", abbr:"GT", div:"D1", conf:"ACC", state:"GA", coach:"Michelle Collier", email:"volleyball@gatech.edu", status:"Some Interest", match:18, outreach:2, replies:0, activity:"14d ago", daysAgo:14, urgent:"Due Feb 27", notes:"Coach expressed interest at showcase. Need to follow up.", bar:"amber", section:"waiting", timeline:[{d:"Feb 9",t:"Sent tournament schedule",recent:true},{d:"Jan 28",t:"Met at regional showcase"}] },
+  { name:"Clemson University", abbr:"CU", div:"D1", conf:"ACC", state:"SC", coach:"Michaela Franklin", email:"volleyball@clemson.edu", status:"Contacted", match:16, outreach:1, replies:0, activity:"12d ago", daysAgo:12, notes:"Initial contact made. Awaiting response.", bar:"amber", section:"waiting" },
+  { name:"Wake Forest", abbr:"WF", div:"D1", conf:"ACC", state:"NC", coach:"Tom Duffy", email:"volleyball@wfu.edu", status:"Contacted", match:17, outreach:2, replies:0, activity:"10d ago", daysAgo:10, notes:"Two emails sent. No response yet.", bar:"amber", section:"waiting" },
+  { name:"Villanova", abbr:"VU", div:"D1", conf:"Big East", state:"PA", coach:"Josh Steinbach", email:"volleyball@villanova.edu", status:"Some Interest", match:19, outreach:1, replies:0, activity:"8d ago", daysAgo:8, notes:"Met at tournament. Coach asked for highlight reel.", bar:"amber", section:"waiting" },
+
+  // In Conversation
+  { name:"Stanford University", abbr:"SU", div:"D1", conf:"Pac-12", state:"CA", coach:"Kevin Hambly", email:"volleyball@stanford.edu", status:"Committed", match:10, outreach:4, replies:2, activity:"3d ago", daysAgo:3, notes:"Committed! Coach is excited about the roster fit. Scholarship details being finalized.", bar:"green", section:"convo", timeline:[{d:"Feb 20",t:"Coach replied to follow-up",recent:true},{d:"Feb 13",t:"Sent updated tournament results"},{d:"Feb 1",t:"Campus visit scheduled"}] },
+  { name:"UCLA", abbr:"UCLA", div:"D1", conf:"Pac-12", state:"CA", coach:"Alfee Reft", email:"volleyball@ucla.edu", status:"Offer Received", match:18, outreach:5, replies:3, activity:"5d ago", daysAgo:5, notes:"Official offer received. Reviewing financial package with family.", bar:"green", section:"convo", timeline:[{d:"Feb 18",t:"Received official offer letter",recent:true},{d:"Feb 10",t:"Unofficial visit to campus"},{d:"Jan 25",t:"Phone call with coach"}] },
+  { name:"Penn State", abbr:"PSU", div:"D1", conf:"Big Ten", state:"PA", coach:"Katie Schumacher", email:"volleyball@psu.edu", status:"Active Conversation", match:19, outreach:3, replies:2, activity:"4d ago", daysAgo:4, notes:"Great conversation after showcase. Setting up campus visit.", bar:"green", section:"convo" },
+  { name:"University of Texas", abbr:"UT", div:"D1", conf:"Big 12", state:"TX", coach:"Jerritt Elliott", email:"volleyball@utexas.edu", status:"Active Conversation", match:18, outreach:4, replies:2, activity:"6d ago", daysAgo:6, notes:"Strong mutual interest. Tournament video sent.", bar:"green", section:"convo" },
+  { name:"Pepperdine", abbr:"PEP", div:"D1", conf:"WCC", state:"CA", coach:"Scott Wong", email:"volleyball@pepperdine.edu", status:"Active Conversation", match:20, outreach:2, replies:1, activity:"7d ago", daysAgo:7, notes:"Coach impressed at showcase. Academic fit discussion.", bar:"green", section:"convo" },
+  { name:"Duke University", abbr:"DU", div:"D1", conf:"ACC", state:"NC", coach:"Rachel Fairbanks", email:"volleyball@duke.edu", status:"Camp Attended", match:17, outreach:3, replies:1, activity:"9d ago", daysAgo:9, notes:"Attended elite camp. Positive feedback from staff.", bar:"green", section:"convo" },
+  { name:"Rice University", abbr:"RU", div:"D1", conf:"AAC", state:"TX", coach:"Genny Volpe", email:"volleyball@rice.edu", status:"Active Conversation", match:21, outreach:2, replies:1, activity:"5d ago", daysAgo:5, notes:"Best academic match. Coach wants to discuss scholarship.", bar:"green", section:"convo" },
+  { name:"Northwestern", abbr:"NW", div:"D1", conf:"Big Ten", state:"IL", coach:"Shane Davis", email:"volleyball@northwestern.edu", status:"Some Interest", match:18, outreach:2, replies:1, activity:"11d ago", daysAgo:11, notes:"Coach saw showcase tape. Wants to meet at next event.", bar:"green", section:"convo" },
+
+  // Committed
+  { name:"Stanford University", abbr:"SU", div:"D1", conf:"Pac-12", state:"CA", coach:"Kevin Hambly", email:"volleyball@stanford.edu", status:"Committed", match:10, outreach:4, replies:2, activity:"3d ago", daysAgo:3, notes:"Committed! Scholarship details finalized. Move-in August 2027.", bar:"gold", section:"committed", timeline:[{d:"Feb 15",t:"Officially committed!",recent:true},{d:"Feb 10",t:"Accepted scholarship offer"},{d:"Feb 1",t:"Campus visit"}] },
+  { name:"UCLA", abbr:"UCLA", div:"D1", conf:"Pac-12", state:"CA", coach:"Alfee Reft", email:"volleyball@ucla.edu", status:"Committed", match:18, outreach:5, replies:3, activity:"2d ago", daysAgo:2, notes:"Verbal commitment! Full ride. Signing day in November.", bar:"gold", section:"committed" },
+];
+
+function getMatchColor(m) { return m >= 50 ? '#16a34a' : m >= 25 ? '#f59e0b' : '#999'; }
+function getStatusStyle(s) {
+  const map = {
+    "Not Contacted": { bg:"#f5f5f5", color:"#888" },
+    "Contacted": { bg:"rgba(46,196,182,.08)", color:"#2ec4b6" },
+    "Some Interest": { bg:"rgba(59,130,246,.08)", color:"#3b82f6" },
+    "Camp Attended": { bg:"rgba(139,92,246,.08)", color:"#8b5cf6" },
+    "Active Conversation": { bg:"rgba(16,185,129,.08)", color:"#10b981" },
+    "Offer Received": { bg:"rgba(245,158,11,.08)", color:"#f59e0b" },
+    "Committed": { bg:"rgba(22,163,74,.1)", color:"#16a34a" },
+  };
+  return map[s] || { bg:"#f5f5f5", color:"#888" };
+}
+
+function renderCard(s) {
+  const ss = getStatusStyle(s.status);
+  const mc = getMatchColor(s.match);
+  const urgentHTML = s.urgent ? `<span class="urgency-badge amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${s.urgent}</span>` :
+    s.activity ? `<span class="urgency-badge green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>${s.activity}</span>` : '';
+
+  const actionsHTML = s.section === 'outreach'
+    ? `<button class="btn-sm btn-primary" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4z"/></svg><span>Start Outreach</span></button>`
+    : s.section === 'waiting'
+    ? `<button class="btn-sm btn-success" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg><span>Replied</span></button><button class="btn-sm btn-warn" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4z"/></svg><span>Follow Up</span></button>`
+    : '';
+
+  const timelineHTML = s.timeline ? s.timeline.map((t,i) =>
+    `<div class="timeline-item ${i===0?'recent':''}"><span class="timeline-date">${t.d}</span><span class="timeline-text">${t.t}</span></div>`
+  ).join('') : '';
+
+  return `
+    <div class="card" onclick="this.classList.toggle('expanded')">
+      <div class="card-bar ${s.bar}"></div>
+      <div class="card-body">
+        <div class="compact-row">
+          <div class="school-logo">${s.abbr}</div>
+          <div class="school-main">
+            <div class="school-name-row">
+              <span class="school-name">${s.name}</span>
+              <span class="badge">${s.div}</span>
+              ${urgentHTML}
+            </div>
+            <div class="school-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${s.conf} &middot; ${s.state}
+            </div>
+          </div>
+          <div class="compact-stats">
+            <div class="stat"><div class="stat-label">Status</div><span class="status-pill" style="background:${ss.bg};color:${ss.color};font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">${s.status}</span></div>
+            <div class="stat"><div class="stat-label">Match</div><div class="stat-value">${s.match}%</div></div>
+            <div class="stat"><div class="stat-label">Outreach</div><div class="stat-value">${s.outreach}</div></div>
+            <div class="stat"><div class="stat-label">Activity</div><div class="stat-value ${s.daysAgo>7?'warn':''}">${s.activity||'—'}</div></div>
+          </div>
+          <div class="compact-actions">
+            ${actionsHTML}
+            <button class="btn-sm btn-outline" onclick="event.stopPropagation()"><span>Journey</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+          <svg class="expand-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+
+        <div class="expanded-content">
+          <div class="info-blocks">
+            <div class="info-block">
+              <div class="info-block-label">Coach</div>
+              <div class="info-block-main">${s.coach}</div>
+              <div class="info-block-sub"><a href="mailto:${s.email}">${s.email}</a></div>
+            </div>
+            <div class="info-block">
+              <div class="info-block-label">Match Score</div>
+              <div class="info-block-main">${s.match}%</div>
+              <div class="match-bar"><div class="match-fill" style="width:${s.match}%;background:${mc};"></div></div>
+            </div>
+            <div class="info-block">
+              <div class="info-block-label">Outreach</div>
+              <div class="info-block-main">${s.outreach} sent &middot; ${s.replies} replies</div>
+              <div class="info-block-sub">${s.activity ? 'Last: '+s.activity : 'No contact yet'}</div>
+            </div>
+          </div>
+          ${s.notes ? `<div class="notes-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><div class="notes-text">${s.notes}</div></div>` : ''}
+          ${timelineHTML ? `<div class="timeline">${timelineHTML}</div>` : ''}
+          <div class="expanded-actions">
+            ${actionsHTML}
+            <button class="btn-sm btn-outline" onclick="event.stopPropagation()">Add Note</button>
+            <button class="btn-sm btn-primary" onclick="event.stopPropagation()">View Full Journey <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderAll() {
+  ['outreach','waiting','convo','committed'].forEach(sec => {
+    document.getElementById(sec+'-cards').innerHTML = SCHOOLS.filter(s => s.section === sec).map(renderCard).join('');
+  });
+}
+
+function toggleSection(header) {
+  const chevron = header.querySelector('.section-chevron');
+  const cards = header.nextElementSibling;
+  chevron.classList.toggle('collapsed');
+  cards.style.display = cards.style.display === 'none' ? '' : 'none';
+}
+
+function filterAll(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.style.display = '');
+}
+
+function filterSection(btn, section) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => {
+    s.style.display = s.dataset.section === section ? '' : 'none';
+  });
+}
+
+function setView(mode) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    if (mode === 'expanded') c.classList.add('expanded');
+    else c.classList.remove('expanded');
+  });
+}
+
+renderAll();
+</script>
+</body>
+</html>
