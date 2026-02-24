@@ -201,6 +201,10 @@ export default function RecruitingJourney() {
   const today = new Date().toISOString().split("T")[0];
   const isFollowUpOverdue = !isCommitted && nextDue && nextDue <= today;
   const daysOverdue = isFollowUpOverdue ? Math.floor((new Date() - new Date(nextDue)) / 86400000) : 0;
+  const daysUntilDue = !isCommitted && nextDue && nextDue > today
+    ? Math.ceil((new Date(nextDue + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000)
+    : 0;
+  const isFollowUpSoon = daysUntilDue > 0 && daysUntilDue <= 3;
 
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
