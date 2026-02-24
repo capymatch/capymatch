@@ -41,6 +41,7 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 22. Darker teal color scheme (#2ec4b6 → #1a8a80)
 23. Mobile-friendly Gmail consent modal & Athlete profile quiz
 24. **Questionnaire Tracking** (Feb 24, 2026) — Questionnaire section on journey page with "Open Form" link and "Mark Complete" toggle. Pipeline board shows Form/Form done badge.
+25. **Follow-Up Reminder Hero Card** (Feb 24, 2026) — Dark hero-style overdue follow-up alert at top of Journey page with "Send Email" and "Reschedule" actions. Shows days overdue count.
 
 ### Questionnaire Tracking Feature
 - Backend: `PATCH /api/programs/{id}/questionnaire` toggles completion
