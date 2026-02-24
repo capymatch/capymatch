@@ -123,7 +123,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout with plan=pro returns Stripe URL and session_id"""
         response = basic_session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
@@ -140,7 +140,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout with plan=premium returns Stripe URL and session_id"""
         response = basic_session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "premium",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
@@ -156,7 +156,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout rejects invalid plan names"""
         response = basic_session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "ultra",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         
         assert response.status_code == 400, f"Expected 400 for invalid plan, got {response.status_code}"
@@ -195,7 +195,7 @@ class TestStripeCheckout:
         """POST /api/stripe/checkout rejects downgrade (premium user to pro)"""
         response = premium_session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         
         assert response.status_code == 400, f"Expected 400 for downgrade, got {response.status_code}"
@@ -219,7 +219,7 @@ class TestStripeCheckoutStatus:
         
         response = session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         if response.status_code != 200:
             pytest.skip("Could not create checkout session")
@@ -295,7 +295,7 @@ class TestTransactionCreation:
         # Create checkout
         checkout_resp = auth_session.post(f"{BASE_URL}/api/stripe/checkout", json={
             "plan": "pro",
-            "origin_url": "https://recruiting-insights.preview.emergentagent.com"
+            "origin_url": "https://capymatch-pipeline.preview.emergentagent.com"
         })
         assert checkout_resp.status_code == 200
         session_id = checkout_resp.json()["session_id"]
