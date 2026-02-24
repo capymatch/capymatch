@@ -264,11 +264,15 @@ function App() {
   const [user, setUser] = useState(undefined); // undefined = loading, null = not authed
 
   const handleAuth = useCallback((userData) => {
+    if (userData?.session_token) {
+      localStorage.setItem("session_token", userData.session_token);
+    }
     setUser(userData);
   }, []);
 
   const handleLogout = useCallback(async () => {
     try { await api.post("/auth/logout"); } catch {}
+    localStorage.removeItem("session_token");
     setUser(null);
   }, []);
 
