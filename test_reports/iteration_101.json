@@ -1,0 +1,75 @@
+{
+  "summary": "Questionnaire Tracking Feature - All Tests PASSED. Backend APIs (PATCH/GET) and Frontend UI (Journey page section, Pipeline badge) working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "PATCH /api/programs/{program_id}/questionnaire - mark complete (200 OK, questionnaire_completed=true, timestamp set)",
+    "PATCH /api/programs/{program_id}/questionnaire - mark incomplete (200 OK, questionnaire_completed=false, timestamp cleared)",
+    "PATCH /api/programs/{program_id}/questionnaire - 404 for non-existent program",
+    "PATCH /api/programs/{program_id}/questionnaire - 401 without authentication",
+    "GET /api/programs - includes questionnaire_url from university_knowledge_base for Penn State",
+    "GET /api/programs/{program_id} - single program includes questionnaire_url from KB",
+    "Programs without questionnaire_url (Stanford, UCLA) correctly return null",
+    "Journey page shows Questionnaire section when questionnaire_url exists",
+    "Journey page has 'Open Form' link pointing to correct URL (armssoftware)",
+    "Journey page has 'Mark Complete' button that toggles state",
+    "Pipeline page shows amber 'Form' badge when questionnaire pending",
+    "Pipeline page shows green 'Form done' badge when questionnaire completed",
+    "Toast notification 'Questionnaire marked complete' shows on toggle"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_questionnaire_tracking.py",
+    "/app/test_reports/pytest/questionnaire_tracking_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend: questionnaire_url enrichment in GET /programs correctly fetches from university_knowledge_base collection",
+    "Backend: PATCH endpoint correctly stores questionnaire_completed and questionnaire_completed_at on programs collection",
+    "Frontend: data-testid attributes properly implemented (questionnaire-section, questionnaire-open-link, questionnaire-toggle-btn, quest-badge-{program_id})",
+    "Frontend: Badge color logic correct - green rgba(22,163,74,0.08) for completed, amber rgba(245,158,11,0.08) for pending"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_questionnaire_tracking.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 pytest tests passed)",
+    "frontend": "100% (all UI interactions working)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    }
+  },
+  "seed_data_creation": "None - Penn State (prog_a235d81c6eb4) already has questionnaire_url in university_knowledge_base",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Questionnaire tracking feature fully tested and working. Penn State (prog_a235d81c6eb4) has questionnaire_url from KB. The PATCH /api/programs/{program_id}/questionnaire endpoint toggles completion status. Frontend shows section on Journey page with 'Open Form' link and 'Mark Complete' button. Pipeline cards show badge ('Form' amber when pending, 'Form done' green when complete).",
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_questionnaire_tracking.py",
+      "results_xml": "/app/test_reports/pytest/questionnaire_tracking_results.xml",
+      "all_passed": true
+    },
+    "frontend_tests": {
+      "journey_page_elements": {
+        "questionnaire_section_visible": true,
+        "open_form_link": "https://questionnaires.armssoftware.com/17a7533d4fce",
+        "toggle_button_works": true
+      },
+      "pipeline_page_badges": {
+        "pending_badge_color": "amber (rgba(245,158,11,0.08))",
+        "completed_badge_color": "green (rgba(22,163,74,0.08))",
+        "badge_text_pending": "Form",
+        "badge_text_completed": "Form done"
+      }
+    }
+  }
+}
