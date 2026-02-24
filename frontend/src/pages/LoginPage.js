@@ -86,7 +86,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
               : "Sign up for CapyMatch"}
           </p>
           {!forgotMode && (
-            <p className="text-xs text-gray-400 mt-3">
+            <p className="text-xs text-gray-500 mt-3">
               Free forever for your first 5 schools &bull; No card needed
             </p>
           )}
