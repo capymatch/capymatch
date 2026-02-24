@@ -267,6 +267,13 @@ async def get_program(program_id: str, request: Request):
     program["signals"] = await compute_interaction_signals(tenant_id, program_id)
     program["board_group"] = categorize_program(program)
     program["journey_rail"] = compute_journey_rail(program)
+    # Enrich with questionnaire_url from KB
+    kb = await db.university_knowledge_base.find_one(
+        {"university_name": program.get("university_name")},
+        {"_id": 0, "questionnaire_url": 1}
+    )
+    if kb and kb.get("questionnaire_url"):
+        program["questionnaire_url"] = kb["questionnaire_url"]
     return program
 
 
