@@ -30,8 +30,8 @@ class TestCORSHeaders:
             }
         )
         
-        # Check status is 200 (preflight success)
-        assert response.status_code == 200, f"Preflight failed: {response.status_code}"
+        # Check status is 200 or 204 (preflight success - 204 No Content is also valid)
+        assert response.status_code in [200, 204], f"Preflight failed: {response.status_code}"
         
         # CRITICAL: access-control-allow-credentials should NOT be 'true'
         credentials_header = response.headers.get('access-control-allow-credentials', '').lower()
