@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../lib/api";
 import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  Search, Plus, AlertTriangle, Clock, MessageSquare, Archive, Send,
-  ChevronRight, X, Loader2, Filter, PartyPopper, Rocket, CheckCircle2,
-  MapPin, Lightbulb
+  Search, Plus, ChevronRight, ChevronDown, X, Loader2, Filter,
+  PartyPopper, Rocket, CheckCircle2, Send, Clock, MapPin,
+  StickyNote, MessageSquare
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
@@ -14,450 +14,367 @@ import { toast } from "sonner";
 import EmptyBoardState from "./pipeline/EmptyBoardState";
 import UniversityLogo from "../components/UniversityLogo";
 
-/* ── Stage Config (Clean palette) ── */
-const STAGES = {
-  overdue:          { label: "Overdue",         shortLabel: "Overdue",   icon: AlertTriangle, ring: "#dc2626",  opacity: 1 },
-  needs_outreach:   { label: "Needs Outreach",  shortLabel: "Outreach",  icon: Send,          ring: "#2ec4b6",  opacity: 1 },
-  waiting_on_reply: { label: "Waiting on Reply", shortLabel: "Waiting",   icon: Clock,         ring: "#f59e0b",  opacity: 1 },
-  in_conversation:  { label: "In Conversation", shortLabel: "In Convo",  icon: MessageSquare, ring: "#10b981",  opacity: 1 },
-  archived:         { label: "Archived",        shortLabel: "Archived",  icon: Archive,       ring: "#6b7280",  opacity: 1 },
-};
-const STAGE_ORDER = ["overdue", "needs_outreach", "waiting_on_reply", "in_conversation", "archived"];
+/* ── Section Config ── */
+const SECTIONS = [
+  { key: "outreach", label: "Needs Outreach", color: "#2ec4b6" },
+  { key: "waiting", label: "Waiting on Reply", color: "#f59e0b" },
+  { key: "convo", label: "In Conversation", color: "#16a34a" },
+  { key: "committed", label: "Committed", color: "#d97706" },
+];
 
-/* ── Contextual subtitle ── */
-function getSubtitle(p) {
-  const s = p.signals || {};
-  const stage = p.board_group;
-  if (stage === "overdue" && p.next_action_due) {
-    const days = Math.abs(Math.ceil((new Date(p.next_action_due) - new Date()) / 86400000));
-    return { text: `${days} day${days !== 1 ? "s" : ""} overdue`, urgent: true };
+const BAR_COLORS = { outreach: "#2ec4b6", waiting: "#f59e0b", convo: "#16a34a", committed: "#d97706" };
+
+/* ── Helpers ── */
+function groupIntoSections(programs) {
+  const s = { outreach: [], waiting: [], convo: [], committed: [] };
+  for (const p of programs) {
+    if (p.recruiting_status === "Committed") { s.committed.push(p); continue; }
+    const g = p.board_group;
+    if (g === "needs_outreach") s.outreach.push(p);
+    else if (g === "waiting_on_reply" || g === "overdue") s.waiting.push(p);
+    else if (g === "in_conversation") s.convo.push(p);
+    else if (g !== "archived") s.outreach.push(p);
   }
-  if (stage === "needs_outreach") return { text: "Send your first email to introduce yourself" };
-  if (stage === "waiting_on_reply") {
-    const d = s.days_since_outreach;
-    const dueDate = p.next_action_due
-      ? new Date(p.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-      : null;
-    const base = d != null ? `Reached out ${d} day${d !== 1 ? "s" : ""} ago` : "Waiting to hear back";
-    return { text: base + (dueDate ? ` · Due ${dueDate}` : "") };
-  }
-  if (stage === "in_conversation") {
-    const d = s.days_since_reply;
-    if (d === 0) return { text: "Coach replied today" };
-    if (d != null) return { text: `Coach replied ${d} day${d !== 1 ? "s" : ""} ago` };
-    return { text: "In active conversation with coach" };
-  }
-  if (stage === "archived") return { text: "Not pursuing" };
-  return { text: "" };
+  return s;
 }
 
-/* ── What to do next text for hero card ── */
-function getHeroAdvice(p) {
-  if (!p) return "";
-  const stage = p.board_group;
-  const s = p.signals || {};
-  if (stage === "overdue") {
-    const days = p.next_action_due ? Math.abs(Math.ceil((new Date(p.next_action_due) - new Date()) / 86400000)) : "several";
-    return `Coach hasn't heard from you in ${days} days. Send a short follow-up mentioning your recent results.`;
-  }
-  if (stage === "needs_outreach") return "This school matches your profile well. Send an introductory email with your highlight reel.";
-  if (stage === "waiting_on_reply") {
-    const d = s.days_since_outreach;
-    return d > 5 ? "It's been a while since your outreach. Consider a brief follow-up." : "Give the coach a bit more time, then follow up.";
-  }
-  if (stage === "in_conversation") return "You've got momentum — keep the conversation going.";
-  return "";
+function getStatusStyle(status) {
+  const map = {
+    "Not Contacted": { bg: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted, #888)" },
+    "Contacted": { bg: "rgba(46,196,182,0.08)", color: "#2ec4b6" },
+    "Some Interest": { bg: "rgba(59,130,246,0.08)", color: "#3b82f6" },
+    "Camp Attended": { bg: "rgba(139,92,246,0.08)", color: "#8b5cf6" },
+    "Active Conversation": { bg: "rgba(16,185,129,0.08)", color: "#10b981" },
+    "Offer Received": { bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
+    "Offer / Commit Talk": { bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
+    "Committed": { bg: "rgba(22,163,74,0.1)", color: "#16a34a" },
+  };
+  return map[status] || { bg: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted, #888)" };
 }
 
-/* ── Quick action label ── */
-function getQuickAction(stage) {
-  if (stage === "overdue") return { label: "Follow Up", icon: Send };
-  if (stage === "needs_outreach") return { label: "Start Outreach", icon: Send };
-  if (stage === "waiting_on_reply") return { label: "Follow Up", icon: Send };
-  return null;
+function getMatchColor(m) {
+  if (m >= 50) return "#16a34a";
+  if (m >= 25) return "#f59e0b";
+  return "#999";
 }
 
-/* ═══ Progress Ring ═══ */
-function ProgressRing({ counts, total }) {
-  const activeStages = STAGE_ORDER.filter(k => (counts[k] || 0) > 0);
+/* ── Pipeline Card ── */
+function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }) {
+  const [expanded, setExpanded] = useState(false);
+  const [interactions, setInteractions] = useState(null);
+  const [loadingIx, setLoadingIx] = useState(false);
 
-  const gradientStops = [];
-  let accumulated = 0;
-  activeStages.forEach(k => {
-    const pct = (counts[k] || 0) / Math.max(total, 1) * 100;
-    gradientStops.push(`${STAGES[k].ring} ${accumulated}% ${accumulated + pct}%`);
-    accumulated += pct;
-  });
-  if (accumulated < 100) {
-    gradientStops.push(`var(--t-border, #e5e7eb) ${accumulated}% 100%`);
+  useEffect(() => { setExpanded(!!forceExpand); }, [forceExpand]);
+
+  const signals = p.signals || {};
+  const ss = getStatusStyle(p.recruiting_status);
+  const match = matchScore?.match_score;
+  const mc = match ? getMatchColor(match) : "#999";
+
+  // Urgency badge
+  let urgency = null;
+  if (p.board_group === "overdue" && p.next_action_due) {
+    const days = Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000));
+    urgency = { text: `${days}d overdue`, type: "red" };
+  } else if (section === "waiting" && p.next_action_due) {
+    const d = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000);
+    if (d <= 3 && d > 0) urgency = { text: `Due in ${d}d`, type: "amber" };
+    else if (d <= 0) urgency = { text: "Due today", type: "amber" };
   }
 
-  const gradient = gradientStops.length > 0
-    ? `conic-gradient(from 0deg, ${gradientStops.join(", ")})`
-    : `conic-gradient(var(--t-border, #e5e7eb) 0% 100%)`;
+  // Activity text
+  const actText = signals.days_since_activity != null
+    ? (signals.days_since_activity === 0 ? "Today" : `${signals.days_since_activity}d ago`)
+    : "—";
 
-  return (
-    <div className="flex items-center gap-4" data-testid="progress-ring">
-      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
-        <div className="w-[76px] h-[76px] md:w-[108px] md:h-[108px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
-          <span className="text-xl md:text-3xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[9px] md:text-xs" style={{ color: "var(--t-text-muted)" }}>schools</span>
-        </div>
-      </div>
-      <div className="flex flex-col gap-y-1.5">
-        {activeStages.map(k => (
-          <div key={k} className="flex items-center gap-1.5 text-[10px] md:text-sm">
-            <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: STAGES[k].ring }} />
-            <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{counts[k]}</span>
-            <span style={{ color: "var(--t-text-muted)" }}>{STAGES[k].shortLabel}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+  // Section-based action buttons (no Mark Replied per user request)
+  const sectionActions = section === "outreach"
+    ? [{ label: "Start Outreach", cls: "primary" }]
+    : section === "waiting"
+    ? [{ label: "Follow Up", cls: "warn" }]
+    : [];
 
-
-/* ═══ Custom Pipeline Tour ═══ */
-function PipelineTour({ step, steps, onNext, onBack, onClose }) {
-  const [pos, setPos] = useState(null);
-
-  useEffect(() => {
-    if (step < 0 || step >= steps.length) { setPos(null); return; }
-    const el = document.querySelector(steps[step].target);
-    if (!el) { setPos(null); return; }
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    const update = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.width === 0 && rect.height === 0) { setPos(null); return; }
-      // Clamp to visible viewport so tall/off-screen elements still show the tooltip
-      const visTop = Math.max(0, rect.top);
-      const visBottom = Math.min(window.innerHeight, rect.bottom);
-      const visHeight = Math.max(visBottom - visTop, 40);
-      setPos({ top: visTop, left: rect.left, width: rect.width, height: visHeight });
-    };
-    const t1 = setTimeout(update, 400);
-    const t2 = setTimeout(update, 700);
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
-    return () => { clearTimeout(t1); clearTimeout(t2); window.removeEventListener("resize", update); window.removeEventListener("scroll", update, true); };
-  }, [step, steps]);
-
-  if (step < 0 || step >= steps.length || !pos) return null;
-  const s = steps[step];
-  const isLast = step === steps.length - 1;
-
-  // Position tooltip below or above target, clamped to viewport
-  const tooltipBelow = pos.top + pos.height + 200 < window.innerHeight;
-  const tooltipStyle = {
-    position: "fixed",
-    zIndex: 10002,
-    left: Math.max(12, Math.min(pos.left, window.innerWidth - 340)),
-    maxWidth: 320,
-    ...(tooltipBelow
-      ? { top: Math.min(pos.top + pos.height + 12, window.innerHeight - 220) }
-      : { top: Math.max(12, pos.top - 200) }),
+  const handleToggle = (e) => {
+    if (e.target.closest("[data-stop]")) return;
+    const next = !expanded;
+    setExpanded(next);
+    if (next && interactions === null) {
+      setLoadingIx(true);
+      api.get(`/interactions?program_id=${p.program_id}`)
+        .then(res => setInteractions(Array.isArray(res.data) ? res.data.slice(0, 5) : []))
+        .catch(() => setInteractions([]))
+        .finally(() => setLoadingIx(false));
+    }
   };
 
+  const meta = [p.conference, p.location || p.city_state || p.state].filter(Boolean).join(" \u00b7 ");
+
   return (
-    <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 z-[10000]"
-        style={{ background: "rgba(0,0,0,0.55)", pointerEvents: "auto" }}
-        onClick={onClose}
-      />
-      {/* Spotlight cutout */}
-      <div
-        className="fixed z-[10001] rounded-xl transition-all duration-300"
-        style={{
-          top: pos.top - 6, left: pos.left - 6,
-          width: pos.width + 12, height: Math.min(pos.height + 12, window.innerHeight - pos.top + 6),
-          boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)",
-          pointerEvents: "none",
-        }}
-      />
-      {/* Tooltip */}
-      <div style={tooltipStyle} className="rounded-xl shadow-2xl" data-testid="tour-tooltip">
-        <div style={{ background: "#1e1e2e", borderRadius: 12, padding: "18px 20px" }}>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold" style={{ color: "#2ec4b6" }}>{step + 1} of {steps.length}</span>
-            <button onClick={onClose} className="text-xs" style={{ color: "#666" }}>Skip</button>
+    <div
+      className={`flex rounded-xl border overflow-hidden transition-all cursor-pointer ${expanded ? "shadow-md" : "hover:shadow-sm"}`}
+      style={{ backgroundColor: "var(--t-surface)", borderColor: expanded ? "var(--t-border-strong, #ddd)" : "var(--t-border)" }}
+      onClick={handleToggle}
+      data-testid={`pipeline-card-${p.program_id}`}
+    >
+      <div className="w-1 flex-shrink-0" style={{ backgroundColor: BAR_COLORS[section] }} />
+      <div className="flex-1 px-4 py-3 min-w-0">
+        {/* ── Compact Row ── */}
+        <div className="flex items-center gap-3">
+          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={34} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-bold truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
+              {p.division && (
+                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded"
+                  style={{ background: "var(--t-surface-alt, #f0f0f0)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>
+                  {p.division}
+                </span>
+              )}
+              {urgency && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
+                  style={{
+                    backgroundColor: urgency.type === "red" ? "rgba(220,38,38,0.08)" : "rgba(245,158,11,0.08)",
+                    color: urgency.type === "red" ? "#dc2626" : "#d97706",
+                  }}>
+                  <Clock className="w-2.5 h-2.5" />{urgency.text}
+                </span>
+              )}
+              {!urgency && actText !== "—" && section !== "outreach" && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
+                  style={{ backgroundColor: "rgba(22,163,74,0.08)", color: "#16a34a" }}>
+                  <CheckCircle2 className="w-2.5 h-2.5" />{actText}
+                </span>
+              )}
+            </div>
+            <div className="text-[11px] mt-0.5 flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
+              <MapPin className="w-2.5 h-2.5" />{meta || "—"}
+            </div>
           </div>
-          <h4 className="text-sm font-bold mb-1" style={{ color: "#f1f1f1" }}>{s.title}</h4>
-          <p className="text-[13px] leading-relaxed mb-4" style={{ color: "#aaa" }}>{s.content}</p>
-          <div className="flex items-center gap-2 justify-end">
-            {step > 0 && (
-              <button onClick={onBack} className="text-xs px-3 py-1.5 rounded-lg" style={{ color: "#999" }}>Back</button>
+
+          {/* Stats (desktop) */}
+          <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+            <div className="text-center">
+              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Status</div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg inline-block" style={{ backgroundColor: ss.bg, color: ss.color }}>
+                {p.recruiting_status || "—"}
+              </span>
+            </div>
+            {match != null && (
+              <div className="text-center">
+                <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Match</div>
+                <div className="text-[13px] font-bold" style={{ color: "var(--t-text)" }}>{match}%</div>
+              </div>
             )}
+            <div className="text-center">
+              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Outreach</div>
+              <div className="text-[13px] font-bold" style={{ color: "var(--t-text)" }}>{signals.outreach_count || 0}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Activity</div>
+              <div className="text-[13px] font-bold" style={{ color: signals.days_since_activity > 7 ? "#f59e0b" : "var(--t-text)" }}>
+                {actText}
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-1.5 flex-shrink-0" data-stop="1">
+            {sectionActions.map((a, i) => (
+              <button key={i}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
+                style={a.cls === "primary"
+                  ? { backgroundColor: "#2ec4b6", color: "#fff", borderColor: "#2ec4b6" }
+                  : { backgroundColor: "var(--t-surface)", color: "#f59e0b", borderColor: "rgba(245,158,11,0.25)" }}
+                onClick={() => navigate(`/journey/${p.program_id}`)}
+                data-testid={`card-action-${p.program_id}`}
+              >
+                <Send className="w-3 h-3" /><span className="hidden sm:inline">{a.label}</span>
+              </button>
+            ))}
             <button
-              onClick={isLast ? onClose : onNext}
-              className="text-xs px-4 py-1.5 rounded-lg font-semibold"
-              style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
-              data-testid="tour-next-btn"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-80"
+              style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }}
+              onClick={() => navigate(`/journey/${p.program_id}`)}
+              data-testid={`card-journey-${p.program_id}`}
             >
-              {isLast ? "Done!" : "Next"}
+              <span className="hidden sm:inline">Journey</span><ChevronRight className="w-3 h-3" />
             </button>
           </div>
-        </div>
-      </div>
-    </>
-  );
-}
 
-/* ═══ Dark + Pink Hero Card ═══ */
-function HeroCard({ program, onAction, onSnooze, onDismiss, navigate }) {
-  if (!program) return null;
-  const stage = program.board_group;
-  const isUrgent = stage === "overdue";
-  const isWaiting = stage === "waiting_on_reply";
-  const quickAction = getQuickAction(stage);
-  const advice = getHeroAdvice(program);
-
-  const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : stage === "waiting_on_reply" ? "Keeping Warm" : "Momentum";
-  const kickerColor = isUrgent ? "#f87171" : "#2ec4b6";
-
-  let urgencyText = "";
-  if (isUrgent && program.next_action_due) {
-    const days = Math.abs(Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000));
-    urgencyText = `${days} day${days !== 1 ? "s" : ""} overdue`;
-  } else if (isWaiting && program.next_action_due) {
-    const d = Math.ceil((new Date(program.next_action_due) - new Date()) / 86400000);
-    urgencyText = d > 0 ? `Due in ${d} day${d !== 1 ? "s" : ""}` : "Due today";
-  }
-
-  const divLabel = program.division || "";
-  const conf = program.conference || "";
-  const loc = program.location || program.city_state || "";
-
-  return (
-    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
-            {isUrgent && <AlertTriangle className="w-3 h-3" />}
-            {!isUrgent && isWaiting && <Clock className="w-3 h-3" />}
-            {kicker}
-          </span>
-          {urgencyText && (
-            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: "rgba(46,196,182,0.12)" }}>
-              {urgencyText}
-            </span>
-          )}
+          <ChevronRight
+            className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
+            style={{ color: expanded ? "var(--t-text-muted)" : "var(--t-text-faint, #ccc)" }}
+          />
         </div>
 
-        <div className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white flex items-center gap-2">
-          <UniversityLogo domain={program.domain} name={program.university_name} logoUrl={program.logo_url} size={28} />
-          {program.university_name}
-        </div>
+        {/* ── Expanded Content ── */}
+        {expanded && (
+          <div className="mt-3.5">
+            {/* Info blocks */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-3">
+              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
+                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Coach</div>
+                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{p.primary_coach || "—"}</div>
+                {p.coach_email && (
+                  <div className="text-[11px] mt-0.5">
+                    <a href={`mailto:${p.coach_email}`} className="hover:underline" style={{ color: "#2ec4b6" }}
+                      onClick={e => e.stopPropagation()} data-stop="1">{p.coach_email}</a>
+                  </div>
+                )}
+              </div>
+              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
+                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Match Score</div>
+                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{match != null ? `${match}%` : "—"}</div>
+                {match != null && (
+                  <div className="w-full h-1.5 rounded-full mt-1.5" style={{ backgroundColor: "var(--t-border)" }}>
+                    <div className="h-full rounded-full" style={{ width: `${Math.min(match, 100)}%`, backgroundColor: mc }} />
+                  </div>
+                )}
+              </div>
+              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
+                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Outreach</div>
+                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
+                  {signals.outreach_count || 0} sent &middot; {signals.has_coach_reply ? "1+ replies" : "0 replies"}
+                </div>
+                <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                  {actText !== "—" ? `Last: ${actText}` : "No contact yet"}
+                </div>
+              </div>
+            </div>
 
-        <div className="flex items-center gap-2 mb-2.5">
-          {divLabel && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(46,196,182,0.12)", color: "rgba(255,255,255,0.6)" }}>{divLabel}</span>}
-          {conf && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{conf}</span>}
-          {loc && <span className="text-[11px]" style={{ color: "rgba(255,255,255,0.3)" }}>{loc}</span>}
-        </div>
+            {/* Notes */}
+            {p.next_action && (
+              <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg mb-3"
+                style={{ backgroundColor: "var(--t-surface-alt, #fafafa)", border: "1px solid var(--t-border)" }}>
+                <MessageSquare className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "var(--t-text-faint, #ccc)" }} />
+                <p className="text-xs italic leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                  Next: {p.next_action}
+                  {p.next_action_due && <span className="not-italic font-medium"> &middot; Due {p.next_action_due}</span>}
+                </p>
+              </div>
+            )}
 
-        {advice && (
-          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.12)", borderLeft: "3px solid #2ec4b6" }}>
-            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} />
-            <div>
-              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
-              <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
+            {/* Timeline */}
+            {loadingIx && (
+              <div className="flex items-center gap-2 py-2 mb-3">
+                <Loader2 className="w-3 h-3 animate-spin" style={{ color: "var(--t-text-faint)" }} />
+                <span className="text-[11px]" style={{ color: "var(--t-text-faint)" }}>Loading timeline...</span>
+              </div>
+            )}
+            {interactions && interactions.length > 0 && (
+              <div className="mb-3">
+                {interactions.map((ix, i) => (
+                  <div key={ix.interaction_id || i}
+                    className="flex gap-2.5 py-1.5 text-[11px] relative"
+                    style={{ borderLeft: "2px solid var(--t-border)", marginLeft: 6, paddingLeft: 14 }}>
+                    <div className="absolute w-2 h-2 rounded-full"
+                      style={{ left: -5, top: 9, backgroundColor: i === 0 ? "#2ec4b6" : "var(--t-border)" }} />
+                    <span className="font-semibold flex-shrink-0" style={{ color: "var(--t-text-faint)", minWidth: 65 }}>
+                      {ix.date_time ? new Date(ix.date_time).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
+                    </span>
+                    <span style={{ color: "var(--t-text-secondary)" }}>
+                      {ix.type || "Activity"}{ix.notes ? `: ${ix.notes}` : ""}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Expanded Actions */}
+            <div className="flex gap-2 justify-end flex-wrap" data-stop="1">
+              {sectionActions.map((a, i) => (
+                <button key={i}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
+                  style={a.cls === "primary"
+                    ? { backgroundColor: "#2ec4b6", color: "#fff", borderColor: "#2ec4b6" }
+                    : { backgroundColor: "var(--t-surface)", color: "#f59e0b", borderColor: "rgba(245,158,11,0.25)" }}
+                  onClick={() => navigate(`/journey/${p.program_id}`)}>
+                  <Send className="w-3 h-3" />{a.label}
+                </button>
+              ))}
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-80"
+                style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary)", borderColor: "var(--t-border)" }}
+                onClick={() => navigate(`/journey/${p.program_id}`)}>
+                Add Note
+              </button>
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors hover:opacity-90"
+                style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
+                onClick={() => navigate(`/journey/${p.program_id}`)}
+                data-testid={`card-full-journey-${p.program_id}`}>
+                View Full Journey <ChevronRight className="w-3 h-3" />
+              </button>
             </div>
           </div>
         )}
       </div>
-
-      <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
-        {quickAction && (
-          <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "#2ec4b6", color: "white", border: "none" }}
-            onClick={() => onAction(program)} data-testid="hero-action-btn">
-            <Send className="w-3 h-3" />{quickAction.label}
-          </button>
-        )}
-        {!quickAction && (
-          <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-            style={{ background: "#2ec4b6", color: "white", border: "none" }}
-            onClick={() => navigate(`/journey/${program.program_id}`)} data-testid="hero-action-btn">
-            View Journey <ChevronRight className="w-3 h-3" />
-          </button>
-        )}
-        {isUrgent && (
-          <button className="flex items-center justify-center py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "transparent", color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.08)" }}
-            onClick={() => onSnooze(program)} data-testid="hero-snooze-btn">
-            Snooze 3 days
-          </button>
-        )}
-        {isWaiting && (
-          <button className="flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-semibold cursor-pointer w-full"
-            style={{ background: "rgba(22,163,74,0.1)", color: "#4ade80", border: "1px solid rgba(22,163,74,0.15)" }}
-            onClick={() => onDismiss(program)} data-testid="hero-mark-replied-btn">
-            <CheckCircle2 className="w-3 h-3" />Mark Replied
-          </button>
-        )}
-      </div>
     </div>
   );
 }
 
-/* ═══ All Caught Up Hero ═══ */
-function AllCaughtUpCard({ navigate }) {
+/* ── Pipeline Section ── */
+function PipelineSection({ sectionCfg, programs, matchScores, navigate, expandAll }) {
+  const [collapsed, setCollapsed] = useState(false);
+  if (programs.length === 0) return null;
+
   return (
-    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="all-caught-up">
-      <div className="flex-1 min-w-0">
-        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#4ade80" }}>All Caught Up</span>
-        <p className="text-lg font-extrabold text-white mb-1 leading-tight">You're on top of recruiting!</p>
-        <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
+    <div data-testid={`section-${sectionCfg.key}`} className="mb-6">
+      <div
+        className="flex items-center gap-2.5 mb-3 cursor-pointer select-none group"
+        onClick={() => setCollapsed(c => !c)}
+        data-testid={`section-header-${sectionCfg.key}`}
+      >
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 opacity-50 group-hover:opacity-100 ${collapsed ? "-rotate-90" : ""}`}
+          style={{ color: sectionCfg.color }}
+        />
+        <span className="text-[10px] font-extrabold uppercase tracking-[1.8px]"
+          style={{ color: sectionCfg.color }}>{sectionCfg.label}</span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg"
+          style={{ backgroundColor: `${sectionCfg.color}15`, color: sectionCfg.color }}>{programs.length}</span>
+        <div className="flex-1 h-px" style={{ backgroundColor: `${sectionCfg.color}30` }} />
       </div>
-      <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "#2ec4b6", color: "white", border: "none" }}
-        onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
-        <Plus className="w-3 h-3" />Add School
-      </button>
-    </div>
-  );
-}
-
-/* ═══ Mark Replied Modal ═══ */
-function InlineMarkReplied({ program, onSaved, onCancel }) {
-  const [note, setNote] = useState("");
-  const [saving, setSaving] = useState(false);
-  const save = async () => {
-    if (!note.trim()) { toast.error("Describe what the coach said"); return; }
-    setSaving(true);
-    try {
-      await api.post(`/programs/${program.program_id}/mark-replied`, { note: note.trim() });
-      toast.success(`${program.university_name} moved to In Conversation`);
-      onSaved();
-    } catch { toast.error("Failed to log reply"); } finally { setSaving(false); }
-  };
-  return (
-    <div className="rounded-xl border p-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="inline-mark-replied">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--t-text)" }}>
-          <CheckCircle2 className="w-4 h-4" style={{ color: "#16a34a" }} />Mark {program.university_name} as Replied
-        </p>
-        <button onClick={onCancel} className="p-1 rounded hover:opacity-70"><X className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} /></button>
-      </div>
-      <textarea placeholder="What did the coach say?" value={note} onChange={e => setNote(e.target.value)} rows={2}
-        className="w-full px-3 py-2 rounded-lg border text-xs resize-none outline-none focus:ring-1 focus:ring-teal-700"
-        style={{ backgroundColor: "var(--t-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
-        data-testid="inline-replied-note" />
-      <Button className="text-white text-xs w-full h-8" style={{ background: "#16a34a" }} onClick={save} disabled={saving} data-testid="inline-replied-save">
-        {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <CheckCircle2 className="w-3 h-3 mr-1" />}Log Coach Reply
-      </Button>
-    </div>
-  );
-}
-
-/* ═══ Compact School Row ═══ */
-function SchoolRow({ p, navigate, matchScore, onMarkReplied }) {
-  const stage = p.board_group || "needs_outreach";
-  const { text: subtitle, urgent } = getSubtitle(p);
-  const quickAction = getQuickAction(stage);
-  const isUrgent = stage === "overdue";
-  const isConvo = stage === "in_conversation";
-
-  // Extra info
-  const conf = p.conference || "";
-  const loc = p.location || p.city_state || "";
-  const extra = [conf, loc].filter(Boolean).join(" · ");
-  const subParts = [subtitle, extra].filter(Boolean).join(" · ");
-
-  return (
-    <div
-      className="group flex items-center gap-2.5 px-3 py-2.5 rounded-lg border cursor-pointer transition-all hover:shadow-sm"
-      style={{
-        backgroundColor: "var(--t-surface)",
-        borderColor: "var(--t-border)",
-        borderLeft: isUrgent ? "3px solid #dc2626" : undefined,
-      }}
-      onClick={() => navigate(`/journey/${p.program_id}`)}
-      data-testid={`school-card-${p.program_id}`}
-    >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={20} />
-          <span className="font-semibold text-[13px] truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
-          {matchScore?.match_score && (
-            <span className="text-[10px] font-bold" style={{ color: "var(--t-text-muted, #999)" }}>{matchScore.match_score}%</span>
-          )}
-          {p.division && (
-            <span className="text-[9px] font-bold px-1.5 py-px rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>
-              {p.division}
-            </span>
-          )}
-          {isConvo && (
-            <span className="text-[9px] font-semibold px-1.5 py-px rounded" style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.1)" }}>
-              Active
-            </span>
-          )}
+      {!collapsed && (
+        <div className="flex flex-col gap-2.5">
+          {programs.map(p => (
+            <PipelineCard
+              key={p.program_id}
+              program={p}
+              section={sectionCfg.key}
+              matchScore={matchScores[p.program_id]}
+              navigate={navigate}
+              forceExpand={expandAll}
+            />
+          ))}
         </div>
-        <div className="text-[11px] mt-px truncate" style={{ color: "var(--t-text-muted)" }}>
-          {urgent ? <span style={{ color: "#dc2626", fontWeight: 500 }}>{subtitle}</span> : subParts}
-          {!urgent && subtitle !== subParts && extra && ""}
-        </div>
-      </div>
-
-      {/* Quick actions */}
-      <div className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
-        {stage === "waiting_on_reply" && (
-          <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-colors"
-            style={{ background: "rgba(22,163,74,0.06)", color: "#16a34a", border: "1px solid rgba(22,163,74,0.08)" }}
-            onClick={() => onMarkReplied(p)}
-            data-testid={`quick-mark-replied-${p.program_id}`}
-          >
-            <CheckCircle2 className="w-3 h-3" />Mark Replied
-          </button>
-        )}
-        {quickAction && (
-          <button
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-colors"
-            style={{
-              background: isUrgent ? "rgba(220,38,38,0.06)" : "rgba(46,196,182,0.07)",
-              color: isUrgent ? "#dc2626" : "#2ec4b6",
-              border: `1px solid ${isUrgent ? "rgba(220,38,38,0.08)" : "rgba(46,196,182,0.08)"}`,
-            }}
-            onClick={() => navigate(`/journey/${p.program_id}`)}
-            data-testid={`quick-action-${p.program_id}`}
-          >
-            <Send className="w-3 h-3" />{quickAction.label}
-          </button>
-        )}
-      </div>
-
-      <ChevronRight className="w-3.5 h-3.5 opacity-25 group-hover:opacity-70 transition-opacity flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+      )}
     </div>
   );
 }
 
-/* ═══ Filter Chips ═══ */
-function FilterChips({ counts, total, active, onFilter }) {
+/* ── Filter Bar ── */
+function FilterBar({ sectionCounts, total, active, onFilter }) {
   const chips = [
     { key: null, label: "All", count: total },
-    ...STAGE_ORDER.filter(k => (counts[k] || 0) > 0).map(k => ({
-      key: k, label: STAGES[k].shortLabel, count: counts[k], isUrgent: k === "overdue"
-    })),
-  ];
+    ...SECTIONS.map(s => ({ key: s.key, label: s.label.replace("Needs ", "").replace("Waiting on ", "Waiting"), count: sectionCounts[s.key] || 0 })),
+  ].filter(c => c.key === null || c.count > 0);
+
   return (
-    <div className="flex items-center gap-1 overflow-x-auto pb-0.5" data-testid="filter-chips">
+    <div className="flex gap-2 flex-wrap" data-testid="pipeline-filters">
       {chips.map(c => {
         const isActive = active === c.key;
         return (
-          <button key={c.key || "all"} onClick={() => onFilter(isActive ? null : c.key)}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex-shrink-0 border whitespace-nowrap"
+          <button key={c.key || "all"}
+            onClick={() => onFilter(isActive && c.key !== null ? null : c.key)}
+            className="px-4 py-1.5 rounded-full text-[13px] font-semibold border-[1.5px] transition-all"
             style={isActive
-              ? { background: "var(--t-text)", color: "var(--t-bg, #fff)", borderColor: "var(--t-text)" }
-              : { background: "var(--t-surface)", color: "var(--t-text-secondary, #6b6b6b)", borderColor: "var(--t-border)" }
+              ? { backgroundColor: "var(--t-text)", color: "var(--t-bg, #fff)", borderColor: "var(--t-text)" }
+              : { backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }
             }
-            data-testid={`chip-${c.key || "all"}`}
+            data-testid={`filter-${c.key || "all"}`}
           >
-            {c.isUrgent && !isActive && <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#dc2626" }} />}
-            {c.label}
-            <span className="text-[10px] font-bold px-1 rounded" style={{ background: isActive ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.04)" }}>{c.count}</span>
+            {c.label}<span className="font-extrabold ml-1">{c.count}</span>
           </button>
         );
       })}
@@ -465,88 +382,45 @@ function FilterChips({ counts, total, active, onFilter }) {
   );
 }
 
-/* ═══ Section Divider ═══ */
-function SectionLabel({ stage, count }) {
-  const cfg = STAGES[stage];
-  if (!cfg) return null;
-  const isUrgent = stage === "overdue";
+/* ── View Toggle ── */
+function ViewToggle({ mode, onChange }) {
   return (
-    <div className="text-[9px] font-bold uppercase tracking-[1.5px] pt-3 pb-1" style={{ color: isUrgent ? "#dc2626" : "var(--t-text-muted)" }} data-testid={`section-${stage}`}>
-      {isUrgent && <span style={{ fontSize: 4, verticalAlign: "middle", marginRight: 4 }}>&#9679;</span>}
-      {cfg.label}
+    <div className="flex gap-1 rounded-lg p-0.5" style={{ backgroundColor: "var(--t-surface-alt, #e8e8e8)" }} data-testid="view-toggle">
+      {["compact", "expanded"].map(m => (
+        <button key={m}
+          onClick={() => onChange(m)}
+          className="px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-all"
+          style={mode === m
+            ? { backgroundColor: "var(--t-surface)", color: "var(--t-text)", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }
+            : { backgroundColor: "transparent", color: "var(--t-text-muted)" }
+          }
+          data-testid={`view-${m}`}
+        >
+          {m}
+        </button>
+      ))}
     </div>
   );
 }
 
-/* ═══ Main Board ═══ */
+/* ══════════════════════════════════════════ */
+/* ── Main Board ── */
+/* ══════════════════════════════════════════ */
 export default function RecruitingBoard() {
-  const [groupedData, setGroupedData] = useState({ groups: {}, counts: {}, total: 0 });
+  const [allPrograms, setAllPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterDivision, setFilterDivision] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
+  const [viewMode, setViewMode] = useState("compact");
   const [matchScores, setMatchScores] = useState({});
-  const [markRepliedProgram, setMarkRepliedProgram] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCongrats, setShowCongrats] = useState(false);
-  const [tourStep, setTourStep] = useState(-1);
 
-  const tourSteps = [
-    {
-      target: '[data-testid="progress-section"]',
-      title: "Pipeline Overview",
-      content: "This shows how many schools you're tracking and where each one stands in the recruiting process.",
-    },
-    {
-      target: '[data-testid="hero-card"]',
-      title: "Your #1 Priority",
-      content: "We surface the most important action you need to take right now. No guessing — just do this next.",
-    },
-    {
-      target: '[data-testid="filter-chips"]',
-      title: "Filter by Stage",
-      content: "Quickly see all schools in Outreach, Waiting, Replied, or any stage. Numbers update as you progress.",
-    },
-    {
-      target: '[data-testid="school-list"]',
-      title: "Your School List",
-      content: "Every school you're tracking lives here. Click any school to see its full journey and log activity.",
-    },
-    {
-      target: '[data-testid="add-school-btn"]',
-      title: "Add Schools",
-      content: "Browse 1,000+ volleyball programs with coach contacts, school stats, and more.",
-    },
-  ];
-
-  // Auto-start tour on first visit (check backend, not just localStorage)
-  useEffect(() => {
-    if (groupedData.total > 0 && !loading) {
-      const hasSeenLocal = localStorage.getItem("pipeline_tour_done");
-      if (hasSeenLocal) return; // Already seen locally, skip API call
-      api.get("/user/tours").then(res => {
-        if (res.data?.pipeline_tour) {
-          localStorage.setItem("pipeline_tour_done", "true");
-        } else {
-          setTimeout(() => setTourStep(0), 800);
-        }
-      }).catch(() => {
-        // Fallback: show tour if API fails and localStorage not set
-        setTimeout(() => setTourStep(0), 800);
-      });
-    }
-  }, [groupedData.total, loading]);
-
-  const closeTour = () => {
-    setTourStep(-1);
-    localStorage.setItem("pipeline_tour_done", "true");
-    api.post("/user/tours/pipeline_tour/complete").catch(() => {});
-  };
-
+  // Congrats param
   useEffect(() => {
     if (searchParams.get("congrats") === "true") {
       setShowCongrats(true);
@@ -555,6 +429,7 @@ export default function RecruitingBoard() {
     }
   }, [searchParams, setSearchParams]);
 
+  // Fetch match scores
   useEffect(() => {
     api.get("/match-scores").then(res => {
       if (res.data?.scores) {
@@ -567,12 +442,12 @@ export default function RecruitingBoard() {
 
   const fetchPrograms = useCallback(async () => {
     try {
-      const params = { grouped: true };
+      const params = {};
       if (search) params.search = search;
       if (filterDivision && filterDivision !== "all") params.division = filterDivision;
       if (filterRegion && filterRegion !== "all") params.region = filterRegion;
       const res = await api.get("/programs", { params });
-      setGroupedData(res.data);
+      setAllPrograms(Array.isArray(res.data) ? res.data : []);
     } catch {
       toast.error("Failed to load programs");
     } finally {
@@ -581,36 +456,6 @@ export default function RecruitingBoard() {
   }, [search, filterDivision, filterRegion]);
 
   useEffect(() => { fetchPrograms(); }, [fetchPrograms]);
-
-  useEffect(() => {
-    if (!loading && location.hash) setActiveFilter(location.hash.replace("#", ""));
-  }, [loading, location.hash]);
-
-  // Build sorted flat list
-  const allPrograms = [];
-  for (const stage of STAGE_ORDER) {
-    const progs = (groupedData.groups || {})[stage] || [];
-    const sorted = [...progs].sort((a, b) => (b.signals?.days_since_activity ?? -1) - (a.signals?.days_since_activity ?? -1));
-    allPrograms.push(...sorted);
-  }
-
-  const filteredPrograms = activeFilter ? allPrograms.filter(p => p.board_group === activeFilter) : allPrograms;
-
-  // Focus: most urgent
-  const focusPriority = ["overdue", "waiting_on_reply", "needs_outreach", "in_conversation"];
-  const focusProgram = focusPriority.reduce((found, stage) => found || allPrograms.find(p => p.board_group === stage), null);
-
-  const handleFocusAction = (p) => navigate(`/journey/${p.program_id}`);
-  const handleSnooze = async (p) => {
-    const d = new Date(); d.setDate(d.getDate() + 3);
-    try {
-      await api.put(`/programs/${p.program_id}`, { next_action_due: d.toISOString().split("T")[0] });
-      toast.success("Snoozed for 3 days");
-      fetchPrograms();
-    } catch { toast.error("Failed to snooze"); }
-  };
-
-  const { counts = {}, total = 0 } = groupedData;
 
   if (loading) {
     return (
@@ -623,11 +468,18 @@ export default function RecruitingBoard() {
     );
   }
 
-  const allCaughtUp = total > 0 && !focusProgram;
+  // Filter out archived from count/display
+  const activePrograms = allPrograms.filter(p => p.board_group !== "archived");
+  const total = activePrograms.length;
+
+  // Group into sections
+  const sectionGroups = groupIntoSections(activePrograms);
+  const sectionCounts = {};
+  SECTIONS.forEach(s => { sectionCounts[s.key] = sectionGroups[s.key].length; });
 
   // Congrats screen
   if (showCongrats && total > 0) {
-    const firstSchool = allPrograms[0];
+    const first = activePrograms[0];
     return (
       <div className="flex items-center justify-center min-h-[70vh]" data-testid="congrats-screen">
         <div className="text-center max-w-md mx-auto px-6">
@@ -641,13 +493,13 @@ export default function RecruitingBoard() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: "var(--t-text)", letterSpacing: "-0.5px" }}>Congratulations!</h1>
           <p className="text-base mb-2" style={{ color: "var(--t-text-secondary)" }}>
-            You added <strong style={{ color: "var(--t-text)" }}>{firstSchool?.university_name || "your first school"}</strong> to your board.
+            You added <strong style={{ color: "var(--t-text)" }}>{first?.university_name || "your first school"}</strong> to your board.
           </p>
           <p className="text-sm mb-8" style={{ color: "var(--t-text-muted)" }}>Your recruiting journey starts now.</p>
           <button
             className="inline-flex items-center gap-2 text-base font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90"
             style={{ backgroundColor: "#2ec4b6", color: "white", boxShadow: "0 4px 14px rgba(46,196,182,0.3)" }}
-            onClick={() => firstSchool?.program_id ? navigate(`/journey/${firstSchool.program_id}`) : setShowCongrats(false)}
+            onClick={() => first?.program_id ? navigate(`/journey/${first.program_id}`) : setShowCongrats(false)}
             data-testid="start-journey-btn"
           >
             <Rocket className="w-5 h-5" />Start Your Journey<ChevronRight className="w-5 h-5" />
@@ -660,123 +512,83 @@ export default function RecruitingBoard() {
     );
   }
 
-  // Group programs by stage for section rendering
-  const groupedByStage = {};
-  filteredPrograms.forEach(p => {
-    const s = p.board_group || "needs_outreach";
-    if (!groupedByStage[s]) groupedByStage[s] = [];
-    groupedByStage[s].push(p);
-  });
+  // Empty state
+  if (total === 0) {
+    return <EmptyBoardState onSchoolAdded={fetchPrograms} />;
+  }
+
+  const expandAll = viewMode === "expanded";
 
   return (
-    <div data-testid="recruiting-board" className="flex flex-col gap-4">
-      {/* Custom Tour */}
-      <PipelineTour step={tourStep} steps={tourSteps} onNext={() => setTourStep(s => s + 1)} onBack={() => setTourStep(s => s - 1)} onClose={closeTour} />
-      {/* Tour replay button */}
-      {total > 0 && tourStep < 0 && (
-        <button
-          onClick={() => setTourStep(0)}
-          className="fixed bottom-20 right-4 z-50 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-lg transition-opacity hover:opacity-80"
-          style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
-          data-testid="tour-replay-btn"
-          title="Take the tour"
-        >
-          ?
-        </button>
-      )}
-      {/* Empty Board */}
-      {total === 0 && (
-        <EmptyBoardState onSchoolAdded={fetchPrograms} />
-      )}
+    <div className="flex flex-col gap-5" data-testid="recruiting-board">
+      {/* ── Header ── */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight" style={{ color: "var(--t-text)" }} data-testid="pipeline-title">My Schools</h1>
+        <ViewToggle mode={viewMode} onChange={setViewMode} />
+        <div className="ml-auto flex items-center gap-2">
+          <button onClick={() => setShowFilters(!showFilters)}
+            className="p-2 rounded-lg border transition-colors hover:opacity-70"
+            style={{ borderColor: "var(--t-border)" }}
+            data-testid="toggle-filters"
+          >
+            <Filter className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
+          </button>
+          <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
+            className="text-white text-xs shadow-md"
+            style={{ background: "#2ec4b6", padding: "8px 16px", height: "auto" }}>
+            <Plus className="w-3.5 h-3.5 mr-1" />Add School
+          </Button>
+        </div>
+      </div>
 
-      {/* Top: Ring + Hero */}
-      {total > 0 && (
-        <div className="grid gap-3 grid-cols-1 md:grid-cols-[auto_1fr] items-stretch">
-          <div className="rounded-xl border p-3 md:p-5 flex items-center" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="progress-section">
-            <ProgressRing counts={counts} total={total} />
+      {/* ── Advanced Filters ── */}
+      {showFilters && (
+        <div className="flex flex-wrap items-center gap-2" data-testid="board-filters">
+          <div className="relative flex-1 min-w-[180px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
+            <Input data-testid="board-search" placeholder="Search schools..." value={search} onChange={e => setSearch(e.target.value)}
+              className="pl-9 border rounded-lg text-xs h-9"
+              style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
           </div>
-          {markRepliedProgram ? (
-            <InlineMarkReplied program={markRepliedProgram} onSaved={() => { setMarkRepliedProgram(null); fetchPrograms(); }} onCancel={() => setMarkRepliedProgram(null)} />
-          ) : focusProgram ? (
-            <HeroCard program={focusProgram} onAction={handleFocusAction} onSnooze={handleSnooze} onDismiss={(p) => setMarkRepliedProgram(p)} navigate={navigate} />
-          ) : allCaughtUp ? (
-            <AllCaughtUpCard navigate={navigate} />
-          ) : <div />}
+          <Select value={filterDivision} onValueChange={setFilterDivision}>
+            <SelectTrigger data-testid="filter-division" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+              <SelectValue placeholder="Division" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+              <SelectItem value="all">All Divisions</SelectItem>
+              {DIVISIONS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={filterRegion} onValueChange={setFilterRegion}>
+            <SelectTrigger data-testid="filter-region" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
+              <SelectItem value="all">All Regions</SelectItem>
+              {REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
       )}
 
-      {/* Chips + Filters */}
-      {total > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 overflow-x-auto" data-testid="filter-chips">
-            <FilterChips counts={counts} total={total} active={activeFilter} onFilter={setActiveFilter} />
-            <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-              <button onClick={() => setShowFilters(!showFilters)}
-                className="p-1.5 rounded-lg border transition-colors hover:opacity-70"
-                style={{ borderColor: "var(--t-border)" }}
-                data-testid="toggle-filters"
-              >
-                <Filter className="w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-              </button>
-              <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
-                className="text-white text-xs shadow-md flex-shrink-0"
-                style={{ background: "#2ec4b6", padding: "6px 14px", height: "auto" }}
-              >
-                <Plus className="w-3 h-3 mr-1" />Add School
-              </Button>
-            </div>
-          </div>
+      {/* ── Filter Chips ── */}
+      <FilterBar sectionCounts={sectionCounts} total={total} active={activeSection} onFilter={setActiveSection} />
 
-          {showFilters && (
-            <div className="flex flex-wrap items-center gap-2" data-testid="board-filters">
-              <div className="relative flex-1 min-w-[180px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-                <Input data-testid="board-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
-                  className="pl-9 border rounded-lg text-xs h-8"
-                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
-              </div>
-              <Select value={filterDivision} onValueChange={setFilterDivision}>
-                <SelectTrigger data-testid="filter-division" className="w-28 rounded-lg text-xs h-8" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-                  <SelectValue placeholder="Division" />
-                </SelectTrigger>
-                <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-                  <SelectItem value="all">All Divisions</SelectItem>
-                  {DIVISIONS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={filterRegion} onValueChange={setFilterRegion}>
-                <SelectTrigger data-testid="filter-region" className="w-28 rounded-lg text-xs h-8" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-                  <SelectValue placeholder="Region" />
-                </SelectTrigger>
-                <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-                  <SelectItem value="all">All Regions</SelectItem>
-                  {REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
-      )}
+      {/* ── Sections ── */}
+      {SECTIONS.filter(s => activeSection === null || activeSection === s.key).map(s => (
+        <PipelineSection
+          key={s.key}
+          sectionCfg={s}
+          programs={sectionGroups[s.key]}
+          matchScores={matchScores}
+          navigate={navigate}
+          expandAll={expandAll}
+        />
+      ))}
 
-      {/* School List with Section Headers */}
-      {filteredPrograms.length > 0 && (
-        <div className="flex flex-col" data-testid="school-list">
-          {STAGE_ORDER.filter(stage => groupedByStage[stage]?.length > 0).map(stage => (
-            <React.Fragment key={stage}>
-              {!activeFilter && <SectionLabel stage={stage} count={groupedByStage[stage].length} />}
-              <div className="flex flex-col gap-1">
-                {groupedByStage[stage].map(p => (
-                  <SchoolRow key={p.program_id} p={p} navigate={navigate} matchScore={matchScores[p.program_id]} onMarkReplied={(prog) => setMarkRepliedProgram(prog)} />
-                ))}
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-
-      {activeFilter && filteredPrograms.length === 0 && (
-        <div className="text-center py-8 text-xs" style={{ color: "var(--t-text-muted)" }} data-testid="filtered-empty">
-          No schools in {STAGES[activeFilter]?.label || activeFilter}
+      {activeSection && (sectionGroups[activeSection]?.length || 0) === 0 && (
+        <div className="text-center py-12 text-sm" style={{ color: "var(--t-text-muted)" }} data-testid="filtered-empty">
+          No schools in {SECTIONS.find(s => s.key === activeSection)?.label || activeSection}
         </div>
       )}
     </div>
