@@ -75,10 +75,10 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
 
         {/* Headline */}
         <div className="text-center mb-9">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1.5" data-testid="login-headline">
+          <h1 className="text-2xl font-bold text-gray-950 mb-1.5" data-testid="login-headline">
             {forgotMode ? "Reset your password" : isLogin ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-lg font-medium text-gray-600">
+          <p className="text-lg font-medium text-gray-500">
             {forgotMode
               ? "We'll send you a reset link"
               : isLogin
@@ -133,9 +133,9 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   disabled={forgotLoading}
                   data-testid="forgot-submit-btn"
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
-                  style={{ backgroundColor: "#2ec4b6" }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#27b0a3"}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
+                  style={{ backgroundColor: "#239e93" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#1a7a72"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#239e93"}
                 >
                   {forgotLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
                 </button>
@@ -234,9 +234,9 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                     type="button"
                     onClick={() => { setForgotMode(true); setForgotEmail(email); setForgotSent(false); }}
                     className="text-sm font-semibold transition-colors"
-                    style={{ color: "#0d9488" }}
-                    onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; e.currentTarget.style.color = "#0f766e"; }}
-                    onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; e.currentTarget.style.color = "#0d9488"; }}
+                    style={{ color: "#0b7268" }}
+                    onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; e.currentTarget.style.color = "#095c54"; }}
+                    onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; e.currentTarget.style.color = "#0b7268"; }}
                     data-testid="forgot-password-link"
                   >
                     Forgot password?
@@ -255,9 +255,9 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   disabled={loading}
                   data-testid="auth-submit-btn"
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-50 hover:shadow-md active:scale-[0.99]"
-                  style={{ backgroundColor: "#2ec4b6" }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#00897B"}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#2ec4b6"}
+                  style={{ backgroundColor: "#239e93" }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#1a7a72"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#239e93"}
                 >
                   {loading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -271,9 +271,9 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
                   onClick={() => { setMode(isLogin ? "register" : "login"); setError(""); }}
                   data-testid={isLogin ? "switch-to-register" : "switch-to-login"}
                   className="w-full flex items-center justify-center py-3 rounded-lg text-sm font-semibold transition-all active:scale-[0.99]"
-                  style={{ color: "#2ec4b6", borderWidth: "1.5px", borderStyle: "solid", borderColor: "#2ec4b6", backgroundColor: "transparent" }}
-                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#2ec4b6"; e.currentTarget.style.color = "#fff"; }}
-                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#2ec4b6"; }}
+                  style={{ color: "#239e93", borderWidth: "1.5px", borderStyle: "solid", borderColor: "#239e93", backgroundColor: "transparent" }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#239e93"; e.currentTarget.style.color = "#fff"; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#239e93"; }}
                 >
                   {isLogin ? "New to CapyMatch? Create your free account" : "Already have an account? Log in"}
                 </button>
