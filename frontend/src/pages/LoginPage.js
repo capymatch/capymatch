@@ -171,7 +171,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
             {/* Separator — generous spacing */}
             <div className="flex items-center gap-3 mt-8 mb-8">
               <div className="flex-1 h-px bg-gray-300" />
-              <span className="text-sm text-gray-400 whitespace-nowrap">
+              <span className="text-sm text-gray-500 whitespace-nowrap">
                 {isLogin ? "or log in with email" : "or sign up with email"}
               </span>
               <div className="flex-1 h-px bg-gray-300" />
@@ -283,7 +283,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
         )}
 
         {/* Footer */}
-        <p className="text-center text-xs text-gray-400 mt-8">
+        <p className="text-center text-xs text-gray-500 mt-8">
           By signing in, you agree to our{" "}
           <button className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Terms</button>
           {" "}&amp;{" "}
