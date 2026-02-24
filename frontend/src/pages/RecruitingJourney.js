@@ -105,6 +105,21 @@ export default function RecruitingJourney() {
     } catch { toast.error("Failed to update"); }
   };
 
+  const toggleQuestionnaire = async () => {
+    setQuestLoading(true);
+    try {
+      const newVal = !program.questionnaire_completed;
+      await api.patch(`/programs/${programId}/questionnaire`, { completed: newVal });
+      setProgram(prev => ({
+        ...prev,
+        questionnaire_completed: newVal,
+        questionnaire_completed_at: newVal ? new Date().toISOString() : null,
+      }));
+      toast.success(newVal ? "Questionnaire marked complete" : "Questionnaire unmarked");
+    } catch { toast.error("Failed to update"); }
+    setQuestLoading(false);
+  };
+
   const saveCoach = async (data) => {
     try {
       if (editCoach) await api.put(`/coaches/${editCoach.coach_id}`, data);
