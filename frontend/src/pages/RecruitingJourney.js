@@ -433,6 +433,45 @@ export default function RecruitingJourney() {
         </div>
       )}
 
+      {/* Questionnaire Nudge */}
+      {program.questionnaire_url && !program.questionnaire_completed && !questNudgeDismissed && !activeForm && (
+        <div className="mt-5 rounded-2xl border p-5 relative overflow-hidden"
+          style={{ borderColor: "rgba(245,158,11,0.3)", background: "#1e1e2e" }}
+          data-testid="questionnaire-nudge">
+          <button onClick={() => setQuestNudgeDismissed(true)}
+            className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/10 transition-colors"
+            style={{ color: "rgba(255,255,255,0.35)" }} data-testid="quest-nudge-dismiss">
+            <X className="w-4 h-4" />
+          </button>
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ backgroundColor: "rgba(245,158,11,0.12)" }}>
+              <ClipboardCheck className="w-5 h-5" style={{ color: "#f59e0b" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#f59e0b" }}>Action Required</p>
+              <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>Complete {program.university_name}'s questionnaire</h3>
+              <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+                Filling out the recruiting questionnaire shows coaches you're genuinely interested. Most programs require it.
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <a href={program.questionnaire_url} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium bg-amber-600 hover:bg-amber-700 text-white transition-colors shadow-md"
+                  data-testid="quest-nudge-open">
+                  <ExternalLink className="w-3.5 h-3.5" /> Open Questionnaire
+                </a>
+                <button onClick={toggleQuestionnaire}
+                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium transition-colors"
+                  style={{ color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  data-testid="quest-nudge-complete">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Mark as Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Inline Forms */}
       {activeForm === "replied" && <MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "log" && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
