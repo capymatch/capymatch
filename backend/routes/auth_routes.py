@@ -161,7 +161,7 @@ async def exchange_session(request: Request, response: Response):
         key="session_token", value=session_token, httponly=True,
         secure=True, samesite="none", path="/", max_age=7*24*3600
     )
-    return {"user_id": user_id, "email": email, "name": name, "picture": picture}
+    return {"user_id": user_id, "email": email, "name": name, "picture": picture, "session_token": session_token}
 
 
 @router.get("/auth/me")
