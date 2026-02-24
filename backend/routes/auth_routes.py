@@ -27,7 +27,7 @@ limiter = Limiter(key_func=_get_client_ip)
 
 
 @router.post("/auth/register")
-async def register(request: Request, response: Response):
+async def register(request: Request):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
     password = body.get("password") or ""
@@ -67,7 +67,7 @@ async def register(request: Request, response: Response):
 
 
 @router.post("/auth/login")
-async def login(request: Request, response: Response):
+async def login(request: Request):
     body = await request.json()
     email = (body.get("email") or "").strip().lower()
     password = body.get("password") or ""
@@ -92,7 +92,7 @@ async def login(request: Request, response: Response):
 
 
 @router.post("/auth/session")
-async def exchange_session(request: Request, response: Response):
+async def exchange_session(request: Request):
     try:
         body = await request.json()
     except Exception:
