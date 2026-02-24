@@ -401,7 +401,7 @@ export default function AthleteProfileQuiz() {
               <p className="text-[11px] italic" style={{ color: "var(--t-text-muted)" }}>Fill in at least one field. Leave blank if you haven't taken a test yet.</p>
             </div>
           ) : q.type === "single" ? (
-            <div className={`grid gap-2.5 ${q.options.length <= 4 ? "grid-cols-2" : "grid-cols-3"}`}>
+            <div className={`grid gap-2.5 ${q.options.length <= 4 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 sm:grid-cols-3"}`}>
               {q.options.map(opt => {
                 const isSelected = current === opt.value;
                 return (
@@ -420,7 +420,7 @@ export default function AthleteProfileQuiz() {
           ) : (
             <>
               {q.id === "regions" ? (
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   {q.options.map(opt => {
                     const isSelected = (current || []).includes(opt.value);
                     return (
