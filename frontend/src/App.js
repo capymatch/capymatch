@@ -278,7 +278,10 @@ function App() {
 
   // Register auth fail handler for session expiry
   useEffect(() => {
-    onAuthFail(() => setUser(null));
+    onAuthFail(() => {
+      localStorage.removeItem("session_token");
+      setUser(null);
+    });
   }, []);
 
   // Check session on mount
