@@ -6,13 +6,13 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ## Core Architecture
 - **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
 - **Backend**: FastAPI (Python) + MongoDB
-- **Auth**: Bearer token (localStorage) + session cookies (fallback). Backend checks Authorization header first, then cookies.
-- **Integrations**: Stripe (payments), Resend (email), Claude AI (intelligence cards)
+- **Auth**: Bearer token (localStorage). Backend checks Authorization header first, then cookie fallback.
+- **Integrations**: Stripe (payments), Resend (email), Claude AI (intelligence cards), Emergent-managed Google Auth
 
 ## Domain Setup
 - **Landing**: `capymatch.com` → readdy.ai marketing site
 - **App**: `app.capymatch.com` → Emergent-hosted CRM app
-- **Preview**: `capymatch-pipeline.preview.emergentagent.com` → dev/preview
+- **Preview**: `volleyball-crm.preview.emergentagent.com` → dev/preview
 - API calls use `REACT_APP_BACKEND_URL` (preview URL) as base, works cross-origin via Bearer tokens
 
 ## What's Been Implemented
@@ -38,16 +38,17 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 18. Pipeline UI Redesign (Feb 24, 2026) — Rich expandable cards, progress ring, hero card
 19. Bearer token auth for cross-domain support (Feb 24, 2026)
 20. Mobile sidebar overlay fix (Feb 24, 2026)
+21. Google OAuth CORS fix (Feb 24, 2026) — Removed invalid credentials+wildcard CORS combo
 
 ### Auth System (Updated Feb 24, 2026)
 - Backend returns `session_token` in register/login/OAuth exchange responses
 - Frontend stores token in `localStorage`, sends as `Authorization: Bearer <token>`
 - Backend `get_current_user()` checks Bearer header first, then falls back to cookies
-- Removed `withCredentials` from axios to avoid CORS credential restrictions
-- Works cross-origin (app.capymatch.com → preview URL) without CORS issues
+- CORS: `allow_credentials=False`, `allow_origins=["*"]` — compatible with infrastructure proxy
+- No more `set_cookie()` in auth endpoints (cleaned up Feb 24, 2026)
 
 ## Pending Issues
-- **P2**: NCAA Timeline colors (recurring 4+ times, cosmetic)
+- **P2**: NCAA Timeline colors (recurring 5+ times, cosmetic)
 - **P2**: Dead links for school recruiting questionnaires
 
 ## Prioritized Backlog
@@ -58,24 +59,9 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ### P2
 - Full NIL transaction/payment platform
 - Separate Girls/Boys Volleyball data models
-- Email templates & bulk outreach
+- Email templates & bulk outreach functionality
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
-- Dev/staging environment setup
-- Dead links handling (report broken link feature)
-- Consolidate AccountPage/SettingsPage overlap
 
-## Key API Endpoints
-- `POST /api/auth/register` — Returns user data + session_token
-- `POST /api/auth/login` — Returns user data + session_token
-- `POST /api/auth/session` — OAuth exchange, returns user data + session_token
-- `GET /api/auth/me` — Get current user (Bearer or cookie)
-- `GET /api/programs` — List programs
-- `GET /api/match-scores` — Get match scores
-- `GET /api/interactions` — List interactions
-- `POST /api/stripe/create-checkout-session` — Stripe checkout
-- `POST /api/stripe/webhook` — Stripe webhook
-
-## Credentials
-- Demo: demo@capymatch.com / demo2026
-- Admin: douglas@yeslms.com (Google auth)
+### Refactoring
+- Consolidate overlapping AccountPage / SettingsPage
