@@ -67,41 +67,28 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    // Always use same-origin to avoid cross-domain issues on custom domains
-    const API_BASE = window.location.origin + "/api";
 
     // Session exchange with retry (session data may take a moment to propagate)
     const exchangeSession = (retries = 3) => {
-      console.log("[OAuth] Exchanging session via:", API_BASE + "/auth/session");
-      fetch(`${API_BASE}/auth/session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
-      })
-        .then(async res => {
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            const errMsg = data?.detail || `Auth failed (${res.status})`;
-            // Retry on 401/503 (session may still be propagating)
-            if (retries > 0 && (res.status === 401 || res.status === 503 || res.status >= 500)) {
-              console.log(`[OAuth] Retrying session exchange (${retries} left)...`);
-              setTimeout(() => exchangeSession(retries - 1), 1500);
-              return null;
-            }
-            throw new Error(errMsg);
-          }
-          return res.json();
-        })
-        .then(data => {
-          if (!data) return; // retry in progress
-          console.log("[OAuth] Session exchange successful for:", data?.email);
-          onAuth(data);
+      console.log("[OAuth] Exchanging session, attempt:", 4 - retries);
+      api.post("/auth/session", { session_id: sessionId })
+        .then(res => {
+          console.log("[OAuth] Session exchange successful for:", res.data?.email);
+          onAuth(res.data);
           navigate("/board", { replace: true });
         })
         .catch(err => {
-          console.error("[OAuth] Session exchange failed:", err?.message);
+          const status = err?.response?.status;
+          const errMsg = err?.response?.data?.detail || err?.message || "Auth failed";
+          console.error("[OAuth] Session exchange error:", status, errMsg);
+          // Retry on 401/503/500+ (session may still be propagating)
+          if (retries > 0 && (status === 401 || status === 503 || (status && status >= 500) || !status)) {
+            console.log(`[OAuth] Retrying session exchange (${retries} left)...`);
+            setTimeout(() => exchangeSession(retries - 1), 2000);
+            return;
+          }
           setStatus("error");
-          setErrorMsg(err?.message || "Authentication failed. Please try again.");
+          setErrorMsg(errMsg);
           setTimeout(() => navigate("/login", { replace: true }), 3000);
         });
     };
