@@ -292,6 +292,50 @@ export default function RecruitingJourney() {
         </div>
       </div>
 
+      {/* ── Questionnaire Section ── */}
+      {program.questionnaire_url && (
+        <div className="mt-4 rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="questionnaire-section">
+          <div className="flex items-start sm:items-center justify-between gap-3 flex-col sm:flex-row">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${program.questionnaire_completed ? "bg-green-500/10" : "bg-teal-600/10"}`}>
+                {program.questionnaire_completed
+                  ? <CheckCircle2 className="w-4.5 h-4.5 text-green-500" />
+                  : <ClipboardCheck className="w-4.5 h-4.5 text-teal-600" />}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Recruiting Questionnaire</p>
+                {program.questionnaire_completed ? (
+                  <p className="text-xs text-green-500 mt-0.5">
+                    Completed {program.questionnaire_completed_at ? new Date(program.questionnaire_completed_at).toLocaleDateString() : ""}
+                  </p>
+                ) : (
+                  <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Required by most programs — fill it out to show interest</p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+              <a href={program.questionnaire_url} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors hover:opacity-80"
+                style={{ color: "var(--t-accent)", borderColor: "var(--t-accent)" }}
+                data-testid="questionnaire-open-link">
+                <ExternalLink className="w-3.5 h-3.5" /> Open Form
+              </a>
+              <button onClick={toggleQuestionnaire} disabled={questLoading}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  program.questionnaire_completed
+                    ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                    : "text-white hover:opacity-90"
+                }`}
+                style={program.questionnaire_completed ? {} : { backgroundColor: "var(--t-accent)" }}
+                data-testid="questionnaire-toggle-btn">
+                {questLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                {program.questionnaire_completed ? "Completed" : "Mark Complete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stage Log Modal */}
       {pendingStage && (
         <StageLogModal stageKey={pendingStage} currentStage={rail?.active || ""} universityName={program.university_name}
