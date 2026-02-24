@@ -130,8 +130,9 @@ export default function Layout({ user, onLogout }) {
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
+          data-testid="sidebar-overlay"
         />
       )}
 
