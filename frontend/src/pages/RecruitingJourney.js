@@ -39,6 +39,7 @@ export default function RecruitingJourney() {
   const [notesCount, setNotesCount] = useState(0);
   const [notesOpen, setNotesOpen] = useState(false);
   const [coachWatchAlert, setCoachWatchAlert] = useState(null);
+  const [questLoading, setQuestLoading] = useState(false);
 
   const [activeForm, setActiveForm] = useState(null);
   const [editCoach, setEditCoach] = useState(null);
