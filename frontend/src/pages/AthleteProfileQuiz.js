@@ -185,10 +185,10 @@ export default function AthleteProfileQuiz() {
   // ─── Completion Screen ───
   if (showComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }}>
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ backgroundColor: "var(--t-bg)" }}>
         <div className="w-full max-w-xl">
           {/* Progress bar complete */}
-          <div className="mb-10">
+          <div className="mb-6 sm:mb-10">
             <div className="flex justify-between items-center mb-3">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
               <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>Complete!</span>
@@ -201,22 +201,22 @@ export default function AthleteProfileQuiz() {
             </div>
           </div>
 
-          <div className="rounded-2xl border p-10 text-center relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="quiz-complete">
+          <div className="rounded-2xl border p-5 sm:p-10 text-center relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="quiz-complete">
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-500/40 to-transparent" />
-            <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl" style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(168,85,247,0.1))", boxShadow: "0 0 40px rgba(52,211,153,0.15)" }}>
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-5 sm:mb-6 flex items-center justify-center text-3xl sm:text-4xl" style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.15), rgba(168,85,247,0.1))", boxShadow: "0 0 40px rgba(52,211,153,0.15)" }}>
               {"\uD83C\uDF89"}
             </div>
-            <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
+            <h1 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>
               Your profile is <span className="bg-gradient-to-r from-teal-600 to-teal-600 bg-clip-text text-transparent">ready!</span>
             </h1>
-            <p className="text-sm mb-8 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
+            <p className="text-sm mb-6 sm:mb-8 max-w-sm mx-auto" style={{ color: "var(--t-text-muted)" }}>
               We've built your recruiting profile. Here's a preview of how we'll match you with programs.
             </p>
 
             {/* Profile summary */}
-            <div className="rounded-xl border p-5 text-left mb-5" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-4">Your Profile</p>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border p-4 sm:p-5 text-left mb-5" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-3 sm:mb-4">Your Profile</p>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div><p className="text-[10px] uppercase tracking-wide" style={{ color: "var(--t-text-muted)" }}>Position</p><p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{answers.position}</p></div>
                 <div><p className="text-[10px] uppercase tracking-wide" style={{ color: "var(--t-text-muted)" }}>Division</p><p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{answers.division}</p></div>
                 <div><p className="text-[10px] uppercase tracking-wide" style={{ color: "var(--t-text-muted)" }}>Regions</p><p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>{(answers.regions || []).join(", ") || "Any"}</p></div>
