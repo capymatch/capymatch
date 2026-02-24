@@ -336,6 +336,48 @@ export default function RecruitingJourney() {
         </div>
       )}
 
+      {/* ── Upcoming Follow-Up Reminder (due within 3 days) ── */}
+      {isFollowUpSoon && !isFollowUpOverdue && !activeForm && (
+        <div className="mt-4 rounded-xl overflow-hidden" style={{ background: "#1e1e2e" }} data-testid="upcoming-followup-card">
+          <div style={{ height: 2, background: "linear-gradient(90deg, #1a8a80, rgba(26,138,128,0.2))" }} />
+          <div className="p-4 sm:p-5">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ backgroundColor: "rgba(26,138,128,0.15)" }}>
+                <Clock className="w-5 h-5" style={{ color: "#2dd4bf" }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#2dd4bf" }}>
+                  {daysUntilDue === 1 ? "Due tomorrow" : `Due in ${daysUntilDue} days`}
+                </p>
+                <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>
+                  Follow up with {program.university_name}
+                </h3>
+                <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  {program.next_action_label || "You have a follow-up coming up. Get ahead of it to show coaches you're organized and committed."}
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
+                    className="inline-flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium text-white transition-colors shadow-md"
+                    style={{ backgroundColor: "#1a8a80" }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#158075"}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "#1a8a80"}
+                    data-testid="upcoming-email-btn">
+                    <Mail className="w-3.5 h-3.5" /> Send Email
+                  </button>
+                  <button onClick={openFollowup}
+                    className="inline-flex items-center gap-1.5 px-3 h-8 rounded-md text-xs font-medium transition-colors"
+                    style={{ color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}
+                    data-testid="upcoming-reschedule-btn">
+                    <Clock className="w-3.5 h-3.5" /> Reschedule
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Questionnaire Section ── */}
       {program.questionnaire_url && (
         <div className="mt-4 rounded-xl border p-4 sm:p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="questionnaire-section">
