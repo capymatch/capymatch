@@ -190,7 +190,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
 
           {/* Actions */}
           <div className="flex items-center gap-1.5 flex-shrink-0" data-stop="1">
-            {sectionActions.map((a, i) => (
+            {sectionActions.length > 0 ? sectionActions.map((a, i) => (
               <button key={i}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
                 style={a.cls === "primary"
@@ -201,15 +201,16 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               >
                 <Send className="w-3 h-3" /><span className="hidden sm:inline">{a.label}</span>
               </button>
-            ))}
-            <button
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-80"
-              style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }}
-              onClick={() => navigate(`/journey/${p.program_id}`)}
-              data-testid={`card-journey-${p.program_id}`}
-            >
-              <span className="hidden sm:inline">Journey</span><ChevronRight className="w-3 h-3" />
-            </button>
+            )) : (
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-80"
+                style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }}
+                onClick={() => navigate(`/journey/${p.program_id}`)}
+                data-testid={`card-journey-${p.program_id}`}
+              >
+                <span className="hidden sm:inline">Journey</span><ChevronRight className="w-3 h-3" />
+              </button>
+            )}
           </div>
 
           <ChevronRight
