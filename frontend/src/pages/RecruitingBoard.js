@@ -5,7 +5,7 @@ import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   Search, Plus, ChevronRight, ChevronDown, X, Loader2, Filter,
   PartyPopper, Rocket, CheckCircle2, Send, Clock, MapPin,
-  StickyNote, MessageSquare, AlertTriangle, Lightbulb
+  StickyNote, MessageSquare, AlertTriangle, Lightbulb, ClipboardCheck
 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
