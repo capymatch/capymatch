@@ -483,7 +483,7 @@ export default function AthleteProfileQuiz() {
           </Button>
         </div>
 
-        <p className="text-center mt-5 text-[11px]" style={{ color: "var(--t-text-faint)" }}>
+        <p className="hidden sm:block text-center mt-5 text-[11px]" style={{ color: "var(--t-text-faint)" }}>
           Press <kbd className="px-1.5 py-0.5 rounded border text-[10px]" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>Enter</kbd> to continue
           {q?.type === "single" && <> or <kbd className="px-1.5 py-0.5 rounded border text-[10px]" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>1</kbd>-<kbd className="px-1.5 py-0.5 rounded border text-[10px]" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>{q.options.length}</kbd> to select</>}
         </p>
