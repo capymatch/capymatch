@@ -68,7 +68,7 @@ async def register(request: Request, response: Response):
     # Send welcome email (fire-and-forget)
     import asyncio
     asyncio.create_task(send_welcome_email(name, email))
-    return {"user_id": user_id, "email": email, "name": name, "picture": ""}
+    return {"user_id": user_id, "email": email, "name": name, "picture": "", "session_token": session_token}
 
 
 @router.post("/auth/login")
