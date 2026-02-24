@@ -277,6 +277,27 @@ async def get_program(program_id: str, request: Request):
     return program
 
 
+@router.patch("/programs/{program_id}/questionnaire")
+async def update_questionnaire_status(program_id: str, request: Request):
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+    body = await request.json()
+    completed = body.get("completed", False)
+    update = {
+        "questionnaire_completed": completed,
+        "questionnaire_completed_at": datetime.now(timezone.utc).isoformat() if completed else None,
+    }
+    await db.programs.update_one(
+        {"program_id": program_id, "tenant_id": tenant_id},
+        {"$set": update}
+    )
+    return {"ok": True, **update}
+
+
+
 @router.post("/programs")
 async def create_program(data: ProgramCreate, request: Request):
     user = await get_current_user(request)
