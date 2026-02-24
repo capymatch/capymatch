@@ -67,7 +67,7 @@ function OAuthCallback({ onAuth }) {
     }
 
     setStatus("loading");
-    const API_BASE = process.env.REACT_APP_BACKEND_URL + "/api";
+    const API_BASE = window.location.origin + "/api";
 
     // Session exchange with retry (session data may take a moment to propagate)
     const exchangeSession = (retries = 2) => {
