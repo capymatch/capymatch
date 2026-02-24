@@ -141,16 +141,16 @@ function OAuthCallback({ onAuth }) {
         </div>
       )}
       {status === "error" && (
-        <div className="text-center max-w-sm px-4">
+        <div className="text-center max-w-md px-4">
           <div className="text-red-400 text-sm font-medium mb-2">Sign-in failed</div>
-          <div className="text-white/50 text-xs mb-3">{errorMsg}</div>
+          <div className="text-white/60 text-xs mb-3 break-all font-mono bg-white/5 rounded p-2">{errorMsg}</div>
           <button
             onClick={() => navigate("/login", { replace: true })}
             className="text-teal-600 text-xs underline hover:text-slate-300"
           >
             Back to login
           </button>
-          <div className="text-white/30 text-xs mt-2">Auto-redirecting in 3s...</div>
+          <div className="text-white/30 text-xs mt-2">Auto-redirecting in 8s...</div>
         </div>
       )}
     </div>
