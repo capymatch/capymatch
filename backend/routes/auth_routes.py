@@ -98,7 +98,7 @@ async def login(request: Request, response: Response):
         key="session_token", value=session_token, httponly=True,
         secure=True, samesite="none", path="/", max_age=7*24*3600
     )
-    return {"user_id": user_id, "email": user["email"], "name": user.get("name", ""), "picture": user.get("picture", "")}
+    return {"user_id": user_id, "email": user["email"], "name": user.get("name", ""), "picture": user.get("picture", ""), "session_token": session_token}
 
 
 @router.post("/auth/session")
