@@ -44,6 +44,16 @@ export default function Layout({ user, onLogout }) {
     setSidebarOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [sidebarOpen]);
+
   // Fetch notifications on mount and periodically
   useEffect(() => {
     const fetchNotifications = async () => {
