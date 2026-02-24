@@ -11,11 +11,11 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
       data-testid="gmail-consent-modal"
     >
       <div
-        className="relative w-full max-w-lg rounded-2xl overflow-hidden"
+        className="relative w-full max-w-lg rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
         style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}
       >
         {/* Header */}
-        <div className="px-6 pt-6 pb-4">
+        <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-3 sm:pb-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "rgba(26,138,128,0.15)" }}>
@@ -108,7 +108,7 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 px-6 pb-6">
+        <div className="flex gap-3 px-4 sm:px-6 pb-5 sm:pb-6">
           <button
             onClick={onConsent}
             disabled={!agreed}
