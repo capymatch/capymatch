@@ -430,39 +430,6 @@ export default function RecruitingJourney() {
       {/* Below-hero content */}
       {(!isCommitted || showJourneyDetails) && (<>
 
-      {isFollowUpOverdue && !activeForm && (
-        <div className="mt-5 rounded-2xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "rgba(249,115,22,0.25)" }}
-          data-testid="overdue-followup-card">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
-              <Clock className="w-5 h-5" style={{ color: "#f97316" }} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: "#f97316" }}>Follow-up due</p>
-              <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>
-                Time to follow up{daysOverdue > 0 ? ` \u2014 ${daysOverdue} day${daysOverdue === 1 ? "" : "s"} overdue` : ""}
-              </h3>
-              <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>
-                Send a follow-up to {program.university_name} to stay on their radar.
-              </p>
-              <div className="flex gap-2 mt-3">
-                <button onClick={isBasic ? () => toast.error("Upgrade to send emails") : openEmail}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-700/15 text-teal-700 hover:bg-teal-700/25 transition-colors flex items-center gap-1.5"
-                  data-testid="overdue-email-btn">
-                  <Mail className="w-3.5 h-3.5" />Email Coach
-                </button>
-                <button onClick={openFollowup}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 hover:bg-white/5"
-                  style={{ color: "var(--t-text-muted)" }} data-testid="overdue-reschedule-btn">
-                  <Clock className="w-3.5 h-3.5" />Reschedule
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {!isFollowUpOverdue && showNextStep && !activeForm && (
         <div className="mt-5">
           <NextStepCard latestEvent={latestEvent} universityName={program.university_name}
