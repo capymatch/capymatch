@@ -1,82 +1,83 @@
-# Volleyball Recruiting CRM — PRD
+# CapyMatch PRD
 
 ## Original Problem Statement
-Public-facing Volleyball Recruiting CRM — decision-support system for student-athletes via three-stage intelligence pipeline. Branded as "CapyMatch" with Apple-style design aesthetic.
+CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophisticated decision-support system for student-athletes. The core goal is to provide data-driven insights to navigate the complexities of college recruiting, featuring a three-stage AI pipeline to generate reliable, source-aware intelligence for UI cards.
 
-## Intelligence Pipeline — COMPLETE
-All 5 micro-agents built, tested, and wired. Three-stage architecture: Schema Mapper -> Payload Builder -> Intelligence Runtime.
+## Core Architecture
+- **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
+- **Backend**: FastAPI (Python) + MongoDB
+- **Auth**: Session-based (cookies) + Emergent-managed Google Auth
+- **Integrations**: Stripe (payments), Resend (email), Claude AI (intelligence cards)
 
-| Agent | Labels | Endpoint |
-|-------|--------|----------|
-| School Insight | AI-generated | `POST /api/intelligence/school-insight/{id}` |
-| Timeline | Unknown / Fills Early / Standard / Late | `POST /api/intelligence/timeline/{id}` |
-| Roster/Stability | Unknown / Open / Limited / Tight + Stability | `POST /api/intelligence/roster/{id}` |
-| Scholarship | Mix of Partial and Full / Typically Partial / Walk-On Pathways Common / Unknown | `POST /api/intelligence/scholarship/{id}` |
-| NIL Readiness | Established NIL Support / Emerging NIL Support / NIL Information Limited | `POST /api/intelligence/nil/{id}` |
+## What's Been Implemented
 
-## Page Architecture
-- **Dashboard** (/board) — Overview with pipeline, actions, activity feed
-- **My Schools** (/pipeline) — Pipeline board with status grouping
-- **Journey** (/journey/:programId) — Relationship management
-- **School Detail** (/school/:domain) — Research hub with intelligence cards
-- **Find Schools** (/knowledge-base) — Discovery with 1,053 universities
-- **Calendar** — Events and upcoming items
-- **Billing** (/billing) — Subscription management, billing history, cancel/reactivate
+### Completed Features
+1. **AI-powered school matching & intelligence cards** (Claude via Emergent LLM Key)
+2. **Multi-stage recruiting pipeline** with expandable cards (REDESIGNED Feb 2026)
+3. **Full Stripe subscription system** (Pro/Premium tiers, checkout, webhooks, billing page)
+4. **Emergent-managed Google Auth** + email/password login
+5. **University Knowledge Base** with scraped real data + background refresh jobs
+6. **Trust & Safety UI features** (source-aware AI reasoning)
+7. **Commitment Stability Index, Match Risk Badges, Timeline Intelligence, Roster Reality, Scholarship Composition, NIL Readiness**
+8. **Data contribution feature** ("Improve this card")
+9. **School detail pages** (/school/:domain)
+10. **Recruiting Journey page** (complete UX/UI overhaul)
+11. **Hero card for commitments**
+12. **Login/signup redesign** (Notion-style)
+13. **Branding**: Tab title "CapyMatch | Your Recruiting Journey"
+14. **Admin area** with user management
+15. **Per-school notes** via NotesSidebar
+16. **Athlete profile management** (name/email updates)
+17. **Pre-launch system audit** completed
+18. **Pipeline UI Redesign** (Feb 24, 2026) - Rich expandable cards, collapsible sections, filter chips, view toggle
 
-## Subscription & Payments — COMPLETE (Feb 23, 2026)
-### Stripe Integration
-- **Checkout**: `POST /api/stripe/checkout` creates Stripe Checkout sessions
-- **Status**: `GET /api/stripe/checkout/status/{session_id}` polls payment status with auto-upgrade
-- **Webhook**: `POST /api/webhook/stripe` processes completed payments as backup
-- **Billing**: `GET /api/stripe/billing-history` returns transactions and subscription info
-- **Cancel**: `POST /api/stripe/cancel` end-of-period cancellation (30-day grace)
-- **Reactivate**: `POST /api/stripe/reactivate` undo pending cancellation
-- **Library**: `emergentintegrations.payments.stripe.checkout` with `sk_test_emergent`
+### Pipeline UI Redesign (Latest - Feb 24, 2026)
+- Replaced simple pipeline rows with rich, expandable card design
+- 4 sections: Needs Outreach (teal), Waiting on Reply (amber), In Conversation (green), Committed (gold)
+- Compact/Expanded view toggle
+- Filter chips: All, Outreach, Waiting, In Convo, Committed
+- Expandable cards show: Coach info, Match Score with progress bar, Outreach stats, Timeline (lazy-loaded)
+- Removed "Mark as Replied" button per user request
+- Collapsible section headers
+- Mobile responsive (stats hidden, icon-only buttons)
+- 100% test pass rate (14/14 tests)
 
-### Billing Page (Feb 23, 2026)
-- Accessible from top-right profile dropdown ("Billing" link)
-- Current Plan card with tier icon, price, and cancel option
-- Billing History table with date, plan, amount, status, transaction ID
-- Cancel flow: confirmation dialog -> end-of-period cancellation with 30-day grace
-- Cancellation notice with expiry date and "Keep my plan" reactivation button
-- Tested: 8/8 backend + all frontend flows passed (iteration_98)
-
-### Subscription Tiers
-| Tier | Price | Schools | AI Drafts | Key Features |
-|------|-------|---------|-----------|-------------|
-| Starter | Free | 5 | 0 | Basic pipeline, profile, search |
-| Pro | $29/mo | 25 | 10/mo | Follow-ups, AI next steps, drafts |
-| Premium | $49/mo | Unlimited | Unlimited | Coach watch, analytics, insights |
-
-## Pre-Launch Audit (Feb 22, 2026) — CONDITIONAL GO
-- 18/18 API endpoints healthy
-- Security: Tenant isolation, bcrypt passwords, httponly secure cookies
-- AI guardrails enforced across all intelligence agents
-
-## Demo Account
-- **Email**: demo@capymatch.com / **Password**: demo2026
-- **Tier**: Premium
-- **Athlete**: Emma Mitchell (Junior OH, A5 Volleyball, GA)
-
-## Test Credentials
-- **Demo**: demo@capymatch.com / demo2026
-- **Google Auth**: douglas@yeslms.com
-- **Stripe Test**: stripetest@test.com / Test1234! (basic tier)
+## Pending Issues
+- **P2**: NCAA Timeline colors (recurring 4+ times, cosmetic)
+- **P2**: Dead links for school recruiting questionnaires
 
 ## Prioritized Backlog
+
 ### P1
-- Admin dashboard for contribution review/verification
-- Protect demo account for production (read-only or removal)
+- Admin Dashboard for Contribution Review (approve/reject user data contributions)
 
 ### P2
-- NCAA Timeline colors (cosmetic, recurring)
-- Add rate limiting to API endpoints
-- Consolidate AccountPage and SettingsPage overlapping content
-
-### P2+
-- Girls/Boys Volleyball separation
+- Full NIL transaction/payment platform
+- Separate Girls/Boys Volleyball data models
 - Email templates & bulk outreach
 - Camp/Tournament ROI tracker
-- NIL transaction/payment platform
 - Family Collaboration Roles
 - Dev/staging environment setup
+- Dead links handling (report broken link feature)
+- Consolidate AccountPage/SettingsPage overlap
+
+## Key Data Models
+- **tenants**: stripe_customer_id, stripe_subscription_id, plan_status, plan_renews_at
+- **programs**: university_name, domain, division, conference, recruiting_status, board_group, signals, primary_coach, coach_email
+- **transactions**: user_id, stripe_session_id, amount, plan, status
+- **interactions**: tenant_id, program_id, type, date_time, notes
+- **coaches**: tenant_id, program_id, coach_name, email, role
+
+## Key API Endpoints
+- `GET /api/programs` - List programs (optional ?grouped=true)
+- `GET /api/programs/:id` - Get single program
+- `GET /api/match-scores` - Get match scores
+- `GET /api/interactions` - List interactions (optional ?program_id=X)
+- `POST /api/stripe/create-checkout-session` - Stripe checkout
+- `POST /api/stripe/webhook` - Stripe webhook
+- `GET /api/stripe/billing-history` - Billing history
+- `POST /api/stripe/cancel-subscription` - Cancel subscription
+
+## Credentials
+- Demo: demo@capymatch.com / demo2026
+- Admin: douglas@yeslms.com (Google auth)
