@@ -18,8 +18,8 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
         <div className="px-6 pt-6 pb-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "rgba(46,196,182,0.15)" }}>
-                <Shield className="w-5 h-5" style={{ color: "#2ec4b6" }} />
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: "rgba(26,138,128,0.15)" }}>
+                <Shield className="w-5 h-5" style={{ color: "#1a8a80" }} />
               </div>
               <div>
                 <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Before You Connect Gmail</h2>
@@ -32,8 +32,8 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
           </div>
 
           {/* Tip */}
-          <div className="rounded-xl px-4 py-3 mb-4" style={{ background: "rgba(46,196,182,0.08)", border: "1px solid rgba(46,196,182,0.15)" }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: "#2ec4b6" }}>Pro Tip: Use a Recruiting Email</p>
+          <div className="rounded-xl px-4 py-3 mb-4" style={{ background: "rgba(26,138,128,0.08)", border: "1px solid rgba(26,138,128,0.15)" }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: "#1a8a80" }}>Pro Tip: Use a Recruiting Email</p>
             <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
               We recommend creating a dedicated email for recruiting (e.g., <span className="font-medium" style={{ color: "var(--t-text)" }}>firstname.lastname.recruiting@gmail.com</span>). This keeps your personal inbox private and your recruiting communication organized.
             </p>
@@ -88,7 +88,7 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
 
           {/* Encrypted badge */}
           <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-lg" style={{ background: "var(--t-surface-alt)" }}>
-            <Shield className="w-3.5 h-3.5" style={{ color: "#2ec4b6" }} />
+            <Shield className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />
             <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Your Gmail credentials are encrypted at rest. You can disconnect anytime.</p>
           </div>
 
@@ -113,7 +113,7 @@ export default function GmailConsentModal({ onConsent, onCancel }) {
             onClick={onConsent}
             disabled={!agreed}
             className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: agreed ? "#2ec4b6" : "rgba(46,196,182,0.4)", color: "#ffffff" }}
+            style={{ background: agreed ? "#1a8a80" : "rgba(26,138,128,0.4)", color: "#ffffff" }}
             data-testid="consent-connect-btn"
           >
             <Mail className="w-4 h-4" />

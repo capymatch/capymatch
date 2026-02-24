@@ -16,13 +16,13 @@ import UniversityLogo from "../components/UniversityLogo";
 
 /* ── Section Config ── */
 const SECTIONS = [
-  { key: "outreach", label: "Needs Outreach", color: "#2ec4b6" },
+  { key: "outreach", label: "Needs Outreach", color: "#1a8a80" },
   { key: "waiting", label: "Waiting on Reply", color: "#f59e0b" },
   { key: "convo", label: "In Conversation", color: "#16a34a" },
   { key: "committed", label: "Committed", color: "#d97706" },
 ];
 
-const BAR_COLORS = { outreach: "#2ec4b6", waiting: "#f59e0b", convo: "#16a34a", committed: "#d97706" };
+const BAR_COLORS = { outreach: "#1a8a80", waiting: "#f59e0b", convo: "#16a34a", committed: "#d97706" };
 
 /* ── Helpers ── */
 function groupIntoSections(programs) {
@@ -41,7 +41,7 @@ function groupIntoSections(programs) {
 function getStatusStyle(status) {
   const map = {
     "Not Contacted": { bg: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted, #888)" },
-    "Contacted": { bg: "rgba(46,196,182,0.08)", color: "#2ec4b6" },
+    "Contacted": { bg: "rgba(26,138,128,0.08)", color: "#1a8a80" },
     "Some Interest": { bg: "rgba(59,130,246,0.08)", color: "#3b82f6" },
     "Camp Attended": { bg: "rgba(139,92,246,0.08)", color: "#8b5cf6" },
     "Active Conversation": { bg: "rgba(16,185,129,0.08)", color: "#10b981" },
@@ -183,7 +183,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               <button key={i}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
                 style={a.cls === "primary"
-                  ? { backgroundColor: "#2ec4b6", color: "#fff", borderColor: "#2ec4b6" }
+                  ? { backgroundColor: "#1a8a80", color: "#fff", borderColor: "#1a8a80" }
                   : { backgroundColor: "var(--t-surface)", color: "#f59e0b", borderColor: "rgba(245,158,11,0.25)" }}
                 onClick={() => navigate(`/journey/${p.program_id}`)}
                 data-testid={`card-action-${p.program_id}`}
@@ -217,7 +217,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                 <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{p.primary_coach || "—"}</div>
                 {p.coach_email && (
                   <div className="text-[11px] mt-0.5">
-                    <a href={`mailto:${p.coach_email}`} className="hover:underline" style={{ color: "#2ec4b6" }}
+                    <a href={`mailto:${p.coach_email}`} className="hover:underline" style={{ color: "#1a8a80" }}
                       onClick={e => e.stopPropagation()} data-stop="1">{p.coach_email}</a>
                   </div>
                 )}
@@ -268,7 +268,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                     className="flex gap-2.5 py-1.5 text-[11px] relative"
                     style={{ borderLeft: "2px solid var(--t-border)", marginLeft: 6, paddingLeft: 14 }}>
                     <div className="absolute w-2 h-2 rounded-full"
-                      style={{ left: -5, top: 9, backgroundColor: i === 0 ? "#2ec4b6" : "var(--t-border)" }} />
+                      style={{ left: -5, top: 9, backgroundColor: i === 0 ? "#1a8a80" : "var(--t-border)" }} />
                     <span className="font-semibold flex-shrink-0" style={{ color: "var(--t-text-faint)", minWidth: 65 }}>
                       {ix.date_time ? new Date(ix.date_time).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
                     </span>
@@ -286,7 +286,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                 <button key={i}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
                   style={a.cls === "primary"
-                    ? { backgroundColor: "#2ec4b6", color: "#fff", borderColor: "#2ec4b6" }
+                    ? { backgroundColor: "#1a8a80", color: "#fff", borderColor: "#1a8a80" }
                     : { backgroundColor: "var(--t-surface)", color: "#f59e0b", borderColor: "rgba(245,158,11,0.25)" }}
                   onClick={() => navigate(`/journey/${p.program_id}`)}>
                   <Send className="w-3 h-3" />{a.label}
@@ -300,7 +300,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               </button>
               <button
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#2ec4b6", color: "#fff" }}
+                style={{ backgroundColor: "#1a8a80", color: "#fff" }}
                 onClick={() => navigate(`/journey/${p.program_id}`)}
                 data-testid={`card-full-journey-${p.program_id}`}>
                 View Full Journey <ChevronRight className="w-3 h-3" />
@@ -315,7 +315,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
 
 /* ── Progress Ring ── */
 const RING_STAGES = [
-  { key: "outreach", label: "Outreach", color: "#2ec4b6" },
+  { key: "outreach", label: "Outreach", color: "#1a8a80" },
   { key: "waiting", label: "Waiting", color: "#f59e0b" },
   { key: "convo", label: "In Convo", color: "#16a34a" },
   { key: "committed", label: "Committed", color: "#d97706" },
@@ -381,7 +381,7 @@ function HeroCard({ program, navigate }) {
   const advice = getHeroAdvice(p);
 
   const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : isWaiting ? "Keeping Warm" : "Momentum";
-  const kickerColor = isUrgent ? "#f87171" : "#2ec4b6";
+  const kickerColor = isUrgent ? "#f87171" : "#1a8a80";
 
   let urgencyText = "";
   if (isUrgent && p.next_action_due) {
@@ -414,12 +414,12 @@ function HeroCard({ program, navigate }) {
           {p.university_name}
         </div>
         <div className="flex items-center gap-2 mb-2.5">
-          {p.division && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(46,196,182,0.12)", color: "rgba(255,255,255,0.6)" }}>{p.division}</span>}
+          {p.division && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(26,138,128,0.12)", color: "rgba(255,255,255,0.6)" }}>{p.division}</span>}
           {p.conference && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{p.conference}</span>}
         </div>
         {advice && (
-          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.12)", borderLeft: "3px solid #2ec4b6" }}>
-            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} />
+          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(26,138,128,0.06)", border: "1px solid rgba(26,138,128,0.12)", borderLeft: "3px solid #1a8a80" }}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#1a8a80" }} />
             <div>
               <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
               <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
@@ -429,7 +429,7 @@ function HeroCard({ program, navigate }) {
       </div>
       <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
         <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-          style={{ background: "#2ec4b6", color: "white", border: "none" }}
+          style={{ background: "#1a8a80", color: "white", border: "none" }}
           onClick={() => navigate(`/journey/${p.program_id}`)} data-testid="hero-action-btn">
           <Send className="w-3 h-3" />{quickLabel}
         </button>
@@ -447,7 +447,7 @@ function AllCaughtUpCard({ navigate }) {
         <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
       </div>
       <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "#2ec4b6", color: "white", border: "none" }}
+        style={{ background: "#1a8a80", color: "white", border: "none" }}
         onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
         <Plus className="w-3 h-3" />Add School
       </button>
@@ -626,8 +626,8 @@ export default function RecruitingBoard() {
       <div className="flex items-center justify-center min-h-[70vh]" data-testid="congrats-screen">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="relative inline-flex items-center justify-center mb-6">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
-              <PartyPopper className="w-10 h-10" style={{ color: "#2ec4b6" }} />
+            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.1)" }}>
+              <PartyPopper className="w-10 h-10" style={{ color: "#1a8a80" }} />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#16a34a" }}>
               <CheckCircle2 className="w-4 h-4 text-white" />
@@ -640,7 +640,7 @@ export default function RecruitingBoard() {
           <p className="text-sm mb-8" style={{ color: "var(--t-text-muted)" }}>Your recruiting journey starts now.</p>
           <button
             className="inline-flex items-center gap-2 text-base font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90"
-            style={{ backgroundColor: "#2ec4b6", color: "white", boxShadow: "0 4px 14px rgba(46,196,182,0.3)" }}
+            style={{ backgroundColor: "#1a8a80", color: "white", boxShadow: "0 4px 14px rgba(26,138,128,0.3)" }}
             onClick={() => first?.program_id ? navigate(`/journey/${first.program_id}`) : setShowCongrats(false)}
             data-testid="start-journey-btn"
           >
@@ -684,7 +684,7 @@ export default function RecruitingBoard() {
           </button>
           <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
             className="text-white text-xs shadow-md"
-            style={{ background: "#2ec4b6", padding: "8px 16px", height: "auto" }}>
+            style={{ background: "#1a8a80", padding: "8px 16px", height: "auto" }}>
             <Plus className="w-3.5 h-3.5 mr-1" />Add School
           </Button>
         </div>

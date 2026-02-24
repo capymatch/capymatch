@@ -30,7 +30,7 @@ export function FirstReplyCelebration() {
         </p>
         <button data-testid="celebration-dismiss" onClick={dismiss}
           className="px-7 py-3 rounded-xl text-sm font-semibold border-none cursor-pointer transition-transform hover:scale-105"
-          style={{ background: "#2ec4b6", color: "white" }}>
+          style={{ background: "#1a8a80", color: "white" }}>
           View Response
         </button>
         <button onClick={dismiss} className="absolute top-6 right-6 p-2 rounded-full transition-colors" style={{ color: "rgba(255,255,255,0.5)" }}>

@@ -45,7 +45,7 @@ export default function SpotlightHero({ suggestions, adding, addToBoard, boardSc
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[260px]">
           {/* Left - Visual */}
           <div className="relative p-8 lg:p-10 flex flex-col justify-center" style={{ background: "linear-gradient(135deg, #0a2540, #1a365d)" }}>
-            <div className="absolute right-[-60px] bottom-[-60px] w-[200px] h-[200px] rounded-full" style={{ background: "radial-gradient(circle, rgba(46,196,182,0.2), transparent 70%)" }} />
+            <div className="absolute right-[-60px] bottom-[-60px] w-[200px] h-[200px] rounded-full" style={{ background: "radial-gradient(circle, rgba(26,138,128,0.2), transparent 70%)" }} />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-3">
                 <Trophy className="w-3.5 h-3.5 text-amber-400" />

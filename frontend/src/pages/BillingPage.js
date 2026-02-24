@@ -117,7 +117,7 @@ export default function BillingPage() {
         data-testid="current-plan-card"
       >
         <div className="px-6 pt-6 pb-2 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.15)" }}>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(26,138,128,0.15)" }}>
             <CreditCard className="w-5 h-5 text-teal-500" />
           </div>
           <div>

@@ -39,12 +39,12 @@ function CompletenessRing({ pct }) {
   return (
     <div className="relative w-16 h-16 flex-shrink-0">
       <svg width="64" height="64" viewBox="0 0 64 64" style={{ transform: "rotate(-90deg)" }}>
-        <defs><linearGradient id="rg"><stop offset="0%" stopColor="#2ec4b6" /><stop offset="100%" stopColor="#6366f1" /></linearGradient></defs>
+        <defs><linearGradient id="rg"><stop offset="0%" stopColor="#1a8a80" /><stop offset="100%" stopColor="#6366f1" /></linearGradient></defs>
         <circle cx="32" cy="32" r={r} fill="none" stroke="var(--t-border)" strokeWidth="6" />
         <circle cx="32" cy="32" r={r} fill="none" stroke="url(#rg)" strokeWidth="6" strokeLinecap="round"
           strokeDasharray={C} strokeDashoffset={offset} style={{ transition: "stroke-dashoffset 0.8s ease" }} />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center font-bold text-base" style={{ color: "#2ec4b6", fontFamily: "'Barlow Condensed', sans-serif" }}>{pct}%</div>
+      <div className="absolute inset-0 flex items-center justify-center font-bold text-base" style={{ color: "#1a8a80", fontFamily: "'Barlow Condensed', sans-serif" }}>{pct}%</div>
     </div>
   );
 }
@@ -87,7 +87,7 @@ function Field({ label, value, onChange, placeholder, type = "text", coachVisibl
         <textarea data-testid={testId} className="w-full rounded-lg border px-3 py-2 text-[13px] outline-none transition-all resize-none min-h-[70px]"
           style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           value={value || ""} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          onFocus={e => e.target.style.borderColor = "#2ec4b6"} onBlur={e => e.target.style.borderColor = ""} />
+          onFocus={e => e.target.style.borderColor = "#1a8a80"} onBlur={e => e.target.style.borderColor = ""} />
       ) : type === "select" ? (
         <select data-testid={testId} className="w-full rounded-lg border px-3 py-2 text-[13px] outline-none"
           style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
@@ -98,7 +98,7 @@ function Field({ label, value, onChange, placeholder, type = "text", coachVisibl
         <input data-testid={testId} type={type} className="w-full rounded-lg border px-3 py-2 text-[13px] outline-none transition-all"
           style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
           value={value || ""} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          onFocus={e => e.target.style.borderColor = "#2ec4b6"} onBlur={e => e.target.style.borderColor = ""} />
+          onFocus={e => e.target.style.borderColor = "#1a8a80"} onBlur={e => e.target.style.borderColor = ""} />
       )}
     </div>
   );
@@ -196,7 +196,7 @@ export default function ProfilePage() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="w-6 h-6 animate-spin" style={{ color: "#2ec4b6" }} /></div>
+    <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="w-6 h-6 animate-spin" style={{ color: "#1a8a80" }} /></div>
   );
   if (!profile) return (
     <div className="flex items-center justify-center min-h-[60vh]"><p style={{ color: "var(--t-text-muted)" }}>Unable to load profile</p></div>
@@ -224,7 +224,7 @@ export default function ProfilePage() {
     <div data-testid="profile-edit-panel">
       {/* Onboarding banner */}
       {fromOnboarding && (
-        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(46,196,182,0.06)", borderColor: "rgba(46,196,182,0.2)" }} data-testid="onboarding-banner">
+        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="onboarding-banner">
           <div>
             <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
               {canContinue ? "Looking good! Continue when ready." : `Fill in the essentials (${essentialsFilled}/4)`}
@@ -237,7 +237,7 @@ export default function ProfilePage() {
             onClick={() => canContinue && navigate("/pipeline")}
             disabled={!canContinue}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold flex-shrink-0 transition-all"
-            style={{ backgroundColor: canContinue ? "#2ec4b6" : "#94a3b8", color: "white", cursor: canContinue ? "pointer" : "not-allowed", opacity: canContinue ? 1 : 0.6 }}
+            style={{ backgroundColor: canContinue ? "#1a8a80" : "#94a3b8", color: "white", cursor: canContinue ? "pointer" : "not-allowed", opacity: canContinue ? 1 : 0.6 }}
             data-testid="continue-to-my-schools-btn"
           >
             Continue to My Schools <ArrowRight className="w-3.5 h-3.5" />
@@ -247,7 +247,7 @@ export default function ProfilePage() {
 
       {/* Journey banner */}
       {fromJourney && (
-        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(46,196,182,0.06)", borderColor: "rgba(46,196,182,0.2)" }} data-testid="journey-banner">
+        <div className="rounded-xl border p-4 mb-3 flex items-center justify-between gap-3" style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.2)" }} data-testid="journey-banner">
           <div>
             <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>Update your profile, then head back</p>
             <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Changes save automatically. Your profile powers AI-generated emails to coaches.</p>
@@ -255,7 +255,7 @@ export default function ProfilePage() {
           <button
             onClick={() => navigate(journeyPid ? `/journey/${journeyPid}` : "/pipeline")}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold flex-shrink-0 transition-all hover:opacity-90"
-            style={{ backgroundColor: "#2ec4b6", color: "white" }}
+            style={{ backgroundColor: "#1a8a80", color: "white" }}
             data-testid="back-to-journey-btn"
           >
             Back to {journeySchool || "Journey"} <ArrowRight className="w-3.5 h-3.5" />
@@ -269,12 +269,12 @@ export default function ProfilePage() {
         <div>
           <h3 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>Profile Strength</h3>
           <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>{comp.filled} of {comp.total} fields</p>
-          {comp.next && <p className="text-xs mt-1 font-medium" style={{ color: "#2ec4b6" }}>Add {comp.next.label.toLowerCase()}</p>}
+          {comp.next && <p className="text-xs mt-1 font-medium" style={{ color: "#1a8a80" }}>Add {comp.next.label.toLowerCase()}</p>}
         </div>
       </div>
 
       {/* Photo */}
-      <div data-testid="profile-photo-hero" className="rounded-xl border p-4 mb-3 flex items-center gap-4" style={{ background: "linear-gradient(135deg, rgba(46,196,182,0.04), rgba(99,102,241,0.04))", borderColor: "var(--t-border)" }}>
+      <div data-testid="profile-photo-hero" className="rounded-xl border p-4 mb-3 flex items-center gap-4" style={{ background: "linear-gradient(135deg, rgba(26,138,128,0.04), rgba(99,102,241,0.04))", borderColor: "var(--t-border)" }}>
         <div className="relative w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 cursor-pointer group border-2 border-white shadow-lg" onClick={() => photoRef.current?.click()}>
           {profile.photo_url ? (
             <img src={profile.photo_url} alt="" className="w-full h-full object-cover" />
@@ -296,7 +296,7 @@ export default function ProfilePage() {
       <div data-testid="profile-share-card" className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, #1a1a2e, #2d2d44)" }}>
         <h3 className="text-xs font-semibold text-white mb-2.5 flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> Share Your Profile</h3>
         <div className="flex flex-wrap gap-2">
-          <button data-testid="share-copy-link" onClick={copyLink} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ background: "#2ec4b6", color: "white" }}>
+          <button data-testid="share-copy-link" onClick={copyLink} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ background: "#1a8a80", color: "white" }}>
             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} {copied ? "Copied!" : "Copy Link"}
           </button>
           <a href={shareLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ background: "rgba(255,255,255,0.12)", color: "white" }}>
@@ -307,7 +307,7 @@ export default function ProfilePage() {
 
       {/* Section: Athlete Info */}
       <SectionCard testId="section-athlete-info" defaultOpen={true}
-        icon={<User className="w-3.5 h-3.5" style={{ color: "#2ec4b6" }} />} iconBg="#fce8ed"
+        icon={<User className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />} iconBg="#fce8ed"
         title="Athlete Info" summary={athleteSummary}
         status={sectionStatus(["athlete_name", "graduation_year", "position", "height", "jersey_number"])}
         statusColor={sectionStatus(["athlete_name", "graduation_year", "position", "height", "jersey_number"])}>
@@ -421,12 +421,12 @@ export default function ProfilePage() {
           <div className="flex lg:hidden rounded-lg overflow-hidden border" style={{ borderColor: "var(--t-border)" }}>
             <button data-testid="mobile-edit-toggle" onClick={() => setMobileView("edit")}
               className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold transition-colors"
-              style={{ background: mobileView === "edit" ? "#2ec4b6" : "var(--t-surface)", color: mobileView === "edit" ? "white" : "var(--t-text-muted)" }}>
+              style={{ background: mobileView === "edit" ? "#1a8a80" : "var(--t-surface)", color: mobileView === "edit" ? "white" : "var(--t-text-muted)" }}>
               <Pencil className="w-3 h-3" /> Edit
             </button>
             <button data-testid="mobile-preview-toggle" onClick={() => setMobileView("preview")}
               className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold transition-colors"
-              style={{ background: mobileView === "preview" ? "#2ec4b6" : "var(--t-surface)", color: mobileView === "preview" ? "white" : "var(--t-text-muted)" }}>
+              style={{ background: mobileView === "preview" ? "#1a8a80" : "var(--t-surface)", color: mobileView === "preview" ? "white" : "var(--t-text-muted)" }}>
               <Monitor className="w-3 h-3" /> Preview
             </button>
           </div>
@@ -492,7 +492,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => { setShowGateModal(false); setPendingNav(null); }}
                 className="px-4 py-2 rounded-lg text-[12px] font-bold transition-colors"
-                style={{ backgroundColor: "#2ec4b6", color: "white" }}
+                style={{ backgroundColor: "#1a8a80", color: "white" }}
                 data-testid="gate-complete-profile-btn"
               >
                 Complete Profile

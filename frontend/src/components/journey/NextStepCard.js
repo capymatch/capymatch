@@ -11,7 +11,7 @@ export function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFo
 
   return (
     <div className="rounded-2xl border p-5 relative overflow-hidden"
-      style={{ borderColor: "rgba(46,196,182,0.3)", background: "#1e1e2e" }}
+      style={{ borderColor: "rgba(26,138,128,0.3)", background: "#1e1e2e" }}
       data-testid="next-step-card">
       <button onClick={onDismiss} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: "rgba(255,255,255,0.35)" }}
         data-testid="next-step-dismiss"><X className="w-4 h-4" /></button>
@@ -21,7 +21,7 @@ export function NextStepCard({ latestEvent, universityName, onEmail, onLog, onFo
           <rule.icon className="w-5 h-5" style={{ color: rule.iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#2ec4b6" }}>What's Next</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "#1a8a80" }}>What's Next</p>
           <h3 className="text-sm font-bold mb-1" style={{ color: "#ffffff" }}>{rule.title}</h3>
           <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{rule.desc}</p>
           <div className="flex gap-2 flex-wrap">

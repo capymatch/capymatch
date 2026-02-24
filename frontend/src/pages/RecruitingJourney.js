@@ -188,7 +188,7 @@ export default function RecruitingJourney() {
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
       {/* Header with Progress Rail */}
       <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e", position: "relative" }} data-testid="journey-header">
-        <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
+        <div style={{ height: 2, background: "linear-gradient(90deg, #1a8a80 0%, rgba(26,138,128,0.2) 100%)" }} />
         <div style={{ padding: "20px 24px 16px" }}>
           {/* Top row: Back + Name + Active toggle */}
           <div className="flex items-center justify-between gap-3 mb-3">
@@ -309,13 +309,13 @@ export default function RecruitingJourney() {
       {!isBasic && program?.domain && (
         <button
           onClick={() => navigate(`/school/${program.domain}`)}
-          className="mt-5 w-full rounded-xl border p-4 flex items-center justify-between group transition-all hover:border-[#2ec4b6]/40"
+          className="mt-5 w-full rounded-xl border p-4 flex items-center justify-between group transition-all hover:border-[#1a8a80]/40"
           style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
           data-testid="view-school-intel-btn"
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
-              <Target className="w-4.5 h-4.5 text-[#2ec4b6]" />
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.1)" }}>
+              <Target className="w-4.5 h-4.5 text-[#1a8a80]" />
             </div>
             <div className="text-left">
               <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>School Intelligence</p>

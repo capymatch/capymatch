@@ -22,7 +22,7 @@ export default function UniversityLogo({ domain, name, size = 40, className = ""
     "linear-gradient(135deg,#3b82f6,#1d4ed8)",
     "linear-gradient(135deg,#10b981,#059669)",
     "linear-gradient(135deg,#f59e0b,#d97706)",
-    "linear-gradient(135deg,#2ec4b6,#14b8a6)",
+    "linear-gradient(135deg,#1a8a80,#14b8a6)",
     "linear-gradient(135deg,#a855f7,#7c3aed)",
     "linear-gradient(135deg,#06b6d4,#0891b2)",
   ];

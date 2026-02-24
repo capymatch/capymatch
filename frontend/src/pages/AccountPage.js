@@ -55,8 +55,8 @@ export default function AccountPage() {
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="personal-info-card">
         <div className="flex items-center justify-between px-6 pt-6 pb-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
-              <User className="w-5 h-5" style={{ color: "#2ec4b6" }} />
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(26,138,128,0.2)" }}>
+              <User className="w-5 h-5" style={{ color: "#1a8a80" }} />
             </div>
             <div>
               <h2 className="font-semibold text-lg" style={{ color: "var(--t-text)" }}>Personal Info</h2>
@@ -76,7 +76,7 @@ export default function AccountPage() {
         <div className="px-6 py-4">
           {infoLoading ? (
             <div className="flex items-center gap-2 py-3">
-              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#2ec4b6" }} />
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#1a8a80" }} />
               <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Loading...</span>
             </div>
           ) : isEditing ? (
@@ -113,7 +113,7 @@ export default function AccountPage() {
                 <button type="submit" disabled={infoSaving || (accountName === originalName && accountEmail === originalEmail)}
                   data-testid="save-personal-info-btn"
                   className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-medium text-white transition-colors disabled:opacity-50"
-                  style={{ backgroundColor: "#2ec4b6" }}
+                  style={{ backgroundColor: "#1a8a80" }}
                 >
                   {infoSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Save Changes
                 </button>
@@ -203,7 +203,7 @@ export default function AccountPage() {
                     className="h-full rounded-full transition-all duration-500"
                     style={{
                       width: subscription.usage.schools_limit === -1 ? "15%" : `${Math.min(100, (subscription.usage.schools / subscription.usage.schools_limit) * 100)}%`,
-                      backgroundColor: subscription.usage.schools_remaining <= 1 && subscription.usage.schools_limit !== -1 ? "#ef4444" : "#2ec4b6",
+                      backgroundColor: subscription.usage.schools_remaining <= 1 && subscription.usage.schools_limit !== -1 ? "#ef4444" : "#1a8a80",
                     }}
                   />
                 </div>

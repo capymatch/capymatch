@@ -16,7 +16,7 @@ function ProgressStep({ num, label, done, current }) {
         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
           done ? "text-teal-600" : current ? "border-[1.5px] border-teal-500 text-teal-600" : "border border-slate-300 text-slate-400"
         }`}
-        style={done ? { backgroundColor: "rgba(16,185,129,0.15)" } : current ? { backgroundColor: "rgba(46,196,182,0.12)" } : { backgroundColor: "rgba(148,163,184,0.08)" }}
+        style={done ? { backgroundColor: "rgba(16,185,129,0.15)" } : current ? { backgroundColor: "rgba(26,138,128,0.12)" } : { backgroundColor: "rgba(148,163,184,0.08)" }}
       >
         {done ? "✓" : num}
       </div>
@@ -44,7 +44,7 @@ function SuggestionCard({ school, onAdd, adding }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="font-semibold text-[12px] truncate" style={{ color: "var(--t-text)" }}>{school.university_name}</span>
-          {school.match_score && <span className="text-[11px] font-bold" style={{ color: "#2ec4b6" }}>{school.match_score}%</span>}
+          {school.match_score && <span className="text-[11px] font-bold" style={{ color: "#1a8a80" }}>{school.match_score}%</span>}
         </div>
         <div className="flex items-center gap-1.5 mt-1">
           {school.division && <span className="text-[9px] font-bold px-1.5 py-px rounded" style={{ background: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>{school.division}</span>}
@@ -54,7 +54,7 @@ function SuggestionCard({ school, onAdd, adding }) {
       </div>
       <button onClick={(e) => { e.stopPropagation(); onAdd(school); }} disabled={adding}
         className="flex-shrink-0 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-        style={{ background: "#2ec4b6", color: "white" }}
+        style={{ background: "#1a8a80", color: "white" }}
         data-testid={`add-suggestion-${school.university_name.replace(/\s+/g, "-").toLowerCase()}`}
       >
         {adding ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3 inline mr-0.5" />Add</>}
@@ -194,18 +194,18 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   if (celebrating) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-5 animate-in fade-in duration-300" data-testid="celebration-overlay">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.12)" }}>
-          <PartyPopper className="w-8 h-8" style={{ color: "#2ec4b6" }} />
+        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.12)" }}>
+          <PartyPopper className="w-8 h-8" style={{ color: "#1a8a80" }} />
         </div>
         <div className="text-center">
           <h2 className="text-xl font-extrabold" style={{ color: "var(--t-text)" }}>First school added!</h2>
           <p className="text-sm mt-2" style={{ color: "var(--t-text-muted)" }}>
-            <span className="font-semibold" style={{ color: "#2ec4b6" }}>{celebrating}</span> is now on your board.
+            <span className="font-semibold" style={{ color: "#1a8a80" }}>{celebrating}</span> is now on your board.
           </p>
           <p className="text-xs mt-1" style={{ color: "var(--t-text-muted)" }}>Setting up your recruiting pipeline...</p>
         </div>
         <div className="w-8 h-8 mt-2">
-          <Loader2 className="w-5 h-5 animate-spin mx-auto" style={{ color: "#2ec4b6" }} />
+          <Loader2 className="w-5 h-5 animate-spin mx-auto" style={{ color: "#1a8a80" }} />
         </div>
       </div>
     );
@@ -231,20 +231,20 @@ export default function EmptyBoardState({ onSchoolAdded }) {
         {/* Hero Content */}
         <div className="relative px-6 pt-7 pb-12 lg:px-8 lg:pb-14">
           <div className="absolute inset-0 pointer-events-none" style={{
-            background: "radial-gradient(ellipse at 20% 50%, rgba(46,196,182,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)"
+            background: "radial-gradient(ellipse at 20% 50%, rgba(26,138,128,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%)"
           }} />
           <div className="relative">
             <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-4"
-              style={{ backgroundColor: "rgba(46,196,182,0.12)", color: "#2ec4b6" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2ec4b6" }} />
+              style={{ backgroundColor: "rgba(26,138,128,0.12)", color: "#1a8a80" }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#1a8a80" }} />
               Step {currentStep} of 4
             </div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight mb-3" style={{ color: "var(--t-text)" }}>
               {!profileDone
-                ? <>First, let's set up <span style={{ color: "#2ec4b6" }}>the athlete profile</span></>
+                ? <>First, let's set up <span style={{ color: "#1a8a80" }}>the athlete profile</span></>
                 : !gmailConnected
-                ? <>Connect <span style={{ color: "#2ec4b6" }}>Gmail</span> to email coaches</>
-                : (firstName ? <>Let's build <span style={{ color: "#2ec4b6" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#2ec4b6" }}>target list</span></>)
+                ? <>Connect <span style={{ color: "#1a8a80" }}>Gmail</span> to email coaches</>
+                : (firstName ? <>Let's build <span style={{ color: "#1a8a80" }}>{firstName}'s</span> target list</> : <>Let's build your <span style={{ color: "#1a8a80" }}>target list</span></>)
               }
             </h2>
             <p className="text-sm leading-relaxed max-w-lg" style={{ color: "var(--t-text-secondary)" }}>
@@ -259,7 +259,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               <div className="mt-6 flex items-center gap-3">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-                  style={{ backgroundColor: "#2ec4b6", color: "white" }}
+                  style={{ backgroundColor: "#1a8a80", color: "white" }}
                   onClick={() => navigate("/profile?from=onboarding")}
                   data-testid="complete-profile-btn"
                 >
@@ -272,7 +272,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
               <div className="mt-6 space-y-4">
                 <button
                   className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90 disabled:opacity-60"
-                  style={{ backgroundColor: "#2ec4b6", color: "white" }}
+                  style={{ backgroundColor: "#1a8a80", color: "white" }}
                   onClick={() => setShowConsentModal(true)}
                   disabled={gmailConnecting}
                   data-testid="connect-gmail-btn"
@@ -309,7 +309,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           <div className="px-6 pb-10 lg:px-8 lg:pb-12 flex items-center gap-4">
             <button
               className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all hover:opacity-90"
-              style={{ backgroundColor: "#2ec4b6", color: "white" }}
+              style={{ backgroundColor: "#1a8a80", color: "white" }}
               onClick={() => navigate("/knowledge-base?from=onboarding")}
               data-testid="find-schools-btn"
             >
@@ -326,12 +326,12 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           <div className="flex items-center justify-between mb-3">
             <div>
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#2ec4b6]" />
+                <Sparkles className="w-4 h-4 text-[#1a8a80]" />
                 <span className="text-[14px] font-bold" style={{ color: "var(--t-text)" }}>Top matches for you</span>
               </div>
               <p className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>Based on your profile and preferences. Scores reflect academic realism.</p>
             </div>
-            <button onClick={() => navigate("/knowledge-base")} className="text-[11px] font-medium" style={{ color: "#2ec4b6" }} data-testid="see-all-schools">
+            <button onClick={() => navigate("/knowledge-base")} className="text-[11px] font-medium" style={{ color: "#1a8a80" }} data-testid="see-all-schools">
               See all schools
             </button>
           </div>

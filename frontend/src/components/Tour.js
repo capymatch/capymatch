@@ -166,7 +166,7 @@ export default function Tour({ onComplete }) {
                 className="h-1.5 rounded-full transition-all duration-300"
                 style={{
                   width: i === step ? 20 : 6,
-                  backgroundColor: i <= step ? "#2ec4b6" : "rgba(255,255,255,0.1)",
+                  backgroundColor: i <= step ? "#1a8a80" : "rgba(255,255,255,0.1)",
                 }}
               />
             ))}

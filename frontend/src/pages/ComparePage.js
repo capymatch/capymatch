@@ -40,7 +40,7 @@ function MiniRail({ rail }) {
     <div className="flex items-center gap-0.5">
       {RAIL_STAGES.map((s) => (
         <div key={s.key} className={`w-2 h-2 rounded-full ${
-          s.key === active ? "bg-slate-500 shadow-[0_0_6px_rgba(46,196,182,0.5)]"
+          s.key === active ? "bg-slate-500 shadow-[0_0_6px_rgba(26,138,128,0.5)]"
           : stages[s.key] ? "bg-slate-500/60" : "bg-[var(--t-border)]"
         }`} title={s.label} />
       ))}
@@ -66,7 +66,7 @@ function CompareCard({ program, isCurrent, onRemove }) {
   ];
 
   return (
-    <div className={`rounded-2xl border p-5 relative ${isCurrent ? "border-slate-500/40 shadow-[0_0_20px_rgba(46,196,182,0.08)]" : ""}`}
+    <div className={`rounded-2xl border p-5 relative ${isCurrent ? "border-slate-500/40 shadow-[0_0_20px_rgba(26,138,128,0.08)]" : ""}`}
       style={{ backgroundColor: "var(--t-surface)", borderColor: isCurrent ? undefined : "var(--t-border)" }}
       data-testid={`compare-card-${program.program_id}`}>
       {isCurrent && (

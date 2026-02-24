@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
       </div>
 
       {/* Intro */}
-      <div className="rounded-xl px-5 py-4" style={{ background: "rgba(46,196,182,0.08)", border: "1px solid rgba(46,196,182,0.15)" }}>
+      <div className="rounded-xl px-5 py-4" style={{ background: "rgba(26,138,128,0.08)", border: "1px solid rgba(26,138,128,0.15)" }}>
         <p className="text-sm leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
           We built this app for student-athletes and their families. We know trust matters, especially when it involves your child's personal information.
           Here's exactly what we do — and don't do — with your data.
@@ -73,15 +73,15 @@ export default function PrivacyPolicyPage() {
       {sections.map((section, i) => (
         <div key={i} className="rounded-xl border p-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.15)" }}>
-              <section.icon className="w-4 h-4" style={{ color: "#2ec4b6" }} />
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(26,138,128,0.15)" }}>
+              <section.icon className="w-4 h-4" style={{ color: "#1a8a80" }} />
             </div>
             <h2 className="text-base font-bold" style={{ color: "var(--t-text)" }}>{section.title}</h2>
           </div>
           <ul className="space-y-2.5">
             {section.items.map((item, j) => (
               <li key={j} className="flex items-start gap-2.5">
-                <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "#2ec4b6" }} />
+                <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "#1a8a80" }} />
                 <p className="text-sm leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{item}</p>
               </li>
             ))}
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
       <div className="rounded-xl px-5 py-4 text-center" style={{ background: "var(--t-surface-alt)" }}>
         <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
           Questions about your data? Reach out to us anytime at{" "}
-          <span className="font-semibold" style={{ color: "#2ec4b6" }}>support@recruitinghq.com</span>
+          <span className="font-semibold" style={{ color: "#1a8a80" }}>support@recruitinghq.com</span>
         </p>
       </div>
     </div>

@@ -20,13 +20,13 @@ export function CommittedHero({ program }) {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[
           { left: "8%", delay: "0s", dur: "3s", color: "#fbbf24", size: 6 },
-          { left: "18%", delay: "0.4s", dur: "3.5s", color: "#2ec4b6", size: 5 },
+          { left: "18%", delay: "0.4s", dur: "3.5s", color: "#1a8a80", size: 5 },
           { left: "30%", delay: "0.8s", dur: "2.8s", color: "#22c55e", size: 7 },
           { left: "45%", delay: "0.2s", dur: "3.2s", color: "#fbbf24", size: 5 },
-          { left: "58%", delay: "1s", dur: "3s", color: "#2ec4b6", size: 6 },
+          { left: "58%", delay: "1s", dur: "3s", color: "#1a8a80", size: 6 },
           { left: "70%", delay: "0.6s", dur: "3.4s", color: "#22c55e", size: 4 },
           { left: "82%", delay: "0.3s", dur: "2.9s", color: "#fbbf24", size: 7 },
-          { left: "92%", delay: "0.9s", dur: "3.1s", color: "#2ec4b6", size: 5 },
+          { left: "92%", delay: "0.9s", dur: "3.1s", color: "#1a8a80", size: 5 },
         ].map((p, i) => (
           <div key={i} style={{
             position: "absolute", top: 0, left: p.left,

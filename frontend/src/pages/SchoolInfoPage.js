@@ -24,12 +24,12 @@ function MatchRing({ score }) {
     <div className="relative flex-shrink-0 w-[100px] h-[100px]" data-testid="match-score-ring">
       <svg width="100" height="100" viewBox="0 0 100 100" className="absolute inset-0">
         <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-        <circle cx="50" cy="50" r={r} fill="none" stroke="#2ec4b6" strokeWidth="6"
+        <circle cx="50" cy="50" r={r} fill="none" stroke="#1a8a80" strokeWidth="6"
           strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
           transform="rotate(-90 50 50)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[22px] font-extrabold text-[#2ec4b6] leading-none">{pct}%</span>
+        <span className="text-[22px] font-extrabold text-[#1a8a80] leading-none">{pct}%</span>
         <span className="text-[9px] font-semibold text-white/35 uppercase tracking-[1px] mt-0.5">Match</span>
       </div>
     </div>
@@ -42,7 +42,7 @@ function StatCard({ value, label, subtitle, accent }) {
   return (
     <div className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5 flex flex-col items-center text-center" data-testid={`stat-card-${label?.replace(/\s+/g, '-').toLowerCase()}`}>
       <div className={`text-[26px] sm:text-[30px] font-black tracking-tight leading-none mb-2 ${
-        isEmpty ? "text-[var(--t-text-muted)]" : accent ? "text-[#2ec4b6]" : "text-[var(--t-text)]"
+        isEmpty ? "text-[var(--t-text-muted)]" : accent ? "text-[#1a8a80]" : "text-[var(--t-text)]"
       }`}>
         {isEmpty ? "N/A" : value}
       </div>
@@ -56,7 +56,7 @@ function StatCard({ value, label, subtitle, accent }) {
 function SectionHeader({ icon: Icon, title, testId }) {
   return (
     <div className="flex items-center gap-2 mb-4" data-testid={testId}>
-      {Icon && <Icon className="w-4 h-4 text-[#2ec4b6]" />}
+      {Icon && <Icon className="w-4 h-4 text-[#1a8a80]" />}
       <h3 className="text-[13px] font-bold uppercase tracking-[0.1em]" style={{ color: "var(--t-text-muted)" }}>{title}</h3>
     </div>
   );
@@ -79,10 +79,10 @@ function OverviewField({ label, value, isLink, gated }) {
     <div>
       <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400 mb-1.5">{label}</div>
       {gated ? (
-        <span className="text-[13px] text-[#2ec4b6] cursor-pointer hover:underline font-medium">Subscribe to view</span>
+        <span className="text-[13px] text-[#1a8a80] cursor-pointer hover:underline font-medium">Subscribe to view</span>
       ) : isLink && value ? (
         <a href={value.startsWith("http") ? value : `https://${value}`} target="_blank" rel="noreferrer"
-          className="text-[13px] text-[#2ec4b6] font-semibold hover:underline inline-flex items-center gap-1">
+          className="text-[13px] text-[#1a8a80] font-semibold hover:underline inline-flex items-center gap-1">
           {linkText} <ExternalLink className="w-3 h-3" />
         </a>
       ) : (
@@ -192,7 +192,7 @@ export default function SchoolInfoPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-6 h-6 text-[#2ec4b6] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#1a8a80] animate-spin" />
       </div>
     );
   }
@@ -216,7 +216,7 @@ export default function SchoolInfoPage() {
     <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-16" data-testid="school-info-page">
       {/* Back link */}
       <button onClick={() => navigate(-1)} data-testid="back-button"
-        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#2ec4b6] transition-colors">
+        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 font-semibold mb-5 hover:text-[#1a8a80] transition-colors">
         <ChevronLeft className="w-3.5 h-3.5" /> Back to Find Schools
       </button>
 
@@ -232,7 +232,7 @@ export default function SchoolInfoPage() {
                 <div className="flex flex-wrap gap-1 justify-center mt-2">
                   {school.match_reasons.map(r => (
                     <span key={r} className="text-[9px] px-1.5 py-0.5 rounded-[5px] font-medium"
-                      style={{ backgroundColor: "rgba(46,196,182,0.1)", color: "rgba(46,196,182,0.7)", border: "1px solid rgba(46,196,182,0.15)" }}>{r}</span>
+                      style={{ backgroundColor: "rgba(26,138,128,0.1)", color: "rgba(26,138,128,0.7)", border: "1px solid rgba(26,138,128,0.15)" }}>{r}</span>
                   ))}
                 </div>
               )}
@@ -245,7 +245,7 @@ export default function SchoolInfoPage() {
             <div className="flex flex-wrap items-center gap-1.5 mb-3 justify-center sm:justify-start">
               {school.division && (
                 <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold" data-testid="school-division"
-                  style={{ backgroundColor: "rgba(46,196,182,0.2)", color: "#2ec4b6" }}>{school.division}</span>
+                  style={{ backgroundColor: "rgba(26,138,128,0.2)", color: "#1a8a80" }}>{school.division}</span>
               )}
               {school.conference && (
                 <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-semibold"
@@ -261,7 +261,7 @@ export default function SchoolInfoPage() {
                 className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-[10px] text-[12px] sm:text-[13px] font-bold inline-flex items-center gap-1.5 text-white transition-all border-none"
                 style={school.on_board
                   ? { background: "rgba(16,185,129,0.2)", color: "#10b981" }
-                  : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
+                  : { background: "linear-gradient(135deg, #1a8a80, #25a99e)" }}>
                 {school.on_board ? <><Check className="w-4 h-4" /> On Your Board</> : <><Plus className="w-4 h-4" /> {adding ? "Adding..." : "Add to Board"}</>}
               </button>
               {school.website && (
@@ -319,7 +319,7 @@ export default function SchoolInfoPage() {
         <SectionCard title="Program Overview" icon={BookOpen} testId="program-overview-section">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 pb-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <OverviewField label="Division" value={
-              school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-[#2ec4b6]/20 text-[#2ec4b6] bg-[#2ec4b6]/5">{divLabel[school.division] || school.division}</span> : "—"
+              school.division ? <span className="inline-block px-2 py-0.5 rounded text-[12px] font-bold border border-[#1a8a80]/20 text-[#1a8a80] bg-[#1a8a80]/5">{divLabel[school.division] || school.division}</span> : "—"
             } />
             <OverviewField label="Conference" value={school.conference || "—"} />
             <OverviewField label="Program Website" value={school.website} isLink />
@@ -341,8 +341,8 @@ export default function SchoolInfoPage() {
               {coaches.map((c, i) => (
                 <div key={i} className="rounded-xl border border-[var(--t-border)] bg-[var(--t-surface)] p-5" data-testid={`coach-card-${i}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(46,196,182,0.1)" }}>
-                      <User className="w-5 h-5 text-[#2ec4b6]" />
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(26,138,128,0.1)" }}>
+                      <User className="w-5 h-5 text-[#1a8a80]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}>{c.name}</div>
@@ -352,7 +352,7 @@ export default function SchoolInfoPage() {
                   {c.email && (
                     <div className="flex items-center gap-2.5 mt-4">
                       <Mail className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-[13px] text-[#2ec4b6] font-medium">{c.email}</span>
+                      <span className="text-[13px] text-[#1a8a80] font-medium">{c.email}</span>
                     </div>
                   )}
                 </div>

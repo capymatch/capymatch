@@ -217,8 +217,8 @@ export default function SettingsPage() {
       {/* Your Data & Privacy */}
       <div className="rounded-xl p-4 lg:p-6 border" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="privacy-section">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
-            <Shield className="w-4 h-4 lg:w-5 lg:h-5" style={{ color: "#2ec4b6" }} />
+          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(26,138,128,0.2)" }}>
+            <Shield className="w-4 h-4 lg:w-5 lg:h-5" style={{ color: "#1a8a80" }} />
           </div>
           <div>
             <h2 className="font-semibold text-base lg:text-lg" style={{ color: "var(--t-text)" }}>Your Data & Privacy</h2>
@@ -242,7 +242,7 @@ export default function SettingsPage() {
           <button
             onClick={() => handleToggleInboundScanning(!privacyPrefs.inbound_email_scanning)}
             className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ml-3"
-            style={{ backgroundColor: privacyPrefs.inbound_email_scanning ? "#2ec4b6" : "var(--t-border)" }}
+            style={{ backgroundColor: privacyPrefs.inbound_email_scanning ? "#1a8a80" : "var(--t-border)" }}
             data-testid="inbound-scanning-toggle"
           >
             <div

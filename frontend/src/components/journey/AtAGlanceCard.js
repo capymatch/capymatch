@@ -85,7 +85,7 @@ export function AtAGlanceCard({ program, coaches, isPremium, isBasic, programId,
       )}
 
       {isPremium ? (
-        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(46,196,182,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
+        <div className="rounded-lg p-2.5 border" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(26,138,128,0.04))", borderColor: "rgba(168,85,247,0.15)" }}>
           {aiSummary ? (
             <div className="space-y-1.5">
               <p className="text-[9px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1"><Sparkles className="w-3 h-3" />Next move</p>

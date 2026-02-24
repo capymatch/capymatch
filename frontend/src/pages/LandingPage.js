@@ -28,7 +28,7 @@ export default function LandingPage() {
             <button onClick={handleLocalLogin} className="text-[13px] font-semibold px-4 py-2 rounded-full transition-all" style={{ color: "#1a2b2a" }} data-testid="header-login-btn">
               Log In
             </button>
-            <button onClick={handleLogin} className="text-[13px] font-semibold px-5 py-2 rounded-full text-white transition-all hover:opacity-90" style={{ backgroundColor: "#2ec4b6" }} data-testid="header-cta-btn">
+            <button onClick={handleLogin} className="text-[13px] font-semibold px-5 py-2 rounded-full text-white transition-all hover:opacity-90" style={{ backgroundColor: "#1a8a80" }} data-testid="header-cta-btn">
               Start Free
             </button>
           </div>
@@ -39,11 +39,11 @@ export default function LandingPage() {
       <section className="relative pt-32 pb-8 md:pt-40 md:pb-12 overflow-hidden">
         {/* Subtle background gradient */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse at 50% 0%, rgba(46,196,182,0.06) 0%, transparent 60%)"
+          background: "radial-gradient(ellipse at 50% 0%, rgba(26,138,128,0.06) 0%, transparent 60%)"
         }} />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-6" style={{ backgroundColor: "rgba(46,196,182,0.08)", color: "#2ec4b6" }}>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-6" style={{ backgroundColor: "rgba(26,138,128,0.08)", color: "#1a8a80" }}>
             <span className="text-[11px] font-bold uppercase tracking-wider">For Volleyball Families</span>
           </div>
 
@@ -66,7 +66,7 @@ export default function LandingPage() {
               onClick={handleLogin}
               data-testid="hero-cta-btn"
               className="flex items-center justify-center gap-2 font-semibold text-sm px-7 py-3.5 rounded-full text-white transition-all hover:opacity-90 hover:-translate-y-[1px]"
-              style={{ backgroundColor: "#2ec4b6", boxShadow: "0 4px 20px rgba(46,196,182,0.25)" }}
+              style={{ backgroundColor: "#1a8a80", boxShadow: "0 4px 20px rgba(26,138,128,0.25)" }}
             >
               Start Free <ChevronRight className="w-4 h-4" />
             </button>
@@ -85,8 +85,8 @@ export default function LandingPage() {
           <div
             className="relative rounded-2xl overflow-hidden"
             style={{
-              boxShadow: "0 25px 80px rgba(26,43,42,0.12), 0 8px 32px rgba(46,196,182,0.08)",
-              border: "1px solid rgba(46,196,182,0.12)"
+              boxShadow: "0 25px 80px rgba(26,43,42,0.12), 0 8px 32px rgba(26,138,128,0.08)",
+              border: "1px solid rgba(26,138,128,0.12)"
             }}
           >
             {/* Browser chrome bar */}
@@ -118,7 +118,7 @@ export default function LandingPage() {
           <div className="mx-auto mt-[-2px]" style={{
             width: "80%",
             height: "60px",
-            background: "radial-gradient(ellipse at center, rgba(46,196,182,0.08) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(26,138,128,0.08) 0%, transparent 70%)",
             filter: "blur(20px)"
           }} />
         </div>
@@ -136,7 +136,7 @@ export default function LandingPage() {
             ].map((s, i) => (
               <div key={i}>
                 <div className="text-3xl md:text-4xl font-extrabold tracking-tight" style={{ color: "#1a2b2a" }}>{s.number}</div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider mt-1" style={{ color: "#2ec4b6" }}>{s.label}</div>
+                <div className="text-[11px] font-semibold uppercase tracking-wider mt-1" style={{ color: "#1a8a80" }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -159,8 +159,8 @@ export default function LandingPage() {
                 icon: Sparkles,
                 title: "AI-Powered Insights",
                 desc: "Source-aware intelligence cards that explain scholarship structures, NIL readiness, and roster reality — with citations, not guesses.",
-                iconBg: "rgba(46,196,182,0.1)",
-                iconColor: "#2ec4b6",
+                iconBg: "rgba(26,138,128,0.1)",
+                iconColor: "#1a8a80",
               },
               {
                 icon: Mail,
@@ -232,7 +232,7 @@ export default function LandingPage() {
               { step: "03", title: "Start reaching out", desc: "Use AI to draft personalized emails, send them through Gmail, and let smart reminders handle the follow-up cadence." },
             ].map((s, i) => (
               <div key={i} className="relative">
-                <div className="text-5xl font-extrabold mb-4" style={{ color: "rgba(46,196,182,0.15)" }}>{s.step}</div>
+                <div className="text-5xl font-extrabold mb-4" style={{ color: "rgba(26,138,128,0.15)" }}>{s.step}</div>
                 <h3 className="text-lg font-bold mb-2" style={{ color: "#1a2b2a" }}>{s.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#6b7f7a" }}>{s.desc}</p>
               </div>
@@ -246,7 +246,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4" style={{ color: "#1a2b2a" }}>
             Built for families,{" "}
-            <span style={{ color: "#2ec4b6" }}>not agents</span>
+            <span style={{ color: "#1a8a80" }}>not agents</span>
           </h2>
           <p className="text-base mb-12 max-w-xl mx-auto" style={{ color: "#6b7f7a" }}>
             We believe every family deserves access to honest, data-driven recruiting guidance.
@@ -261,7 +261,7 @@ export default function LandingPage() {
               "Free tier that's actually useful — no bait-and-switch",
             ].map((t, i) => (
               <div key={i} className="flex items-start gap-3 py-2.5">
-                <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#2ec4b6" }} strokeWidth={2} />
+                <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#1a8a80" }} strokeWidth={2} />
                 <span className="text-sm" style={{ color: "#3a4f4a" }}>{t}</span>
               </div>
             ))}
@@ -272,7 +272,7 @@ export default function LandingPage() {
       {/* ─── FINAL CTA ─── */}
       <section className="py-20 md:py-28 relative overflow-hidden" style={{ backgroundColor: "#1a2b2a" }}>
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(46,196,182,0.1) 0%, transparent 70%)"
+          background: "radial-gradient(ellipse at 50% 50%, rgba(26,138,128,0.1) 0%, transparent 70%)"
         }} />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
@@ -290,7 +290,7 @@ export default function LandingPage() {
             onClick={handleLogin}
             data-testid="final-cta-btn"
             className="inline-flex items-center justify-center gap-2 font-semibold text-sm px-8 py-4 rounded-full transition-all hover:-translate-y-[1px]"
-            style={{ backgroundColor: "#2ec4b6", color: "white", boxShadow: "0 4px 30px rgba(46,196,182,0.3)" }}
+            style={{ backgroundColor: "#1a8a80", color: "white", boxShadow: "0 4px 30px rgba(26,138,128,0.3)" }}
           >
             Start Free <ArrowRight className="w-4 h-4" />
           </button>

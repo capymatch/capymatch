@@ -30,7 +30,7 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
   const visibleConf = showAllConf ? conferences : conferences.slice(0, 8);
   const activeCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
   const chipCls = (active) => active
-    ? "text-[#2ec4b6] bg-[#2ec4b6]/10 border-[#2ec4b6]/25"
+    ? "text-[#1a8a80] bg-[#1a8a80]/10 border-[#1a8a80]/25"
     : "";
 
   return (
@@ -100,7 +100,7 @@ function FilterPanel({ open, onClose, divisions, regions, conferences, filterDiv
 
           <button onClick={onApply} data-testid="filter-apply-btn"
             className="w-full py-3 rounded-xl text-[13px] font-bold text-white mt-2"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
+            style={{ background: "linear-gradient(135deg, #1a8a80, #25a99e)" }}>
             Apply Filters {activeCount > 0 && `(${activeCount})`}
           </button>
           <button onClick={onClear} data-testid="filter-clear-btn"
@@ -119,17 +119,17 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
   if (!school) return null;
   const isOnBoard = boardSchools.has(school.university_name);
   return (
-    <div className="flex flex-col sm:flex-row rounded-2xl overflow-hidden mb-7 border border-[#2ec4b6]/12" data-testid="top-match-banner">
+    <div className="flex flex-col sm:flex-row rounded-2xl overflow-hidden mb-7 border border-[#1a8a80]/12" data-testid="top-match-banner">
       <div className="flex-1 p-5 sm:p-7" style={{ background: "linear-gradient(135deg, #1a1f2e 0%, #1e2640 100%)" }}>
-        <div className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#2ec4b6] mb-2.5 flex items-center gap-1.5">
+        <div className="text-[10px] font-bold tracking-[1.5px] uppercase text-[#1a8a80] mb-2.5 flex items-center gap-1.5">
           <Sparkles className="w-3 h-3" /> Your #1 Match
         </div>
-        <div className="text-lg sm:text-[22px] font-extrabold text-white mb-2 tracking-tight leading-tight cursor-pointer hover:text-[#2ec4b6] transition-colors"
+        <div className="text-lg sm:text-[22px] font-extrabold text-white mb-2 tracking-tight leading-tight cursor-pointer hover:text-[#1a8a80] transition-colors"
           onClick={() => school.domain && navigate(`/school/${school.domain}`)} data-testid="top-match-name">
           {school.university_name}
         </div>
         <div className="flex items-center gap-2 mb-4">
-          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold" style={{ backgroundColor: "rgba(46,196,182,0.2)", color: "#2ec4b6" }}>{school.division}</span>
+          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold" style={{ backgroundColor: "rgba(26,138,128,0.2)", color: "#1a8a80" }}>{school.division}</span>
           <span className="text-[12px] text-white/40">{school.region} {school.conference && `· ${school.conference}`}</span>
         </div>
         {school.match_reasons?.length > 0 && (
@@ -148,7 +148,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
       </div>
       <div className="sm:w-[280px] flex flex-col items-center justify-center p-5 sm:p-7 gap-4 sm:gap-5 flex-shrink-0" style={{ backgroundColor: "#161b25" }}>
         <div className="flex sm:flex-col items-center gap-2 sm:gap-1">
-          <div className="text-[36px] sm:text-[48px] font-extrabold text-[#2ec4b6] leading-none">{school.match_score}%</div>
+          <div className="text-[36px] sm:text-[48px] font-extrabold text-[#1a8a80] leading-none">{school.match_score}%</div>
           <div className="text-[10px] sm:text-[11px] text-white/35 uppercase tracking-[1px] font-semibold">Match Score</div>
         </div>
         {school.match_reasons?.length > 0 && (
@@ -169,7 +169,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
         <button onClick={() => !isOnBoard && addToBoard(school)} disabled={adding[school.university_name] || isOnBoard}
           data-testid="top-match-add-btn"
           className="w-full py-2.5 rounded-xl text-[13px] font-bold text-white transition-all"
-          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}>
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.2)", color: "#10b981" } : { background: "linear-gradient(135deg, #1a8a80, #25a99e)" }}>
           {isOnBoard ? "On Your Board" : adding[school.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
       </div>
@@ -181,7 +181,7 @@ function TopMatchBanner({ school, adding, addToBoard, boardSchools, navigate }) 
 function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBadgeClick }) {
   const isOnBoard = boardSchools.has(uni.university_name);
   return (
-    <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#2ec4b6]/30 group"
+    <div className="rounded-[14px] p-[18px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[#1a8a80]/30 group"
       style={{ backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}
       onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
       data-testid={`school-card-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}>
@@ -190,13 +190,13 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
         <div className="flex-1 min-w-0">
           <div className="text-[13px] font-bold truncate" style={{ color: "var(--t-text)" }}>{uni.university_name}</div>
           <div className="flex items-center gap-1.5 mt-0.5 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#2ec4b6]/15 text-[#2ec4b6]">{uni.division}</span>
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1a8a80]/15 text-[#1a8a80]">{uni.division}</span>
             {uni.region && <span>{uni.region}</span>}
             {uni.conference && <span>· {uni.conference}</span>}
           </div>
         </div>
         {uni.match_score > 0 && (
-          <span className="text-[18px] font-extrabold text-[#2ec4b6] flex-shrink-0" data-testid="card-match-score">{uni.match_score}%</span>
+          <span className="text-[18px] font-extrabold text-[#1a8a80] flex-shrink-0" data-testid="card-match-score">{uni.match_score}%</span>
         )}
       </div>
       {uni.match_reasons?.length > 0 && (
@@ -239,7 +239,7 @@ function SchoolCard({ uni, adding, addToBoard, boardSchools, navigate, onRiskBad
         <button onClick={() => !isOnBoard && addToBoard(uni)} disabled={adding[uni.university_name] || isOnBoard}
           data-testid={`add-board-${uni.university_name.replace(/\s+/g, "-").toLowerCase()}`}
           className="flex-1 py-2 rounded-lg text-[11px] font-bold text-center transition-all"
-          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.12)", color: "#10b981" } : { backgroundColor: "rgba(46,196,182,0.12)", color: "#2ec4b6" }}>
+          style={isOnBoard ? { backgroundColor: "rgba(16,185,129,0.12)", color: "#10b981" } : { backgroundColor: "rgba(26,138,128,0.12)", color: "#1a8a80" }}>
           {isOnBoard ? "On Board" : adding[uni.university_name] ? "Adding..." : "+ Add to Board"}
         </button>
         <button onClick={() => uni.domain && navigate(`/school/${uni.domain}`)}
@@ -401,7 +401,7 @@ export default function UniversityKnowledgeBase() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20" data-testid="kb-loading">
-        <Loader2 className="w-6 h-6 text-[#2ec4b6] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#1a8a80] animate-spin" />
       </div>
     );
   }
@@ -423,12 +423,12 @@ export default function UniversityKnowledgeBase() {
           <span className="text-[11px] whitespace-nowrap" style={{ color: "var(--t-text-muted)" }}>{filtered.length.toLocaleString()}</span>
         </div>
         <button onClick={() => setFiltersOpen(true)} data-testid="filter-toggle-btn"
-          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold transition-all hover:border-[#2ec4b6]/30 hover:text-[#2ec4b6]"
+          className="flex items-center gap-1.5 px-4 py-3 rounded-[14px] text-[13px] font-semibold transition-all hover:border-[#1a8a80]/30 hover:text-[#1a8a80]"
           style={{ color: "var(--t-text-secondary)", backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
           <Filter className="w-4 h-4" />
           Filters
           {activeFilterCount > 0 && (
-            <span className="bg-[#2ec4b6] text-white text-[10px] px-1.5 py-0.5 rounded-[10px] font-bold">{activeFilterCount}</span>
+            <span className="bg-[#1a8a80] text-white text-[10px] px-1.5 py-0.5 rounded-[10px] font-bold">{activeFilterCount}</span>
           )}
         </button>
       </div>
@@ -442,7 +442,7 @@ export default function UniversityKnowledgeBase() {
             <button key={b.id} onClick={() => handleBucketClick(b)} data-testid={`chip-${b.id}`}
               className="px-4 py-[7px] rounded-[20px] text-[12px] font-semibold whitespace-nowrap transition-all"
               style={isActive
-                ? { color: "#2ec4b6", backgroundColor: "rgba(46,196,182,0.1)", border: "1px solid rgba(46,196,182,0.3)" }
+                ? { color: "#1a8a80", backgroundColor: "rgba(26,138,128,0.1)", border: "1px solid rgba(26,138,128,0.3)" }
                 : { color: "var(--t-text-secondary)", backgroundColor: "var(--t-surface)", border: "1px solid var(--t-border)" }}>
               {b.label}
               {count > 0 && <span className="ml-1 opacity-50 font-medium">{count}</span>}
@@ -477,7 +477,7 @@ export default function UniversityKnowledgeBase() {
         <div className="text-center py-16" data-testid="no-results">
           <Search className="w-10 h-10 mx-auto mb-3 text-slate-200" />
           <p className="text-sm font-medium text-slate-400">No universities found matching your filters</p>
-          <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto text-[#2ec4b6] transition-colors hover:opacity-80">
+          <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto text-[#1a8a80] transition-colors hover:opacity-80">
             <RotateCcw className="w-3.5 h-3.5" /> Reset filters
           </button>
         </div>

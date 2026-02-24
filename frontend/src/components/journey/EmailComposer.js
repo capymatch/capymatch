@@ -74,7 +74,7 @@ export function EmailComposer({ coaches, programId, universityName, onSent, onCa
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }} data-testid="email-composer-overlay">
       <div className="w-full max-w-[620px] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(46,196,182,0.08)", maxHeight: "90vh", colorScheme: "dark" }}
+        style={{ background: "#161b25", border: "1px solid rgba(46, 196, 182, 0.15)", boxShadow: "0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(26,138,128,0.08)", maxHeight: "90vh", colorScheme: "dark" }}
         data-testid="email-composer">
         <div className="p-5 pb-4 border-b flex-shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}>
           <div className="flex items-center justify-between mb-3">
@@ -88,7 +88,7 @@ export function EmailComposer({ coaches, programId, universityName, onSent, onCa
               ["intro", "follow_up", "thank_you", "interest_update"].map(t => (
                 <button key={t} onClick={() => draftAI(t)} disabled={drafting}
                   className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors disabled:opacity-50"
-                  style={{ background: "rgba(46,196,182,0.1)", color: "#2ec4b6", border: "1px solid rgba(46,196,182,0.2)" }}
+                  style={{ background: "rgba(26,138,128,0.1)", color: "#1a8a80", border: "1px solid rgba(26,138,128,0.2)" }}
                   data-testid={`draft-${t}-btn`}>
                   <Sparkles className="w-3 h-3 inline mr-1" />{t.replace(/_/g, " ")}
                 </button>
@@ -141,7 +141,7 @@ export function EmailComposer({ coaches, programId, universityName, onSent, onCa
               <div className="flex flex-wrap gap-2 mt-2">
                 {attachments.map(att => (
                   <div key={att.file_id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs"
-                    style={{ background: "rgba(46,196,182,0.06)", border: "1px solid rgba(46,196,182,0.15)", color: "rgba(255,255,255,0.6)" }}
+                    style={{ background: "rgba(26,138,128,0.06)", border: "1px solid rgba(26,138,128,0.15)", color: "rgba(255,255,255,0.6)" }}
                     data-testid={`attachment-${att.file_id}`}>
                     <Paperclip className="w-3 h-3 text-slate-500 flex-shrink-0" />
                     <span className="truncate max-w-[150px]">{att.filename}</span>
@@ -162,8 +162,8 @@ export function EmailComposer({ coaches, programId, universityName, onSent, onCa
             Cancel
           </button>
           <Button onClick={handleReview} disabled={sending}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(46,196,182,0.4)]"
-            style={{ background: "linear-gradient(135deg, #2ec4b6, #25a99e)" }}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-[13px] font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(26,138,128,0.4)]"
+            style={{ background: "linear-gradient(135deg, #1a8a80, #25a99e)" }}
             data-testid="send-email-btn">
             <Send className="w-4 h-4" />Review & Send{attachments.length > 0 ? ` (${attachments.length})` : ""}
           </Button>

@@ -54,7 +54,7 @@ function SpotlightCard({ program, onClick }) {
     "Committed": { bg: "linear-gradient(135deg, rgba(251,191,36,0.18), rgba(245,158,11,0.12))", color: "#b45309", border: "rgba(251,191,36,0.4)" },
     "Active Conversation": { bg: "rgba(16,185,129,0.12)", color: "#059669" },
     "Some Interest": { bg: "rgba(168,85,247,0.12)", color: "#7c3aed" },
-    "Camp Attended": { bg: "rgba(46,196,182,0.12)", color: "#14b8a6" },
+    "Camp Attended": { bg: "rgba(26,138,128,0.12)", color: "#14b8a6" },
     "Contacted": { bg: "rgba(59,130,246,0.12)", color: "#2563eb" },
     "Offer Received": { bg: "rgba(245,158,11,0.12)", color: "#d97706" },
   };
@@ -92,7 +92,7 @@ function SpotlightCard({ program, onClick }) {
       </div>
       <div className="pt-3 border-t" style={{ borderColor: isCommitted ? "rgba(251,191,36,0.25)" : "var(--t-border)" }}>
         <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-          <span className="font-semibold" style={{ color: isCommitted ? "#d97706" : "#2ec4b6" }}>
+          <span className="font-semibold" style={{ color: isCommitted ? "#d97706" : "#1a8a80" }}>
             {isCommitted ? "Congratulations! " : "Next step: "}
           </span>
           {isCommitted ? "You're committed — the hard work paid off!" : nextStep}
@@ -114,7 +114,7 @@ function FeedItem({ dotColor, title, titleHighlight, detail, time, showLine = tr
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-          {title} {titleHighlight && <span style={{ color: "#2ec4b6" }}>{titleHighlight}</span>}
+          {title} {titleHighlight && <span style={{ color: "#1a8a80" }}>{titleHighlight}</span>}
         </p>
         {detail && <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{detail}</p>}
       </div>
@@ -138,11 +138,11 @@ function FunnelBar({ count, maxCount, label, color }) {
 /* ── Event Card ── */
 function EventCard({ event, onClick }) {
   const typeBg = {
-    Camp: { bg: "rgba(46,196,182,0.12)", color: "#2ec4b6" },
+    Camp: { bg: "rgba(26,138,128,0.12)", color: "#1a8a80" },
     Showcase: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
     Tournament: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
     Visit: { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
-    Tryout: { bg: "rgba(46,196,182,0.12)", color: "#2ec4b6" },
+    Tryout: { bg: "rgba(26,138,128,0.12)", color: "#1a8a80" },
     Meeting: { bg: "rgba(6,182,212,0.12)", color: "#06b6d4" },
     Deadline: { bg: "rgba(239,68,68,0.12)", color: "#ef4444" },
   };
@@ -181,21 +181,21 @@ function InboundContactCard({ contact, onDismiss, onView }) {
       className="relative rounded-xl overflow-hidden"
       style={{
         background: "linear-gradient(135deg, #0f2027 0%, #0d3b3a 50%, #1a3a2a 100%)",
-        border: "1px solid rgba(46,196,182,0.3)",
+        border: "1px solid rgba(26,138,128,0.3)",
       }}
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full" style={{ background: "radial-gradient(circle, rgba(46,196,182,0.15) 0%, transparent 70%)" }} />
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full" style={{ background: "radial-gradient(circle, rgba(26,138,128,0.15) 0%, transparent 70%)" }} />
         <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)" }} />
       </div>
       <div className="relative px-6 py-5">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(46,196,182,0.2)" }}>
-              <Inbox className="w-5 h-5" style={{ color: "#2ec4b6" }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(26,138,128,0.2)" }}>
+              <Inbox className="w-5 h-5" style={{ color: "#1a8a80" }} />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "#2ec4b6" }}>A Coach Found You!</p>
+              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "#1a8a80" }}>A Coach Found You!</p>
               <p className="text-lg font-extrabold mt-0.5" style={{ color: "#ffffff" }}>{contact.university_name}</p>
             </div>
           </div>
@@ -217,7 +217,7 @@ function InboundContactCard({ contact, onDismiss, onView }) {
           <button
             onClick={() => onView(contact.program_id)}
             className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:scale-[1.02]"
-            style={{ background: "#2ec4b6", color: "#ffffff" }}
+            style={{ background: "#1a8a80", color: "#ffffff" }}
             data-testid={`view-inbound-${contact.contact_id}`}
           >
             View School & Respond
@@ -352,7 +352,7 @@ export default function Dashboard() {
   const pipelineStatuses = [
     { key: "Not Contacted", label: "Not\nContacted", color: "#6b7280" },
     { key: "Contacted", label: "Contacted", color: "#3b82f6" },
-    { key: "Active Conversation", label: "In\nConversation", color: "#2ec4b6" },
+    { key: "Active Conversation", label: "In\nConversation", color: "#1a8a80" },
     { key: "Offer Received", label: "Offer\nReceived", color: "#10b981" },
     { key: "Committed", label: "Committed", color: "#fbbf24" },
     { key: "Not a Fit / Closed", label: "Closed", color: "#ef4444" },
@@ -381,7 +381,7 @@ export default function Dashboard() {
   const interactionDotColor = (type) => {
     const t = (type || "").toLowerCase();
     if (t.includes("reply") || t.includes("coach") || t === "email_received") return "#10b981";
-    if (t.includes("email") || t.includes("follow")) return "#2ec4b6";
+    if (t.includes("email") || t.includes("follow")) return "#1a8a80";
     if (t.includes("camp")) return "#f59e0b";
     if (t.includes("visit")) return "#06b6d4";
     if (t.includes("note")) return "#3b82f6";
@@ -421,11 +421,11 @@ export default function Dashboard() {
       {/* ═══ Section 1: Greeting + Quick Pulse ═══ */}
       <div className="rounded-xl overflow-hidden" style={{ background: "#1e1e2e" }} data-testid="greeting-pulse">
         {/* Pink accent line */}
-        <div style={{ height: 2, background: "linear-gradient(90deg, #2ec4b6 0%, rgba(46,196,182,0.2) 100%)" }} />
+        <div style={{ height: 2, background: "linear-gradient(90deg, #1a8a80 0%, rgba(26,138,128,0.2) 100%)" }} />
         <div className="flex items-start justify-between px-6 py-5 lg:px-7 lg:py-6">
           <div>
             <h2 className="text-xl lg:text-2xl font-extrabold tracking-tight" style={{ color: "#ffffff" }}>
-              {greeting}, <span style={{ color: "#2ec4b6" }}>{firstName}</span>
+              {greeting}, <span style={{ color: "#1a8a80" }}>{firstName}</span>
             </h2>
             <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>
               {athleteName ? `Here's what's happening with ${athleteName.split(" ")[0]}'s recruiting today` : "Here's your recruiting overview for today"}
@@ -436,7 +436,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <PulseStat icon={Target} iconBg="rgba(46,196,182,0.15)" iconColor="#2ec4b6" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} dark onClick={() => navigate("/pipeline")} />
+          <PulseStat icon={Target} iconBg="rgba(26,138,128,0.15)" iconColor="#1a8a80" value={totalSchools} label="Schools Tracked" sub={needsOutreach.length > 0 ? `${needsOutreach.length} need outreach` : "All contacted"} dark onClick={() => navigate("/pipeline")} />
           <PulseStat icon={MessageCircle} iconBg="rgba(59,130,246,0.15)" iconColor="#60a5fa" value={`${responseRate}%`} label="Response Rate" sub={`${replied} of ${contacted} contacted`} dark />
           <PulseStat icon={Mail} iconBg="rgba(16,185,129,0.15)" iconColor="#34d399" value={repliesThisWeek.length} label="Replies This Week" sub={lastReply ? `Last: ${lastReply.university_name || ""}` : "—"} dark />
           <PulseStat icon={Clock} iconBg="rgba(245,158,11,0.15)" iconColor="#fbbf24" value={awaitingReply.length} label="Awaiting Reply" sub={awaitingReply.length > 0 ? `Oldest: ${getDaysAgo(awaitingReply.sort((a, b) => (a.last_follow_up || a.created_at || "").localeCompare(b.last_follow_up || b.created_at || ""))[0]?.last_follow_up || "")}` : "—"} dark />
@@ -466,7 +466,7 @@ export default function Dashboard() {
             </div>
             <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Today's Actions</h3>
           </div>
-          <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="view-all-schools-btn">
+          <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }} data-testid="view-all-schools-btn">
             View all schools <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -542,7 +542,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setSpotlightExpanded(!spotlightExpanded)}
                 className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80"
-                style={{ color: "#2ec4b6" }}
+                style={{ color: "#1a8a80" }}
                 data-testid="spotlight-toggle-btn"
               >
                 {spotlightExpanded ? "Show less" : `View all ${spotlightSchools.length}`}
@@ -576,12 +576,12 @@ export default function Dashboard() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-snapshot">
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(46,196,182,0.12)" }}>
-                <BarChart3 className="w-4 h-4" style={{ color: "#2ec4b6" }} strokeWidth={2} />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.12)" }}>
+                <BarChart3 className="w-4 h-4" style={{ color: "#1a8a80" }} strokeWidth={2} />
               </div>
               <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Pipeline Snapshot</h3>
             </div>
-            <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="open-board-btn">
+            <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }} data-testid="open-board-btn">
               Open board <ChevronRight className="w-3 h-3" />
             </button>
           </div>
@@ -609,7 +609,7 @@ export default function Dashboard() {
             <div className="text-center py-12 px-5">
               <BarChart3 className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
               <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Add schools to see your pipeline</p>
-              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }}>+ Add a school</button>
+              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }}>+ Add a school</button>
             </div>
           )}
         </div>
@@ -660,7 +660,7 @@ export default function Dashboard() {
             </div>
             <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Coming Up</h3>
           </div>
-          <button onClick={() => navigate("/calendar")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }} data-testid="open-calendar-btn">
+          <button onClick={() => navigate("/calendar")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }} data-testid="open-calendar-btn">
             Open calendar <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -674,7 +674,7 @@ export default function Dashboard() {
           <div className="text-center py-10 px-5">
             <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
             <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No upcoming events</p>
-            <button onClick={() => navigate("/calendar")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#2ec4b6" }}>+ Add event</button>
+            <button onClick={() => navigate("/calendar")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }}>+ Add event</button>
           </div>
         )}
       </div>

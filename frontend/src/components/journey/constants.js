@@ -5,7 +5,7 @@ import {
 
 export const RAIL_STAGES = [
   { key: "added", label: "Added", color: "#94a3b8" },
-  { key: "outreach", label: "Outreach", color: "#2ec4b6" },
+  { key: "outreach", label: "Outreach", color: "#1a8a80" },
   { key: "in_conversation", label: "Talking", color: "#22c55e" },
   { key: "campus_visit", label: "Visit", color: "#3b82f6" },
   { key: "offer", label: "Offer", color: "#a855f7" },
@@ -75,7 +75,7 @@ export const NEXT_STEP_RULES = {
     actions: ["email", "followup"],
   },
   email_sent: {
-    icon: Send, iconColor: "#0d9488", iconBg: "rgba(46,196,182,0.12)",
+    icon: Send, iconColor: "#0d9488", iconBg: "rgba(26,138,128,0.12)",
     title: "Email sent! A 14-day follow-up has been set.",
     desc: "We'll remind you if you don't hear back. In the meantime, keep logging your activities.",
     actions: ["log"],

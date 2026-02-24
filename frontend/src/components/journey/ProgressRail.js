@@ -18,7 +18,7 @@ export function ProgressRail({ rail, onStageClick }) {
   });
   const fillGradient = fillStops.length > 1
     ? `linear-gradient(90deg, ${fillStops.join(", ")})`
-    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#2ec4b6";
+    : fillStops.length === 1 ? fillStops[0].split(" ")[0] : "#1a8a80";
 
   return (
     <div data-testid="progress-rail">

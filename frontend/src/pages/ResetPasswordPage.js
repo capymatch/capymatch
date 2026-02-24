@@ -32,7 +32,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%)" }}>
       <div className="w-full max-w-[400px] bg-white rounded-2xl shadow-xl overflow-hidden" data-testid="reset-password-card">
-        <div className="h-3" style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #2ec4b6 100%)" }} />
+        <div className="h-3" style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #1a8a80 100%)" }} />
         <div className="p-6 pt-8">
           <div className="flex items-center gap-2 mb-6">
             <img src="/images/capymatch-logo.png" alt="CapyMatch" className="w-7 h-7 rounded object-cover" />
@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
               <button
                 onClick={() => navigate("/login")}
                 className="w-full py-2.5 rounded-full text-sm font-semibold text-white"
-                style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #2ec4b6 100%)" }}
+                style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #1a8a80 100%)" }}
                 data-testid="go-to-login-btn"
               >
                 Sign In
@@ -98,7 +98,7 @@ export default function ResetPasswordPage() {
                   disabled={loading}
                   data-testid="reset-submit-btn"
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
-                  style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #2ec4b6 100%)" }}
+                  style={{ background: "linear-gradient(135deg, #1a3a4a 0%, #1a8a80 100%)" }}
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset Password"}
                 </button>
