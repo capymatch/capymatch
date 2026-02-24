@@ -5,10 +5,21 @@ import uuid
 
 
 async def get_current_user(request: Request):
-    """Authenticate user via session cookie."""
-    session_token = request.cookies.get("session_token")
+    """Authenticate user via Bearer token (header) or session cookie."""
+    session_token = None
+
+    # Check Authorization header first (Bearer token)
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.startswith("Bearer "):
+        session_token = auth_header[7:].strip()
+
+    # Fall back to session cookie
+    if not session_token:
+        session_token = request.cookies.get("session_token")
+
     if not session_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
     session = await db.user_sessions.find_one(
         {"session_token": session_token}, {"_id": 0}
     )
