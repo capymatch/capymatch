@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_BASE = `${BACKEND_URL}/api`;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
+// Use current origin to avoid cross-origin issues on custom domains (e.g. app.capymatch.com)
+const API_BASE = `${window.location.origin}/api`;
 
 const api = axios.create({
   baseURL: API_BASE,
