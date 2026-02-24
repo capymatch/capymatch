@@ -14,13 +14,13 @@ function ProgressStep({ num, label, done, current }) {
     <div className="flex items-center gap-2">
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-          done ? "text-teal-600" : current ? "border-[1.5px] border-teal-500 text-teal-600" : "border border-slate-300 text-slate-400"
+          done ? "text-teal-600" : current ? "border-[1.5px] border-teal-500 text-teal-600" : "border border-slate-400 text-slate-500"
         }`}
-        style={done ? { backgroundColor: "rgba(16,185,129,0.15)" } : current ? { backgroundColor: "rgba(26,138,128,0.12)" } : { backgroundColor: "rgba(148,163,184,0.08)" }}
+        style={done ? { backgroundColor: "rgba(16,185,129,0.15)" } : current ? { backgroundColor: "rgba(26,138,128,0.12)" } : { backgroundColor: "rgba(148,163,184,0.12)" }}
       >
         {done ? "✓" : num}
       </div>
-      <span className={`text-xs ${current ? "font-semibold" : ""}`} style={{ color: current ? "var(--t-text)" : done ? "#10b981" : "#94a3b8" }}>
+      <span className={`text-xs ${current ? "font-semibold" : ""}`} style={{ color: current ? "var(--t-text)" : done ? "#10b981" : "#64748b" }}>
         {label}
       </span>
     </div>
