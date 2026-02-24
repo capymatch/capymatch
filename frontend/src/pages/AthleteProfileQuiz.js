@@ -272,10 +272,10 @@ export default function AthleteProfileQuiz() {
   // ─── Intro Screen ───
   if (isIntro) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="quiz-intro">
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="quiz-intro">
         <div className="w-full max-w-xl">
           {/* Progress header */}
-          <div className="mb-10">
+          <div className="mb-6 sm:mb-10">
             <div className="flex justify-between items-center mb-3">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
             </div>
@@ -290,34 +290,34 @@ export default function AthleteProfileQuiz() {
           </div>
 
           {/* Intro Card */}
-          <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+          <div className="rounded-2xl border p-5 sm:p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
             
             {/* Icon */}
-            <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center text-5xl" 
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl mx-auto mb-5 sm:mb-6 flex items-center justify-center text-4xl sm:text-5xl" 
               style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.15), rgba(139,92,246,0.1))", boxShadow: "0 0 40px rgba(168,85,247,0.1)" }}>
               🏐
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
+            <h1 className="text-xl sm:text-2xl font-bold mb-3 text-center" style={{ color: "var(--t-text)" }}>
               Let's Build Your <span className="bg-gradient-to-r from-slate-500 to-teal-600 bg-clip-text text-transparent">Volleyball Journey</span>
             </h1>
-            <p className="text-sm text-center mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+            <p className="text-sm text-center mb-6 sm:mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
               Answer 6 quick questions so we can match you with the right volleyball programs and coaches.
             </p>
 
             {/* Benefits */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-teal-600/10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="text-center p-3 sm:p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-2 sm:mb-3 flex items-center justify-center bg-teal-600/10">
                   <Target className="w-5 h-5 text-slate-500" />
                 </div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Personalized Matches</p>
                 <p className="text-[10px] leading-relaxed" style={{ color: "var(--t-text-muted)" }}>See schools that fit your playing style & goals</p>
               </div>
-              <div className="text-center p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-                <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center bg-slate-500/10">
+              <div className="text-center p-3 sm:p-4 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+                <div className="w-10 h-10 rounded-full mx-auto mb-2 sm:mb-3 flex items-center justify-center bg-slate-500/10">
                   <Clock className="w-5 h-5 text-teal-600" />
                 </div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--t-text)" }}>Save Time</p>
