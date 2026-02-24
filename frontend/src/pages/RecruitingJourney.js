@@ -5,7 +5,8 @@ import { useSubscription } from "../lib/subscription";
 import {
   ArrowLeft, Mail, Phone, Clock, Target, DollarSign,
   MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
-  Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info
+  Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info,
+  ClipboardCheck, ExternalLink, CheckCircle2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
