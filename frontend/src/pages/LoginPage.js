@@ -61,7 +61,7 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
   const isLogin = mode === "login";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10" style={{ background: "linear-gradient(180deg, #f0fdfb 0%, #e6faf6 30%, #f0fdfb 70%, #f7fdfc 100%)" }} data-testid="login-page">
+    <div className="min-h-screen flex items-center justify-center px-4 py-10" style={{ background: "#f7f7f7" }} data-testid="login-page">
       <div className="w-full max-w-[440px]">
         {/* Logo */}
         <div className="flex justify-center mb-6">
