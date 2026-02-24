@@ -357,7 +357,7 @@ function PipelineSection({ sectionCfg, programs, matchScores, navigate, expandAl
 function FilterBar({ sectionCounts, total, active, onFilter }) {
   const chips = [
     { key: null, label: "All", count: total },
-    ...SECTIONS.map(s => ({ key: s.key, label: s.label.replace("Needs ", "").replace("Waiting on ", "Waiting"), count: sectionCounts[s.key] || 0 })),
+    ...SECTIONS.map(s => ({ key: s.key, label: s.key === "outreach" ? "Outreach" : s.key === "waiting" ? "Waiting" : s.key === "convo" ? "In Convo" : "Committed", count: sectionCounts[s.key] || 0 })),
   ].filter(c => c.key === null || c.count > 0);
 
   return (
