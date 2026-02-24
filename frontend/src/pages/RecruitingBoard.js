@@ -145,6 +145,17 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                   <CheckCircle2 className="w-2.5 h-2.5" />{actText}
                 </span>
               )}
+              {p.questionnaire_url && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
+                  title={p.questionnaire_completed ? "Questionnaire completed" : "Questionnaire pending"}
+                  style={{
+                    backgroundColor: p.questionnaire_completed ? "rgba(22,163,74,0.08)" : "rgba(245,158,11,0.08)",
+                    color: p.questionnaire_completed ? "#16a34a" : "#d97706",
+                  }}
+                  data-testid={`quest-badge-${p.program_id}`}>
+                  <ClipboardCheck className="w-2.5 h-2.5" />{p.questionnaire_completed ? "Form done" : "Form"}
+                </span>
+              )}
             </div>
             <div className="text-[11px] mt-0.5 flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
               <MapPin className="w-2.5 h-2.5" />{meta || "—"}
