@@ -43,7 +43,16 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
       const res = await api.post(endpoint, payload);
       onAuth(res.data);
     } catch (err) {
-      setError(err?.response?.data?.detail || "Something went wrong. Please try again.");
+      const detail = err?.response?.data?.detail;
+      if (detail) {
+        setError(typeof detail === "string" ? detail : JSON.stringify(detail));
+      } else if (err?.response?.status) {
+        setError(`Server error (${err.response.status}). Please try again.`);
+      } else if (err?.message?.includes("Network")) {
+        setError("Network error. Please check your connection and try again.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
