@@ -351,10 +351,10 @@ export default function AthleteProfileQuiz() {
 
   // ─── Quiz Steps ───
   return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="athlete-quiz">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ backgroundColor: "var(--t-bg)" }} data-testid="athlete-quiz">
       <div className="w-full max-w-xl">
         {/* Progress */}
-        <div className="mb-10">
+        <div className="mb-6 sm:mb-10">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[11px] font-semibold uppercase tracking-widest text-teal-600">Your Volleyball Journey</span>
             <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>{step + 1} of {QUESTIONS.length}</span>
@@ -371,12 +371,12 @@ export default function AthleteProfileQuiz() {
         </div>
 
         {/* Question Card */}
-        <div className="rounded-2xl border p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+        <div className="rounded-2xl border p-5 sm:p-10 relative overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}>
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-600/30 to-transparent" />
-          <span className="text-4xl block mb-5">{q.emoji}</span>
+          <span className="text-3xl sm:text-4xl block mb-4 sm:mb-5">{q.emoji}</span>
           <p className="text-[10px] uppercase tracking-[1.5px] font-semibold mb-2" style={{ color: "var(--t-text-muted)" }}>Question {step + 1} of {QUESTIONS.length}</p>
-          <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>{q.title}</h1>
-          <p className="text-sm mb-8 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{q.sub}</p>
+          <h1 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: "var(--t-text)" }}>{q.title}</h1>
+          <p className="text-sm mb-6 sm:mb-8 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{q.sub}</p>
 
           {/* Options */}
           {q.type === "input_group" ? (
