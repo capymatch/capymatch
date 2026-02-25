@@ -958,7 +958,12 @@ async def confirm_import(run_id: str, request: Request):
              "primary_coach": 1, "state": 1, "region": 1, "domain": 1,
              "recruiting_coordinator": 1, "coordinator_email": 1}
         )
-        kb = kb or {}
+
+        # Defensive check: only import schools that exist in our KB
+        if not kb:
+            logger.warning(f"Import confirm: school_id '{school_id}' not found in KB, skipping")
+            skipped_count += 1
+            continue
 
         # Build program document
         program_id = f"prog_{uuid.uuid4().hex[:12]}"
