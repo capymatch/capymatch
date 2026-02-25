@@ -283,18 +283,6 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               </div>
             </div>
 
-            {/* Notes */}
-            {p.next_action && (
-              <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg mb-3"
-                style={{ backgroundColor: "var(--t-surface-alt, #fafafa)", border: "1px solid var(--t-border)" }}>
-                <MessageSquare className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: "var(--t-text-faint, #ccc)" }} />
-                <p className="text-xs italic leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
-                  Next: {p.next_action}
-                  {p.next_action_due && <span className="not-italic font-medium"> &middot; Due {p.next_action_due}</span>}
-                </p>
-              </div>
-            )}
-
             {/* Timeline */}
             {loadingIx && (
               <div className="flex items-center gap-2 py-2 mb-3">
