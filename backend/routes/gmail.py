@@ -900,7 +900,7 @@ async def import_status(run_id: str, request: Request):
 
 @router.post("/import-history/{run_id}/confirm")
 async def confirm_import(run_id: str, request: Request):
-    """Confirm selected school suggestions and create pipeline entries."""
+    """Confirm selected school suggestions and create pipeline entries + coaches."""
     user = await get_current_user(request)
     user_id = user["user_id"]
     tenant_id = user.get("tenant_id", "tenant_public_default")
@@ -943,7 +943,6 @@ async def confirm_import(run_id: str, request: Request):
             continue
 
         # Idempotency: check if program already exists for this school
-        # tenant_id is per-athlete, so (tenant_id, university_name) is unique
         existing = await db.programs.find_one(
             {"tenant_id": tenant_id, "university_name": school_id},
             {"_id": 0, "program_id": 1}
@@ -952,11 +951,12 @@ async def confirm_import(run_id: str, request: Request):
             skipped_count += 1
             continue
 
-        # Get KB data for enrichment
+        # Get KB data for enrichment (include domain + coordinator info)
         kb = await db.university_knowledge_base.find_one(
             {"university_name": school_id},
             {"_id": 0, "division": 1, "conference": 1, "website": 1, "coach_email": 1,
-             "primary_coach": 1, "state": 1, "region": 1}
+             "primary_coach": 1, "state": 1, "region": 1, "domain": 1,
+             "recruiting_coordinator": 1, "coordinator_email": 1}
         )
         kb = kb or {}
 
@@ -969,10 +969,14 @@ async def confirm_import(run_id: str, request: Request):
             "in_conversation": "Continue the conversation",
         }
 
+        # Derive domain from KB or from the matched email domain
+        domain = kb.get("domain", "") or suggestion.get("normalized_domain", "")
+
         doc = {
             "program_id": program_id,
             "tenant_id": tenant_id,
             "university_name": school_id,
+            "domain": domain,
             "division": kb.get("division", ""),
             "conference": kb.get("conference", ""),
             "region": kb.get("region", ""),
@@ -1003,6 +1007,11 @@ async def confirm_import(run_id: str, request: Request):
         created_count += 1
         created_ids.append(school_id)
 
+        # ── Auto-create coach entries from KB + discovered emails ──
+        await _create_coaches_for_import(
+            db, tenant_id, program_id, school_id, kb, suggestion
+        )
+
     # Update import_run
     await db.import_runs.update_one(
         {"run_id": run_id},
@@ -1013,3 +1022,71 @@ async def confirm_import(run_id: str, request: Request):
     )
 
     return {"created_count": created_count, "skipped_count": skipped_count}
+
+
+async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, suggestion):
+    """Create coach entries from KB data and discovered email addresses."""
+    created_emails = set()
+    now = datetime.now(timezone.utc).isoformat()
+
+    # 1. Create from KB primary coach
+    kb_email = (kb.get("coach_email") or "").strip().lower()
+    kb_name = (kb.get("primary_coach") or "").strip()
+    if kb_email and "@" in kb_email:
+        coach_id = f"coach_{uuid.uuid4().hex[:12]}"
+        await db.coaches.insert_one({
+            "coach_id": coach_id,
+            "program_id": program_id,
+            "tenant_id": tenant_id,
+            "university_name": school_id,
+            "coach_name": kb_name or "Head Coach",
+            "role": "Head Coach",
+            "email": kb_email,
+            "phone": "",
+            "notes": "Auto-added from school database",
+            "created_at": now,
+        })
+        created_emails.add(kb_email)
+
+    # 2. Create from KB recruiting coordinator
+    coord_email = (kb.get("coordinator_email") or "").strip().lower()
+    coord_name = (kb.get("recruiting_coordinator") or "").strip()
+    if coord_email and "@" in coord_email and coord_email not in created_emails:
+        coach_id = f"coach_{uuid.uuid4().hex[:12]}"
+        await db.coaches.insert_one({
+            "coach_id": coach_id,
+            "program_id": program_id,
+            "tenant_id": tenant_id,
+            "university_name": school_id,
+            "coach_name": coord_name or "Recruiting Coordinator",
+            "role": "Recruiting Coordinator",
+            "email": coord_email,
+            "phone": "",
+            "notes": "Auto-added from school database",
+            "created_at": now,
+        })
+        created_emails.add(coord_email)
+
+    # 3. Create from discovered .edu emails (found during Gmail scan)
+    discovered = suggestion.get("discovered_emails", [])
+    for email_addr in discovered:
+        email_addr = email_addr.strip().lower()
+        if email_addr in created_emails or not email_addr or "@" not in email_addr:
+            continue
+        # Extract a display name from the email (e.g., "jsmith" from "jsmith@ohio.edu")
+        local_part = email_addr.split("@")[0]
+        display_name = local_part.replace(".", " ").replace("_", " ").title()
+        coach_id = f"coach_{uuid.uuid4().hex[:12]}"
+        await db.coaches.insert_one({
+            "coach_id": coach_id,
+            "program_id": program_id,
+            "tenant_id": tenant_id,
+            "university_name": school_id,
+            "coach_name": display_name,
+            "role": "Coach",
+            "email": email_addr,
+            "phone": "",
+            "notes": "Discovered from Gmail history",
+            "created_at": now,
+        })
+        created_emails.add(email_addr)
