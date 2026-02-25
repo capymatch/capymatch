@@ -196,9 +196,6 @@ export default function RecruitingJourney() {
   const latestEvent = timeline[0] || null;
   const latestEventDate = latestEvent?.date_time || latestEvent?.date || "";
   const isLatestEventPast = latestEventDate && new Date(latestEventDate) <= new Date();
-  const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
-    && isLatestEventPast
-    && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
   const nextDue = program.next_action_due || "";
   const today = new Date().toISOString().split("T")[0];
@@ -207,7 +204,12 @@ export default function RecruitingJourney() {
   const daysUntilDue = !isCommitted && nextDue && nextDue > today
     ? Math.ceil((new Date(nextDue + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000)
     : 0;
-  const isFollowUpSoon = daysUntilDue > 0 && daysUntilDue <= 3;
+  const isFollowUpSoon = daysUntilDue > 0 && daysUntilDue <= 5;
+
+  const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
+    && isLatestEventPast
+    && !isFollowUpOverdue && !isFollowUpSoon
+    && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
   return (
     <div data-testid="recruiting-journey" className="max-w-6xl mx-auto pb-24">
