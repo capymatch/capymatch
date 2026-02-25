@@ -305,7 +305,10 @@ export default function GmailImportModal({ onClose, onComplete }) {
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10" style={{ color: "var(--t-text-faint)" }} data-testid="import-close-btn">
+          <button onClick={() => {
+            if (state === "preview") trackEvent("import_abandoned", { selected_count: selected.size, total: suggestions.length });
+            onClose();
+          }} className="p-1.5 rounded-lg hover:bg-white/10" style={{ color: "var(--t-text-faint)" }} data-testid="import-close-btn">
             <X className="w-4 h-4" />
           </button>
         </div>
