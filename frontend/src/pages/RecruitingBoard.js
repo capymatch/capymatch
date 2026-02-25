@@ -680,11 +680,28 @@ export default function RecruitingBoard() {
     if (found) return found;
     const candidates = activePrograms.filter(p => p.board_group === stage && p.recruiting_status !== "Committed");
     if (candidates.length === 0) return null;
-    candidates.sort((a, b) => {
-      const da = a.next_action_due || "9999-12-31";
-      const db = b.next_action_due || "9999-12-31";
-      return da.localeCompare(db);
-    });
+    if (stage === "needs_outreach") {
+      // Best match score first — contact your strongest fit first
+      candidates.sort((a, b) => {
+        const ma = matchScores[a.program_id]?.match_score ?? 0;
+        const mb = matchScores[b.program_id]?.match_score ?? 0;
+        return mb - ma;
+      });
+    } else if (stage === "in_conversation") {
+      // Most stale conversation first — don't let relationships go cold
+      candidates.sort((a, b) => {
+        const da = a.signals?.days_since_activity ?? 0;
+        const db = b.signals?.days_since_activity ?? 0;
+        return db - da;
+      });
+    } else {
+      // overdue & waiting_on_reply — soonest/most overdue due date first
+      candidates.sort((a, b) => {
+        const da = a.next_action_due || "9999-12-31";
+        const db = b.next_action_due || "9999-12-31";
+        return da.localeCompare(db);
+      });
+    }
     return candidates[0];
   }, null);
 
