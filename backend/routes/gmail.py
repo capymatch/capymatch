@@ -973,6 +973,7 @@ async def confirm_import(run_id: str, request: Request):
         if not kb:
             logger.warning(f"Import confirm: school_id '{school_id}' not found in KB, skipping")
             skipped_count += 1
+            skip_reasons["not_in_kb"] += 1
             continue
 
         # Build program document
