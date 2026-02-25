@@ -413,6 +413,7 @@ def _aggregate(classified: list[dict]) -> list[dict]:
         "subjects": [],
         "last_message_at": "",
         "last_message_direction": "",
+        "edu_emails": set(),
     })
 
     for msg in classified:
@@ -437,6 +438,10 @@ def _aggregate(classified: list[dict]) -> list[dict]:
             g["last_message_at"] = msg["date"]
             g["last_message_direction"] = "outbound" if msg["is_outbound"] else "inbound"
 
+        # Collect all .edu emails seen for this school
+        for email in msg.get("edu_emails", []):
+            g["edu_emails"].add(email)
+
     # Build suggestion objects
     suggestions = []
     for key, g in groups.items():
@@ -454,6 +459,7 @@ def _aggregate(classified: list[dict]) -> list[dict]:
             "last_message_at": g["last_message_at"],
             "last_message_direction": g["last_message_direction"],
             "sample_subjects": g["subjects"],
+            "discovered_emails": sorted(g["edu_emails"]),
             # These get filled by assign_stage_and_group:
             "proposed_stage": None,
             "proposed_group": None,
