@@ -6,6 +6,13 @@ import tldextract
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 
+BLOCKED_DOMAINS = {
+    "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com",
+    "icloud.com", "me.com", "live.com", "msn.com", "comcast.net",
+    "att.net", "sbcglobal.net", "verizon.net", "protonmail.com",
+    "mail.com", "zoho.com", "yandex.com",
+}
+
 
 def extract_registrable_domain(email_or_url: str) -> str | None:
     """Extract the registrable domain from an email address or URL."""
@@ -24,7 +31,7 @@ async def map_email_to_school(db: AsyncIOMotorDatabase, email: str) -> dict:
     Returns: { school_id, normalized_domain, match_type, confidence, match_reason }
     """
     domain = extract_registrable_domain(email)
-    if not domain:
+    if not domain or domain in BLOCKED_DOMAINS:
         return {
             "school_id": None,
             "normalized_domain": None,
