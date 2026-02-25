@@ -211,6 +211,11 @@ export default function GmailImportModal({ onClose, onComplete }) {
           });
           setSelected(autoSelect);
           setState("preview");
+          // Track preview shown
+          api.post("/gmail/import-analytics/event", {
+            event: "import_preview_shown", run_id: rid,
+            metadata: { total: suggs.length, auto_selected: autoSelect.size }
+          }).catch(() => {});
         } else if (d.phase === "failed") {
           clearInterval(pollRef.current);
           pollRef.current = null;
