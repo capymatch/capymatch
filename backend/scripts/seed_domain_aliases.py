@@ -42,21 +42,34 @@ async def seed():
         # Collect (domain, source, confidence) candidates
         candidates = []
 
-        # 1. Website
+        # 1. KB domain field (highest quality — pre-parsed registrable domain)
+        kb_domain = school.get("domain", "")
+        if kb_domain:
+            candidates.append((kb_domain.lower().strip(), "kb_domain", 95))
+
+        # 2. Website URL
         website = school.get("website", "")
         if website:
             domain = extract_registrable_domain(website)
             if domain:
-                candidates.append((domain, "website", 90))
+                candidates.append((domain, "website", 80))
 
-        # 2. Coach email
+        # 3. Scorecard website
+        scorecard = school.get("scorecard", {}) or {}
+        sc_website = scorecard.get("website", "")
+        if sc_website:
+            domain = extract_registrable_domain(sc_website)
+            if domain:
+                candidates.append((domain, "scorecard", 90))
+
+        # 4. Coach email
         coach_email = school.get("coach_email", "")
         if coach_email and "@" in coach_email:
             domain = extract_registrable_domain(coach_email)
             if domain:
-                candidates.append((domain, "coach_email", 95))
+                candidates.append((domain, "coach_email", 90))
 
-        # 3. Coaches scraped
+        # 5. Coaches scraped
         for coach in school.get("coaches_scraped", []) or []:
             email = coach.get("email", "")
             if email and "@" in email:
