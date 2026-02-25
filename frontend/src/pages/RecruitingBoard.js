@@ -153,7 +153,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                     color: p.questionnaire_completed ? "#16a34a" : "#d97706",
                   }}
                   data-testid={`quest-badge-${p.program_id}`}>
-                  <ClipboardCheck className="w-2.5 h-2.5" />{p.questionnaire_completed ? "Form done" : "Form"}
+                  <ClipboardCheck className="w-2.5 h-2.5" />{p.questionnaire_completed ? "Questionnaire done" : "Questionnaire"}
                 </span>
               )}
             </div>
