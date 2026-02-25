@@ -942,9 +942,9 @@ async def confirm_import(run_id: str, request: Request):
             skipped_count += 1
             continue
 
-        # Idempotency: check if program already exists for this school
+        # Idempotency: check if program already exists for this user + school
         existing = await db.programs.find_one(
-            {"tenant_id": tenant_id, "university_name": school_id},
+            {"tenant_id": tenant_id, "user_id": user_id, "university_name": school_id},
             {"_id": 0, "program_id": 1}
         )
         if existing:
