@@ -313,6 +313,7 @@ function App() {
         </BrowserRouter>
       )}
       <Toaster richColors position="top-right" />
+      <InstallPrompt />
     </ThemeProvider>
   );
 }
