@@ -25,7 +25,7 @@ async def seed():
     )
 
     schools = await db.university_knowledge_base.find(
-        {}, {"_id": 0, "school_id": 1, "university_name": 1, "website": 1, "coach_email": 1, "coaches_scraped": 1}
+        {}, {"_id": 0, "university_name": 1, "website": 1, "coach_email": 1, "coaches_scraped": 1, "domain": 1, "scorecard": 1}
     ).to_list(None)
 
     print(f"Processing {len(schools)} schools...")
@@ -35,7 +35,7 @@ async def seed():
     schools_with_alias = set()
 
     for school in schools:
-        sid = school.get("school_id")
+        sid = school.get("university_name")
         if not sid:
             continue
 
