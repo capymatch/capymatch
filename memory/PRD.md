@@ -47,26 +47,31 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 28. Pipeline Card Redesign (Feb 25, 2026)
 29. PWA Implementation (Feb 25, 2026) -- Full Progressive Web App
 30. Gmail History Import - Backend (Feb 25, 2026) -- Domain mapper, header scanner, rule engine, idempotent APIs
-31. **Gmail History Import - Frontend (Feb 25, 2026)** -- Full GmailImportModal with 4 states (consent, scanning, preview, done), Settings page integration, "Imported" badge on pipeline cards. Tested: 100% backend + frontend pass rate.
+31. Gmail History Import - Frontend (Feb 25, 2026) -- Full GmailImportModal with 4 states, Settings page integration, Imported badge
+32. **Gmail Import Enrichment (Feb 25, 2026)** -- Confirm endpoint now auto-creates coach entries from KB (head coach + coordinator) + discovered .edu emails from Gmail scan. Sets `domain` field on imported programs. Coach deduplication prevents duplicates. Journey page auto-populates timeline from Gmail conversations with discovered coaches. Bug fix: consistent tenant_id resolution across all import endpoints.
 
 ## Key DB Schema (Gmail Import)
 - `school_domain_aliases`: { domain, school_id (university_name), source, confidence }
-- `import_runs`: { run_id, user_id, status, suggestions: [], confirmed_school_ids: [] }
-- `programs`: Added `imported_at` and `import_run_id` to track origin. Uniqueness on `(tenant_id, university_name)`.
+- `import_runs`: { run_id, user_id, status, suggestions: [{ ..., discovered_emails: [] }], confirmed_school_ids: [] }
+- `programs`: includes `domain`, `imported_at`, `import_run_id` for imported schools
+- `coaches`: Auto-created for imported schools from KB data + discovered emails
 
 ## Key API Endpoints (Gmail Import)
 - `POST /api/gmail/import-history`: Triggers a new Gmail scan
 - `GET /api/gmail/import-history/{run_id}/status`: Polls for scan progress and results
-- `POST /api/gmail/import-history/{run_id}/confirm`: Confirms user selection, creates pipeline entries
+- `POST /api/gmail/import-history/{run_id}/confirm`: Confirms selections, creates programs + coaches
+
+## How Imported Schools Display
+Imported schools display identically to manually-added ones:
+- **Pipeline Board**: Shows with university logo (via domain), Imported badge (7 days), all standard fields
+- **Journey Page**: Full timeline populated from Gmail (via auto-created coach emails), progress rail, coaches panel, follow-up alerts
+- **School Intelligence**: Works via domain field for /school/:domain navigation
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring 5+ times, cosmetic)
 - **P2**: Dead links for school recruiting questionnaires
 
 ## Prioritized Backlog
-
-### P1
-- Gmail History Import - Phase 6: Smart suggestion nudges for imported schools based on subject-line keywords
 
 ### P2
 - Full NIL transaction/payment platform
