@@ -109,7 +109,7 @@ export default function AdminLayout() {
             </button>
             <Shield className="w-4 h-4 text-slate-500 hidden lg:block" />
             <h2 className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-              {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/subscriptions") ? "Subscription Management" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : location.pathname.includes("/universities") ? "University Manager" : location.pathname.includes("/integrations") ? "Integrations" : "Admin"}
+              {location.pathname === "/admin" ? "Admin Dashboard" : location.pathname.includes("/subscriptions") ? "Subscription Management" : location.pathname.includes("/contributions") ? "Contribution Review" : location.pathname.includes("/users/") ? "User Detail" : location.pathname.includes("/users") ? "User Management" : location.pathname.includes("/universities") ? "University Manager" : location.pathname.includes("/integrations") ? "Integrations" : "Admin"}
             </h2>
           </div>
         </header>
