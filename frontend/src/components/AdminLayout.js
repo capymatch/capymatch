@@ -2,13 +2,14 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
   LayoutDashboard, Users, CreditCard, Zap, GraduationCap, BarChart3,
-  Settings, ArrowLeft, Shield, ChevronDown, Menu, X, Plug
+  Settings, ArrowLeft, Shield, ChevronDown, Menu, X, Plug, MessageSquarePlus
 } from "lucide-react";
 
 const adminNav = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
   { to: "/admin/users", icon: Users, label: "Users" },
   { to: "/admin/subscriptions", icon: CreditCard, label: "Subscriptions" },
+  { to: "/admin/contributions", icon: MessageSquarePlus, label: "Contributions" },
   { to: "/admin/integrations", icon: Plug, label: "Integrations" },
   { to: "/admin/universities", icon: GraduationCap, label: "Universities" },
   { to: "/admin/analytics", icon: BarChart3, label: "Analytics", disabled: true },
