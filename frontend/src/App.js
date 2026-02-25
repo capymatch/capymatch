@@ -187,7 +187,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="payment-success" element={<PaymentSuccess />} />
         <Route path="billing" element={<BillingPage />} />
       </Route>
-      <Route path="/admin" element={["douglas@yeslms.com","demo@capymatch.com"].includes(user?.email) ? <AdminLayout /> : <Navigate to="/board" replace />}>
+      <Route path="/admin" element={user?.email === "douglas@yeslms.com" ? <AdminLayout /> : <Navigate to="/board" replace />}>
         <Route index element={<AdminDashboard />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />

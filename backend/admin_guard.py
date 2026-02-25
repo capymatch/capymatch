@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request
 from auth import get_current_user
 
-ADMIN_EMAILS = ["douglas@yeslms.com", "demo@capymatch.com"]
+ADMIN_EMAILS = ["douglas@yeslms.com"]
 
 
 async def require_admin(request: Request):
