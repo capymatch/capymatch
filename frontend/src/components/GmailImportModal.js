@@ -232,8 +232,13 @@ export default function GmailImportModal({ onClose, onComplete }) {
     const key = s.school_id || s.normalized_domain;
     setSelected(prev => {
       const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      if (next.has(key)) {
+        next.delete(key);
+        trackEvent("import_suggestion_deselected", { school: key });
+      } else {
+        next.add(key);
+        trackEvent("import_suggestion_reselected", { school: key });
+      }
       return next;
     });
   };
