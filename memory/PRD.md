@@ -43,6 +43,7 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 24. **Questionnaire Tracking** (Feb 24, 2026) — Questionnaire section on journey page with "Open Form" link and "Mark Complete" toggle. Pipeline board shows Form/Form done badge.
 25. **Follow-Up Reminder Hero Card** (Feb 24, 2026) — Dark hero-style overdue follow-up alert at top of Journey page with "Send Email" and "Reschedule" actions. Shows days overdue count.
 26. **Upcoming Follow-Up Reminder** (Feb 25, 2026) — Teal-themed heads-up banner for follow-ups due within 3 days. Shows "Due tomorrow" / "Due in X days" with same action buttons. Mutually exclusive with the overdue banner.
+27. **Admin Contribution Review Dashboard** (Feb 25, 2026) — Full admin page at `/admin/contributions` to review, verify, reject, and promote user-submitted data improvements. Stats overview, filterable list, inline actions with notes. Backend routes wired: list, stats, verify, reject, promote to knowledge base.
 
 ### Questionnaire Tracking Feature
 - Backend: `PATCH /api/programs/{id}/questionnaire` toggles completion
