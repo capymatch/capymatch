@@ -243,7 +243,7 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
                 <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Next Step</div>
                 <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
-                  {p.next_action || "No action set"}
+                  {p.next_action || (!(signals.outreach_count > 0) ? "Send introduction email" : signals.has_coach_reply ? "Review coach's reply" : "Follow up on your outreach")}
                 </div>
                 {p.next_action_due && (
                   <div className="text-[11px] mt-1 font-medium" style={{
