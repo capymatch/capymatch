@@ -903,7 +903,7 @@ async def confirm_import(run_id: str, request: Request):
     """Confirm selected school suggestions and create pipeline entries + coaches."""
     user = await get_current_user(request)
     user_id = user["user_id"]
-    tenant_id = user.get("tenant_id", "tenant_public_default")
+    tenant_id = await get_tenant_id(user)
 
     run = await db.import_runs.find_one(
         {"run_id": run_id, "user_id": user_id},
