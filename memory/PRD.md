@@ -7,12 +7,12 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 - **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
 - **Backend**: FastAPI (Python) + MongoDB (Motor async)
 - **Auth**: Bearer token (localStorage). Backend checks Authorization header first, then cookie fallback.
-- **Integrations**: Stripe (payments), Resend (email), Claude AI (intelligence cards), Emergent-managed Google Auth
+- **Integrations**: Stripe (payments), Resend (email), Claude AI (intelligence cards), Emergent-managed Google Auth, Google Gmail APIs
 
 ## Domain Setup
-- **Landing**: `capymatch.com` → readdy.ai marketing site
-- **App**: `app.capymatch.com` → Emergent-hosted CRM app
-- **Preview**: `volleyball-crm.preview.emergentagent.com` → dev/preview
+- **Landing**: `capymatch.com` -> readdy.ai marketing site
+- **App**: `app.capymatch.com` -> Emergent-hosted CRM app
+- **Preview**: `volleyball-crm.preview.emergentagent.com` -> dev/preview
 
 ## What's Been Implemented
 
@@ -33,26 +33,31 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 14. Per-school notes via NotesSidebar
 15. Athlete profile management (name/email updates)
 16. Pre-launch system audit completed
-17. Pipeline UI Redesign — Rich expandable cards, progress ring, hero card
+17. Pipeline UI Redesign -- Rich expandable cards, progress ring, hero card
 18. Bearer token auth for cross-domain support
 19. Mobile sidebar overlay fix
 20. Google OAuth + Login production fix (load_dotenv override fix)
 21. CORS cleanup + MongoDB timeout
-22. Darker teal color scheme (#2ec4b6 → #1a8a80)
+22. Darker teal color scheme (#2ec4b6 -> #1a8a80)
 23. Mobile-friendly Gmail consent modal & Athlete profile quiz
-24. **Questionnaire Tracking** (Feb 24, 2026) — Questionnaire section on journey page with "Open Form" link and "Mark Complete" toggle. Pipeline board shows Form/Form done badge.
-25. **Follow-Up Reminder Hero Card** (Feb 24, 2026) — Dark hero-style overdue follow-up alert at top of Journey page with "Send Email" and "Reschedule" actions. Shows days overdue count.
-26. **Upcoming Follow-Up Reminder** (Feb 25, 2026) — Teal-themed heads-up banner for follow-ups due within 3 days. Shows "Due tomorrow" / "Due in X days" with same action buttons. Mutually exclusive with the overdue banner.
-27. **Admin Contribution Review Dashboard** (Feb 25, 2026) — Full admin page at `/admin/contributions` to review, verify, reject, and promote user-submitted data improvements. Stats overview, filterable list, inline actions with notes. Backend routes wired: list, stats, verify, reject, promote to knowledge base.
-28. **Pipeline Card Redesign** (Feb 25, 2026) — Replaced duplicated Match Score/Outreach cards with Coach, Next Step (with due date urgency), and Communication (with reply status). Removed duplicate "Start Outreach" button from expanded view. Each card now answers a unique question.
-29. **PWA Implementation** (Feb 25, 2026) — Full Progressive Web App setup: manifest.json with 8 icon sizes, service worker with network-first API / cache-first static strategy, iOS meta tags, install prompt component with iOS Safari instructions and Android native install. App is now installable on mobile home screens.
+24. Questionnaire Tracking (Feb 24, 2026)
+25. Follow-Up Reminder Hero Card (Feb 24, 2026)
+26. Upcoming Follow-Up Reminder (Feb 25, 2026)
+27. Admin Contribution Review Dashboard (Feb 25, 2026)
+28. Pipeline Card Redesign (Feb 25, 2026)
+29. PWA Implementation (Feb 25, 2026) -- Full Progressive Web App
+30. Gmail History Import - Backend (Feb 25, 2026) -- Domain mapper, header scanner, rule engine, idempotent APIs
+31. **Gmail History Import - Frontend (Feb 25, 2026)** -- Full GmailImportModal with 4 states (consent, scanning, preview, done), Settings page integration, "Imported" badge on pipeline cards. Tested: 100% backend + frontend pass rate.
 
-### Questionnaire Tracking Feature
-- Backend: `PATCH /api/programs/{id}/questionnaire` toggles completion
-- Backend: Programs enriched with `questionnaire_url` from `university_knowledge_base`
-- Frontend Journey: Own section card with ExternalLink + CheckCircle toggle
-- Frontend Pipeline: ClipboardCheck badge (amber pending / green done)
-- Data: `questionnaire_completed`, `questionnaire_completed_at` on programs collection
+## Key DB Schema (Gmail Import)
+- `school_domain_aliases`: { domain, school_id (university_name), source, confidence }
+- `import_runs`: { run_id, user_id, status, suggestions: [], confirmed_school_ids: [] }
+- `programs`: Added `imported_at` and `import_run_id` to track origin. Uniqueness on `(tenant_id, university_name)`.
+
+## Key API Endpoints (Gmail Import)
+- `POST /api/gmail/import-history`: Triggers a new Gmail scan
+- `GET /api/gmail/import-history/{run_id}/status`: Polls for scan progress and results
+- `POST /api/gmail/import-history/{run_id}/confirm`: Confirms user selection, creates pipeline entries
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring 5+ times, cosmetic)
@@ -61,7 +66,7 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ## Prioritized Backlog
 
 ### P1
-- Admin Dashboard for Contribution Review (approve/reject user data contributions)
+- Gmail History Import - Phase 6: Smart suggestion nudges for imported schools based on subject-line keywords
 
 ### P2
 - Full NIL transaction/payment platform
@@ -69,10 +74,21 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 - Email templates & bulk outreach functionality
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
+- Fix dead links for school recruiting questionnaires
+- Re-run bulk discovery scraper for questionnaire URLs
 
 ### Refactoring
 - Consolidate overlapping AccountPage / SettingsPage
+- Consider migrating from university_name key to stable school_id
 
 ## Credentials
 - **Demo User**: demo@capymatch.com / demo2026
 - **Admin User**: douglas@yeslms.com (Google auth)
+
+## 3rd Party Integrations
+- Stripe (payments)
+- Resend (forgot password emails)
+- Claude AI via Emergent LLM Key (intelligence cards)
+- Emergent-managed Google Auth
+- Google Gmail APIs (read/write/history import)
+- tldextract (backend domain parsing)
