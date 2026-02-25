@@ -1,0 +1,93 @@
+{
+  "summary": "Gmail Import Confirm Endpoint Enrichment Tests - 9/9 PASSED. Backend enrichment features verified: domain field from KB, auto-created coaches from KB (head coach + coordinator) and discovered_emails, coach deduplication working, idempotency working, GET program and journey endpoints return correct data. Frontend: Settings page shows Gmail status correctly, Import button hidden when disconnected, RecruitingBoard renders logos via domain. Fixed bug: confirm endpoint was using user.get('tenant_id') instead of await get_tenant_id(user).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "POST /api/gmail/import-history/{run_id}/confirm creates program with domain field from KB",
+    "Confirm endpoint auto-creates Head Coach from KB primary_coach + coach_email",
+    "Confirm endpoint auto-creates Recruiting Coordinator from KB recruiting_coordinator + coordinator_email",
+    "Confirm endpoint auto-creates coaches from discovered_emails in suggestion",
+    "Coach deduplication works - duplicate email in KB and discovered_emails creates only 1 entry",
+    "Total coach count = 4 (2 KB + 2 discovered after dedup) - verified",
+    "Idempotency: calling confirm twice skips already-created programs",
+    "GET /api/programs/{program_id} returns domain, coaches, journey_rail for imported program",
+    "GET /api/programs/{program_id}/journey returns timeline data structure",
+    "Program enriched with KB fields (division, conference, region, website)",
+    "Settings page shows Gmail 'Not connected' status for demo user",
+    "Settings page has Connect Gmail button with data-testid='connect-gmail-settings-btn'",
+    "Import button correctly not rendered when Gmail not connected",
+    "RecruitingBoard renders with data-testid='recruiting-board' and 10 pipeline cards",
+    "UniversityLogo component uses domain prop to fetch logos from icon.horse/Google"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_gmail_import_confirm_enrichment.py",
+    "/app/test_reports/pytest/gmail_import_confirm_enrichment_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "FIXED: /app/backend/routes/gmail.py line 906 - Changed user.get('tenant_id', 'tenant_public_default') to await get_tenant_id(user) for consistent tenant handling",
+    "Code correctly implements _create_coaches_for_import helper function with 3 sources: KB primary, KB coordinator, discovered emails",
+    "Deduplication logic uses created_emails set to prevent duplicate coach entries",
+    "GmailImportModal.js lines 61-66 correctly displays discovered_emails count as 'N contacts' in suggestion rows",
+    "RecruitingBoard.js line 123 passes domain to UniversityLogo component for imported programs",
+    "UniversityLogo.js uses domain to fetch logos from icon.horse and Google favicons"
+  ],
+  "updated_files": [
+    "/app/backend/routes/gmail.py",
+    "/app/backend/tests/test_gmail_import_confirm_enrichment.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 pytest tests passed)",
+    "frontend": "100% (Settings page, RecruitingBoard verified)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    },
+    "tenant_id": "tenant_user_653ee8f71acd",
+    "user_id": "user_653ee8f71acd"
+  },
+  "seed_data_creation": "Test created KB entry for 'TEST_Import_Enrich_University' with domain, coaches, coordinator. Created mock import_run with discovered_emails. All test data cleaned up after tests.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Gmail Import confirm endpoint enrichment fully tested. Key features: 1) Programs created with 'domain' field from KB, 2) Coaches auto-created from KB (primary_coach + coordinator) and discovered_emails, 3) Deduplication by email works, 4) Idempotency works. Bug fixed during testing: tenant_id resolution in confirm endpoint. Demo user tenant_id is 'tenant_user_653ee8f71acd' (not tenant_public_default). Test file: /app/backend/tests/test_gmail_import_confirm_enrichment.py.",
+  "bug_fix_applied": {
+    "file": "/app/backend/routes/gmail.py",
+    "line": 906,
+    "before": "tenant_id = user.get('tenant_id', 'tenant_public_default')",
+    "after": "tenant_id = await get_tenant_id(user)",
+    "reason": "Consistent tenant resolution - confirm endpoint was creating programs with wrong tenant_id, causing imported programs to be invisible to the user"
+  },
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_gmail_import_confirm_enrichment.py",
+      "results_xml": "/app/test_reports/pytest/gmail_import_confirm_enrichment_results.xml",
+      "all_passed": true,
+      "test_count": 9
+    },
+    "frontend_tests": {
+      "settings_page": {
+        "gmail_status": "Not connected",
+        "connect_button_testid": "connect-gmail-settings-btn",
+        "import_button_hidden": true
+      },
+      "recruiting_board": {
+        "testid": "recruiting-board",
+        "pipeline_cards_count": 10,
+        "logos_rendered": true
+      },
+      "gmail_import_modal": {
+        "discovered_emails_display": "Implemented in GmailImportModal.js lines 61-66",
+        "format": "N contact(s)"
+      }
+    }
+  }
+}
