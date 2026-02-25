@@ -373,6 +373,14 @@ export default function SettingsPage() {
           onCancel={() => setShowConsentModal(false)}
         />
       )}
+
+      {/* Gmail Import Modal */}
+      {showImportModal && (
+        <GmailImportModal
+          onClose={() => setShowImportModal(false)}
+          onComplete={() => setShowImportModal(false)}
+        />
+      )}
     </div>
   );
 }
