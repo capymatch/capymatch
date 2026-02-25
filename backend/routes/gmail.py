@@ -368,6 +368,45 @@ async def get_thread(thread_id: str, request: Request):
         raise HTTPException(status_code=500, detail="Failed to fetch thread")
 
 
+@router.get("/attachments/{message_id}/{attachment_id}")
+async def download_attachment(message_id: str, attachment_id: str, request: Request):
+    """Download an attachment from a Gmail message."""
+    from fastapi.responses import Response
+    import base64
+
+    user = await get_current_user(request)
+    creds = await get_gmail_credentials(user["user_id"])
+    if not creds:
+        raise HTTPException(status_code=403, detail="Gmail not connected")
+
+    try:
+        service = get_gmail_service(creds)
+        att = service.users().messages().attachments().get(
+            userId="me", messageId=message_id, id=attachment_id
+        ).execute()
+
+        file_data = base64.urlsafe_b64decode(att["data"])
+
+        # Get filename from the message
+        msg = service.users().messages().get(userId="me", id=message_id, format="full").execute()
+        attachments = _extract_attachments(msg.get("payload", {}))
+        match = next((a for a in attachments if a["attachment_id"] == attachment_id), None)
+        filename = match["filename"] if match else "download"
+        mime_type = match["mime_type"] if match else "application/octet-stream"
+
+        return Response(
+            content=file_data,
+            media_type=mime_type,
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading attachment: {e}")
+        raise HTTPException(status_code=500, detail="Failed to download attachment")
+
+
 @router.post("/upload-attachment")
 async def upload_attachment(request: Request):
     """Upload a file to be attached to an email. Returns a temp file ID."""
