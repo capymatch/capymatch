@@ -383,6 +383,9 @@ async def _classify_message(db, msg: dict) -> dict | None:
         except Exception:
             pass
 
+    # Collect all unique .edu addresses involved (for coach creation later)
+    all_edu_emails = list(set(from_addrs + to_addrs))
+
     return {
         "message_id": message_id,
         "thread_id": thread_id,
@@ -396,6 +399,7 @@ async def _classify_message(db, msg: dict) -> dict | None:
         "subject": subject,
         "date": parsed_date.isoformat() if parsed_date else "",
         "has_recruiting_signal": _has_recruiting_signal(subject),
+        "edu_emails": all_edu_emails,
     }
 
 
