@@ -44,6 +44,7 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 25. **Follow-Up Reminder Hero Card** (Feb 24, 2026) — Dark hero-style overdue follow-up alert at top of Journey page with "Send Email" and "Reschedule" actions. Shows days overdue count.
 26. **Upcoming Follow-Up Reminder** (Feb 25, 2026) — Teal-themed heads-up banner for follow-ups due within 3 days. Shows "Due tomorrow" / "Due in X days" with same action buttons. Mutually exclusive with the overdue banner.
 27. **Admin Contribution Review Dashboard** (Feb 25, 2026) — Full admin page at `/admin/contributions` to review, verify, reject, and promote user-submitted data improvements. Stats overview, filterable list, inline actions with notes. Backend routes wired: list, stats, verify, reject, promote to knowledge base.
+28. **Pipeline Card Redesign** (Feb 25, 2026) — Replaced duplicated Match Score/Outreach cards with Coach, Next Step (with due date urgency), and Communication (with reply status). Removed duplicate "Start Outreach" button from expanded view. Each card now answers a unique question.
 
 ### Questionnaire Tracking Feature
 - Backend: `PATCH /api/programs/{id}/questionnaire` toggles completion
