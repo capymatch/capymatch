@@ -131,9 +131,26 @@ export default function GmailImportModal({ onClose, onComplete }) {
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState(null);
   const pollRef = useRef(null);
+  const navigate = useNavigate();
 
   // Cleanup polling on unmount
   useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
+
+  // Handle "Add Manually" for unmapped schools
+  const handleAddManually = useCallback((suggestion) => {
+    const emails = suggestion.discovered_emails || [];
+    if (emails.length > 0) {
+      navigator.clipboard.writeText(emails[0]).then(() => {
+        toast.success("Coach email copied to clipboard", {
+          description: `${emails[0]} — search for this school in Find Schools to add it.`,
+        });
+      }).catch(() => {
+        toast.info(`Coach email: ${emails[0]}`, { description: "Copy this email and add the school from Find Schools." });
+      });
+    }
+    onClose();
+    navigate("/find-schools");
+  }, [onClose, navigate]);
 
   const startImport = async () => {
     if (!consent) return;
