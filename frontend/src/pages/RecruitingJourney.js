@@ -194,7 +194,10 @@ export default function RecruitingJourney() {
   const isInConversation = !isCommitted && boardGroup === "in_conversation" && latestIsCoachReply;
 
   const latestEvent = timeline[0] || null;
+  const latestEventDate = latestEvent?.date_time || latestEvent?.date || "";
+  const isLatestEventPast = latestEventDate && new Date(latestEventDate) <= new Date();
   const showNextStep = !isCommitted && !isNewSchool && !isInConversation && latestEvent
+    && isLatestEventPast
     && nextStepDismissed !== (latestEvent.id || latestEvent.date);
 
   const nextDue = program.next_action_due || "";
