@@ -818,3 +818,197 @@ def _extract_attachments(payload):
     for part in payload.get("parts", []):
         attachments.extend(_extract_attachments(part))
     return attachments
+
+
+
+# ─── Gmail History Import (Phase 4) ───
+
+@router.post("/import-history")
+async def start_import(request: Request):
+    """Trigger a Gmail history import scan."""
+    user = await get_current_user(request)
+    user_id = user["user_id"]
+
+    # Check Gmail connected
+    creds = await get_gmail_credentials(user_id)
+    if not creds:
+        raise HTTPException(status_code=403, detail="Gmail not connected")
+
+    # Prevent concurrent runs
+    active = await db.import_runs.find_one(
+        {"user_id": user_id, "status": {"$in": ["scanning", "mapping", "aggregating"]}},
+        {"_id": 0, "run_id": 1}
+    )
+    if active:
+        raise HTTPException(status_code=409, detail="Import already in progress",
+                            headers={"X-Run-Id": active["run_id"]})
+
+    run_id = f"import_{uuid.uuid4().hex[:12]}"
+    tenant_id = user.get("tenant_id", "tenant_public_default")
+
+    await db.import_runs.insert_one({
+        "run_id": run_id,
+        "user_id": user_id,
+        "tenant_id": tenant_id,
+        "status": "scanning",
+        "started_at": datetime.now(timezone.utc).isoformat(),
+        "completed_at": None,
+        "messages_scanned": 0,
+        "schools_found": 0,
+        "schools_high_confidence": 0,
+        "suggestions": [],
+        "confirmed_at": None,
+        "confirmed_school_ids": [],
+        "error": None,
+    })
+
+    # Launch background task
+    from services.gmail_import import run_gmail_import
+    import asyncio
+    asyncio.create_task(
+        run_gmail_import(run_id, user_id, db, get_gmail_credentials, get_gmail_service)
+    )
+
+    return {"run_id": run_id}
+
+
+@router.get("/import-history/{run_id}/status")
+async def import_status(run_id: str, request: Request):
+    """Poll import progress."""
+    user = await get_current_user(request)
+    run = await db.import_runs.find_one(
+        {"run_id": run_id, "user_id": user["user_id"]},
+        {"_id": 0}
+    )
+    if not run:
+        raise HTTPException(status_code=404, detail="Import run not found")
+
+    result = {
+        "phase": run["status"],
+        "messages_scanned": run.get("messages_scanned", 0),
+        "schools_found": run.get("schools_found", 0),
+        "schools_high_confidence": run.get("schools_high_confidence", 0),
+    }
+
+    if run["status"] == "ready":
+        result["suggestions"] = run.get("suggestions", [])
+    if run["status"] == "failed":
+        result["error"] = run.get("error")
+
+    return result
+
+
+@router.post("/import-history/{run_id}/confirm")
+async def confirm_import(run_id: str, request: Request):
+    """Confirm selected school suggestions and create pipeline entries."""
+    user = await get_current_user(request)
+    user_id = user["user_id"]
+    tenant_id = user.get("tenant_id", "tenant_public_default")
+
+    run = await db.import_runs.find_one(
+        {"run_id": run_id, "user_id": user_id},
+        {"_id": 0}
+    )
+    if not run:
+        raise HTTPException(status_code=404, detail="Import run not found")
+    if run["status"] != "ready":
+        raise HTTPException(status_code=400, detail=f"Run is not ready (status: {run['status']})")
+
+    body = await request.json()
+    selected = body.get("selected", [])
+    if not selected:
+        raise HTTPException(status_code=400, detail="No schools selected")
+
+    # Build lookup from suggestions
+    suggestion_map = {}
+    for s in run.get("suggestions", []):
+        key = s.get("school_id") or s.get("normalized_domain")
+        if key:
+            suggestion_map[key] = s
+
+    created_count = 0
+    skipped_count = 0
+    created_ids = []
+
+    for item in selected:
+        school_id = item.get("school_id")
+        if not school_id:
+            skipped_count += 1
+            continue
+
+        # Find matching suggestion
+        suggestion = suggestion_map.get(school_id)
+        if not suggestion:
+            skipped_count += 1
+            continue
+
+        # Idempotency: check if program already exists for this school
+        existing = await db.programs.find_one(
+            {"tenant_id": tenant_id, "university_name": school_id},
+            {"_id": 0, "program_id": 1}
+        )
+        if existing:
+            skipped_count += 1
+            continue
+
+        # Get KB data for enrichment
+        kb = await db.university_knowledge_base.find_one(
+            {"university_name": school_id},
+            {"_id": 0, "division": 1, "conference": 1, "website": 1, "coach_email": 1,
+             "primary_coach": 1, "state": 1, "region": 1}
+        )
+        kb = kb or {}
+
+        # Build program document
+        program_id = f"prog_{uuid.uuid4().hex[:12]}"
+        stage = suggestion.get("proposed_stage", "added")
+        next_action_map = {
+            "added": "Send introduction email",
+            "outreach": "Follow up on your outreach",
+            "in_conversation": "Continue the conversation",
+        }
+
+        doc = {
+            "program_id": program_id,
+            "tenant_id": tenant_id,
+            "university_name": school_id,
+            "division": kb.get("division", ""),
+            "conference": kb.get("conference", ""),
+            "region": kb.get("region", ""),
+            "website": kb.get("website", ""),
+            "primary_coach": kb.get("primary_coach", ""),
+            "coach_email": kb.get("coach_email", ""),
+            "recruiting_status": "Not Contacted" if stage == "added" else "Contacted",
+            "reply_status": "Replied" if suggestion.get("inbound_count", 0) > 0 else "No Reply",
+            "priority": "Medium",
+            "is_active": True,
+            "journey_stage": stage,
+            "next_action": next_action_map.get(stage, ""),
+            "next_action_due": suggestion.get("followup_due_at", ""),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "imported_at": datetime.now(timezone.utc).isoformat(),
+            "import_run_id": run_id,
+            "import_match_reason": suggestion.get("match_reason", ""),
+            "import_sample_subjects": suggestion.get("sample_subjects", []),
+            "athlete_interest": 5,
+            "school_interest": 0,
+            "notes": "",
+            "scholarship_type": "",
+            "follow_up_days": 14,
+        }
+
+        await db.programs.insert_one(doc)
+        doc.pop("_id", None)
+        created_count += 1
+        created_ids.append(school_id)
+
+    # Update import_run
+    await db.import_runs.update_one(
+        {"run_id": run_id},
+        {"$set": {
+            "confirmed_at": datetime.now(timezone.utc).isoformat(),
+            "confirmed_school_ids": created_ids,
+        }}
+    )
+
+    return {"created_count": created_count, "skipped_count": skipped_count}
