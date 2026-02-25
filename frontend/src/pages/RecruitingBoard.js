@@ -676,10 +676,17 @@ export default function RecruitingBoard() {
 
   // Focus program = most urgent school for hero card
   const focusPriority = ["overdue", "waiting_on_reply", "needs_outreach", "in_conversation"];
-  const focusProgram = focusPriority.reduce(
-    (found, stage) => found || activePrograms.find(p => p.board_group === stage && p.recruiting_status !== "Committed"),
-    null
-  );
+  const focusProgram = focusPriority.reduce((found, stage) => {
+    if (found) return found;
+    const candidates = activePrograms.filter(p => p.board_group === stage && p.recruiting_status !== "Committed");
+    if (candidates.length === 0) return null;
+    candidates.sort((a, b) => {
+      const da = a.next_action_due || "9999-12-31";
+      const db = b.next_action_due || "9999-12-31";
+      return da.localeCompare(db);
+    });
+    return candidates[0];
+  }, null);
 
   return (
     <div className="flex flex-col gap-5" data-testid="recruiting-board">
