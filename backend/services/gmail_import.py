@@ -113,6 +113,8 @@ async def run_gmail_import(run_id: str, user_id: str, db: AsyncIOMotorDatabase, 
     Main import job. Runs as a background task.
     Updates the import_run document with progress and results.
     """
+    import time
+    scan_start = time.monotonic()
     try:
         await db.import_runs.update_one(
             {"run_id": run_id},
