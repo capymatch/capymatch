@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import api from "../lib/api";
 import { toast } from "sonner";
 import {
   Clock, CheckCircle2, XCircle, ArrowUpCircle, Link2, Upload, FileText,
@@ -209,8 +209,8 @@ export default function AdminContributions() {
       const params = {};
       if (statusFilter) params.status = statusFilter;
       const [listRes, statsRes] = await Promise.all([
-        axios.get(`${API}/api/admin/contributions`, { params, withCredentials: true }),
-        axios.get(`${API}/api/admin/contributions/stats`, { withCredentials: true }),
+        api.get(`/admin/contributions`, { params }),
+        api.get(`/admin/contributions/stats`),
       ]);
       setItems(listRes.data.items);
       setStats(statsRes.data);
@@ -227,10 +227,9 @@ export default function AdminContributions() {
     setActionLoading(contributionId);
     try {
       const body = action === "reject" ? { reason: notes } : { notes };
-      await axios.patch(
-        `${API}/api/admin/contributions/${contributionId}/${action}`,
-        body,
-        { withCredentials: true }
+      await api.patch(
+        `/admin/contributions/${contributionId}/${action}`,
+        body
       );
       toast.success(`Contribution ${action === "verify" ? "verified" : action === "reject" ? "rejected" : "promoted"}`);
       fetchData();
