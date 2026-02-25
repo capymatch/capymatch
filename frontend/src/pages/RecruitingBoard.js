@@ -227,30 +227,59 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
               <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
                 <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Coach</div>
                 <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{p.primary_coach || "—"}</div>
+                {p.coach_title && (
+                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{p.coach_title}</div>
+                )}
                 {p.coach_email && (
                   <div className="text-[11px] mt-0.5">
                     <a href={`mailto:${p.coach_email}`} className="hover:underline" style={{ color: "#1a8a80" }}
                       onClick={e => e.stopPropagation()} data-stop="1">{p.coach_email}</a>
                   </div>
                 )}
-              </div>
-              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
-                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Match Score</div>
-                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{match != null ? `${match}%` : "—"}</div>
-                {match != null && (
-                  <div className="w-full h-1.5 rounded-full mt-1.5" style={{ backgroundColor: "var(--t-border)" }}>
-                    <div className="h-full rounded-full" style={{ width: `${Math.min(match, 100)}%`, backgroundColor: mc }} />
-                  </div>
+                {!p.primary_coach && !p.coach_email && (
+                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Find on school website</div>
                 )}
               </div>
               <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
-                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Outreach</div>
+                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Next Step</div>
+                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
+                  {p.next_action || "No action set"}
+                </div>
+                {p.next_action_due && (
+                  <div className="text-[11px] mt-1 font-medium" style={{
+                    color: new Date(p.next_action_due + "T00:00:00") < new Date(new Date().toISOString().split("T")[0] + "T00:00:00")
+                      ? "#dc2626"
+                      : Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date(new Date().toISOString().split("T")[0] + "T00:00:00")) / 86400000) <= 3
+                        ? "#d97706"
+                        : "var(--t-text-muted)"
+                  }}>
+                    {(() => {
+                      const today = new Date().toISOString().split("T")[0];
+                      const diff = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000);
+                      if (diff < 0) return `${Math.abs(diff)}d overdue`;
+                      if (diff === 0) return "Due today";
+                      if (diff === 1) return "Due tomorrow";
+                      return `Due in ${diff}d`;
+                    })()}
+                  </div>
+                )}
+                {!p.next_action && !p.next_action_due && (
+                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Set one on the journey page</div>
+                )}
+              </div>
+              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
+                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Communication</div>
                 <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
                   {signals.outreach_count || 0} sent &middot; {signals.has_coach_reply ? "1+ replies" : "0 replies"}
                 </div>
-                <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>
-                  {actText !== "—" ? `Last: ${actText}` : "No contact yet"}
+                <div className="text-[11px] mt-1" style={{ color: actText !== "—" ? "var(--t-text-muted)" : "var(--t-text-faint)" }}>
+                  {actText !== "—" ? `Last activity: ${actText}` : "No contact yet"}
                 </div>
+                {signals.outreach_count > 0 && (
+                  <div className="text-[11px] mt-0.5" style={{ color: signals.has_coach_reply ? "#16a34a" : "#d97706" }}>
+                    {signals.has_coach_reply ? "Coach has replied" : "Awaiting reply"}
+                  </div>
+                )}
               </div>
             </div>
 
