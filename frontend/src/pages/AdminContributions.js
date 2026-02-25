@@ -6,8 +6,6 @@ import {
   ChevronDown, Filter, RefreshCw, MessageSquare, ExternalLink
 } from "lucide-react";
 
-const API = process.env.REACT_APP_BACKEND_URL;
-
 const STATUS_CONFIG = {
   pending_verification: { label: "Pending", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", icon: Clock },
   verified: { label: "Verified", color: "#3b82f6", bg: "rgba(59,130,246,0.1)", icon: CheckCircle2 },
