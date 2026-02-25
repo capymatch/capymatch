@@ -1,0 +1,87 @@
+{
+  "summary": "Gmail Import 5 UX/Backend Improvements - All Tests PASSED. Backend tests: Defensive KB check (skips schools not in KB), unmapped_domains stored on import_run, coaches created from KB+discovered emails, idempotency working, program enrichment from KB. Frontend code review confirms: 'Not in our database yet' text, 'Add Manually' button, 'Verified School' badge, coach verification labels - all correctly implemented with proper data-testid attributes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: import_run document stores unmapped_domains list from scan phase",
+    "Backend: Defensive KB check - confirm skips school_ids not found in university_knowledge_base",
+    "Backend: Confirm creates coaches from KB (head coach, coordinator) and discovered_emails",
+    "Backend: Idempotency - calling confirm twice skips already-created programs",
+    "Backend: Status endpoint returns correct structure with kb_coach_emails and verified_coach_count fields",
+    "Backend: Created program enriched from KB (domain, division, conference, region)",
+    "Backend: Status endpoint returns 404 for non-existent run_id",
+    "Frontend (code review): 'Not in our database yet' text appears for unmapped rows (lines 101-105)",
+    "Frontend (code review): 'Add Manually' button with data-testid='add-manually-btn-{domain}' for unmapped rows (lines 106-116)",
+    "Frontend (code review): 'Verified School' badge with data-testid='verified-school-badge-{domain}' for KB-matched rows (lines 54-62)",
+    "Frontend (code review): Coach labels show 'N verified' or 'N found via Gmail' based on verified_coach_count (lines 76-86)",
+    "Frontend: Settings page loads correctly with Gmail section showing 'Not connected' status",
+    "Frontend: Connect Gmail button visible when not connected",
+    "Frontend: Import button correctly hidden when Gmail not connected"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_gmail_import_5_improvements.py",
+    "/app/test_reports/pytest/gmail_import_5_improvements_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend gmail.py confirm endpoint (lines 955-966): Defensive KB check correctly queries university_knowledge_base and skips if not found",
+    "Backend gmail_import.py (lines 149-157): unmapped_domains tracking correctly aggregates domains without school_id",
+    "Backend gmail_import.py (lines 165-184): KB coach verification fields (kb_coach_emails, verified_coach_count) correctly set during scan",
+    "Frontend GmailImportModal.js SuggestionRow: All 5 UX features correctly implemented with proper conditional rendering",
+    "Frontend GmailImportModal.js handleAddManually (lines 139-153): Correctly copies email to clipboard and navigates to /find-schools"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_gmail_import_5_improvements.py"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 pytest tests passed)",
+    "frontend": "100% (code review + Settings page UI verified)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    },
+    "user_id": "user_653ee8f71acd",
+    "tenant_id": "tenant_user_653ee8f71acd"
+  },
+  "seed_data_creation": "Test created: KB entry for TEST_5IMPROVE_KB_Matched_University, import_run with 3 suggestions (KB-matched, unmapped, non-existent). All test data cleaned up after tests via fixture teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Gmail Import 5 improvements fully tested. Backend: Defensive KB check in confirm endpoint skips schools not in KB, unmapped_domains stored on import_run, coaches created from KB+discovered emails with deduplication, idempotency working. Frontend: GmailImportModal.js has all 5 UX features - 'Not in our database yet' text for unmapped rows, 'Add Manually' button that copies email and navigates to /find-schools, 'Verified School' badge for KB-matched rows, coach verification labels ('N verified' vs 'N found via Gmail'). Demo user does NOT have Gmail connected so modal cannot be tested via UI without mocking. Test file: /app/backend/tests/test_gmail_import_5_improvements.py",
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_gmail_import_5_improvements.py",
+      "results_xml": "/app/test_reports/pytest/gmail_import_5_improvements_results.xml",
+      "all_passed": true,
+      "test_count": 7
+    },
+    "frontend_verification": {
+      "settings_page": {
+        "gmail_status": "Not connected",
+        "connect_button_visible": true,
+        "import_button_hidden": true
+      },
+      "gmail_import_modal_code_review": {
+        "not_in_database_text": "Line 103-104: 'Not in our database yet — can't import automatically.'",
+        "add_manually_button": "Line 107-116: button with data-testid='add-manually-btn-{domain}', visible when isUnmapped && discoveredCount > 0",
+        "verified_school_badge": "Line 54-61: badge with data-testid='verified-school-badge-{domain}', visible when !isUnmapped (school_id exists)",
+        "coach_verification_labels": "Lines 79-84: Shows '{N} verified' (BadgeCheck icon) if verifiedCoachCount > 0, else '{N} found via Gmail' (UserSearch icon)"
+      }
+    }
+  },
+  "five_improvements_status": {
+    "1_explanatory_text_unmapped": "✓ Implemented - Line 103-104 in SuggestionRow",
+    "2_add_manually_button": "✓ Implemented - Lines 106-116 with onAddManually handler",
+    "3_backend_unmapped_domains_logged": "✓ Implemented - gmail_import.py lines 149-201, stored on import_run",
+    "4_defensive_kb_check_confirm": "✓ Implemented - gmail.py lines 955-966, skips schools not in KB",
+    "5_verified_school_and_coach_badges": "✓ Implemented - Lines 54-62 (school badge) and 76-86 (coach labels)"
+  }
+}
