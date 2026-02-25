@@ -69,7 +69,8 @@ class TestGmailImport5Improvements:
         response = requests.get(f"{BASE_URL}/api/auth/me", headers=auth_headers)
         user_data = response.json()
         user_id = user_data.get("user_id", "user_653ee8f71acd")
-        tenant_id = f"tenant_{user_id.replace('user_', '')}"
+        # tenant_id includes full user_id (tenant_user_XXX format)
+        tenant_id = f"tenant_{user_id}"
         
         # Create a KB entry for a matched school
         kb_matched_school = {
