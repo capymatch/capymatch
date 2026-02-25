@@ -12,7 +12,6 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ## Domain Setup
 - **Landing**: `capymatch.com` -> readdy.ai marketing site
 - **App**: `app.capymatch.com` -> Emergent-hosted CRM app
-- **Preview**: `volleyball-crm.preview.emergentagent.com` -> dev/preview
 
 ## What's Been Implemented
 
@@ -29,46 +28,44 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 10. Recruiting Journey page (complete UX/UI overhaul)
 11. Hero card for commitments
 12. Login/signup redesign (Notion-style)
-13. Admin area with user management
+13. Admin area with user management + contribution review dashboard
 14. Per-school notes via NotesSidebar
 15. Athlete profile management (name/email updates)
 16. Pre-launch system audit completed
 17. Pipeline UI Redesign -- Rich expandable cards, progress ring, hero card
 18. Bearer token auth for cross-domain support
-19. Mobile sidebar overlay fix
-20. Google OAuth + Login production fix (load_dotenv override fix)
-21. CORS cleanup + MongoDB timeout
-22. Darker teal color scheme (#2ec4b6 -> #1a8a80)
-23. Mobile-friendly Gmail consent modal & Athlete profile quiz
-24. Questionnaire Tracking (Feb 24, 2026)
-25. Follow-Up Reminder Hero Card (Feb 24, 2026)
-26. Upcoming Follow-Up Reminder (Feb 25, 2026)
-27. Admin Contribution Review Dashboard (Feb 25, 2026)
-28. Pipeline Card Redesign (Feb 25, 2026)
-29. PWA Implementation (Feb 25, 2026) -- Full Progressive Web App
-30. Gmail History Import - Backend (Feb 25, 2026) -- Domain mapper, header scanner, rule engine, idempotent APIs
-31. Gmail History Import - Frontend (Feb 25, 2026) -- Full GmailImportModal with 4 states, Settings page integration, Imported badge
-32. **Gmail Import Enrichment (Feb 25, 2026)** -- Confirm endpoint now auto-creates coach entries from KB (head coach + coordinator) + discovered .edu emails from Gmail scan. Sets `domain` field on imported programs. Coach deduplication prevents duplicates. Journey page auto-populates timeline from Gmail conversations with discovered coaches. Bug fix: consistent tenant_id resolution across all import endpoints.
+19. Full PWA Implementation (installable on mobile)
+20. Questionnaire Tracking
+21. Follow-Up Reminder Hero Cards (overdue + upcoming)
+22. Gmail attachment downloads
+23. Gmail History Import (complete):
+    - Backend: Domain mapper, header scanner, rule engine, idempotent APIs
+    - Frontend: Full GmailImportModal with 4 states (consent/scanning/preview/done)
+    - Enrichment: Auto-creates coaches from KB + discovered emails, sets domain
+    - UX polish: Verified School badges, coach verification labels, explanatory text for unmapped rows, Add Manually flow, unmapped domain logging, defensive KB checks
 
-## Key DB Schema (Gmail Import)
-- `school_domain_aliases`: { domain, school_id (university_name), source, confidence }
-- `import_runs`: { run_id, user_id, status, suggestions: [{ ..., discovered_emails: [] }], confirmed_school_ids: [] }
-- `programs`: includes `domain`, `imported_at`, `import_run_id` for imported schools
-- `coaches`: Auto-created for imported schools from KB data + discovered emails
+## How Gmail Import Works
+1. **Scan**: Reads email headers only (From, To, Subject, Date) — never message bodies
+2. **Classify**: Matches .edu domains against Knowledge Base
+3. **Aggregate**: Groups by school, tracks thread counts, email addresses, and subjects
+4. **Preview**: Shows Verified Matches, Needs Review, and Ignored groups
+5. **Confirm**: Creates programs + coaches, sets domain. Only KB-matched schools can be imported.
+6. **Timeline**: Journey page auto-fetches Gmail conversations via discovered coach emails
 
-## Key API Endpoints (Gmail Import)
-- `POST /api/gmail/import-history`: Triggers a new Gmail scan
-- `GET /api/gmail/import-history/{run_id}/status`: Polls for scan progress and results
-- `POST /api/gmail/import-history/{run_id}/confirm`: Confirms selections, creates programs + coaches
+### Key Safety Features
+- Only KB-matched schools are importable (disabled checkboxes + defensive backend check)
+- Unmapped domains logged for future KB improvements
+- Coach deduplication prevents duplicates across KB and discovered emails
+- Idempotent confirm endpoint prevents duplicate pipeline entries
 
-## How Imported Schools Display
-Imported schools display identically to manually-added ones:
-- **Pipeline Board**: Shows with university logo (via domain), Imported badge (7 days), all standard fields
-- **Journey Page**: Full timeline populated from Gmail (via auto-created coach emails), progress rail, coaches panel, follow-up alerts
-- **School Intelligence**: Works via domain field for /school/:domain navigation
+## Key DB Schema
+- `programs`: includes `domain`, `imported_at`, `import_run_id`
+- `coaches`: Auto-created for imported schools from KB + discovered emails
+- `import_runs`: { run_id, status, suggestions (with discovered_emails, kb_coach_emails, verified_coach_count), unmapped_domains }
+- `school_domain_aliases`: { domain, school_id, source, confidence }
 
 ## Pending Issues
-- **P2**: NCAA Timeline colors (recurring 5+ times, cosmetic)
+- **P2**: NCAA Timeline colors (recurring cosmetic)
 - **P2**: Dead links for school recruiting questionnaires
 
 ## Prioritized Backlog
@@ -91,9 +88,4 @@ Imported schools display identically to manually-added ones:
 - **Admin User**: douglas@yeslms.com (Google auth)
 
 ## 3rd Party Integrations
-- Stripe (payments)
-- Resend (forgot password emails)
-- Claude AI via Emergent LLM Key (intelligence cards)
-- Emergent-managed Google Auth
-- Google Gmail APIs (read/write/history import)
-- tldextract (backend domain parsing)
+- Stripe (payments), Resend (forgot password emails), Claude AI via Emergent LLM Key, Emergent-managed Google Auth, Google Gmail APIs, tldextract
