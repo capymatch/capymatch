@@ -320,15 +320,21 @@ class TestConfirmEndpointEnrichment:
         
         print(f"\n[PASS] Idempotency working - second confirm skipped existing program")
     
-    def test_7_get_program_returns_correct_data(self, auth_session):
+    def test_7_get_program_returns_correct_data(self, auth_session, mongo_client):
         """
         GET /api/programs/{program_id} returns correct data for imported program:
         - domain field
         - coaches list
         - journey_rail computed
         """
-        program_id = getattr(pytest, 'test_program_id', None)
-        assert program_id, "No program_id from previous test"
+        # Get program_id from database
+        db = mongo_client
+        program_doc = db.programs.find_one(
+            {"university_name": TEST_UNIVERSITY_NAME, "tenant_id": DEMO_TENANT_ID},
+            {"_id": 0, "program_id": 1}
+        )
+        assert program_doc, "Program not found in database"
+        program_id = program_doc.get("program_id")
         
         response = auth_session.get(f"{BASE_URL}/api/programs/{program_id}")
         
