@@ -146,15 +146,45 @@ async def run_gmail_import(run_id: str, user_id: str, db: AsyncIOMotorDatabase, 
 
         # Step 5+6: Apply guardrails + assign stages
         final_suggestions = []
+        unmapped_domains = defaultdict(int)
         for s in suggestions:
             out = s["outbound_count"]
             inb = s["inbound_count"]
             has_signal = any(_has_recruiting_signal(sub) for sub in s["sample_subjects"])
 
+            # Track unmapped domains for KB improvement
+            if not s.get("school_id"):
+                unmapped_domains[s.get("normalized_domain", "unknown")] += s.get("thread_count", 1)
+
             # Guardrails
             if out >= 1 or inb >= 2 or (has_signal and inb >= 1):
                 assign_stage_and_group(s)
                 final_suggestions.append(s)
+
+        # Step 7: Enrich suggestions with KB coach verification
+        for s in final_suggestions:
+            if s.get("school_id"):
+                kb = await db.university_knowledge_base.find_one(
+                    {"university_name": s["school_id"]},
+                    {"_id": 0, "coach_email": 1, "coordinator_email": 1}
+                )
+                kb_emails = set()
+                if kb:
+                    for field in ("coach_email", "coordinator_email"):
+                        e = (kb.get(field) or "").strip().lower()
+                        if e and "@" in e:
+                            kb_emails.add(e)
+                discovered = set(e.lower() for e in s.get("discovered_emails", []))
+                verified_coaches = list(discovered & kb_emails)
+                s["kb_coach_emails"] = sorted(kb_emails)
+                s["verified_coach_count"] = len(verified_coaches)
+            else:
+                s["kb_coach_emails"] = []
+                s["verified_coach_count"] = 0
+
+        # Build top unmapped domains list (top 20 by thread count)
+        top_unmapped = sorted(unmapped_domains.items(), key=lambda x: -x[1])[:20]
+        unmapped_list = [{"domain": d, "count": c} for d, c in top_unmapped]
 
         schools_found = len(final_suggestions)
         high_confidence = sum(1 for s in final_suggestions if s.get("confidence", 0) >= 80 and s.get("school_id"))
@@ -168,6 +198,7 @@ async def run_gmail_import(run_id: str, user_id: str, db: AsyncIOMotorDatabase, 
                 "schools_found": schools_found,
                 "schools_high_confidence": high_confidence,
                 "suggestions": final_suggestions,
+                "unmapped_domains": unmapped_list,
             }}
         )
         logger.info(f"Import run {run_id} complete: {len(message_ids)} messages, {schools_found} schools")
