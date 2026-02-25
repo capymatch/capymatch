@@ -70,12 +70,19 @@ def auth_session():
 def setup_test_data(mongo_client):
     """
     Setup:
-    1. Seed KB entry with domain, primary_coach, coach_email, recruiting_coordinator, coordinator_email
-    2. Create mock import_run in 'ready' status with suggestions including discovered_emails
+    1. Clean any stale test data first
+    2. Seed KB entry with domain, primary_coach, coach_email, recruiting_coordinator, coordinator_email
+    3. Create mock import_run in 'ready' status with suggestions including discovered_emails
     
     Cleanup after all tests.
     """
     db = mongo_client
+    
+    # ═══ PRE-CLEANUP (remove any stale data from previous failed tests) ═══
+    db.programs.delete_many({"university_name": TEST_UNIVERSITY_NAME})
+    db.coaches.delete_many({"university_name": TEST_UNIVERSITY_NAME})
+    db.import_runs.delete_one({"run_id": TEST_RUN_ID})
+    db.university_knowledge_base.delete_one({"university_name": TEST_UNIVERSITY_NAME})
     
     # ═══ SETUP ═══
     
