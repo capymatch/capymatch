@@ -901,6 +901,9 @@ async def import_status(run_id: str, request: Request):
 @router.post("/import-history/{run_id}/confirm")
 async def confirm_import(run_id: str, request: Request):
     """Confirm selected school suggestions and create pipeline entries + coaches."""
+    import time
+    confirm_start = time.monotonic()
+
     user = await get_current_user(request)
     user_id = user["user_id"]
     tenant_id = await get_tenant_id(user)
@@ -929,6 +932,10 @@ async def confirm_import(run_id: str, request: Request):
     created_count = 0
     skipped_count = 0
     created_ids = []
+    skip_reasons = {"no_school_id": 0, "no_suggestion": 0, "already_exists": 0, "not_in_kb": 0}
+    coaches_from_kb = 0
+    coaches_from_gmail = 0
+    stages_confirmed = defaultdict(int)
 
     for item in selected:
         school_id = item.get("school_id")
