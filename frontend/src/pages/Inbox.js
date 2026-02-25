@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Send, Search, RefreshCw, ChevronLeft, Reply, ReplyAll, Paperclip, X, Plus, AlertCircle, Loader2, UserPlus, Sparkles, Lock } from "lucide-react";
-import api, { BACKEND_URL } from "../lib/api";
+import { Mail, Send, Search, RefreshCw, ChevronLeft, Reply, ReplyAll, Paperclip, X, Plus, AlertCircle, Loader2, UserPlus, Sparkles, Lock, Download } from "lucide-react";
+import api, { API_BASE, BACKEND_URL } from "../lib/api";
 import { useSubscription } from "../lib/subscription";
 import { toast } from "sonner";
 
