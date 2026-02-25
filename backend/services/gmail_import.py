@@ -191,6 +191,30 @@ async def run_gmail_import(run_id: str, user_id: str, db: AsyncIOMotorDatabase, 
         schools_found = len(final_suggestions)
         high_confidence = sum(1 for s in final_suggestions if s.get("confidence", 0) >= 80 and s.get("school_id"))
 
+        # Compute scan analytics
+        scan_duration_s = round(time.monotonic() - scan_start, 2)
+        stage_distribution = defaultdict(int)
+        total_threads = 0
+        total_contacts = 0
+        for s in final_suggestions:
+            stage_distribution[s.get("proposed_stage", "unknown")] += 1
+            total_threads += s.get("thread_count", 0)
+            total_contacts += len(s.get("discovered_emails", []))
+
+        scan_analytics = {
+            "scan_duration_s": scan_duration_s,
+            "messages_scanned": len(message_ids),
+            "total_suggestions": len(suggestions),
+            "passed_guardrails": schools_found,
+            "filtered_by_guardrails": len(suggestions) - schools_found,
+            "high_confidence_count": high_confidence,
+            "unmapped_count": len(unmapped_domains),
+            "stage_distribution": dict(stage_distribution),
+            "total_threads_found": total_threads,
+            "total_contacts_discovered": total_contacts,
+            "avg_threads_per_school": round(total_threads / max(schools_found, 1), 1),
+        }
+
         await db.import_runs.update_one(
             {"run_id": run_id},
             {"$set": {
@@ -201,9 +225,21 @@ async def run_gmail_import(run_id: str, user_id: str, db: AsyncIOMotorDatabase, 
                 "schools_high_confidence": high_confidence,
                 "suggestions": final_suggestions,
                 "unmapped_domains": unmapped_list,
+                "scan_analytics": scan_analytics,
             }}
         )
-        logger.info(f"Import run {run_id} complete: {len(message_ids)} messages, {schools_found} schools")
+
+        # Update global unmapped domain stats for KB improvement
+        for domain, count in unmapped_domains.items():
+            await db.unmapped_domain_stats.update_one(
+                {"domain": domain},
+                {"$inc": {"total_hits": count, "unique_runs": 1},
+                 "$set": {"last_seen_at": datetime.now(timezone.utc).isoformat()},
+                 "$setOnInsert": {"first_seen_at": datetime.now(timezone.utc).isoformat()}},
+                upsert=True
+            )
+
+        logger.info(f"Import run {run_id} complete: {len(message_ids)} messages, {schools_found} schools, {scan_duration_s}s")
 
     except Exception as e:
         logger.error(f"Import run {run_id} failed: {e}", exc_info=True)
