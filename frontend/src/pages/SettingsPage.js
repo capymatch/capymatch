@@ -202,6 +202,21 @@ export default function SettingsPage() {
               Disconnect
             </button>
           </div>
+          {/* Import from Gmail */}
+          <div className="flex items-center gap-3 p-3 rounded-xl mt-2" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+            <Inbox className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Import from Gmail</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Scan your email history to auto-build your recruiting board</p>
+            </div>
+            <button
+              onClick={() => setShowImportModal(true)}
+              data-testid="import-gmail-btn"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg font-medium text-white bg-teal-700 hover:bg-teal-800 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" /> Import
+            </button>
+          </div>
         ) : (
           <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
             <XCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
