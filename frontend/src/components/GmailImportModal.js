@@ -137,8 +137,19 @@ export default function GmailImportModal({ onClose, onComplete }) {
   // Cleanup polling on unmount
   useEffect(() => () => { if (pollRef.current) clearInterval(pollRef.current); }, []);
 
+  // Fire-and-forget analytics event
+  const trackEvent = useCallback((event, metadata = {}) => {
+    api.post("/gmail/import-analytics/event", { event, run_id: runId, metadata }).catch(() => {});
+  }, [runId]);
+
+  // Track when consent screen is shown
+  useEffect(() => {
+    if (state === "consent") trackEvent("import_consent_shown");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Handle "Add Manually" for unmapped schools
   const handleAddManually = useCallback((suggestion) => {
+    trackEvent("import_add_manually_clicked", { domain: suggestion.normalized_domain });
     const emails = suggestion.discovered_emails || [];
     if (emails.length > 0) {
       navigator.clipboard.writeText(emails[0]).then(() => {
@@ -151,7 +162,7 @@ export default function GmailImportModal({ onClose, onComplete }) {
     }
     onClose();
     navigate("/find-schools");
-  }, [onClose, navigate]);
+  }, [onClose, navigate, trackEvent]);
 
   const startImport = async () => {
     if (!consent) return;
