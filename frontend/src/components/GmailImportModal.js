@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   X, Mail, Shield, Search, Check, Loader2, AlertCircle, ChevronDown,
-  ChevronRight, ArrowUpCircle, Clock, MessageSquare, RefreshCw
+  ChevronRight, ArrowUpCircle, Clock, MessageSquare, RefreshCw,
+  BadgeCheck, UserSearch, ExternalLink, Copy
 } from "lucide-react";
 import api from "../lib/api";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const STAGE_LABELS = {
   added: { label: "Added", color: "#6b7280", bg: "rgba(107,114,128,0.12)" },
