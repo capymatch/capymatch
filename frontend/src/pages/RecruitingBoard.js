@@ -156,6 +156,13 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                   <ClipboardCheck className="w-2.5 h-2.5" />{p.questionnaire_completed ? "Questionnaire done" : "Questionnaire"}
                 </span>
               )}
+              {p.imported_at && (new Date() - new Date(p.imported_at)) < 7 * 24 * 60 * 60 * 1000 && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
+                  style={{ backgroundColor: "rgba(99,102,241,0.08)", color: "#818cf8" }}
+                  data-testid={`imported-badge-${p.program_id}`}>
+                  Imported
+                </span>
+              )}
             </div>
             <div className="text-[11px] mt-0.5 flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
               <MapPin className="w-2.5 h-2.5" />{meta || "—"}
