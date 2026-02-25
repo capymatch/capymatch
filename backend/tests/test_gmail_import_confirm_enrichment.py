@@ -25,8 +25,8 @@ BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
 DB_NAME = os.environ.get("DB_NAME", "test_database")
 
-# Test constants from main agent note
-DEMO_TENANT_ID = "tenant_demo123"
+# Test constants - demo user's actual tenant_id is None, which defaults to "tenant_public_default"
+DEMO_TENANT_ID = "tenant_public_default"
 DEMO_USER_ID = "user_653ee8f71acd"
 TEST_UNIVERSITY_NAME = "TEST_Import_Enrich_University"
 TEST_DOMAIN = "testimportenrich.edu"
