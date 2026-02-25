@@ -37,6 +37,7 @@ import { Toaster } from "./components/ui/sonner";
 import { SubscriptionProvider, useSubscription } from "./lib/subscription";
 import { onSubscriptionError, onAuthFail } from "./lib/api";
 import UpgradeModal from "./components/UpgradeModal";
+import InstallPrompt from "./components/InstallPrompt";
 import api from "./lib/api";
 import "./App.css";
 
