@@ -14,69 +14,109 @@ const STAGE_LABELS = {
   in_conversation: { label: "Talking", color: "#16a34a", bg: "rgba(22,163,74,0.12)" },
 };
 
-function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled }) {
+function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManually }) {
   const stage = STAGE_LABELS[s.proposed_stage] || STAGE_LABELS.added;
   const name = s.school_id || s.normalized_domain;
+  const isUnmapped = !s.school_id;
+  const discoveredCount = s.discovered_emails?.length || 0;
+  const verifiedCoachCount = s.verified_coach_count || 0;
 
   return (
-    <label
-      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
-        checked ? "border-teal-600/30" : "hover:border-white/15"
-      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+    <div
+      className={`p-3 rounded-xl border transition-all ${
+        disabled ? "opacity-60" : ""
+      }`}
       style={{
         background: checked ? "rgba(26,138,128,0.04)" : "rgba(255,255,255,0.02)",
         borderColor: checked ? "rgba(26,138,128,0.25)" : "rgba(255,255,255,0.08)",
       }}
       data-testid={`suggestion-row-${s.normalized_domain}`}
     >
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={() => onToggle(s)}
-        disabled={disabled}
-        className="mt-1 accent-teal-600 w-4 h-4 rounded flex-shrink-0"
-      />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
-            {name}
-          </span>
-          <span
-            className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: stage.bg, color: stage.color }}
-          >
-            {stage.label}
-          </span>
-          {s.attention_required && (
-            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: "rgba(239,68,68,0.1)", color: "#ef4444" }}>
-              Reply due
+      <label className={`flex items-start gap-3 ${disabled ? "pointer-events-none" : "cursor-pointer"}`}>
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={() => onToggle(s)}
+          disabled={disabled}
+          className="mt-1 accent-teal-600 w-4 h-4 rounded flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
+              {name}
             </span>
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: stage.bg, color: stage.color }}
+            >
+              {stage.label}
+            </span>
+            {!isUnmapped && (
+              <span
+                className="flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
+                data-testid={`verified-school-badge-${s.normalized_domain}`}
+              >
+                <BadgeCheck className="w-3 h-3" /> Verified School
+              </span>
+            )}
+            {s.attention_required && (
+              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "rgba(239,68,68,0.1)", color: "#ef4444" }}>
+                Reply due
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 text-xs mb-1 flex-wrap" style={{ color: "var(--t-text-muted)" }}>
+            <span>{s.outbound_count} sent</span>
+            <span>&middot;</span>
+            <span>{s.inbound_count} received</span>
+            <span>&middot;</span>
+            <span>{s.thread_count} thread{s.thread_count !== 1 ? "s" : ""}</span>
+            {discoveredCount > 0 && (
+              <>
+                <span>&middot;</span>
+                <span className="flex items-center gap-1">
+                  {verifiedCoachCount > 0 ? (
+                    <><BadgeCheck className="w-3 h-3 inline" style={{ color: "#16a34a" }} /> {verifiedCoachCount} verified</>
+                  ) : (
+                    <><UserSearch className="w-3 h-3 inline" /> {discoveredCount} found via Gmail</>
+                  )}
+                </span>
+              </>
+            )}
+          </div>
+          {s.last_message_at && (
+            <p className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Last activity: {new Date(s.last_message_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </p>
           )}
-        </div>
-        <div className="flex items-center gap-3 text-xs mb-1 flex-wrap" style={{ color: "var(--t-text-muted)" }}>
-          <span>{s.outbound_count} sent</span>
-          <span>&middot;</span>
-          <span>{s.inbound_count} received</span>
-          <span>&middot;</span>
-          <span>{s.thread_count} thread{s.thread_count !== 1 ? "s" : ""}</span>
-          {s.discovered_emails?.length > 0 && (
-            <>
-              <span>&middot;</span>
-              <span>{s.discovered_emails.length} contact{s.discovered_emails.length !== 1 ? "s" : ""}</span>
-            </>
-          )}
-        </div>
-        {s.last_message_at && (
-          <p className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
-            Last activity: {new Date(s.last_message_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+          <p className="text-[10px] italic" style={{ color: "rgba(255,255,255,0.25)" }}>
+            {s.match_reason}
           </p>
-        )}
-        <p className="text-[10px] italic" style={{ color: "rgba(255,255,255,0.25)" }}>
-          {s.match_reason}
-        </p>
-      </div>
-    </label>
+        </div>
+      </label>
+
+      {/* Unmapped school: explanatory text + Add Manually option */}
+      {isUnmapped && (
+        <div className="mt-2 ml-7 space-y-1.5">
+          <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.35)" }}>
+            Not in our database yet — can't import automatically.
+          </p>
+          {discoveredCount > 0 && onAddManually && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddManually(s); }}
+              className="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-lg transition-all hover:bg-white/5"
+              style={{ color: "#1a8a80", border: "1px solid rgba(26,138,128,0.2)" }}
+              data-testid={`add-manually-btn-${s.normalized_domain}`}
+            >
+              <ExternalLink className="w-3 h-3" />
+              Add manually
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
