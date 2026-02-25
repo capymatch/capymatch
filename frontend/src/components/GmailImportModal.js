@@ -486,16 +486,24 @@ export default function GmailImportModal({ onClose, onComplete }) {
 
           {/* STATE 4: DONE */}
           {state === "done" && (
-            <div className="flex flex-col items-center justify-center py-12 space-y-3">
+            <div className="flex flex-col items-center justify-center py-10 space-y-5" data-testid="import-success-card">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(22,163,74,0.1)" }}>
                 <Check className="w-8 h-8" style={{ color: "#16a34a" }} />
               </div>
-              <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>
-                Schools added to your board
-              </p>
-              <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
-                Check your pipeline to see them
-              </p>
+              <div className="text-center space-y-1.5">
+                <p className="text-base font-bold" style={{ color: "var(--t-text)" }}>
+                  Imported {importedCount} school{importedCount !== 1 ? "s" : ""}
+                </p>
+                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
+                  Your email history is now visible in Journey
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl max-w-sm" style={{ backgroundColor: "rgba(26,138,128,0.06)", border: "1px solid rgba(26,138,128,0.12)" }}>
+                <Clock className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#1a8a80" }} />
+                <p className="text-xs leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
+                  <span className="font-semibold" style={{ color: "var(--t-text)" }}>Tip:</span> look for <span className="font-semibold" style={{ color: "#ef4444" }}>Reply Due</span> to see where you should respond next
+                </p>
+              </div>
             </div>
           )}
         </div>
