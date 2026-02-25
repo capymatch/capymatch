@@ -326,11 +326,20 @@ function ThreadView({ thread, onBack, onReply }) {
               {msg.attachments?.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {msg.attachments.map((att, ai) => (
-                    <a
+                    <button
                       key={ai}
-                      href={`${API_BASE}/gmail/attachments/${msg.id}/${att.attachment_id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const res = await api.get(`/gmail/attachments/${msg.id}/${att.attachment_id}`, { responseType: "blob" });
+                          const url = window.URL.createObjectURL(res.data);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = att.filename;
+                          a.click();
+                          window.URL.revokeObjectURL(url);
+                        } catch { toast.error("Failed to download attachment"); }
+                      }}
                       className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs border cursor-pointer hover:opacity-80 transition-opacity"
                       style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)", color: "#1a8a80" }}
                       data-testid={`download-attachment-${ai}`}
@@ -338,7 +347,7 @@ function ThreadView({ thread, onBack, onReply }) {
                       <Paperclip className="w-3 h-3" />
                       {att.filename}
                       <Download className="w-3 h-3 ml-1" />
-                    </a>
+                    </button>
                   ))}
                 </div>
               )}
