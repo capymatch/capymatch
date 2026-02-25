@@ -13,6 +13,7 @@ export default function SettingsPage() {
   const [gmailLoading, setGmailLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showConsentModal, setShowConsentModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [privacyPrefs, setPrivacyPrefs] = useState({ inbound_email_scanning: true });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
