@@ -1159,3 +1159,29 @@ async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, s
         from_gmail += 1
 
     return {"from_kb": from_kb, "from_gmail": from_gmail}
+
+
+VALID_EVENTS = {"import_consent_shown", "import_started", "import_preview_shown",
+                "import_abandoned", "import_suggestion_deselected", "import_suggestion_reselected",
+                "import_add_manually_clicked", "import_confirmed", "import_done_shown"}
+
+
+@router.post("/import-analytics/event")
+async def track_import_event(request: Request):
+    """Track user behavior events during the import flow."""
+    user = await get_current_user(request)
+    body = await request.json()
+
+    event = body.get("event")
+    if event not in VALID_EVENTS:
+        raise HTTPException(status_code=400, detail="Invalid event type")
+
+    await db.import_events.insert_one({
+        "user_id": user["user_id"],
+        "run_id": body.get("run_id"),
+        "event": event,
+        "metadata": body.get("metadata", {}),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+
+    return {"ok": True}
