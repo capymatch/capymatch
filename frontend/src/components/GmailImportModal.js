@@ -232,13 +232,14 @@ export default function GmailImportModal({ onClose, onComplete }) {
 
       const res = await api.post(`/gmail/import-history/${runId}/confirm`, { selected: payload });
       const { created_count, skipped_count } = res.data;
+      setImportedCount(created_count);
 
       let msg = `${created_count} school${created_count !== 1 ? "s" : ""} added to your board`;
       if (skipped_count > 0) msg += ` (${skipped_count} already existed)`;
       toast.success(msg);
       setState("done");
       if (onComplete) onComplete(created_count);
-      setTimeout(() => onClose(), 1500);
+      setTimeout(() => onClose(), 3000);
     } catch (err) {
       toast.error(err.response?.data?.detail || "Import failed");
     } finally {
