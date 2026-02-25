@@ -263,8 +263,8 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                     })()}
                   </div>
                 )}
-                {!p.next_action && !p.next_action_due && (
-                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Set one on the journey page</div>
+                {!p.next_action && (
+                  <div className="text-[11px] mt-0.5 italic" style={{ color: "var(--t-text-faint)" }}>Suggested</div>
                 )}
               </div>
               <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
