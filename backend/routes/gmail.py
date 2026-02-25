@@ -941,12 +941,14 @@ async def confirm_import(run_id: str, request: Request):
         school_id = item.get("school_id")
         if not school_id:
             skipped_count += 1
+            skip_reasons["no_school_id"] += 1
             continue
 
         # Find matching suggestion
         suggestion = suggestion_map.get(school_id)
         if not suggestion:
             skipped_count += 1
+            skip_reasons["no_suggestion"] += 1
             continue
 
         # Idempotency: check if program already exists for this school
@@ -956,6 +958,7 @@ async def confirm_import(run_id: str, request: Request):
         )
         if existing:
             skipped_count += 1
+            skip_reasons["already_exists"] += 1
             continue
 
         # Get KB data for enrichment (include domain + coordinator info)
