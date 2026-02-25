@@ -1086,9 +1086,11 @@ async def confirm_import(run_id: str, request: Request):
 
 
 async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, suggestion):
-    """Create coach entries from KB data and discovered email addresses."""
+    """Create coach entries from KB data and discovered email addresses. Returns creation counts."""
     created_emails = set()
     now = datetime.now(timezone.utc).isoformat()
+    from_kb = 0
+    from_gmail = 0
 
     # 1. Create from KB primary coach
     kb_email = (kb.get("coach_email") or "").strip().lower()
@@ -1108,6 +1110,7 @@ async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, s
             "created_at": now,
         })
         created_emails.add(kb_email)
+        from_kb += 1
 
     # 2. Create from KB recruiting coordinator
     coord_email = (kb.get("coordinator_email") or "").strip().lower()
@@ -1127,6 +1130,7 @@ async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, s
             "created_at": now,
         })
         created_emails.add(coord_email)
+        from_kb += 1
 
     # 3. Create from discovered .edu emails (found during Gmail scan)
     discovered = suggestion.get("discovered_emails", [])
@@ -1151,3 +1155,6 @@ async def _create_coaches_for_import(db, tenant_id, program_id, school_id, kb, s
             "created_at": now,
         })
         created_emails.add(email_addr)
+        from_gmail += 1
+
+    return {"from_kb": from_kb, "from_gmail": from_gmail}
