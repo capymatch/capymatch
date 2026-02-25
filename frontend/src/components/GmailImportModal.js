@@ -52,12 +52,18 @@ function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled }) {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3 text-xs mb-1" style={{ color: "var(--t-text-muted)" }}>
+        <div className="flex items-center gap-3 text-xs mb-1 flex-wrap" style={{ color: "var(--t-text-muted)" }}>
           <span>{s.outbound_count} sent</span>
           <span>&middot;</span>
           <span>{s.inbound_count} received</span>
           <span>&middot;</span>
           <span>{s.thread_count} thread{s.thread_count !== 1 ? "s" : ""}</span>
+          {s.discovered_emails?.length > 0 && (
+            <>
+              <span>&middot;</span>
+              <span>{s.discovered_emails.length} contact{s.discovered_emails.length !== 1 ? "s" : ""}</span>
+            </>
+          )}
         </div>
         {s.last_message_at && (
           <p className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
