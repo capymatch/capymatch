@@ -193,6 +193,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="users/:userId" element={<AdminUserDetail />} />
         <Route path="subscriptions" element={<AdminSubscriptions />} />
         <Route path="integrations" element={<AdminIntegrations />} />
+        <Route path="contributions" element={<AdminContributions />} />
         <Route path="universities" element={<AdminUniversities />} />
       </Route>
       <Route path="*" element={<Navigate to="/board" replace />} />
