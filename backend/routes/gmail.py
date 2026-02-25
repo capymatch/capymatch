@@ -844,7 +844,7 @@ async def start_import(request: Request):
                             headers={"X-Run-Id": active["run_id"]})
 
     run_id = f"import_{uuid.uuid4().hex[:12]}"
-    tenant_id = user.get("tenant_id", "tenant_public_default")
+    tenant_id = await get_tenant_id(user)
 
     await db.import_runs.insert_one({
         "run_id": run_id,
