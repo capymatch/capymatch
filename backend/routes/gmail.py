@@ -1022,20 +1022,65 @@ async def confirm_import(run_id: str, request: Request):
         doc.pop("_id", None)
         created_count += 1
         created_ids.append(school_id)
+        stages_confirmed[stage] += 1
 
         # ── Auto-create coach entries from KB + discovered emails ──
-        await _create_coaches_for_import(
+        coach_counts = await _create_coaches_for_import(
             db, tenant_id, program_id, school_id, kb, suggestion
         )
+        coaches_from_kb += coach_counts["from_kb"]
+        coaches_from_gmail += coach_counts["from_gmail"]
 
-    # Update import_run
+    # Compute confirm analytics
+    confirm_duration_s = round(time.monotonic() - confirm_start, 2)
+    total_suggestions = len(run.get("suggestions", []))
+    auto_selectable = sum(1 for s in run.get("suggestions", []) if s.get("school_id") and (s.get("confidence", 0) >= 80) and not s.get("ignored"))
+
+    confirm_analytics = {
+        "confirm_duration_s": confirm_duration_s,
+        "total_suggestions": total_suggestions,
+        "auto_selectable_count": auto_selectable,
+        "user_selected_count": len(selected),
+        "created_count": created_count,
+        "skipped_count": skipped_count,
+        "skip_reasons": dict(skip_reasons),
+        "conversion_rate": round(created_count / max(total_suggestions, 1) * 100, 1),
+        "stages_confirmed": dict(stages_confirmed),
+        "coaches_created_from_kb": coaches_from_kb,
+        "coaches_created_from_gmail": coaches_from_gmail,
+        "total_coaches_created": coaches_from_kb + coaches_from_gmail,
+    }
+
+    # Update import_run with confirm data + analytics
     await db.import_runs.update_one(
         {"run_id": run_id},
         {"$set": {
             "confirmed_at": datetime.now(timezone.utc).isoformat(),
             "confirmed_school_ids": created_ids,
+            "confirm_analytics": confirm_analytics,
         }}
     )
+
+    # Write to import_analytics collection (one doc per completed import)
+    scan_analytics = run.get("scan_analytics", {})
+    await db.import_analytics.insert_one({
+        "run_id": run_id,
+        "user_id": user_id,
+        "tenant_id": tenant_id,
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "scan": scan_analytics,
+        "confirm": confirm_analytics,
+        "funnel": {
+            "messages_scanned": run.get("messages_scanned", 0),
+            "schools_found": run.get("schools_found", 0),
+            "high_confidence": run.get("schools_high_confidence", 0),
+            "user_selected": len(selected),
+            "actually_created": created_count,
+        },
+    })
+
+    logger.info(f"Import confirm {run_id}: {created_count} created, {skipped_count} skipped, "
+                f"{coaches_from_kb} KB coaches, {coaches_from_gmail} Gmail coaches, {confirm_duration_s}s")
 
     return {"created_count": created_count, "skipped_count": skipped_count}
 
