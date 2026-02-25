@@ -192,6 +192,7 @@ export default function SettingsPage() {
             <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Checking...</span>
           </div>
         ) : gmailStatus?.connected ? (
+          <>
           <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)" }}>
             <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
             <div className="flex-1 min-w-0">
@@ -217,6 +218,7 @@ export default function SettingsPage() {
               <Download className="w-3.5 h-3.5" /> Import
             </button>
           </div>
+          </>
         ) : (
           <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: "var(--t-surface-alt)" }}>
             <XCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
