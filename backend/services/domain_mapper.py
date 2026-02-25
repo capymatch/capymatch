@@ -41,19 +41,12 @@ async def map_email_to_school(db: AsyncIOMotorDatabase, email: str) -> dict:
     )
 
     if alias:
-        # Get school name for match_reason
-        kb = await db.university_knowledge_base.find_one(
-            {"school_id": alias["school_id"]},
-            {"_id": 0, "university_name": 1},
-        )
-        school_name = kb["university_name"] if kb else alias["school_id"]
-        original_part = email.split("@")[1] if "@" in email else email
         return {
             "school_id": alias["school_id"],
             "normalized_domain": domain,
-            "match_type": "exact_alias" if alias["source"] != "registrable_match" else "registrable_match",
+            "match_type": "exact_alias",
             "confidence": alias["confidence"],
-            "match_reason": f"Matched by domain: {original_part} → {domain} → {school_name}",
+            "match_reason": f"Matched by domain: {email.split('@')[1] if '@' in email else email} → {domain} → {alias['school_id']}",
         }
 
     return {
