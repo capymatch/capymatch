@@ -168,6 +168,7 @@ export default function GmailImportModal({ onClose, onComplete }) {
     if (!consent) return;
     setState("scanning");
     setError(null);
+    trackEvent("import_started");
     try {
       const res = await api.post("/gmail/import-history");
       const rid = res.data.run_id;
