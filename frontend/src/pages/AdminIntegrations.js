@@ -347,57 +347,115 @@ export default function AdminIntegrations() {
         statusLabel={gmail.connected ? `${gmail.total_connected} user${gmail.total_connected !== 1 ? "s" : ""} connected` : "Not connected"}
         accent="bg-red-500/15 text-red-400"
       >
-        {gmail.configured ? (
-          <div className="space-y-3">
+        <div className="space-y-4">
+          {/* Current config status */}
+          {gmailDebug && (
+            <div className="space-y-1">
+              <StatRow label="Config Source" value={gmailDebug.source === "database" ? "Database (recommended)" : "Environment variable"} />
+              <StatRow label="Client ID" value={gmailDebug.client_id_prefix || "Not set"} />
+              <StatRow label="Secret Set" value={gmailDebug.client_secret_set ? "Yes" : "No"} />
+              <StatRow label="Redirect URI" value={gmailDebug.redirect_uri || "Not set"} />
+            </div>
+          )}
+
+          {gmail.configured && (
             <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
               <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
               <span>OAuth credentials configured</span>
             </div>
+          )}
 
-            {gmail.connected_users?.length > 0 ? (
-              <div className="space-y-2 mt-3">
-                <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Connected Accounts</span>
-                {gmail.connected_users.map((u) => (
-                  <div
-                    key={u.user_id}
-                    className="flex items-center justify-between py-2.5 px-3 rounded-lg border"
-                    style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}
-                    data-testid={`gmail-user-${u.user_id}`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Mail className="w-4 h-4 text-red-400" />
-                      <div>
-                        <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{u.name || "User"}</span>
-                        <span className="text-xs ml-2" style={{ color: "var(--t-text-muted)" }}>{u.email}</span>
-                      </div>
+          {gmail.connected_users?.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Connected Accounts</span>
+              {gmail.connected_users.map((u) => (
+                <div
+                  key={u.user_id}
+                  className="flex items-center justify-between py-2.5 px-3 rounded-lg border"
+                  style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}
+                  data-testid={`gmail-user-${u.user_id}`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Mail className="w-4 h-4 text-red-400" />
+                    <div>
+                      <span className="text-sm font-medium" style={{ color: "var(--t-text)" }}>{u.name || "User"}</span>
+                      <span className="text-xs ml-2" style={{ color: "var(--t-text-muted)" }}>{u.email}</span>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => disconnectGmail(u.user_id)}
-                      disabled={disconnecting === u.user_id}
-                      className="text-xs text-teal-600 hover:text-slate-300 hover:bg-slate-500/10 gap-1"
-                      data-testid={`gmail-disconnect-${u.user_id}`}
-                    >
-                      {disconnecting === u.user_id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                      Disconnect
-                    </Button>
                   </div>
-                ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => disconnectGmail(u.user_id)}
+                    disabled={disconnecting === u.user_id}
+                    className="text-xs text-teal-600 hover:text-slate-300 hover:bg-slate-500/10 gap-1"
+                    data-testid={`gmail-disconnect-${u.user_id}`}
+                  >
+                    {disconnecting === u.user_id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                    Disconnect
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Update Gmail OAuth credentials */}
+          <div className="pt-2 border-t" style={{ borderColor: "var(--t-border)" }}>
+            <label className="text-xs font-medium uppercase tracking-wider block mb-2" style={{ color: "var(--t-text-muted)" }}>
+              Update Gmail OAuth Credentials
+            </label>
+            <p className="text-[11px] mb-3" style={{ color: "var(--t-text-faint)" }}>
+              Enter your Google Cloud OAuth 2.0 Client ID and Secret. These are stored in the database and take effect immediately.
+            </p>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                value={gmailClientId}
+                onChange={(e) => setGmailClientId(e.target.value)}
+                placeholder="Client ID (e.g., 123456789.apps.googleusercontent.com)"
+                className="text-sm"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                data-testid="gmail-client-id-input"
+              />
+              <div className="relative">
+                <Input
+                  type={showGmailSecret ? "text" : "password"}
+                  value={gmailClientSecret}
+                  onChange={(e) => setGmailClientSecret(e.target.value)}
+                  placeholder="Client Secret"
+                  className="pr-10 text-sm"
+                  style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  data-testid="gmail-client-secret-input"
+                />
+                <button
+                  onClick={() => setShowGmailSecret(!showGmailSecret)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
+                  style={{ color: "var(--t-text-muted)" }}
+                >
+                  {showGmailSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
-            ) : (
-              <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
-                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                <span>No users have connected Gmail yet. Users can connect from Settings.</span>
-              </div>
-            )}
+              <Input
+                type="text"
+                value={gmailRedirectUri}
+                onChange={(e) => setGmailRedirectUri(e.target.value)}
+                placeholder="Redirect URI (optional — auto-detected if blank)"
+                className="text-sm"
+                style={{ backgroundColor: "var(--t-input-bg)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                data-testid="gmail-redirect-uri-input"
+              />
+              <Button
+                size="sm"
+                onClick={saveGmailConfig}
+                disabled={savingGmail || (!gmailClientId.trim() && !gmailClientSecret.trim())}
+                className="gap-1.5"
+                data-testid="gmail-save-config-btn"
+              >
+                {savingGmail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                Save Gmail Credentials
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--t-text-muted)" }}>
-            <XCircle className="w-3.5 h-3.5 text-teal-600" />
-            <span>Gmail OAuth credentials not configured. Add GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET to .env</span>
-          </div>
-        )}
+        </div>
       </IntegrationCard>
 
       {/* Stripe */}
