@@ -156,7 +156,7 @@ async def gmail_connect(request: Request, return_to: str = "/settings"):
     # Gate Gmail behind Pro+
     subscription = await get_user_subscription(tenant_id)
     enforce_feature(subscription, "gmail_integration", "Gmail Integration", "pro")
-    _, _, redirect_uri, client_config = _gmail_config(_get_redirect_uri(request))
+    _, _, redirect_uri, client_config = await _gmail_config_with_db(_get_redirect_uri(request))
     flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=redirect_uri)
     auth_url, state = flow.authorization_url(
         access_type="offline",
