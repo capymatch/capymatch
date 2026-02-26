@@ -580,13 +580,13 @@ export default function GmailImportModal({ onClose, onComplete }) {
                   </button>
                   <button
                     onClick={confirmImport}
-                    disabled={selected.size === 0 || confirming}
+                    disabled={selected.size === 0 || confirming || atLimit}
                     className="flex items-center gap-2 px-5 h-10 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-40"
                     style={{ backgroundColor: "#1a8a80" }}
                     data-testid="confirm-import-btn"
                   >
                     {confirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                    Confirm Import ({selected.size} selected)
+                    {atLimit ? "Plan Full — Upgrade to Import" : `Confirm Import (${selected.size} selected)`}
                   </button>
                 </div>
               )}
