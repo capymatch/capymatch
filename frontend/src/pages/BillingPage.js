@@ -108,8 +108,31 @@ export default function BillingPage() {
   const isPaid = tier !== "basic";
   const isCancelling = billing?.cancel_at_period_end;
 
+  // Check for blocked import schools
+  let blockedImportCount = 0;
+  try { blockedImportCount = parseInt(localStorage.getItem("import_blocked_count") || "0", 10); } catch {}
+
   return (
     <div className="max-w-3xl mx-auto space-y-6" data-testid="billing-page">
+      {/* Schools waiting banner */}
+      {blockedImportCount > 0 && tier !== "premium" && (
+        <div
+          className="rounded-xl border p-4 flex items-start gap-3"
+          style={{ backgroundColor: "rgba(26,138,128,0.06)", borderColor: "rgba(26,138,128,0.15)" }}
+          data-testid="blocked-import-banner"
+        >
+          <Mail className="w-5 h-5 flex-shrink-0 mt-0.5 text-teal-500" />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "var(--t-text)" }}>
+              {blockedImportCount} school{blockedImportCount !== 1 ? "s" : ""} waiting to be imported
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+              Your Gmail scan found more schools than your current plan allows. Upgrade to import them all.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Current Plan */}
       <div
         className="rounded-2xl border overflow-hidden"
