@@ -295,6 +295,7 @@ export default function GmailImportModal({ onClose, onComplete }) {
       if (skipped_count > 0) msg += ` (${skipped_count} already existed)`;
       toast.success(msg);
       setState("done");
+      try { localStorage.removeItem("import_blocked_count"); } catch {}
       if (onComplete) onComplete(created_count);
       setTimeout(() => onClose(), 3000);
     } catch (err) {
