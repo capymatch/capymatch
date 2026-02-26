@@ -481,7 +481,7 @@ export default function UniversityKnowledgeBase() {
       {/* Results Header */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-[12px]" style={{ color: "var(--t-text-muted)" }} data-testid="results-count">
-          Showing {filtered.length.toLocaleString()} schools
+          Showing {enriched.length} of {totalUniversities.toLocaleString()} schools
         </span>
         <div className="flex gap-1" data-testid="view-toggle">
           {[{ mode: "grid", Icon: LayoutGrid }, { mode: "list", Icon: List }].map(({ mode, Icon }) => (
