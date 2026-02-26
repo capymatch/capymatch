@@ -829,8 +829,29 @@ async def start_import(request: Request):
     """Trigger a Gmail history import scan."""
     user = await get_current_user(request)
     user_id = user["user_id"]
+    tenant_id = await get_tenant_id(user)
 
-    # Check Gmail connected
+    # Check for a resumable run FIRST — doesn't need Gmail since scan is done
+    resumable = await db.import_runs.find_one(
+        {"user_id": user_id, "status": "ready"},
+        {"_id": 0, "run_id": 1, "suggestions": 1, "confirmed_school_ids": 1}
+    )
+    if resumable:
+        suggestions = resumable.get("suggestions", [])
+        confirmed = set(resumable.get("confirmed_school_ids", []))
+        existing = await db.programs.find(
+            {"tenant_id": tenant_id}, {"_id": 0, "university_name": 1}
+        ).to_list(1000)
+        existing_names = {p["university_name"] for p in existing}
+        remaining = [s for s in suggestions
+                     if s.get("school_id")
+                     and s["school_id"] not in confirmed
+                     and s["school_id"] not in existing_names
+                     and not s.get("ignored")]
+        if remaining:
+            return {"run_id": resumable["run_id"], "resumed": True}
+
+    # Check Gmail connected (only needed for new scans)
     creds = await get_gmail_credentials(user_id)
     if not creds:
         raise HTTPException(status_code=403, detail="Gmail not connected")
@@ -843,28 +864,6 @@ async def start_import(request: Request):
     if active:
         raise HTTPException(status_code=409, detail="Import already in progress",
                             headers={"X-Run-Id": active["run_id"]})
-
-    # Check for a resumable run — ready but not fully confirmed, with remaining suggestions
-    tenant_id = await get_tenant_id(user)
-    resumable = await db.import_runs.find_one(
-        {"user_id": user_id, "status": "ready"},
-        {"_id": 0, "run_id": 1, "suggestions": 1, "confirmed_school_ids": 1}
-    )
-    if resumable:
-        suggestions = resumable.get("suggestions", [])
-        confirmed = set(resumable.get("confirmed_school_ids", []))
-        existing = await db.programs.find(
-            {"tenant_id": tenant_id}, {"_id": 0, "university_name": 1}
-        ).to_list(1000)
-        existing_names = {p["university_name"] for p in existing}
-        # Check if there are importable suggestions not yet on the board
-        remaining = [s for s in suggestions
-                     if s.get("school_id")
-                     and s["school_id"] not in confirmed
-                     and s["school_id"] not in existing_names
-                     and not s.get("ignored")]
-        if remaining:
-            return {"run_id": resumable["run_id"], "resumed": True}
 
     run_id = f"import_{uuid.uuid4().hex[:12]}"
 
