@@ -975,12 +975,18 @@ async def confirm_import(run_id: str, request: Request):
     created_count = 0
     skipped_count = 0
     created_ids = []
-    skip_reasons = {"no_school_id": 0, "no_suggestion": 0, "already_exists": 0, "not_in_kb": 0}
+    skip_reasons = {"no_school_id": 0, "no_suggestion": 0, "already_exists": 0, "not_in_kb": 0, "plan_limit": 0}
     coaches_from_kb = 0
     coaches_from_gmail = 0
     stages_confirmed = defaultdict(int)
 
     for item in selected:
+        # Plan limit check
+        if created_count >= remaining_slots:
+            skipped_count += 1
+            skip_reasons["plan_limit"] += 1
+            continue
+
         school_id = item.get("school_id")
         if not school_id:
             skipped_count += 1
