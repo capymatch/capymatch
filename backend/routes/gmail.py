@@ -832,8 +832,10 @@ async def start_import(request: Request):
     tenant_id = await get_tenant_id(user)
 
     # Check for a resumable run FIRST — doesn't need Gmail since scan is done
+    # Only resume runs less than 30 days old
+    expiry_cutoff = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
     resumable = await db.import_runs.find_one(
-        {"user_id": user_id, "status": "ready"},
+        {"user_id": user_id, "status": "ready", "completed_at": {"$gte": expiry_cutoff}},
         {"_id": 0, "run_id": 1, "suggestions": 1, "confirmed_school_ids": 1}
     )
     if resumable:
