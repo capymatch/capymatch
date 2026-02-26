@@ -308,25 +308,22 @@ class TestDeleteAccountCollections:
 class TestKBSeedEndpoint:
     """Test KB seed endpoint exists and works"""
     
-    @pytest.fixture
-    def admin_session(self):
-        """Login as admin user to get session token"""
-        login_resp = requests.post(
+    def test_kb_seed_endpoint_exists(self):
+        """Verify POST /api/admin/universities/seed endpoint exists"""
+        # First login as admin to get session token
+        session = requests.Session()
+        login_resp = session.post(
             f"{BASE_URL}/api/auth/login",
             json={"email": "douglas@yeslms.com", "password": "demo2026"},
             headers={"Content-Type": "application/json"},
             timeout=10
         )
         if login_resp.status_code != 200:
-            pytest.skip(f"Admin login failed: {login_resp.status_code}")
+            pytest.skip(f"Admin login failed: {login_resp.status_code} - {login_resp.text}")
         
-        return login_resp.cookies.get("session_token")
-    
-    def test_kb_seed_endpoint_exists(self, admin_session):
-        """Verify POST /api/admin/universities/seed endpoint exists"""
-        resp = requests.post(
+        # Use the session (cookies are automatically handled)
+        resp = session.post(
             f"{BASE_URL}/api/admin/universities/seed",
-            cookies={"session_token": admin_session},
             headers={"Content-Type": "application/json"},
             timeout=30
         )
