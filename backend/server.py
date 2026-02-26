@@ -442,12 +442,13 @@ If no changes found, return []"""
                     now = datetime.now(timezone.utc).isoformat()
                     await db.coach_watch_alerts.delete_many({"tenant_id": tenant_id})
 
-                    for alert in alerts:
-                        alert["alert_id"] = f"cw_{uuid.uuid4().hex[:12]}"
-                        alert["tenant_id"] = tenant_id
-                        alert["created_at"] = now
-                        alert["read"] = False
-                        await db.coach_watch_alerts.insert_one(alert)
+                    if alerts:
+                        for alert in alerts:
+                            alert["alert_id"] = f"cw_{uuid.uuid4().hex[:12]}"
+                            alert["tenant_id"] = tenant_id
+                            alert["created_at"] = now
+                            alert["read"] = False
+                        await db.coach_watch_alerts.insert_many(alerts)
 
                         if alert.get("severity") in ("red", "yellow"):
                             await create_notification(
