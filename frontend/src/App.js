@@ -197,6 +197,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="integrations" element={<AdminIntegrations />} />
         <Route path="contributions" element={<AdminContributions />} />
         <Route path="universities" element={<AdminUniversities />} />
+        <Route path="analytics" element={<AdminImportAnalytics />} />
       </Route>
       <Route path="*" element={<Navigate to="/board" replace />} />
     </Routes>
