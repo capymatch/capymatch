@@ -306,20 +306,29 @@ export default function UniversityKnowledgeBase() {
 
   const fetchUniversities = useCallback(async () => {
     try {
-      const params = {};
+      const params = { page, limit: 50, fields: "list" };
       if (search) params.search = search;
       if (filterRegion) params.region = filterRegion;
       if (filterDivision) params.division = filterDivision;
       if (filterConference) params.conference = filterConference;
       const res = await api.get("/knowledge-base", { params });
-      setUniversities(res.data);
-      setPage(1);
+      const data = res.data;
+      // Handle both paginated and legacy responses
+      if (data?.universities) {
+        setUniversities(data.universities);
+        setTotalUniversities(data.total || data.universities.length);
+        setTotalPages(data.pages || 1);
+      } else if (Array.isArray(data)) {
+        setUniversities(data);
+        setTotalUniversities(data.length);
+        setTotalPages(1);
+      }
     } catch {
       toast.error("Failed to load knowledge base");
     } finally {
       setLoading(false);
     }
-  }, [search, filterRegion, filterDivision, filterConference]);
+  }, [search, filterRegion, filterDivision, filterConference, page]);
 
   useEffect(() => { fetchUniversities(); }, [fetchUniversities]);
 
