@@ -47,6 +47,7 @@ from routes.privacy import router as privacy_router
 from routes.intelligence import router as intelligence_router
 from routes.intelligence_contribute import router as intelligence_contribute_router
 from routes.admin_contributions import router as admin_contributions_router
+from routes.admin_import_analytics import router as admin_import_analytics_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
