@@ -43,11 +43,13 @@ def _gmail_config(redirect_uri_override=None):
 
 def _get_redirect_uri(request: Request) -> str:
     """Derive the Gmail OAuth redirect URI from the incoming request host."""
+    # Check origin/referer for the frontend domain
     origin = request.headers.get("origin") or request.headers.get("referer") or ""
-    # Extract base URL from origin/referer
     if "preview.emergentagent.com" in origin:
-        base = origin.split("/api")[0].split("/settings")[0].split("/board")[0].rstrip("/")
-        return f"{base}/api/gmail/callback"
+        from urllib.parse import urlparse
+        parsed = urlparse(origin)
+        return f"{parsed.scheme}://{parsed.netloc}/api/gmail/callback"
+    # For production, always use the configured redirect URI
     return os.environ.get("GMAIL_REDIRECT_URI")
 
 
