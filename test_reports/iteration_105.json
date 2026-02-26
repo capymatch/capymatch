@@ -1,0 +1,102 @@
+{
+  "summary": "Admin Import Analytics Dashboard - All tests PASSED (21/21 backend, frontend fully verified). Backend: All 5 endpoints return correct structure with proper aggregation from import_analytics, import_events, import_runs collections. Admin-only access enforced (403 for non-admin, 401 without auth). Frontend: Page renders with overview cards, funnel visualization, behavior panel, stage distribution, and expandable recent runs with scan/confirm details.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/admin/import-analytics/overview returns 200 with all 12 required fields",
+    "Backend: GET /api/admin/import-analytics/funnel returns 200 with all 5 funnel steps",
+    "Backend: GET /api/admin/import-analytics/behavior returns 200 with all 11 behavior metrics",
+    "Backend: GET /api/admin/import-analytics/recent-runs returns 200 with runs array and total count",
+    "Backend: GET /api/admin/import-analytics/stage-distribution returns 200 with stages object",
+    "Backend: All 5 endpoints return 403 for non-admin demo user",
+    "Backend: All 5 endpoints return 401 without authentication",
+    "Backend: Recent-runs enriches runs with user_email and user_name from users collection",
+    "Backend: Overview aggregates from import_analytics (scan/confirm/funnel fields)",
+    "Backend: Behavior aggregates event counts from import_events collection",
+    "Frontend: Admin analytics page renders at /admin/analytics",
+    "Frontend: Admin sidebar shows 'Import Analytics' nav item as active (teal highlight)",
+    "Frontend: 6 overview stat cards render with correct data-testid attributes",
+    "Frontend: Import Funnel visualization shows 5 steps with progress bars",
+    "Frontend: User Behavior panel shows all 11 metrics",
+    "Frontend: Stage Distribution section renders with division breakdown",
+    "Frontend: Recent Import Runs section with expandable rows",
+    "Frontend: Expanded row shows SCAN details (duration, guardrails, filtered, unmapped)",
+    "Frontend: Expanded row shows CONFIRM details (created, skipped, conversion, coaches)",
+    "Frontend: Expanded row shows skip reasons and confirmed school IDs",
+    "Frontend: Expanded row shows unmapped domains list"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_admin_import_analytics.py",
+    "/app/test_reports/pytest/admin_import_analytics_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend: admin_import_analytics.py correctly uses require_admin dependency for all 5 routes",
+    "Backend: MongoDB _id properly excluded via _serialize helper and projection",
+    "Backend: Aggregation pipelines correctly handle empty collections (returns 0 values)",
+    "Frontend: All stat cards have data-testid='import-stat-{label}' for testing",
+    "Frontend: Run rows have data-testid='import-run-{run_id}' for testing",
+    "Frontend: Page handles empty state gracefully ('No import runs yet')"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_import_analytics.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)",
+    "frontend": "100% (all UI components verified)"
+  },
+  "test_credentials": {
+    "admin_user": {
+      "email": "douglas@yeslms.com",
+      "session_token": "sess_b4ae6400ec06424ebd67b63d01c9dbef"
+    },
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    }
+  },
+  "seed_data_creation": "Temporarily seeded import_analytics, import_events, import_runs, users collections with test data to verify aggregation. All test data cleaned up after testing.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Admin Import Analytics feature fully implemented and tested. Backend endpoints at /api/admin/import-analytics/{overview,funnel,behavior,recent-runs,stage-distribution}. All return proper JSON with MongoDB _id excluded. Admin-only access via require_admin guard (checks ADMIN_EMAILS list). Frontend page at /admin/analytics renders all sections correctly. Expandable run rows show detailed scan/confirm analytics. Test file: /app/backend/tests/test_admin_import_analytics.py",
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_admin_import_analytics.py",
+      "results_xml": "/app/test_reports/pytest/admin_import_analytics_results.xml",
+      "all_passed": true,
+      "test_count": 21,
+      "test_classes": [
+        "TestAdminAccessControl (5 tests - 403 for non-admin)",
+        "TestAdminOverviewEndpoint (2 tests)",
+        "TestAdminFunnelEndpoint (2 tests)",
+        "TestAdminBehaviorEndpoint (2 tests)",
+        "TestAdminRecentRunsEndpoint (3 tests)",
+        "TestAdminStageDistributionEndpoint (2 tests)",
+        "TestUnauthenticatedAccess (5 tests - 401 without auth)"
+      ]
+    },
+    "frontend_tests": {
+      "page_url": "/admin/analytics",
+      "components_verified": [
+        "admin-import-analytics container",
+        "6 stat cards (total-imports, unique-users, schools-imported, coaches-created, avg-scan-time, avg-conversion)",
+        "Import Funnel section with 5 steps",
+        "User Behavior panel with 11 metrics",
+        "Stage Distribution section",
+        "Recent Import Runs with expandable rows"
+      ],
+      "screenshots": [
+        "/app/.screenshots/admin_analytics_page.png",
+        "/app/.screenshots/admin_analytics_with_data.png",
+        "/app/.screenshots/admin_analytics_expanded.png"
+      ]
+    }
+  }
+}
