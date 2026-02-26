@@ -253,9 +253,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      api.get("/programs"),
-      api.get("/events"),
-      api.get("/interactions"),
+      api.get("/programs").catch(() => ({ data: [] })),
+      api.get("/events").catch(() => ({ data: [] })),
+      api.get("/interactions").catch(() => ({ data: [] })),
       api.get("/athlete-profile").catch(() => ({ data: {} })),
       api.get("/gmail/status").catch(() => ({ data: { connected: false } })),
       api.get("/inbound-contacts").catch(() => ({ data: { contacts: [] } })),
