@@ -162,8 +162,16 @@ function OnboardingGate({ children }) {
   return children;
 }
 
+// Lightweight loading fallback for lazy routes
+const PageLoader = () => (
+  <div className="flex items-center justify-center h-screen" style={{ backgroundColor: "var(--t-bg)" }}>
+    <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
 function AuthedRoutes({ user, onAuth, onLogout }) {
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
