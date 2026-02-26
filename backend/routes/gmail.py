@@ -193,7 +193,7 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
         return RedirectResponse(f"{frontend_url}{return_to}?gmail=connected")
 
     except Exception as e:
-        logger.error(f"Gmail callback error: {e}")
+        logger.error(f"Gmail callback error: {e} | redirect_uri used: {stored_redirect_uri}")
         return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=token_exchange_failed")
 
 
