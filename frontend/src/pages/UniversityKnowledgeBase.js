@@ -414,7 +414,7 @@ export default function UniversityKnowledgeBase() {
 
   // Bucket counts
   const bucketCounts = {
-    all: universities.length,
+    all: totalUniversities,
     dream: universities.filter(u => u.division === "D1").length,
     strong: Object.values(suggestionMap).filter(s => s.match_score >= 80).length,
     academics: Object.values(suggestionMap).filter(s => (s.match_reasons || []).includes("Academics")).length,
