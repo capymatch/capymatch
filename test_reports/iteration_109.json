@@ -1,0 +1,92 @@
+{
+  "summary": "P0 Production Bug Fixes Verified - Dashboard Resilience & Gmail Admin UI. All 14 backend tests passed. Frontend tests confirm dashboard loads with user name (not 'there') and non-admin users are blocked from admin pages.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Gmail debug-config endpoint returns 200 without authentication (public endpoint)",
+    "Gmail debug-config includes 'source' field indicating 'database' or 'env'",
+    "Non-admin user (demo@capymatch.com) gets 403 from /api/admin/integrations",
+    "Non-admin user gets 403 from /api/gmail/admin/update-oauth-config",
+    "Dashboard /api/programs returns 200 with list",
+    "Dashboard /api/events returns 200 with list",
+    "Dashboard /api/interactions returns 200 with list",
+    "Dashboard /api/athlete-profile returns 200 with data",
+    "Dashboard /api/gmail/status returns 200 with connected field",
+    "Dashboard /api/inbound-contacts returns 200 with contacts field",
+    "admin_integrations.py includes config_source field in Gmail status response",
+    "Dashboard.js has .catch() on all 6 Promise.all API calls (resilient)",
+    "Dashboard.js uses authUser?.name as fallback for name display",
+    "Layout.js passes user via Outlet context prop"
+  ],
+  "frontend_verification": {
+    "dashboard_loads": {
+      "status": "PASSED",
+      "greeting": "Good evening, Clara - shows athlete name, not 'there'",
+      "sections_loaded": ["greeting-pulse", "todays-actions", "school-spotlight", "pipeline-snapshot", "recent-activity"]
+    },
+    "name_display": {
+      "status": "PASSED",
+      "details": "Header shows 'Sarah' (user name), greeting shows 'Clara' (athlete name)"
+    },
+    "admin_access_blocked": {
+      "status": "PASSED",
+      "details": "Admin link not visible in sidebar for non-admin, direct navigation redirects to /board"
+    },
+    "gmail_oauth_ui_blocked": {
+      "status": "PASSED",
+      "details": "Gmail OAuth credential inputs not accessible for non-admin users"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_dashboard_gmail_admin_bugs.py",
+    "/app/test_reports/pytest/dashboard_gmail_admin_bugs_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Dashboard.js lines 256-263: All 6 API calls have .catch() fallbacks - prevents 'Failed to load dashboard' error",
+    "Dashboard.js line 252: Uses useOutletContext() to get authUser from Layout",
+    "Dashboard.js line 285: Name fallback chain is profile?.athlete_name || profile?.name || authUser?.name",
+    "Layout.js line 609: <Outlet context={{ user }} /> passes user to child routes",
+    "admin_integrations.py line 82: config_source field indicates 'database', 'env', or 'none'",
+    "gmail.py lines 277-303: Admin update-oauth-config endpoint with require_admin guard"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_dashboard_gmail_admin_bugs.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 pytest tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "test_credentials": {
+    "demo_user": "demo@capymatch.com / demo2026",
+    "admin_user": "douglas@yeslms.com (Google OAuth only)"
+  },
+  "seed_data_creation": "None - tests used existing demo user",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "P0 bugs fixed: 1) Dashboard no longer shows 'Failed to load dashboard' because all 6 API calls have .catch() fallbacks. 2) Dashboard greeting shows actual athlete name via profile?.athlete_name || authUser?.name fallback chain. 3) Gmail admin endpoints require admin (douglas@yeslms.com) and return 403 for other users. 4) Gmail debug-config is public and includes config_source field.",
+  "bugs_verified_fixed": {
+    "dashboard_failure": {
+      "original_bug": "Dashboard shows 'Failed to load dashboard' when any API call fails",
+      "fix": "All 6 API calls in Promise.all now have .catch() returning default values",
+      "verified": true
+    },
+    "name_display": {
+      "original_bug": "User's name shows as 'Hello there' instead of actual name",
+      "fix": "Dashboard uses authUser.name from Outlet context as fallback",
+      "verified": true
+    },
+    "gmail_admin_ui": {
+      "original_bug": "Gmail connect fails with 'deleted_client' error - admin UI needed",
+      "fix": "AdminIntegrations.js has Gmail OAuth credential inputs, backend has /api/gmail/admin/update-oauth-config",
+      "verified": true
+    }
+  }
+}
