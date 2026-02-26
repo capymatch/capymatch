@@ -143,11 +143,11 @@ async def gmail_connect(request: Request, return_to: str = "/settings"):
 
 @router.get("/callback")
 async def gmail_callback(request: Request, code: str = "", state: str = "", error: str = ""):
-    frontend_url = os.environ.get("GMAIL_REDIRECT_URI", "").replace("/api/gmail/callback", "")
-
-    # Look up state doc first to get return_to
+    # Look up state doc first to get return_to and the redirect_uri used during connect
     state_doc = await db.gmail_oauth_states.find_one({"state": state}) if state else None
     return_to = (state_doc or {}).get("return_to", "/settings")
+    stored_redirect_uri = (state_doc or {}).get("redirect_uri") or os.environ.get("GMAIL_REDIRECT_URI")
+    frontend_url = stored_redirect_uri.replace("/api/gmail/callback", "") if stored_redirect_uri else ""
 
     if error:
         logger.error(f"Gmail OAuth error: {error}")
@@ -157,7 +157,8 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
         return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=missing_params")
 
     if not state_doc:
-        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=invalid_state")
+        fallback_url = os.environ.get("GMAIL_REDIRECT_URI", "").replace("/api/gmail/callback", "")
+        return RedirectResponse(f"{fallback_url}{return_to}?gmail=error&reason=invalid_state")
 
     user_id = state_doc["user_id"]
     await db.gmail_oauth_states.delete_one({"state": state})
