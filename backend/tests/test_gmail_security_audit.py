@@ -311,8 +311,7 @@ class TestKBSeedEndpoint:
     def test_kb_seed_endpoint_exists(self):
         """Verify POST /api/admin/universities/seed endpoint exists"""
         # First login as admin to get session token
-        session = requests.Session()
-        login_resp = session.post(
+        login_resp = requests.post(
             f"{BASE_URL}/api/auth/login",
             json={"email": "douglas@yeslms.com", "password": "demo2026"},
             headers={"Content-Type": "application/json"},
@@ -321,10 +320,17 @@ class TestKBSeedEndpoint:
         if login_resp.status_code != 200:
             pytest.skip(f"Admin login failed: {login_resp.status_code} - {login_resp.text}")
         
-        # Use the session (cookies are automatically handled)
-        resp = session.post(
+        # Get session token from response body
+        login_data = login_resp.json()
+        session_token = login_data.get("session_token")
+        if not session_token:
+            pytest.skip("No session token in login response")
+        
+        # Call seed endpoint with session token in cookie
+        resp = requests.post(
             f"{BASE_URL}/api/admin/universities/seed",
             headers={"Content-Type": "application/json"},
+            cookies={"session_token": session_token},
             timeout=30
         )
         
