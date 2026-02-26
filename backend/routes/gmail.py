@@ -218,7 +218,7 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
             env_uri = os.environ.get("GMAIL_REDIRECT_URI")
             if env_uri and env_uri != exchange_uri:
                 logger.warning(f"Token exchange failed with {exchange_uri}, trying fallback {env_uri}: {first_err}")
-                _, _, _, client_config = _gmail_config(env_uri)
+                _, _, _, client_config = await _gmail_config_with_db(env_uri)
                 flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=env_uri)
                 flow.fetch_token(code=code)
             else:
