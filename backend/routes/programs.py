@@ -218,9 +218,21 @@ async def list_programs(
         if uname in quest_map:
             p["questionnaire_url"] = quest_map[uname]
 
-    # Enrich with coach data and interaction signals
+    # Enrich with coach data and interaction signals (batch query to avoid N+1)
+    program_ids = [p["program_id"] for p in programs]
+    all_coaches = await db.coaches.find(
+        {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
+        {"_id": 0}
+    ).to_list(None)
+    coaches_by_program = {}
+    for coach in all_coaches:
+        pid = coach.get("program_id")
+        if pid not in coaches_by_program:
+            coaches_by_program[pid] = []
+        coaches_by_program[pid].append(coach)
+
     for p in programs:
-        coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(50)
+        coaches = coaches_by_program.get(p["program_id"], [])
         primary_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
         coordinator = next((c for c in coaches if c.get("role") == "Recruiting Coordinator"), None)
         p["primary_coach"] = primary_coach.get("coach_name", "") if primary_coach else ""
