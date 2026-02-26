@@ -1200,7 +1200,11 @@ async def get_suggested_schools(request: Request):
     ).to_list(500)
     existing_names = {p["university_name"] for p in existing}
 
-    all_schools = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
+    all_schools = await db.university_knowledge_base.find({}, {
+        "_id": 0, "university_name": 1, "division": 1, "conference": 1,
+        "region": 1, "website": 1, "domain": 1, "mascot": 1, "logo_url": 1,
+        "scholarship_type": 1, "roster_needs": 1, "scorecard": 1, "pr_state": 1,
+    }).to_list(2000)
 
     suggestions = []
     for school in all_schools:
