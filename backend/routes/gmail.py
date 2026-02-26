@@ -955,6 +955,16 @@ async def confirm_import(run_id: str, request: Request):
     if not selected:
         raise HTTPException(status_code=400, detail="No schools selected")
 
+    # Server-side plan limit enforcement
+    from subscriptions import get_user_subscription
+    subscription = await get_user_subscription(tenant_id)
+    max_schools = subscription.get("max_schools", 5)
+    current_count = await db.programs.count_documents({"tenant_id": tenant_id})
+    if max_schools != -1:
+        remaining_slots = max(0, max_schools - current_count)
+    else:
+        remaining_slots = len(selected)  # unlimited
+
     # Build lookup from suggestions
     suggestion_map = {}
     for s in run.get("suggestions", []):
