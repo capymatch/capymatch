@@ -109,6 +109,7 @@ export default function AthleteProfileQuiz() {
   const [saving, setSaving] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
   const [matchScores, setMatchScores] = useState([]);
+  const [matchError, setMatchError] = useState(false);
 
   const isIntro = step === -1;
   const q = isIntro ? null : QUESTIONS[step];
