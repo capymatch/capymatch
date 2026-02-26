@@ -101,7 +101,7 @@ async def get_gmail_credentials(user_id: str):
     if not token_doc:
         return None
 
-    client_id, client_secret, _, _ = _gmail_config()
+    client_id, client_secret, _, _ = await _gmail_config_with_db()
 
     # Decrypt tokens if encrypted
     access_token = token_doc["access_token"]
