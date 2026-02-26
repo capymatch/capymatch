@@ -6,7 +6,7 @@ import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
   Search, Plus, MapPin, Check, LayoutGrid, List, Star,
   Target, MapPinned, GraduationCap, X, Filter, ExternalLink,
-  Loader2, RotateCcw, Sparkles, ArrowRight, Zap
+  Loader2, RotateCcw, Sparkles, ArrowRight, Zap, Database
 } from "lucide-react";
 import { toast } from "sonner";
 import { RiskBadgeRow, RiskBadgeEmpty, RiskExplainerDrawer } from "../components/RiskBadges";
