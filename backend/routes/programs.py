@@ -18,7 +18,11 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
     interactions = await db.interactions.find(
         {"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}
     ).sort("date_time", -1).to_list(200)
+    return _compute_signals_from_interactions(interactions)
 
+
+def _compute_signals_from_interactions(interactions: list) -> dict:
+    """Pure computation of signals from a list of interactions."""
     now = datetime.now(timezone.utc)
     outreach_count = 0
     has_coach_reply = False
@@ -37,17 +41,14 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
         except Exception:
             dt = None
 
-        # Track most recent activity of any kind
         if dt and (last_activity_date is None or dt > last_activity_date):
             last_activity_date = dt
 
-        # Count outreach — everything except coach replies is athlete outreach
         if ix_type not in ("coach_reply", "email_received"):
             outreach_count += 1
             if dt and (last_outreach_date is None or dt > last_outreach_date):
                 last_outreach_date = dt
 
-        # Coach replies include explicit coach_reply and email_received (Gmail inbound)
         if ix_type in ("coach_reply", "email_received"):
             has_coach_reply = True
             if dt and (last_reply_date is None or dt > last_reply_date):
@@ -67,6 +68,28 @@ async def compute_interaction_signals(tenant_id: str, program_id: str) -> dict:
         "days_since_activity": days_since_activity,
         "total_interactions": total_interactions,
     }
+
+
+async def batch_compute_signals(tenant_id: str, program_ids: list) -> dict:
+    """Batch compute interaction signals for multiple programs in ONE query."""
+    all_interactions = await db.interactions.find(
+        {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
+        {"_id": 0}
+    ).to_list(None)
+
+    # Group by program_id
+    by_program = {}
+    for ix in all_interactions:
+        pid = ix.get("program_id")
+        if pid not in by_program:
+            by_program[pid] = []
+        by_program[pid].append(ix)
+
+    # Compute signals per program
+    result = {}
+    for pid in program_ids:
+        result[pid] = _compute_signals_from_interactions(by_program.get(pid, []))
+    return result
 
 
 def categorize_program(program: dict) -> str:
