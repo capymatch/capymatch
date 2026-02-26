@@ -31,7 +31,7 @@ async def get_current_user(request: Request):
     # Auto-extend session on activity (if <7 days remaining, extend to 30 days)
     remaining = datetime.fromisoformat(session["expires_at"]) - datetime.now(timezone.utc)
     if remaining.days < 7:
-        new_expiry = (datetime.now(timezone.utc) + __import__("datetime").timedelta(days=30)).isoformat()
+        new_expiry = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
         await db.user_sessions.update_one(
             {"session_token": session_token},
             {"$set": {"expires_at": new_expiry}}
