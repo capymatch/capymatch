@@ -41,6 +41,40 @@ def _gmail_config(redirect_uri_override=None):
     return client_id, client_secret, redirect_uri, config
 
 
+# Cache for DB-stored credentials (refreshed every 5 min)
+_cached_gmail_creds = {"data": None, "fetched_at": 0}
+
+async def _gmail_config_with_db(redirect_uri_override=None):
+    """Get Gmail config, preferring DB-stored credentials over env vars."""
+    import time
+    now = time.time()
+    # Refresh cache every 5 minutes
+    if _cached_gmail_creds["data"] is None or (now - _cached_gmail_creds["fetched_at"]) > 300:
+        doc = await db.app_config.find_one({"key": "gmail_oauth"}, {"_id": 0})
+        _cached_gmail_creds["data"] = doc
+        _cached_gmail_creds["fetched_at"] = now
+    
+    doc = _cached_gmail_creds["data"]
+    if doc and doc.get("client_id") and doc.get("client_secret"):
+        client_id = doc["client_id"]
+        client_secret = doc["client_secret"]
+        redirect_uri = redirect_uri_override or doc.get("redirect_uri") or os.environ.get("GMAIL_REDIRECT_URI")
+    else:
+        client_id = os.environ.get("GMAIL_CLIENT_ID")
+        client_secret = os.environ.get("GMAIL_CLIENT_SECRET")
+        redirect_uri = redirect_uri_override or os.environ.get("GMAIL_REDIRECT_URI")
+
+    config = {
+        "web": {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
+    }
+    return client_id, client_secret, redirect_uri, config
+
+
 def _get_redirect_uri(request: Request) -> str:
     """Derive the Gmail OAuth redirect URI from the incoming request host."""
     # Check origin/referer for the frontend domain
