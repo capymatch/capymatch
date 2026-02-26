@@ -308,10 +308,7 @@ async def get_email(message_id: str, request: Request):
         attachments = _extract_attachments(msg.get("payload", {}))
 
         if "UNREAD" in msg.get("labelIds", []):
-            service.users().messages().modify(
-                userId="me", id=message_id,
-                body={"removeLabelIds": ["UNREAD"]},
-            ).execute()
+            pass  # Read-only mode: do not modify email state in Gmail
 
         return {
             "id": msg["id"],
