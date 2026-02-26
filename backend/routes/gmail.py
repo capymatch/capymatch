@@ -274,6 +274,35 @@ async def gmail_debug_config(request: Request):
     }
 
 
+@router.post("/admin/update-oauth-config")
+async def update_gmail_oauth_config(request: Request):
+    """Admin-only: Update Gmail OAuth credentials stored in database."""
+    from admin_guard import require_admin
+    await require_admin(request)
+    body = await request.json()
+    client_id = body.get("client_id", "").strip()
+    client_secret = body.get("client_secret", "").strip()
+    redirect_uri = body.get("redirect_uri", "").strip()
+    if not client_id or not client_secret:
+        raise HTTPException(status_code=400, detail="client_id and client_secret required")
+    await db.app_config.update_one(
+        {"key": "gmail_oauth"},
+        {"$set": {
+            "key": "gmail_oauth",
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "redirect_uri": redirect_uri or os.environ.get("GMAIL_REDIRECT_URI"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }},
+        upsert=True,
+    )
+    # Clear cache
+    _cached_gmail_creds["data"] = None
+    _cached_gmail_creds["fetched_at"] = 0
+    logger.info(f"Gmail OAuth config updated: {client_id[:20]}...")
+    return {"ok": True, "client_id_prefix": client_id[:20] + "..."}
+
+
 @router.get("/status")
 async def gmail_status(request: Request):
     user = await get_current_user(request)
