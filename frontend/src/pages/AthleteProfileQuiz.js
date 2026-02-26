@@ -235,7 +235,7 @@ export default function AthleteProfileQuiz() {
             </div>
 
             {/* Match scores preview */}
-            {matchScores.length > 0 && (
+            {matchScores.length > 0 ? (
               <div className="rounded-xl border p-5 text-left" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-4 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />Top Suggested Matches
@@ -258,6 +258,17 @@ export default function AthleteProfileQuiz() {
                     </div>
                   ))}
                 </div>
+              </div>
+            ) : (
+              <div className="rounded-xl border p-5 text-left" style={{ backgroundColor: "var(--t-surface-alt)", borderColor: "var(--t-border)" }}>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-3 flex items-center gap-1.5">
+                  <Target className="w-3.5 h-3.5" />Matching Ready
+                </p>
+                <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>
+                  {matchError
+                    ? "We couldn't load matches right now. Head to Find Schools to discover programs that fit your profile."
+                    : "Your profile is set. Head to Find Schools to discover programs matched to your preferences."}
+                </p>
               </div>
             )}
 
