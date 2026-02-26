@@ -102,10 +102,4 @@ frontend/node_modules/.cache/default-development/20.pack
 frontend/node_modules/.cache/default-development/1.pack_
 frontend/node_modules/.cache/default-development/18.pack
 -e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+# Note: .env tracked for deployment
