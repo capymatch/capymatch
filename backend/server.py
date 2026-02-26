@@ -512,6 +512,10 @@ async def demo_date_refresh_loop():
 async def startup_event():
     global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task
     
+    # Create database indexes (idempotent, runs fast if indexes exist)
+    from create_indexes import create_indexes
+    await create_indexes(db)
+    
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
     logger.info("Started background task: coach reply checker (runs every 10 minutes)")
