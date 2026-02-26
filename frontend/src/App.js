@@ -216,6 +216,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
 
 function UnauthRoutes({ onAuth }) {
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
@@ -228,6 +229,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/board" element={<OAuthCallbackGate onAuth={onAuth} />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
+    </Suspense>
   );
 }
 
