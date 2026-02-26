@@ -105,6 +105,11 @@ export default function UpgradeModal({ isOpen, onClose, feature, message, curren
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
 
+  // Check for blocked import schools
+  let blockedImportCount = 0;
+  try { blockedImportCount = parseInt(localStorage.getItem("import_blocked_count") || "0", 10); } catch {}
+  const displayMessage = message || (blockedImportCount > 0 ? `${blockedImportCount} school${blockedImportCount !== 1 ? "s" : ""} from your Gmail scan are waiting to be imported.` : null);
+
   useEffect(() => {
     if (!isOpen) return;
     api.get("/subscription/tiers").then(res => {
