@@ -202,20 +202,30 @@ export default function GmailImportModal({ onClose, onComplete }) {
           clearInterval(pollRef.current);
           pollRef.current = null;
           const suggs = d.suggestions || [];
+          const plan = d.plan_info || null;
           setSuggestions(suggs);
-          // Auto-select verified matches
+          setPlanInfo(plan);
+
+          // Auto-select verified matches, excluding duplicates, up to remaining plan slots
+          const remaining = plan?.remaining_slots ?? suggs.length;
+          const isUnlimited = remaining === -1 || plan?.max_schools === -1;
           const autoSelect = new Set();
-          suggs.forEach(s => {
-            if (s.school_id && (s.confidence || 0) >= 80 && !s.ignored) {
-              autoSelect.add(s.school_id || s.normalized_domain);
-            }
-          });
+          // Sort by confidence desc so highest confidence get selected first
+          const importable = suggs
+            .filter(s => s.school_id && (s.confidence || 0) >= 80 && !s.ignored && !s.already_on_board)
+            .sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+
+          for (const s of importable) {
+            if (!isUnlimited && autoSelect.size >= remaining) break;
+            autoSelect.add(s.school_id || s.normalized_domain);
+          }
+
           setSelected(autoSelect);
           setState("preview");
           // Track preview shown
           api.post("/gmail/import-analytics/event", {
             event: "import_preview_shown", run_id: rid,
-            metadata: { total: suggs.length, auto_selected: autoSelect.size }
+            metadata: { total: suggs.length, auto_selected: autoSelect.size, remaining_slots: remaining }
           }).catch(() => {});
         } else if (d.phase === "failed") {
           clearInterval(pollRef.current);
