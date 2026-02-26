@@ -51,13 +51,22 @@ function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManua
             >
               {stage.label}
             </span>
-            {!isUnmapped && (
+            {!isUnmapped && !isDuplicate && (
               <span
                 className="flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: "rgba(22,163,74,0.1)", color: "#16a34a" }}
                 data-testid={`verified-school-badge-${s.normalized_domain}`}
               >
                 <BadgeCheck className="w-3 h-3" /> Verified School
+              </span>
+            )}
+            {isDuplicate && (
+              <span
+                className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "rgba(255,255,255,0.06)", color: "var(--t-text-faint)" }}
+                data-testid={`duplicate-badge-${s.normalized_domain}`}
+              >
+                Already tracking
               </span>
             )}
             {s.attention_required && (
