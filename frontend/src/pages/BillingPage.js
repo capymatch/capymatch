@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
   CreditCard, Crown, Sparkles, Zap, ChevronRight,
   Loader2, AlertTriangle, CheckCircle2, XCircle,
-  Clock, Receipt, ArrowLeft, RotateCcw
+  Clock, Receipt, ArrowLeft, RotateCcw, Mail
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import UpgradeModal from "../components/UpgradeModal";
