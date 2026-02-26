@@ -95,19 +95,34 @@ async def get_reminders(request: Request):
         "recruiting_status": {"$nin": ["Not a Fit / Closed"]},
     }, {"_id": 0}).sort("next_action_due", 1).to_list(50)
     reminders = []
+    if overdue:
+        overdue_pids = [p["program_id"] for p in overdue]
+        # Batch fetch coaches and interactions
+        all_coaches = await db.coaches.find(
+            {"tenant_id": tenant_id, "program_id": {"$in": overdue_pids}}, {"_id": 0}
+        ).to_list(None)
+        all_last_ix = await db.interactions.find(
+            {"tenant_id": tenant_id, "program_id": {"$in": overdue_pids}}, {"_id": 0}
+        ).sort("date_time", -1).to_list(None)
+
+        coaches_by_pid = {}
+        for c in all_coaches:
+            coaches_by_pid.setdefault(c.get("program_id"), []).append(c)
+        last_ix_by_pid = {}
+        for ix in all_last_ix:
+            pid = ix.get("program_id")
+            if pid not in last_ix_by_pid:
+                last_ix_by_pid[pid] = ix
+
     for p in overdue:
         try:
             due_date = datetime.strptime(p["next_action_due"], "%Y-%m-%d")
             days_overdue = (datetime.now(timezone.utc).replace(tzinfo=None) - due_date).days
         except ValueError:
             days_overdue = 0
-        coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": p["program_id"]}, {"_id": 0}).to_list(5)
+        coaches = coaches_by_pid.get(p["program_id"], [])
         head_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
-        last_interaction = await db.interactions.find_one(
-            {"tenant_id": tenant_id, "program_id": p["program_id"]},
-            {"_id": 0},
-            sort=[("date_time", -1)],
-        )
+        last_interaction = last_ix_by_pid.get(p["program_id"])
         reminders.append({
             "program_id": p["program_id"],
             "university_name": p.get("university_name", ""),
