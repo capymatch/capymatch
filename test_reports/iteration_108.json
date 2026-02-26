@@ -1,0 +1,95 @@
+{
+  "summary": "Gmail Security Audit - ALL 16 BACKEND TESTS PASSED. Complete verification that Gmail integration NEVER sends emails or modifies emails during scanning. Frontend verification confirms Delete Account button works with onClick handler and confirmation dialog.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "GMAIL_SCOPES contains ONLY gmail.readonly, gmail.send, openid, userinfo.email, userinfo.profile - NO gmail.modify, NO gmail.labels",
+    "gmail.py has ZERO .modify() API calls",
+    "gmail_import.py has ZERO .modify() API calls",
+    "gmail.py has ZERO messages().delete() Gmail API calls (only DB deletes)",
+    "gmail_import.py has ZERO messages().delete() Gmail API calls",
+    "gmail.py has ZERO .trash() calls",
+    "gmail_import.py has ZERO .trash() calls",
+    ".send() calls exist ONLY in send_email (line 493) and reply_email (line 603) functions",
+    "gmail_import.py has ZERO .send() calls - import is READ ONLY",
+    "toggle_read endpoint returns disabled message ('Read/unread toggling is disabled for privacy')",
+    "get_email endpoint does NOT auto-mark emails as read (line 311 has 'pass')",
+    "gmail_import.py only uses READ methods: list() and get()",
+    "delete-account clears athlete_profiles collection",
+    "delete-account clears subscriptions collection",
+    "delete-account clears import_runs collection",
+    "KB seed endpoint (POST /api/admin/universities/seed) exists and works (inserted=0, total=1053)"
+  ],
+  "frontend_verification": {
+    "delete_account_button": {
+      "status": "PASSED",
+      "details": "Delete Account button found with data-testid='delete-account-btn', onClick handler shows confirmation dialog with input field for typing 'DELETE', Cancel button works"
+    },
+    "matching_ready_fallback": {
+      "status": "VERIFIED via code review",
+      "details": "AthleteProfileQuiz.js lines 263-272 show 'Matching Ready' fallback when matchScores.length === 0"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_gmail_security_audit.py",
+    "/app/test_reports/pytest/gmail_security_audit_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SECURITY VERIFIED: GMAIL_SCOPES (lines 54-60) contains ONLY safe read+send scopes",
+    "SECURITY VERIFIED: gmail_import.py only uses messages().list() and messages().get() - completely read-only",
+    "SECURITY VERIFIED: toggle_read endpoint (lines 665-668) returns disabled message, no modify call",
+    "SECURITY VERIFIED: get_email endpoint (line 311) has 'pass' comment - no auto-mark-as-read",
+    "Delete Account cleanup (privacy.py lines 156-170): clears programs, coaches, interactions, notes, events, notifications, inbound_contacts, sent_email_log, privacy_preferences, coach_watch_alerts, tenants, athlete_profiles, subscriptions",
+    "KB seed endpoint (admin_universities.py lines 232-266) exists at POST /api/admin/universities/seed and works correctly"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_gmail_security_audit.py"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 pytest tests passed)",
+    "frontend": "100% (code review + UI verification)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    },
+    "admin_user": {
+      "email": "douglas@yeslms.com",
+      "password": "demo2026"
+    }
+  },
+  "seed_data_creation": "None - tests read source files and make API calls",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Gmail Security Audit complete. All Gmail scanning operations are READ-ONLY (list, get only). Send operations only exist in explicit send_email and reply_email functions. Toggle-read is disabled. Auto-mark-as-read is disabled. Delete account properly cleans up athlete_profiles and subscriptions. KB seed endpoint works.",
+  "gmail_security_summary": {
+    "scopes_verified": {
+      "allowed": ["gmail.readonly", "gmail.send", "openid", "userinfo.email", "userinfo.profile"],
+      "NOT_present": ["gmail.modify", "gmail.labels"]
+    },
+    "write_operations_audit": {
+      "modify_calls": 0,
+      "delete_calls_on_gmail_messages": 0,
+      "trash_calls": 0,
+      "send_calls_in_gmail_routes": 2,
+      "send_calls_in_gmail_import": 0
+    },
+    "send_call_locations": [
+      "Line 493: send_email function - EXPLICIT USER ACTION",
+      "Line 603: reply_email function - EXPLICIT USER ACTION"
+    ],
+    "disabled_features": [
+      "toggle_read endpoint - returns disabled message",
+      "auto-mark-as-read in get_email - replaced with 'pass'"
+    ]
+  }
+}
