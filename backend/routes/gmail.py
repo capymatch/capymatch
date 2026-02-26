@@ -144,7 +144,13 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
     # Look up state doc first to get return_to and the redirect_uri used during connect
     state_doc = await db.gmail_oauth_states.find_one({"state": state}) if state else None
     return_to = (state_doc or {}).get("return_to", "/settings")
-    stored_redirect_uri = (state_doc or {}).get("redirect_uri") or os.environ.get("GMAIL_REDIRECT_URI")
+
+    # Determine the correct redirect_uri for token exchange:
+    # 1. Use stored value from state doc (set during connect)
+    # 2. Fall back to the actual callback URL being hit right now
+    # 3. Fall back to env variable
+    actual_callback_url = str(request.url).split("?")[0]  # The URL Google redirected to
+    stored_redirect_uri = (state_doc or {}).get("redirect_uri") or actual_callback_url or os.environ.get("GMAIL_REDIRECT_URI")
     frontend_url = stored_redirect_uri.replace("/api/gmail/callback", "") if stored_redirect_uri else ""
 
     if error:
