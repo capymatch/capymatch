@@ -186,12 +186,19 @@ async def check_coach_replies():
             # Get all users with connected Gmail
             gmail_tokens = await db.gmail_tokens.find({}, {"_id": 0, "user_id": 1}).to_list(1000)
             
+            if not gmail_tokens:
+                continue
+
+            # Batch fetch all user docs in one query
+            user_ids = [t["user_id"] for t in gmail_tokens]
+            all_users = await db.users.find({"user_id": {"$in": user_ids}}, {"_id": 0, "user_id": 1, "tenant_id": 1}).to_list(1000)
+            user_map = {u["user_id"]: u for u in all_users}
+
             for token_doc in gmail_tokens:
                 user_id = token_doc["user_id"]
                 
                 try:
-                    # Get user's tenant_id
-                    user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+                    user = user_map.get(user_id)
                     if not user:
                         continue
                     tenant_id = user.get("tenant_id") or f"tenant_{user_id}"
