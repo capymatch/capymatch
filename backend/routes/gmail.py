@@ -19,6 +19,7 @@ import logging
 import email.mime.text
 import email.mime.multipart
 import email.mime.base
+import email.encoders
 
 logger = logging.getLogger(__name__)
 
