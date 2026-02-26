@@ -254,6 +254,9 @@ async def list_programs(
             coaches_by_program[pid] = []
         coaches_by_program[pid].append(coach)
 
+    # Batch compute interaction signals (single query instead of N+1)
+    signals_map = await batch_compute_signals(tenant_id, program_ids)
+
     for p in programs:
         coaches = coaches_by_program.get(p["program_id"], [])
         primary_coach = next((c for c in coaches if c.get("role") == "Head Coach"), coaches[0] if coaches else None)
@@ -262,9 +265,7 @@ async def list_programs(
         p["coach_email"] = primary_coach.get("email", "") if primary_coach else ""
         p["recruiting_coordinator"] = coordinator.get("coach_name", "") if coordinator else ""
         p["coordinator_email"] = coordinator.get("email", "") if coordinator else ""
-        # Compute data-driven interaction signals
-        p["signals"] = await compute_interaction_signals(tenant_id, p["program_id"])
-        # Add dynamic group category based on signals
+        p["signals"] = signals_map.get(p["program_id"], {})
         p["board_group"] = categorize_program(p)
     
     if grouped:
