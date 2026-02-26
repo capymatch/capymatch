@@ -226,9 +226,7 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
 
 @router.get("/debug-config")
 async def gmail_debug_config(request: Request):
-    """Admin-only: check Gmail OAuth config without exposing secrets."""
-    from admin_guard import require_admin
-    await require_admin(request)
+    """Public: check Gmail OAuth config without exposing secrets."""
     client_id = os.environ.get("GMAIL_CLIENT_ID", "")
     redirect_uri = os.environ.get("GMAIL_REDIRECT_URI", "")
     has_secret = bool(os.environ.get("GMAIL_CLIENT_SECRET", ""))
@@ -236,10 +234,7 @@ async def gmail_debug_config(request: Request):
         "client_id_prefix": client_id[:20] + "..." if client_id else "MISSING",
         "client_secret_set": has_secret,
         "redirect_uri": redirect_uri,
-        "dynamic_redirect_uri": _get_redirect_uri(request),
         "scopes": GMAIL_SCOPES,
-        "origin_header": request.headers.get("origin", "none"),
-        "referer_header": request.headers.get("referer", "none"),
     }
 
 
