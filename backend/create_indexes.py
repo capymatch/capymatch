@@ -65,8 +65,6 @@ async def create_indexes(db: AsyncIOMotorDatabase):
     await db.import_runs.create_index("run_id")
 
     # ─── KNOWLEDGE BASE (1053 docs, queried 30 times in code) ───
-    # university_name index already exists, add text search
-    await db.university_knowledge_base.create_index("university_name", unique=True)
     await db.university_knowledge_base.create_index("division")
     await db.university_knowledge_base.create_index("region")
     await db.university_knowledge_base.create_index("conference")
