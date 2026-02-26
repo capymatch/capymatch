@@ -36,7 +36,7 @@ router = APIRouter(prefix="/api")
 
 
 @router.get("/knowledge-base")
-async def list_knowledge_base(division: Optional[str] = None, conference: Optional[str] = None, region: Optional[str] = None, search: Optional[str] = None):
+async def list_knowledge_base(division: Optional[str] = None, conference: Optional[str] = None, region: Optional[str] = None, search: Optional[str] = None, page: int = 1, limit: int = 50, fields: Optional[str] = None):
     query = {}
     if division:
         query["division"] = division
@@ -46,8 +46,21 @@ async def list_knowledge_base(division: Optional[str] = None, conference: Option
         query["region"] = {"$regex": f"^{region}$", "$options": "i"}
     if search:
         query["university_name"] = {"$regex": search, "$options": "i"}
-    universities = await db.university_knowledge_base.find(query, {"_id": 0}).sort("university_name", 1).to_list(2000)
-    return universities
+
+    # Lightweight projection for list view (skip heavy fields)
+    projection = {"_id": 0}
+    if fields == "list":
+        projection = {
+            "_id": 0, "university_name": 1, "division": 1, "conference": 1,
+            "region": 1, "logo_url": 1, "scholarship_type": 1, "roster_needs": 1,
+            "domain": 1, "pr_state": 1, "scorecard": 1,
+        }
+
+    total = await db.university_knowledge_base.count_documents(query)
+    skip = (page - 1) * limit
+    universities = await db.university_knowledge_base.find(query, projection).sort("university_name", 1).skip(skip).limit(limit).to_list(limit)
+
+    return {"universities": universities, "total": total, "page": page, "limit": limit, "pages": (total + limit - 1) // limit}
 
 
 @router.post("/knowledge-base/add-to-board")
