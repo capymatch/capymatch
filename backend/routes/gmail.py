@@ -26,10 +26,10 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/gmail")
 
 
-def _gmail_config():
+def _gmail_config(redirect_uri_override=None):
     client_id = os.environ.get("GMAIL_CLIENT_ID")
     client_secret = os.environ.get("GMAIL_CLIENT_SECRET")
-    redirect_uri = os.environ.get("GMAIL_REDIRECT_URI")
+    redirect_uri = redirect_uri_override or os.environ.get("GMAIL_REDIRECT_URI")
     config = {
         "web": {
             "client_id": client_id,
@@ -39,6 +39,16 @@ def _gmail_config():
         }
     }
     return client_id, client_secret, redirect_uri, config
+
+
+def _get_redirect_uri(request: Request) -> str:
+    """Derive the Gmail OAuth redirect URI from the incoming request host."""
+    origin = request.headers.get("origin") or request.headers.get("referer") or ""
+    # Extract base URL from origin/referer
+    if "preview.emergentagent.com" in origin:
+        base = origin.split("/api")[0].split("/settings")[0].split("/board")[0].rstrip("/")
+        return f"{base}/api/gmail/callback"
+    return os.environ.get("GMAIL_REDIRECT_URI")
 
 
 GMAIL_SCOPES = [
