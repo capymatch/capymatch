@@ -10,6 +10,7 @@ import AdminUniversities from "./pages/AdminUniversities";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
 import AdminIntegrations from "./pages/AdminIntegrations";
 import AdminContributions from "./pages/AdminContributions";
+import AdminImportAnalytics from "./pages/AdminImportAnalytics";
 import OutreachAnalysis from "./pages/OutreachAnalysis";
 import HighlightAdvisor from "./pages/HighlightAdvisor";
 import RecruitingBoard from "./pages/RecruitingBoard";
