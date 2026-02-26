@@ -492,6 +492,21 @@ export default function UniversityKnowledgeBase() {
           <button onClick={resetFilters} className="mt-3 text-sm font-medium flex items-center gap-1.5 mx-auto text-[#1a8a80] transition-colors hover:opacity-80">
             <RotateCcw className="w-3.5 h-3.5" /> Reset filters
           </button>
+          {universities.length === 0 && !search && !filterDivision && !filterRegion && (
+            <div className="mt-6 p-4 rounded-xl border max-w-sm mx-auto" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }}>
+              <Database className="w-8 h-8 mx-auto mb-2 text-teal-600" />
+              <p className="text-sm font-medium mb-1" style={{ color: "var(--t-text)" }}>Knowledge Base Empty</p>
+              <p className="text-xs mb-3" style={{ color: "var(--t-text-muted)" }}>Seed 1,000+ volleyball programs to get started</p>
+              <button
+                onClick={handleSeedKB}
+                disabled={seeding}
+                data-testid="seed-kb-btn"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-teal-700 hover:bg-teal-800 transition-colors disabled:opacity-50 flex items-center gap-2 mx-auto"
+              >
+                {seeding ? <><Loader2 className="w-4 h-4 animate-spin" /> Seeding...</> : <><Database className="w-4 h-4" /> Seed Knowledge Base</>}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" : "flex flex-col gap-2.5"} data-testid="kb-grid">
