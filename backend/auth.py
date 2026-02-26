@@ -28,6 +28,14 @@ async def get_current_user(request: Request):
     if datetime.fromisoformat(session["expires_at"]) < datetime.now(timezone.utc):
         await db.user_sessions.delete_many({"session_token": session_token})
         raise HTTPException(status_code=401, detail="Session expired")
+    # Auto-extend session on activity (if <7 days remaining, extend to 30 days)
+    remaining = datetime.fromisoformat(session["expires_at"]) - datetime.now(timezone.utc)
+    if remaining.days < 7:
+        new_expiry = (datetime.now(timezone.utc) + __import__("datetime").timedelta(days=30)).isoformat()
+        await db.user_sessions.update_one(
+            {"session_token": session_token},
+            {"$set": {"expires_at": new_expiry}}
+        )
     user = await db.users.find_one(
         {"user_id": session["user_id"]}, {"_id": 0}
     )
