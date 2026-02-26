@@ -210,6 +210,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
       </Route>
       <Route path="*" element={<Navigate to="/board" replace />} />
     </Routes>
+    </Suspense>
   );
 }
 
