@@ -247,6 +247,12 @@ export default function GmailImportModal({ onClose, onComplete }) {
         next.delete(key);
         trackEvent("import_suggestion_deselected", { school: key });
       } else {
+        // Enforce plan limit on selection
+        const isUnlimited = planInfo?.remaining_slots === -1 || planInfo?.max_schools === -1;
+        if (!isUnlimited && planInfo?.remaining_slots != null && next.size >= planInfo.remaining_slots) {
+          toast.error(`Your ${planInfo.label} plan allows ${planInfo.max_schools} schools. Upgrade to add more.`);
+          return prev;
+        }
         next.add(key);
         trackEvent("import_suggestion_reselected", { school: key });
       }
