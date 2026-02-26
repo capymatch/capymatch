@@ -130,6 +130,7 @@ export default function GmailImportModal({ onClose, onComplete }) {
   const [showIgnored, setShowIgnored] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [importedCount, setImportedCount] = useState(0);
+  const [planInfo, setPlanInfo] = useState(null);
   const [error, setError] = useState(null);
   const pollRef = useRef(null);
   const navigate = useNavigate();
