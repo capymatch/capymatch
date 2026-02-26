@@ -1,0 +1,101 @@
+{
+  "summary": "Gmail Import Duplicate Detection & Plan Limit Enforcement - All Backend Tests PASSED (7/7). Frontend code review confirms all UI features correctly implemented. Backend: Status endpoint marks existing programs as already_on_board=true, returns plan_info with tier/max_schools/current_count/remaining_slots, confirm endpoint skips schools when plan is full (skip_reasons.plan_limit incremented), idempotency preserved. Frontend: Code review verified 'Already on Your Board' section with disabled checkboxes and 'Already tracking' badge, plan limit banner, auto-selection excludes duplicates and respects remaining plan slots, toggle shows toast error at limit, confirm button shows 'Plan Full — Upgrade to Import' when atLimit.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/gmail/import-history/{run_id}/status marks existing programs as already_on_board=true",
+    "Backend: Status endpoint returns plan_info with tier, max_schools, current_count, remaining_slots for premium (unlimited)",
+    "Backend: Status endpoint returns plan_info for basic plan showing remaining_slots=0 when at limit (10 programs, max 5)",
+    "Backend: Confirm endpoint skips schools when plan is full (skip_reasons.plan_limit incremented)",
+    "Backend: Confirm endpoint works within plan limit for premium users (regression)",
+    "Backend: Idempotency - confirm skips already-existing programs (skip_reasons.already_exists incremented)",
+    "Backend: Pro plan shows correct remaining_slots (25 - current_count)",
+    "Frontend (code review): 'Already on Your Board' section groups duplicates with disabled checkboxes (Lines 468-489)",
+    "Frontend (code review): 'Already tracking' badge with data-testid='duplicate-badge-{domain}' (Lines 63-71)",
+    "Frontend (code review): Plan limit banner with data-testid='plan-limit-banner' shows when hasLimit (Lines 440-466)",
+    "Frontend (code review): Auto-selection excludes already_on_board and respects remaining_slots (Lines 218-230)",
+    "Frontend (code review): Toggle rejects selection at plan limit with toast.error (Lines 259-264)",
+    "Frontend (code review): Confirm button shows 'Plan Full — Upgrade to Import' when atLimit (Line 589)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_gmail_import_duplicate_plan_limit.py",
+    "/app/test_reports/pytest/gmail_import_duplicate_plan_limit_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend gmail.py status endpoint (Lines 898-906): Correctly queries existing programs and sets already_on_board flag",
+    "Backend gmail.py status endpoint (Lines 909-926): Correctly computes plan_info with remaining_slots = max(0, max_schools - current_count)",
+    "Backend gmail.py confirm endpoint (Lines 985-989): Plan limit check correctly placed before school creation loop",
+    "Frontend GmailImportModal.js: All 6 features correctly implemented with proper data-testid attributes for testing",
+    "Frontend: alreadyOnBoard category correctly filtered by s.already_on_board && !s.ignored (Line 299)",
+    "Frontend: isUnlimited/atLimit/hasLimit computed correctly from planInfo (Lines 305-307)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_gmail_import_duplicate_plan_limit.py"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 pytest tests passed)",
+    "frontend": "100% (code review confirms all features implemented)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    },
+    "user_id": "user_653ee8f71acd",
+    "tenant_id": "tenant_user_653ee8f71acd"
+  },
+  "seed_data_creation": "Tests seeded import_runs with suggestions including existing schools (Stanford, UCLA) and test schools. All test data cleaned up after tests via pytest fixtures.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Gmail Import Duplicate Detection & Plan Limit features fully tested via backend API tests. Frontend code review confirms correct implementation of all 6 UI features. Demo user Gmail is NOT connected so modal cannot be tested via Playwright UI automation. Test file: /app/backend/tests/test_gmail_import_duplicate_plan_limit.py covers all backend scenarios including plan tier changes.",
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_gmail_import_duplicate_plan_limit.py",
+      "results_xml": "/app/test_reports/pytest/gmail_import_duplicate_plan_limit_results.xml",
+      "all_passed": true,
+      "test_count": 7,
+      "test_classes": [
+        "TestStatusEndpointDuplicateDetection (1 test)",
+        "TestStatusEndpointPlanInfo (2 tests - premium + basic tiers)",
+        "TestConfirmEndpointPlanLimitEnforcement (2 tests - limit reached + works within limit)",
+        "TestConfirmIdempotency (1 test - skips existing programs)",
+        "TestProPlanRemainingSlots (1 test - verifies remaining_slots calculation)"
+      ]
+    },
+    "frontend_code_review": {
+      "file": "/app/frontend/src/components/GmailImportModal.js",
+      "features_verified": [
+        "alreadyOnBoard category with disabled rows and 'Already tracking' badge",
+        "planInfo state variable populated from status API response",
+        "hasLimit/atLimit/isUnlimited computed correctly",
+        "Plan limit banner with data-testid='plan-limit-banner'",
+        "Auto-selection logic excludes duplicates and respects remaining_slots",
+        "toggleSuggestion shows toast.error when at limit",
+        "Confirm button text changes to 'Plan Full — Upgrade to Import' when atLimit"
+      ],
+      "note": "UI cannot be tested via Playwright as demo user does not have Gmail connected"
+    }
+  },
+  "plan_info_structure": {
+    "tier": "string (basic|pro|premium)",
+    "label": "string (Starter|Pro|Premium)",
+    "max_schools": "number (-1 for unlimited)",
+    "current_count": "number",
+    "remaining_slots": "number (-1 for unlimited)"
+  },
+  "skip_reasons_tracked": {
+    "no_school_id": "School suggestion missing school_id",
+    "no_suggestion": "Selected school not found in suggestions map",
+    "already_exists": "Program already exists for this tenant",
+    "not_in_kb": "School not found in university_knowledge_base",
+    "plan_limit": "Plan limit reached (new in this feature)"
+  }
+}
