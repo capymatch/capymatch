@@ -227,3 +227,40 @@ async def delete_university(university_name: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="University not found")
     return {"ok": True, "deleted": university_name}
+
+
+@router.post("/seed")
+async def seed_knowledge_base(request: Request):
+    """Seed the university knowledge base from the bundled data file. Admin only."""
+    existing = await db.university_knowledge_base.count_documents({})
+
+    seed_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "kb_seed.json")
+    if not os.path.exists(seed_path):
+        raise HTTPException(status_code=404, detail="Seed data file not found")
+
+    with open(seed_path, "r") as f:
+        schools = json.load(f)
+
+    inserted = 0
+    skipped = 0
+    for school in schools:
+        name = school.get("university_name")
+        if not name:
+            continue
+        exists = await db.university_knowledge_base.find_one({"university_name": name})
+        if exists:
+            skipped += 1
+            continue
+        school.pop("_id", None)
+        await db.university_knowledge_base.insert_one(school)
+        inserted += 1
+
+    total = await db.university_knowledge_base.count_documents({})
+    logger.info(f"KB seed complete: {inserted} inserted, {skipped} skipped, {total} total")
+    return {
+        "ok": True,
+        "previously_existed": existing,
+        "inserted": inserted,
+        "skipped": skipped,
+        "total": total,
+    }
