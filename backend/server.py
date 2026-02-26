@@ -532,6 +532,13 @@ async def startup_event():
     from create_indexes import create_indexes
     await create_indexes(db)
     
+    # Clean up expired sessions and stale OAuth states
+    now = datetime.now(timezone.utc).isoformat()
+    expired = await db.user_sessions.delete_many({"expires_at": {"$lt": now}})
+    stale_oauth = await db.gmail_oauth_states.delete_many({"created_at": {"$lt": (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()}})
+    if expired.deleted_count or stale_oauth.deleted_count:
+        logger.info(f"Cleanup: {expired.deleted_count} expired sessions, {stale_oauth.deleted_count} stale OAuth states")
+    
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
     logger.info("Started background task: coach reply checker (runs every 10 minutes)")
