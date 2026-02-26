@@ -23,6 +23,10 @@ async def get_integrations_status():
             gmail_connected_users.append(user)
 
     gmail_client_id = os.environ.get("GMAIL_CLIENT_ID", "")
+    # Also check DB-backed config
+    gmail_db_config = await db.app_config.find_one({"key": "gmail_oauth"}, {"_id": 0})
+    gmail_db_client_id = (gmail_db_config or {}).get("client_id", "")
+    gmail_configured = bool(gmail_client_id) or bool(gmail_db_client_id)
 
     # ── Stripe ──
     stripe_key = os.environ.get("STRIPE_API_KEY", "")
