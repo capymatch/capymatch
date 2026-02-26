@@ -259,6 +259,8 @@ export default function UniversityKnowledgeBase() {
   const fromOnboarding = searchParams.get("from") === "onboarding";
 
   const [universities, setUniversities] = useState([]);
+  const [totalUniversities, setTotalUniversities] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(true);
