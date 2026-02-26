@@ -287,9 +287,15 @@ export default function GmailImportModal({ onClose, onComplete }) {
   };
 
   // Categorize suggestions
-  const verified = suggestions.filter(s => s.school_id && (s.confidence || 0) >= 80 && !s.ignored);
-  const needsReview = suggestions.filter(s => (!s.school_id || (s.confidence || 0) < 80) && !s.ignored);
+  const alreadyOnBoard = suggestions.filter(s => s.already_on_board && !s.ignored);
+  const verified = suggestions.filter(s => s.school_id && (s.confidence || 0) >= 80 && !s.ignored && !s.already_on_board);
+  const needsReview = suggestions.filter(s => (!s.school_id || (s.confidence || 0) < 80) && !s.ignored && !s.already_on_board);
   const ignored = suggestions.filter(s => s.ignored);
+
+  // Plan limit helpers
+  const isUnlimited = planInfo?.remaining_slots === -1 || planInfo?.max_schools === -1;
+  const atLimit = !isUnlimited && planInfo?.remaining_slots != null && planInfo.remaining_slots === 0;
+  const hasLimit = !isUnlimited && planInfo?.max_schools > 0;
 
   return (
     <div
