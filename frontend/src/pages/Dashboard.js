@@ -249,6 +249,7 @@ export default function Dashboard() {
   const [spotlightExpanded, setSpotlightExpanded] = useState(false);
   const [inboundContacts, setInboundContacts] = useState([]);
   const { subscription } = useSubscription();
+  const { user: authUser } = useOutletContext() || {};
   const navigate = useNavigate();
 
   useEffect(() => {
