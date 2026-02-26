@@ -235,11 +235,13 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
       <Route path="*" element={<Navigate to="/board" replace />} />
     </Routes>
     </Suspense>
+    </ChunkErrorBoundary>
   );
 }
 
 function UnauthRoutes({ onAuth }) {
   return (
+    <ChunkErrorBoundary>
     <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
@@ -254,6 +256,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
     </Suspense>
+    </ChunkErrorBoundary>
   );
 }
 
