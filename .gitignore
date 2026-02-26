@@ -31,7 +31,7 @@ dist/
 dist
 
 # Environment files (comprehensive coverage)
-
+# Note: .env files are tracked for Emergent deployment
 *token.json*
 *credentials.json*
 
