@@ -80,6 +80,12 @@ export default function AdminIntegrations() {
   const [scrapeProgress, setScrapeProgress] = useState("");
   const [discoveringUrls, setDiscoveringUrls] = useState(false);
   const [discoverProgress, setDiscoverProgress] = useState("");
+  const [gmailClientId, setGmailClientId] = useState("");
+  const [gmailClientSecret, setGmailClientSecret] = useState("");
+  const [gmailRedirectUri, setGmailRedirectUri] = useState("");
+  const [showGmailSecret, setShowGmailSecret] = useState(false);
+  const [savingGmail, setSavingGmail] = useState(false);
+  const [gmailDebug, setGmailDebug] = useState(null);
 
   const fetchIntegrations = async () => {
     try {
