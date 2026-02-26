@@ -12,7 +12,7 @@ const adminNav = [
   { to: "/admin/contributions", icon: MessageSquarePlus, label: "Contributions" },
   { to: "/admin/integrations", icon: Plug, label: "Integrations" },
   { to: "/admin/universities", icon: GraduationCap, label: "Universities" },
-  { to: "/admin/analytics", icon: BarChart3, label: "Analytics", disabled: true },
+  { to: "/admin/analytics", icon: BarChart3, label: "Import Analytics" },
 ];
 
 export default function AdminLayout() {
