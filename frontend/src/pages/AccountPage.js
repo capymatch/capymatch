@@ -414,16 +414,54 @@ export default function AccountPage() {
           </div>
         </div>
         <div className="flex items-center justify-between p-4 rounded-xl border border-red-500/15" style={{ backgroundColor: "var(--t-surface-alt)" }}>
-          <div>
-            <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Delete Account</p>
-            <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Permanently delete your account and all data</p>
-          </div>
-          <button
-            data-testid="delete-account-btn"
-            className="px-4 py-2 text-sm rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors font-medium"
-          >
-            Delete Account
-          </button>
+          {!showDeleteConfirm ? (
+            <>
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Delete Account</p>
+                <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>Permanently delete your account and all data</p>
+              </div>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                data-testid="delete-account-btn"
+                className="px-4 py-2 text-sm rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors font-medium"
+              >
+                Delete Account
+              </button>
+            </>
+          ) : (
+            <div className="w-full">
+              <p className="text-sm font-semibold text-red-500 mb-2">This is permanent and cannot be undone</p>
+              <p className="text-xs mb-3" style={{ color: "var(--t-text-muted)" }}>
+                All your schools, interactions, coaches, notes, and account data will be permanently deleted. Type <span className="font-bold" style={{ color: "var(--t-text)" }}>DELETE</span> to confirm.
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder="Type DELETE"
+                  className="flex-1 px-3 py-2 rounded-lg text-sm border"
+                  style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }}
+                  data-testid="delete-confirm-input"
+                />
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleteConfirmText !== "DELETE"}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold bg-red-600 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:bg-red-700"
+                  data-testid="delete-confirm-btn"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmText(""); }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-white/5"
+                  style={{ color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
