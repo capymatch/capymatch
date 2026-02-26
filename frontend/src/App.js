@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "./lib/theme";
-import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
+import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
 import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
 import LoginPage from "./pages/LoginPage";
