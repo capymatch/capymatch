@@ -428,6 +428,58 @@ export default function GmailImportModal({ onClose, onComplete }) {
           {/* STATE 3: PREVIEW */}
           {state === "preview" && (
             <div className="space-y-4 pt-2">
+              {/* Plan Limit Banner */}
+              {hasLimit && (
+                <div
+                  className="flex items-start gap-3 p-3 rounded-xl"
+                  style={{ backgroundColor: atLimit ? "rgba(239,68,68,0.06)" : "rgba(26,138,128,0.06)", border: `1px solid ${atLimit ? "rgba(239,68,68,0.15)" : "rgba(26,138,128,0.12)"}` }}
+                  data-testid="plan-limit-banner"
+                >
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: atLimit ? "#ef4444" : "#1a8a80" }} />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium" style={{ color: "var(--t-text)" }}>
+                      {atLimit
+                        ? `Your ${planInfo.label} plan is full (${planInfo.current_count}/${planInfo.max_schools} schools).`
+                        : `Your ${planInfo.label} plan allows ${planInfo.max_schools} schools. You have ${planInfo.current_count} — you can import ${planInfo.remaining_slots} more.`}
+                    </p>
+                    {(atLimit || selected.size >= (planInfo?.remaining_slots || 0)) && (
+                      <a
+                        href="/billing"
+                        className="text-[11px] font-semibold mt-1 inline-block"
+                        style={{ color: "#1a8a80" }}
+                        data-testid="upgrade-link"
+                      >
+                        Upgrade for more schools
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Already on Your Board */}
+              {alreadyOnBoard.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Check className="w-4 h-4" style={{ color: "var(--t-text-faint)" }} />
+                    <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint)" }}>
+                      Already on Your Board ({alreadyOnBoard.length})
+                    </h3>
+                  </div>
+                  <div className="space-y-2">
+                    {alreadyOnBoard.map(s => (
+                      <SuggestionRow
+                        key={s.school_id || s.normalized_domain}
+                        s={s}
+                        checked={false}
+                        onToggle={() => {}}
+                        disabled
+                        isDuplicate
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Verified Matches */}
               {verified.length > 0 && (
                 <div>
