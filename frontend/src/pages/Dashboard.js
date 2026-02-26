@@ -282,8 +282,8 @@ export default function Dashboard() {
   }
 
   /* ── Derived data ── */
-  const athleteName = profile?.athlete_name || profile?.name || "";
-  const firstName = athleteName.split(" ")[0] || "there";
+  const athleteName = profile?.athlete_name || profile?.name || authUser?.name || "";
+  const firstName = athleteName.split(" ")[0] || "Athlete";
   const now = new Date();
   const hour = now.getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
