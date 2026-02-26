@@ -1,63 +1,54 @@
 # CapyMatch PRD
 
 ## Original Problem Statement
-CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophisticated decision-support system for student-athletes. The core goal is to provide data-driven insights to navigate the complexities of college recruiting.
+Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support system for student-athletes providing data-driven insights for college recruiting. Features a three-stage AI pipeline for source-aware intelligence.
 
-## Core Architecture
-- **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
-- **Backend**: FastAPI (Python) + MongoDB (Motor async)
-- **Auth**: Bearer token (localStorage)
-- **Integrations**: Stripe, Resend, Claude AI (Emergent LLM Key), Emergent Google Auth, Google Gmail APIs
+## User Personas
+- **Student Athletes**: Navigate college recruiting with data-driven insights
+- **Admin (Douglas)**: Manages platform, reviews contributions, monitors analytics
 
-## Gmail History Import (Complete Feature)
-### Core Flow
-- Scan Gmail headers → match .edu domains to KB → preview suggestions → confirm import
-- Auto-creates coaches from KB + discovered emails, sets domain for logos/intelligence
-- Header-only scanning (never reads message bodies)
+## Core Requirements
+1. Dynamic Recruiting Board
+2. University Knowledge Base (1053 schools)
+3. Mobile-friendly responsive design
+4. Admin Area with analytics
+5. Subscription Engine with Stripe
+6. AI-powered suggestions
+7. Gmail integration (read-only scan + send emails)
+8. Follow-up automation system
+9. School detail pages with intelligence cards
 
-### Safety & Intelligence
-- Duplicate detection: marks schools already on board with `already_on_board` flag
-- Plan limit enforcement: auto-selects within remaining slots, shows upgrade CTA
-- Defensive KB check: only KB-verified schools can be imported
-- "Schools waiting" counter on billing/upgrade pages for conversion motivation
-
-### Re-Import (Post-Upgrade)
-- When user clicks Import again, backend detects previous scan with unimported suggestions
-- Skips Gmail scan entirely — goes straight to preview with fresh duplicate/plan checks
-- Works even if Gmail token has expired (resume check before credential check)
-- Confirmed schools and existing board entries excluded from resume
-
-### Analytics (5 Areas)
-1. Run metrics: scan duration, guardrails, stage distribution, conversion rate
-2. Unmapped domain intelligence: global frequency tracking for KB gaps
-3. User behavior: consent, start, preview, abandon, deselect, add manually events
-4. Coach discovery: KB vs Gmail breakdown per run
-5. Error tracking: skip reasons (no_school_id, no_suggestion, already_exists, not_in_kb, plan_limit)
-
-### Admin Dashboard (`/admin/analytics`)
-- Overview cards, import funnel, user behavior panel, stage distribution, expandable run rows
-
-## Plan Limits
-- **Free/Basic**: 5 schools max
-- **Pro**: 25 schools max
-- **Premium**: Unlimited (-1)
-
-## Other Completed Features
-1. AI intelligence cards (Claude), multi-stage pipeline, Stripe subscriptions
-2. University KB with scraped data + background refresh
-3. Trust & Safety, intelligence metrics (CSI, Match Risk, Timeline, etc.)
-4. Data contribution + Admin review, School detail pages
-5. Recruiting Journey, Questionnaire Tracking, Follow-Up Reminders
-6. Gmail read/write/attachment downloads, Full PWA
-
-## Pending Issues
-- **P2**: NCAA Timeline colors (recurring cosmetic)
-- **P2**: Dead links for school recruiting questionnaires
-
-## Backlog
-- NIL platform, Girls/Boys data separation, email templates, Camp/Tournament ROI, Family Collaboration Roles
-- Consolidate AccountPage/SettingsPage, university_name → school_id migration
+## Architecture
+- **Frontend**: React + TailwindCSS + Shadcn/UI (lazy-loaded pages)
+- **Backend**: FastAPI + MongoDB (Motor async)
+- **Auth**: Emergent-managed Google OAuth + email/password
+- **AI**: Claude via Emergent LLM Key
+- **Payments**: Stripe
+- **Email**: Resend (password reset), Gmail API (user emails)
 
 ## Credentials
-- **Demo User**: demo@capymatch.com / demo2026 (Premium, 10 schools)
-- **Admin User**: douglas@yeslms.com (Google auth)
+- **Demo User**: demo@capymatch.com / demo2026
+- **Admin User**: douglas@yeslms.com (Google auth, also demo2026 in preview)
+
+## What's Implemented (as of Feb 26, 2026)
+- Full recruiting board with stages, signals, next-step suggestions
+- Gmail integration (read-only + send, import history)
+- AI intelligence cards with source-aware reasoning
+- Stripe subscription (Free/Pro/Premium)
+- Admin dashboard (users, contributions, import analytics)
+- School detail pages with match scores, risk badges, timelines
+- Knowledge base with 1053 schools (server-side pagination)
+- Onboarding questionnaire with matching
+- Delete account functionality
+- Performance optimizations (40+ indexes, lazy loading, batch queries)
+
+## Pending Issues
+- NCAA Timeline colors (P2, recurring)
+- Dead questionnaire links (P2)
+
+## Backlog (P2/Future)
+- Full NIL transaction platform
+- Separate Girls/Boys volleyball data
+- Email templates & bulk outreach
+- Camp/Tournament ROI tracker
+- Family Collaboration Roles
