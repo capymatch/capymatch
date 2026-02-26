@@ -293,7 +293,7 @@ async def get_program(program_id: str, request: Request):
 async def update_questionnaire_status(program_id: str, request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
-    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id})
+    program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
     if not program:
         raise HTTPException(status_code=404, detail="Program not found")
     body = await request.json()
