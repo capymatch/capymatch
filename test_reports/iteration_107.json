@@ -1,0 +1,97 @@
+{
+  "summary": "Gmail Import Re-import Capability - All Backend Tests PASSED (10/10). Frontend code review confirms all UI features correctly implemented. Backend: POST /api/gmail/import-history returns {run_id, resumed: true} when there's a ready run with unimported suggestions. Resume check excludes schools already on board, schools in confirmed_school_ids, and ignored schools. Resume works without Gmail connected. Falls through to Gmail check when no remaining schools.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: POST /api/gmail/import-history returns {run_id, resumed: true} when there's a ready run with unimported suggestions",
+    "Backend: Resume check excludes schools already on the user's board (by matching university_name in programs)",
+    "Backend: Resume check excludes schools from the confirmed_school_ids list",
+    "Backend: If all suggestions are already on board, falls through to Gmail check (returns 403 'Gmail not connected')",
+    "Backend: If all suggestions are in confirmed_school_ids, falls through to Gmail check (returns 403 'Gmail not connected')",
+    "Backend: Resume works even without Gmail connected (check happens before Gmail credential check)",
+    "Backend: New scan still falls through to Gmail check when no resumable run exists (regression)",
+    "Backend: Status endpoint still returns correct plan_info and already_on_board for resumed runs (regression)",
+    "Backend: Ignored suggestions (ignored=True) are excluded from resume check",
+    "Backend: Mixed scenario with on-board/confirmed/ignored/remaining correctly identifies remaining school",
+    "Frontend (code review): When startImport returns resumed=true, toast.info('Resuming from your previous scan') shown",
+    "Frontend (code review): loadPreview function fetches /status directly without polling when resumed",
+    "Frontend (code review): Auto-selection excludes already_on_board schools (line 223 filter)",
+    "Frontend (code review): Already on Your Board section rendered with disabled checkboxes"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_gmail_reimport_capability.py",
+    "/app/test_reports/pytest/gmail_reimport_capability_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend gmail.py start_import (Lines 835-852): Resume check correctly: 1) Finds status='ready' run, 2) Gets suggestions, 3) Builds confirmed set from confirmed_school_ids, 4) Gets existing programs by university_name, 5) Filters remaining = not confirmed, not on board, not ignored, 6) Returns resumed=true if any remaining",
+    "Backend gmail.py start_import (Lines 854-857): Gmail check correctly placed AFTER resume check, so resume works without Gmail connected",
+    "Frontend GmailImportModal.js startImport (Lines 187-191): Correctly checks res.data.resumed and calls loadPreview() instead of startPolling()",
+    "Frontend GmailImportModal.js loadPreview (Lines 222-224): Auto-select filter correctly excludes !s.ignored && !s.already_on_board"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_gmail_reimport_capability.py"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 pytest tests passed)",
+    "frontend": "100% (code review confirms all 4 UI features implemented)"
+  },
+  "test_credentials": {
+    "demo_user": {
+      "email": "demo@capymatch.com",
+      "password": "demo2026"
+    },
+    "user_id": "user_653ee8f71acd",
+    "tenant_id": "tenant_user_653ee8f71acd"
+  },
+  "seed_data_creation": "Tests seed import_runs with various configurations (status='ready', different confirmed_school_ids, different suggestions including existing schools). All test data cleaned up after tests via pytest fixtures.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Gmail Import Re-import capability fully tested via backend API tests. Demo user Gmail is NOT connected so the resume flow can only be tested via direct API calls with seeded data. Test file: /app/backend/tests/test_gmail_reimport_capability.py covers all backend scenarios. Frontend code review confirms correct implementation. Previous iteration_106 covered duplicates + plan limits.",
+  "verification_details": {
+    "backend_tests": {
+      "test_file": "/app/backend/tests/test_gmail_reimport_capability.py",
+      "results_xml": "/app/test_reports/pytest/gmail_reimport_capability_results.xml",
+      "all_passed": true,
+      "test_count": 10,
+      "test_classes": [
+        "TestResumeCheckBasic (1 test - returns run_id and resumed=true)",
+        "TestResumeExcludesExistingSchools (1 test - excludes schools on board)",
+        "TestResumeExcludesConfirmedSchools (1 test - excludes confirmed_school_ids)",
+        "TestNoResumeWhenAllImported (2 tests - all on board, all confirmed)",
+        "TestResumeWithoutGmailConnected (1 test - resume before Gmail check)",
+        "TestNewScanRegression (1 test - falls through when no resumable run)",
+        "TestStatusEndpointResumedRun (1 test - plan_info and already_on_board)",
+        "TestIgnoredSuggestionsExcluded (1 test - ignored=true excluded)",
+        "TestResumeMixedScenario (1 test - mixed realistic scenario)"
+      ]
+    },
+    "frontend_code_review": {
+      "file": "/app/frontend/src/components/GmailImportModal.js",
+      "features_verified": [
+        "startImport checks res.data.resumed and shows toast.info('Resuming from your previous scan') (Lines 187-190)",
+        "loadPreview function fetches /status directly, skips polling (Lines 209-248)",
+        "Auto-selection excludes already_on_board schools (Line 223 filter)",
+        "Already on Your Board section groups duplicates with disabled checkboxes (Lines 527-548)"
+      ],
+      "note": "UI cannot be tested via Playwright as demo user does not have Gmail connected"
+    }
+  },
+  "resume_logic_order": {
+    "step_1": "Check for resumable run (status='ready')",
+    "step_2": "Get suggestions from run",
+    "step_3": "Build confirmed set from confirmed_school_ids",
+    "step_4": "Get existing programs (by university_name)",
+    "step_5": "Filter remaining = suggestions where school_id NOT in confirmed, NOT in existing_names, NOT ignored",
+    "step_6": "If remaining exists -> return {run_id, resumed: true}",
+    "step_7": "Otherwise -> fall through to Gmail check"
+  },
+  "key_insight": "Resume check happens BEFORE Gmail credential check, so users can resume previous scans even if Gmail token has expired or been disconnected"
+}
