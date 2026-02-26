@@ -15,7 +15,6 @@ from encryption import encrypt_value, decrypt_value
 import os
 import uuid
 import base64
-import warnings
 import logging
 import email.mime.text
 import email.mime.multipart
