@@ -667,30 +667,8 @@ async def reply_email(data: ReplyEmail, request: Request):
 
 @router.post("/emails/{message_id}/toggle-read")
 async def toggle_read(message_id: str, request: Request):
-    user = await get_current_user(request)
-    creds = await get_gmail_credentials(user["user_id"])
-    if not creds:
-        raise HTTPException(status_code=403, detail="Gmail not connected")
-
-    try:
-        service = get_gmail_service(creds)
-        body = await request.json()
-        mark_read = body.get("mark_read", True)
-
-        if mark_read:
-            service.users().messages().modify(
-                userId="me", id=message_id, body={"removeLabelIds": ["UNREAD"]}
-            ).execute()
-        else:
-            service.users().messages().modify(
-                userId="me", id=message_id, body={"addLabelIds": ["UNREAD"]}
-            ).execute()
-
-        return {"ok": True, "is_unread": not mark_read}
-
-    except Exception as e:
-        logger.error(f"Error toggling read: {e}")
-        raise HTTPException(status_code=500, detail="Failed to update email")
+    """Disabled — read-only Gmail scopes do not allow modifying email state."""
+    return {"ok": False, "detail": "Read/unread toggling is disabled for privacy. Manage read status in Gmail directly."}
 
 
 @router.post("/check-replies")
