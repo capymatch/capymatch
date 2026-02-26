@@ -261,13 +261,15 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
 @router.get("/debug-config")
 async def gmail_debug_config(request: Request):
     """Public: check Gmail OAuth config without exposing secrets."""
-    client_id = os.environ.get("GMAIL_CLIENT_ID", "")
-    redirect_uri = os.environ.get("GMAIL_REDIRECT_URI", "")
-    has_secret = bool(os.environ.get("GMAIL_CLIENT_SECRET", ""))
+    client_id, _, redirect_uri, _ = await _gmail_config_with_db()
+    env_client_id = os.environ.get("GMAIL_CLIENT_ID", "")
+    db_doc = await db.app_config.find_one({"key": "gmail_oauth"}, {"_id": 0})
     return {
         "client_id_prefix": client_id[:20] + "..." if client_id else "MISSING",
-        "client_secret_set": has_secret,
+        "client_secret_set": bool(client_id),
         "redirect_uri": redirect_uri,
+        "source": "database" if (db_doc and db_doc.get("client_id")) else "env",
+        "env_client_id_prefix": env_client_id[:20] + "..." if env_client_id else "MISSING",
         "scopes": GMAIL_SCOPES,
     }
 
