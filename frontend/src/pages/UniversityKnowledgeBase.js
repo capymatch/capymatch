@@ -530,7 +530,7 @@ export default function UniversityKnowledgeBase() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-6 pb-2" data-testid="kb-pagination">
           <span className="text-[12px]" style={{ color: "var(--t-text-muted)" }}>
-            {(page - 1) * PER_PAGE + 1}-{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
+            {(page - 1) * 50 + 1}-{Math.min(page * 50, totalUniversities)} of {totalUniversities}
           </span>
           <div className="flex items-center gap-2">
             <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} data-testid="kb-prev-page"
