@@ -164,8 +164,8 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
     await db.gmail_oauth_states.delete_one({"state": state})
 
     try:
-        _, _, redirect_uri, client_config = _gmail_config()
-        flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=redirect_uri)
+        _, _, _, client_config = _gmail_config(stored_redirect_uri)
+        flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=stored_redirect_uri)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             flow.fetch_token(code=code)
