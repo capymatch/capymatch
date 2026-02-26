@@ -1,7 +1,7 @@
 # CapyMatch PRD
 
 ## Original Problem Statement
-CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophisticated decision-support system for student-athletes. The core goal is to provide data-driven insights to navigate the complexities of college recruiting, featuring a three-stage AI pipeline to generate reliable, source-aware intelligence for UI cards.
+CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophisticated decision-support system for student-athletes. The core goal is to provide data-driven insights to navigate the complexities of college recruiting.
 
 ## Core Architecture
 - **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
@@ -12,53 +12,44 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ## What's Been Implemented
 
 ### Gmail History Import (Complete)
-- Full backend: domain mapper, header scanner, rule engine, idempotent APIs
-- Full frontend: GmailImportModal with 4 states, Verified School badges, coach labels, Add Manually flow
+- Full scan → preview → confirm pipeline
 - Enrichment: auto-creates coaches from KB + discovered emails, sets domain
-- Safety: defensive KB checks, unmapped domain logging, idempotent confirm
-- Rich success card with Journey tip
-- Comprehensive analytics (5 areas): run metrics, unmapped domain intelligence, user behavior tracking, coach discovery stats, error/edge case logging
+- UX: Verified School badges, coach verification labels, unmapped row explanations, Add Manually flow
+- Safety: defensive KB checks, idempotent confirm, header-only scanning
+- **Duplicate detection**: Status endpoint marks schools already on user's board (`already_on_board`), shown in "Already on Your Board" group with disabled checkboxes
+- **Plan limit enforcement**: Status returns `plan_info` (tier, max_schools, current_count, remaining_slots). Auto-selection respects slots. Toggle rejects at limit with toast. Confirm enforces server-side. Plan limit banner with upgrade CTA.
+- Rich success card with Journey tip (3s display)
+- Comprehensive analytics: run metrics, unmapped domains, user behavior, coach discovery stats
 
-### Admin Import Analytics Dashboard (Complete - Feb 26, 2026)
-- **5 backend endpoints** at `/api/admin/import-analytics/`:
-  - `overview`: total imports, unique users, schools/coaches created, avg scan time, conversion rate
-  - `funnel`: messages → schools found → high confidence → selected → created
-  - `behavior`: consent shown, start rate, abandon rate, deselections, add manually clicks
-  - `recent-runs`: expandable table with user info, scan/confirm details, skip reasons, unmapped domains
-  - `stage-distribution`: breakdown of confirmed stages
-- **Frontend page** at `/admin/analytics` with 6 stat cards, funnel visualization, behavior panel, stage distribution, expandable run rows
-- Admin-only access enforced (require_admin guard)
-- **Testing**: 21/21 backend tests passed, all frontend components verified
+### Admin Import Analytics Dashboard (Complete)
+- 5 endpoints: overview, funnel, behavior, recent-runs, stage-distribution
+- Frontend: stat cards, funnel visualization, behavior panel, expandable run rows
+- Admin-only access enforced
 
 ### Other Completed Features
-1. AI-powered school matching & intelligence cards (Claude)
-2. Multi-stage recruiting pipeline with expandable cards
-3. Full Stripe subscription system
-4. Emergent Google Auth + email/password login
-5. University Knowledge Base with background refresh
-6. Trust & Safety UI, intelligence metrics (CSI, Match Risk, Timeline, Roster, Scholarship, NIL)
-7. Data contribution + Admin review dashboard
-8. School detail pages, Recruiting Journey page
-9. Questionnaire Tracking, Follow-Up Reminders
-10. Full PWA Implementation
-11. Gmail read/write/attachment downloads
+1. AI intelligence cards (Claude), multi-stage pipeline, Stripe subscriptions
+2. University KB with scraped data + background refresh
+3. Trust & Safety, intelligence metrics (CSI, Match Risk, Timeline, etc.)
+4. Data contribution + Admin review dashboard
+5. School detail pages, Recruiting Journey, Questionnaire Tracking
+6. Follow-Up Reminders, Gmail read/write/attachment downloads
+7. Full PWA Implementation
+
+## Plan Limits
+- **Free/Basic**: 5 schools max
+- **Pro**: 25 schools max
+- **Premium**: Unlimited (-1)
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring cosmetic)
 - **P2**: Dead links for school recruiting questionnaires
 
 ## Prioritized Backlog
-- Full NIL transaction/payment platform
-- Separate Girls/Boys Volleyball data models
-- Email templates & bulk outreach
-- Camp/Tournament ROI tracker
+- NIL transaction platform, Girls/Boys data separation
+- Email templates & bulk outreach, Camp/Tournament ROI tracker
 - Family Collaboration Roles
-- Fix dead links + re-run scraper for questionnaire URLs
-
-### Refactoring
-- Consolidate AccountPage / SettingsPage
-- Consider university_name → stable school_id migration
+- Consolidate AccountPage/SettingsPage, university_name → school_id migration
 
 ## Credentials
-- **Demo User**: demo@capymatch.com / demo2026
+- **Demo User**: demo@capymatch.com / demo2026 (Premium, 10 schools)
 - **Admin User**: douglas@yeslms.com (Google auth)
