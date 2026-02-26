@@ -64,10 +64,16 @@ async def get_dashboard(request: Request):
         "Offers / Serious Interest": ["Offer Received"],
         "Closed / Archived": ["Not a Fit / Closed"]
     }
+    # Batch count all status groups in one aggregation
+    all_statuses = [s for statuses in status_groups.values() for s in statuses]
+    pipeline = [
+        {"$match": {"tenant_id": tenant_id, "recruiting_status": {"$in": all_statuses}}},
+        {"$group": {"_id": "$recruiting_status", "count": {"$sum": 1}}}
+    ]
+    status_agg = {doc["_id"]: doc["count"] async for doc in db.programs.aggregate(pipeline)}
     status_counts = {}
     for group_name, statuses in status_groups.items():
-        count = await db.programs.count_documents({"tenant_id": tenant_id, "recruiting_status": {"$in": statuses}})
-        status_counts[group_name] = count
+        status_counts[group_name] = sum(status_agg.get(s, 0) for s in statuses)
     recent_interactions = await db.interactions.find(
         {"tenant_id": tenant_id}, {"_id": 0}
     ).sort("created_at", -1).to_list(10)
