@@ -528,7 +528,6 @@ async def send_email(data: ComposeEmail, request: Request):
                     maintype, subtype = att["content_type"].split("/", 1) if "/" in att["content_type"] else ("application", "octet-stream")
                     mime_att = email.mime.base.MIMEBase(maintype, subtype)
                     mime_att.set_payload(file_data)
-                    import email.encoders
                     email.encoders.encode_base64(mime_att)
                     mime_att.add_header("Content-Disposition", "attachment", filename=att["filename"])
                     message.attach(mime_att)
