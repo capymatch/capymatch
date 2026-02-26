@@ -277,8 +277,20 @@ export default function UniversityKnowledgeBase() {
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [riskDrawer, setRiskDrawer] = useState(null);
+  const [seeding, setSeeding] = useState(false);
 
   const { subscription } = useSubscription();
+
+  const handleSeedKB = async () => {
+    setSeeding(true);
+    try {
+      const res = await api.post("/admin/universities/seed");
+      toast.success(`Knowledge base seeded: ${res.data?.inserted || 0} schools added`);
+      fetchUniversities();
+    } catch {
+      toast.error("Failed to seed knowledge base. Admin access required.");
+    } finally { setSeeding(false); }
+  };
 
   useEffect(() => {
     api.get("/knowledge-base/filters").then(res => {
