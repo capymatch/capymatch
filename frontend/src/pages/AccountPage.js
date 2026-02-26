@@ -12,6 +12,19 @@ export default function AccountPage() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [pwLoading, setPwLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "DELETE") return;
+    try {
+      await api.delete("/privacy/delete-account");
+      toast.success("Account deleted. Redirecting...");
+      setTimeout(() => { window.location.href = "/login"; }, 1500);
+    } catch {
+      toast.error("Failed to delete account");
+    }
+  };
 
   // Personal info state
   const [accountName, setAccountName] = useState("");
