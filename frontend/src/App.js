@@ -194,6 +194,7 @@ class ChunkErrorBoundary extends React.Component {
 
 function AuthedRoutes({ user, onAuth, onLogout }) {
   return (
+    <ChunkErrorBoundary>
     <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
