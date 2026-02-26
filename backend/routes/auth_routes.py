@@ -52,7 +52,7 @@ async def register(request: Request):
     }
     await db.users.insert_one(user)
     session_token = f"sess_{uuid.uuid4().hex}"
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
     await db.user_sessions.insert_one({
         "session_token": session_token,
         "user_id": user_id,
@@ -80,7 +80,7 @@ async def login(request: Request):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     user_id = user["user_id"]
     session_token = f"sess_{uuid.uuid4().hex}"
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
     await db.user_sessions.delete_many({"user_id": user_id})
     await db.user_sessions.insert_one({
         "session_token": session_token,
