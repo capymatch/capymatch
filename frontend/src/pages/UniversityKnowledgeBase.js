@@ -363,9 +363,9 @@ export default function UniversityKnowledgeBase() {
     setPage(1);
   };
 
-  const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); };
-  const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); };
-  const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); };
+  const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); setPage(1); };
+  const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); setPage(1); };
+  const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); setPage(1); };
   const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setSearch(""); setActiveBucket("all"); setPage(1); };
 
   const activeFilterCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
