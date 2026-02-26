@@ -155,9 +155,9 @@ export default function UpgradeModal({ isOpen, onClose, feature, message, curren
 
         {/* Header */}
         <div className="px-6 pt-8 pb-2 text-center">
-          {message && (
+          {displayMessage && (
             <div className="mb-4 mx-auto max-w-lg px-4 py-3 rounded-xl text-sm font-medium" style={{ backgroundColor: "rgba(251,191,36,0.1)", color: "#92400e", border: "1px solid rgba(251,191,36,0.3)" }} data-testid="upgrade-trigger-message">
-              {message}
+              {displayMessage}
             </div>
           )}
           <h2 className="text-xl md:text-2xl font-bold mb-1" style={{ color: "var(--t-text)" }}>
