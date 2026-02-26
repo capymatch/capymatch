@@ -77,8 +77,9 @@ async def get_integrations_status():
     return {
         "gmail": {
             "connected": len(gmail_connected_users) > 0,
-            "configured": bool(gmail_client_id),
-            "client_id_set": bool(gmail_client_id),
+            "configured": gmail_configured,
+            "client_id_set": gmail_configured,
+            "config_source": "database" if gmail_db_client_id else ("env" if gmail_client_id else "none"),
             "connected_users": gmail_connected_users,
             "total_connected": len(gmail_connected_users),
         },
