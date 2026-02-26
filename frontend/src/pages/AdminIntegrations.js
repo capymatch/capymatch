@@ -98,7 +98,39 @@ export default function AdminIntegrations() {
     }
   };
 
-  useEffect(() => { fetchIntegrations(); }, []);
+  useEffect(() => { fetchIntegrations(); fetchGmailDebug(); }, []);
+
+  const fetchGmailDebug = async () => {
+    try {
+      const res = await api.get("/gmail/debug-config");
+      setGmailDebug(res.data);
+    } catch {}
+  };
+
+  const saveGmailConfig = async () => {
+    if (!gmailClientId.trim() || !gmailClientSecret.trim()) {
+      toast.error("Client ID and Client Secret are required");
+      return;
+    }
+    setSavingGmail(true);
+    try {
+      await api.post("/gmail/admin/update-oauth-config", {
+        client_id: gmailClientId.trim(),
+        client_secret: gmailClientSecret.trim(),
+        redirect_uri: gmailRedirectUri.trim() || undefined,
+      });
+      toast.success("Gmail OAuth credentials updated");
+      setGmailClientId("");
+      setGmailClientSecret("");
+      setGmailRedirectUri("");
+      fetchGmailDebug();
+      fetchIntegrations();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to update Gmail config");
+    } finally {
+      setSavingGmail(false);
+    }
+  };
 
   const saveStripeKey = async () => {
     if (!stripeKey.trim()) return;
