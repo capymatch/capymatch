@@ -402,8 +402,7 @@ export default function UniversityKnowledgeBase() {
     filtered = filtered.filter(u => u.university_name !== topMatch.university_name);
   }
 
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const paginated = filtered;
   const enriched = paginated.map(u => ({
     ...u,
     match_score: top5Names.has(u.university_name) ? (suggestionMap[u.university_name]?.match_score || null) : null,
