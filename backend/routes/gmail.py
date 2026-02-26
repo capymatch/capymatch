@@ -209,7 +209,7 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
         os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
         exchange_uri = stored_redirect_uri
-        _, _, _, client_config = _gmail_config(exchange_uri)
+        _, _, _, client_config = await _gmail_config_with_db(exchange_uri)
         flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=exchange_uri)
         try:
             flow.fetch_token(code=code)
