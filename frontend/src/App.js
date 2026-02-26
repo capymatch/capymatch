@@ -169,6 +169,29 @@ const PageLoader = () => (
   </div>
 );
 
+// Error boundary for lazy loading failures
+class ChunkErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error) {
+    // If chunk fails to load, reload the page once
+    if (error?.name === 'ChunkLoadError' || error?.message?.includes('Loading chunk')) {
+      window.location.reload();
+    }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center h-screen gap-3" style={{ backgroundColor: "#1a1a2e" }}>
+          <p className="text-white/60 text-sm">Something went wrong loading the page.</p>
+          <button onClick={() => window.location.reload()} className="text-teal-500 text-sm underline">Reload</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function AuthedRoutes({ user, onAuth, onLogout }) {
   return (
     <Suspense fallback={<PageLoader />}>
