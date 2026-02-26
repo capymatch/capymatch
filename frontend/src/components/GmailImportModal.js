@@ -14,7 +14,7 @@ const STAGE_LABELS = {
   in_conversation: { label: "Talking", color: "#16a34a", bg: "rgba(22,163,74,0.12)" },
 };
 
-function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManually }) {
+function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManually, isDuplicate }) {
   const stage = STAGE_LABELS[s.proposed_stage] || STAGE_LABELS.added;
   const name = s.school_id || s.normalized_domain;
   const isUnmapped = !s.school_id;
