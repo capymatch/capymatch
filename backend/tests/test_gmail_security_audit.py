@@ -232,21 +232,20 @@ class TestGmailImportServiceReadOnly:
         with open(import_py_path, 'r') as f:
             content = f.read()
         
-        # Find all service.users().messages() calls
-        api_calls = re.findall(r'service\.users\(\)\.messages\(\)\.\w+\s*\(', content)
+        # Find all service.users().messages().METHOD() calls
+        api_calls = re.findall(r'service\.users\(\)\.messages\(\)\.(\w+)\s*\(', content)
         
         allowed_methods = ['list', 'get']
-        disallowed_methods = ['modify', 'delete', 'trash', 'send', 'insert', 'import', 'batchModify', 'batchDelete']
+        disallowed_methods = ['modify', 'delete', 'trash', 'send', 'insert', 'import_', 'batchModify', 'batchDelete']
         
-        for call in api_calls:
-            method = re.search(r'\.(\w+)\s*\(', call)
-            if method:
-                method_name = method.group(1)
-                assert method_name in allowed_methods, \
-                    f"SECURITY: gmail_import.py uses disallowed method: {method_name}. Only {allowed_methods} are allowed."
+        for method_name in api_calls:
+            assert method_name in allowed_methods, \
+                f"SECURITY: gmail_import.py uses disallowed method: {method_name}. Only {allowed_methods} are allowed."
+            assert method_name not in disallowed_methods, \
+                f"SECURITY: gmail_import.py uses dangerous method: {method_name}"
         
-        print(f"✅ gmail_import.py only uses READ methods: {allowed_methods}")
-        print(f"   Found API calls: {api_calls}")
+        print(f"✅ gmail_import.py only uses READ methods: {api_calls}")
+        print(f"   All methods are safe: {set(api_calls)} ⊆ {set(allowed_methods)}")
 
 
 class TestDeleteAccountCollections:
