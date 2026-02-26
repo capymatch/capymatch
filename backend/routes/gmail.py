@@ -875,7 +875,7 @@ async def start_import(request: Request):
 
 @router.get("/import-history/{run_id}/status")
 async def import_status(run_id: str, request: Request):
-    """Poll import progress."""
+    """Poll import progress. When ready, enriches suggestions with duplicate + plan limit info."""
     user = await get_current_user(request)
     run = await db.import_runs.find_one(
         {"run_id": run_id, "user_id": user["user_id"]},
@@ -892,7 +892,39 @@ async def import_status(run_id: str, request: Request):
     }
 
     if run["status"] == "ready":
-        result["suggestions"] = run.get("suggestions", [])
+        tenant_id = await get_tenant_id(user)
+        suggestions = run.get("suggestions", [])
+
+        # 1. Mark duplicates — schools already on the user's board
+        existing_programs = await db.programs.find(
+            {"tenant_id": tenant_id},
+            {"_id": 0, "university_name": 1}
+        ).to_list(1000)
+        existing_names = {p["university_name"] for p in existing_programs}
+
+        for s in suggestions:
+            s["already_on_board"] = (s.get("school_id") or "") in existing_names
+
+        # 2. Plan limit info
+        from subscriptions import get_user_subscription
+        subscription = await get_user_subscription(tenant_id)
+        max_schools = subscription.get("max_schools", 5)
+        current_count = len(existing_programs)
+
+        if max_schools == -1:
+            remaining_slots = -1  # unlimited
+        else:
+            remaining_slots = max(0, max_schools - current_count)
+
+        result["suggestions"] = suggestions
+        result["plan_info"] = {
+            "tier": subscription.get("tier", "basic"),
+            "label": subscription.get("label", "Starter"),
+            "max_schools": max_schools,
+            "current_count": current_count,
+            "remaining_slots": remaining_slots,
+        }
+
     if run["status"] == "failed":
         result["error"] = run.get("error")
 
