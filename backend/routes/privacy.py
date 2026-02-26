@@ -165,6 +165,8 @@ async def delete_account(request: Request):
         ("privacy_preferences", {"tenant_id": tenant_id}),
         ("coach_watch_alerts", {"tenant_id": tenant_id}),
         ("tenants", {"tenant_id": tenant_id}),
+        ("athlete_profiles", {"tenant_id": tenant_id}),
+        ("subscriptions", {"tenant_id": tenant_id}),
     ]
 
     for coll_name, query in collections_to_clear:
