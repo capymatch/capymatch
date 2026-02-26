@@ -170,11 +170,26 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
     await db.gmail_oauth_states.delete_one({"state": state})
 
     try:
-        _, _, _, client_config = _gmail_config(stored_redirect_uri)
-        flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=stored_redirect_uri)
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            flow.fetch_token(code=code)
+        # Try token exchange with stored redirect URI first
+        exchange_uri = stored_redirect_uri
+        _, _, _, client_config = _gmail_config(exchange_uri)
+        flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=exchange_uri)
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                flow.fetch_token(code=code)
+        except Exception as first_err:
+            # Fallback: try with env variable redirect URI if different
+            env_uri = os.environ.get("GMAIL_REDIRECT_URI")
+            if env_uri and env_uri != exchange_uri:
+                logger.warning(f"Token exchange failed with {exchange_uri}, trying fallback {env_uri}: {first_err}")
+                _, _, _, client_config = _gmail_config(env_uri)
+                flow = Flow.from_client_config(client_config, scopes=GMAIL_SCOPES, redirect_uri=env_uri)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    flow.fetch_token(code=code)
+            else:
+                raise
 
         creds = flow.credentials
 
