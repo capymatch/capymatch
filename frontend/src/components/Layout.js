@@ -606,7 +606,7 @@ export default function Layout({ user, onLogout }) {
         {/* Page Content */}
         <main className="flex-1 overflow-auto p-4 lg:p-6">
           <InvitationBanner />
-          <Outlet />
+          <Outlet context={{ user }} />
         </main>
       </div>
 
