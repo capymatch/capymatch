@@ -216,8 +216,12 @@ async def gmail_callback(request: Request, code: str = "", state: str = "", erro
         return RedirectResponse(f"{frontend_url}{return_to}?gmail=connected")
 
     except Exception as e:
-        logger.error(f"Gmail callback error: {e} | redirect_uri used: {stored_redirect_uri}")
-        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason=token_exchange_failed")
+        error_msg = str(e)
+        logger.error(f"Gmail callback error: {error_msg} | redirect_uri used: {stored_redirect_uri}")
+        # Pass the actual error reason to frontend for debugging
+        import urllib.parse
+        reason = urllib.parse.quote(f"token_exchange_failed: {error_msg[:200]}")
+        return RedirectResponse(f"{frontend_url}{return_to}?gmail=error&reason={reason}")
 
 
 @router.get("/status")
