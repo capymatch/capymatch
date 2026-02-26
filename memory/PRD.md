@@ -12,33 +12,36 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 ## What's Been Implemented
 
 ### Gmail History Import (Complete)
-- Backend: Domain mapper, header scanner, rule engine, idempotent APIs
-- Frontend: Full GmailImportModal with 4 states (consent/scanning/preview/done)
-- Enrichment: Auto-creates coaches from KB + discovered emails, sets domain
-- UX polish: Verified School badges, coach verification labels, unmapped row explanations, Add Manually flow
-- Safety: Defensive KB checks, unmapped domain logging, idempotent confirm
-- Success card: "Imported N schools" with Journey tip and Reply Due guidance (3s display)
-- **Comprehensive Analytics** (5 areas):
-  1. Import Run Analytics: scan duration, guardrails stats, stage distribution, conversion rates
-  2. Unmapped Domain Intelligence: global `unmapped_domain_stats` collection with frequency + recency
-  3. User Behavior Tracking: `import_events` collection (consent_shown, started, preview_shown, abandoned, deselected, reselected, add_manually_clicked, confirmed, done_shown)
-  4. Coach Discovery Stats: coaches_from_kb vs coaches_from_gmail counts, total per run
-  5. Error/Edge Case Logging: skip_reasons breakdown (no_school_id, no_suggestion, already_exists, not_in_kb)
-  - All analytics stored in: `import_analytics` (per-run summary), `import_events` (user behavior), `unmapped_domain_stats` (global KB gaps), `import_runs.scan_analytics` + `import_runs.confirm_analytics`
+- Full backend: domain mapper, header scanner, rule engine, idempotent APIs
+- Full frontend: GmailImportModal with 4 states, Verified School badges, coach labels, Add Manually flow
+- Enrichment: auto-creates coaches from KB + discovered emails, sets domain
+- Safety: defensive KB checks, unmapped domain logging, idempotent confirm
+- Rich success card with Journey tip
+- Comprehensive analytics (5 areas): run metrics, unmapped domain intelligence, user behavior tracking, coach discovery stats, error/edge case logging
+
+### Admin Import Analytics Dashboard (Complete - Feb 26, 2026)
+- **5 backend endpoints** at `/api/admin/import-analytics/`:
+  - `overview`: total imports, unique users, schools/coaches created, avg scan time, conversion rate
+  - `funnel`: messages → schools found → high confidence → selected → created
+  - `behavior`: consent shown, start rate, abandon rate, deselections, add manually clicks
+  - `recent-runs`: expandable table with user info, scan/confirm details, skip reasons, unmapped domains
+  - `stage-distribution`: breakdown of confirmed stages
+- **Frontend page** at `/admin/analytics` with 6 stat cards, funnel visualization, behavior panel, stage distribution, expandable run rows
+- Admin-only access enforced (require_admin guard)
+- **Testing**: 21/21 backend tests passed, all frontend components verified
 
 ### Other Completed Features
-1. AI-powered school matching & intelligence cards
+1. AI-powered school matching & intelligence cards (Claude)
 2. Multi-stage recruiting pipeline with expandable cards
 3. Full Stripe subscription system
 4. Emergent Google Auth + email/password login
 5. University Knowledge Base with background refresh
-6. Trust & Safety UI features
-7. Intelligence metrics (Commitment Stability, Match Risk, Timeline, Roster, Scholarship, NIL)
-8. Data contribution + Admin review dashboard
-9. School detail pages, Recruiting Journey page
-10. Questionnaire Tracking, Follow-Up Reminders
-11. Full PWA Implementation
-12. Gmail read/write/attachment downloads
+6. Trust & Safety UI, intelligence metrics (CSI, Match Risk, Timeline, Roster, Scholarship, NIL)
+7. Data contribution + Admin review dashboard
+8. School detail pages, Recruiting Journey page
+9. Questionnaire Tracking, Follow-Up Reminders
+10. Full PWA Implementation
+11. Gmail read/write/attachment downloads
 
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring cosmetic)
