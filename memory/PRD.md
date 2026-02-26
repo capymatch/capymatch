@@ -9,45 +9,53 @@ CapyMatch is a public-facing Volleyball Recruiting CRM evolving into a sophistic
 - **Auth**: Bearer token (localStorage)
 - **Integrations**: Stripe, Resend, Claude AI (Emergent LLM Key), Emergent Google Auth, Google Gmail APIs
 
-## What's Been Implemented
+## Gmail History Import (Complete Feature)
+### Core Flow
+- Scan Gmail headers → match .edu domains to KB → preview suggestions → confirm import
+- Auto-creates coaches from KB + discovered emails, sets domain for logos/intelligence
+- Header-only scanning (never reads message bodies)
 
-### Gmail History Import (Complete)
-- Full scan → preview → confirm pipeline
-- Enrichment: auto-creates coaches from KB + discovered emails, sets domain
-- UX: Verified School badges, coach verification labels, unmapped row explanations, Add Manually flow
-- Safety: defensive KB checks, idempotent confirm, header-only scanning
-- **Duplicate detection**: Status endpoint marks schools already on user's board (`already_on_board`), shown in "Already on Your Board" group with disabled checkboxes
-- **Plan limit enforcement**: Status returns `plan_info` (tier, max_schools, current_count, remaining_slots). Auto-selection respects slots. Toggle rejects at limit with toast. Confirm enforces server-side. Plan limit banner with upgrade CTA.
-- Rich success card with Journey tip (3s display)
-- Comprehensive analytics: run metrics, unmapped domains, user behavior, coach discovery stats
+### Safety & Intelligence
+- Duplicate detection: marks schools already on board with `already_on_board` flag
+- Plan limit enforcement: auto-selects within remaining slots, shows upgrade CTA
+- Defensive KB check: only KB-verified schools can be imported
+- "Schools waiting" counter on billing/upgrade pages for conversion motivation
 
-### Admin Import Analytics Dashboard (Complete)
-- 5 endpoints: overview, funnel, behavior, recent-runs, stage-distribution
-- Frontend: stat cards, funnel visualization, behavior panel, expandable run rows
-- Admin-only access enforced
+### Re-Import (Post-Upgrade)
+- When user clicks Import again, backend detects previous scan with unimported suggestions
+- Skips Gmail scan entirely — goes straight to preview with fresh duplicate/plan checks
+- Works even if Gmail token has expired (resume check before credential check)
+- Confirmed schools and existing board entries excluded from resume
 
-### Other Completed Features
-1. AI intelligence cards (Claude), multi-stage pipeline, Stripe subscriptions
-2. University KB with scraped data + background refresh
-3. Trust & Safety, intelligence metrics (CSI, Match Risk, Timeline, etc.)
-4. Data contribution + Admin review dashboard
-5. School detail pages, Recruiting Journey, Questionnaire Tracking
-6. Follow-Up Reminders, Gmail read/write/attachment downloads
-7. Full PWA Implementation
+### Analytics (5 Areas)
+1. Run metrics: scan duration, guardrails, stage distribution, conversion rate
+2. Unmapped domain intelligence: global frequency tracking for KB gaps
+3. User behavior: consent, start, preview, abandon, deselect, add manually events
+4. Coach discovery: KB vs Gmail breakdown per run
+5. Error tracking: skip reasons (no_school_id, no_suggestion, already_exists, not_in_kb, plan_limit)
+
+### Admin Dashboard (`/admin/analytics`)
+- Overview cards, import funnel, user behavior panel, stage distribution, expandable run rows
 
 ## Plan Limits
 - **Free/Basic**: 5 schools max
 - **Pro**: 25 schools max
 - **Premium**: Unlimited (-1)
 
+## Other Completed Features
+1. AI intelligence cards (Claude), multi-stage pipeline, Stripe subscriptions
+2. University KB with scraped data + background refresh
+3. Trust & Safety, intelligence metrics (CSI, Match Risk, Timeline, etc.)
+4. Data contribution + Admin review, School detail pages
+5. Recruiting Journey, Questionnaire Tracking, Follow-Up Reminders
+6. Gmail read/write/attachment downloads, Full PWA
+
 ## Pending Issues
 - **P2**: NCAA Timeline colors (recurring cosmetic)
 - **P2**: Dead links for school recruiting questionnaires
 
-## Prioritized Backlog
-- NIL transaction platform, Girls/Boys data separation
-- Email templates & bulk outreach, Camp/Tournament ROI tracker
-- Family Collaboration Roles
+## Backlog
+- NIL platform, Girls/Boys data separation, email templates, Camp/Tournament ROI, Family Collaboration Roles
 - Consolidate AccountPage/SettingsPage, university_name → school_id migration
 
 ## Credentials
