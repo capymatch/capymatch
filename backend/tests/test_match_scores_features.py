@@ -8,7 +8,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://capymatch-gmail-beta.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://match-intel-9.preview.emergentagent.com").rstrip("/")
 
 
 class TestMatchScoresAPI:
