@@ -183,10 +183,16 @@ export default function GmailImportModal({ onClose, onComplete }) {
       const res = await api.post("/gmail/import-history");
       const rid = res.data.run_id;
       setRunId(rid);
-      startPolling(rid);
+
+      if (res.data.resumed) {
+        // Previous scan results available — skip straight to preview
+        toast.info("Resuming from your previous scan");
+        loadPreview(rid);
+      } else {
+        startPolling(rid);
+      }
     } catch (err) {
       if (err.response?.status === 409) {
-        // Already in progress — try to poll existing run
         const existingRunId = err.response?.headers?.["x-run-id"];
         if (existingRunId) {
           setRunId(existingRunId);
@@ -198,6 +204,48 @@ export default function GmailImportModal({ onClose, onComplete }) {
       setState("consent");
     }
   };
+
+  // Load preview directly for resumed runs (no polling needed)
+  const loadPreview = useCallback(async (rid) => {
+    try {
+      const res = await api.get(`/gmail/import-history/${rid}/status`);
+      const d = res.data;
+      if (d.phase === "ready") {
+        const suggs = d.suggestions || [];
+        const plan = d.plan_info || null;
+        setSuggestions(suggs);
+        setPlanInfo(plan);
+
+        const remaining = plan?.remaining_slots ?? suggs.length;
+        const isUnlimited = remaining === -1 || plan?.max_schools === -1;
+        const autoSelect = new Set();
+        const importable = suggs
+          .filter(s => s.school_id && (s.confidence || 0) >= 80 && !s.ignored && !s.already_on_board)
+          .sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+
+        for (const s of importable) {
+          if (!isUnlimited && autoSelect.size >= remaining) break;
+          autoSelect.add(s.school_id || s.normalized_domain);
+        }
+        setSelected(autoSelect);
+        setState("preview");
+
+        if (!isUnlimited && importable.length > remaining) {
+          try { localStorage.setItem("import_blocked_count", String(importable.length - remaining)); } catch {}
+        } else {
+          try { localStorage.removeItem("import_blocked_count"); } catch {}
+        }
+
+        api.post("/gmail/import-analytics/event", {
+          event: "import_preview_shown", run_id: rid,
+          metadata: { total: suggs.length, auto_selected: autoSelect.size, remaining_slots: remaining, resumed: true }
+        }).catch(() => {});
+      }
+    } catch {
+      setError("Failed to load previous scan results");
+      setState("consent");
+    }
+  }, []);
 
   const startPolling = useCallback((rid) => {
     if (pollRef.current) clearInterval(pollRef.current);
