@@ -41,9 +41,12 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Onboarding questionnaire with matching
 - Delete account functionality
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
+- **P0 Fix: Dashboard resilience** — All 6 API calls have individual .catch() handlers, preventing "Failed to load dashboard" errors
+- **P0 Fix: Name display** — Dashboard greeting uses authUser.name from Outlet context as fallback instead of "there"
+- **P0 Fix: Gmail Admin UI** — Admin Integrations page now includes Gmail OAuth credential management (client ID, secret, redirect URI) stored in DB
 
 ## Pending Issues
-- NCAA Timeline colors (P2, recurring)
+- NCAA Timeline colors (P2, recurring 5+ times)
 - Dead questionnaire links (P2)
 
 ## Backlog (P2/Future)
@@ -52,3 +55,5 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Email templates & bulk outreach
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
+- Redesign "Find Schools" page
+- Private per-school notes feature
