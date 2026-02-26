@@ -231,6 +231,15 @@ export default function GmailImportModal({ onClose, onComplete }) {
 
           setSelected(autoSelect);
           setState("preview");
+
+          // Store blocked count for upgrade motivation on billing page
+          if (!isUnlimited && importable.length > remaining) {
+            const blocked = importable.length - remaining;
+            try { localStorage.setItem("import_blocked_count", String(blocked)); } catch {}
+          } else {
+            try { localStorage.removeItem("import_blocked_count"); } catch {}
+          }
+
           // Track preview shown
           api.post("/gmail/import-analytics/event", {
             event: "import_preview_shown", run_id: rid,
