@@ -104,6 +104,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
     if (gmailResult === "connected") {
       toast.success("Gmail connected successfully!");
       setGmailConnected(true);
+      setShowImportModal(true);
       searchParams.delete("gmail");
       setSearchParams(searchParams, { replace: true });
     } else if (gmailResult === "error") {
