@@ -563,6 +563,14 @@ async def startup_event():
     # One-time KB domain fixes
     domain_fixes = {
         "Palm Beach Atlantic University": "pba.edu",
+        "Ball State University": "bsu.edu",
+        "University of Tampa": "ut.edu",
+        "Murray State University": "murraystate.edu",
+        "Loyola University Chicago": "luc.edu",
+        "University of South Carolina – Upstate": "uscupstate.edu",
+        "Southern Illinois University Carbondale": "siu.edu",
+        "Texas State University": "txstate.edu",
+        "Penn State": "psu.edu",
     }
     for uni_name, correct_domain in domain_fixes.items():
         r = await db.university_knowledge_base.update_one(
