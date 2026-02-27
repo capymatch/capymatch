@@ -411,6 +411,34 @@ async def list_emails(request: Request, page_token: Optional[str] = None, q: Opt
         raise HTTPException(status_code=500, detail="Failed to fetch emails")
 
 
+import re as _re
+
+def _strip_quoted_reply(text):
+    """Strip quoted email thread history, keeping only the latest message."""
+    if not text:
+        return text
+    lines = text.split("\n")
+    result = []
+    for line in lines:
+        stripped = line.strip()
+        # "On <date> <name> wrote:" pattern
+        if _re.match(r'^On .+ wrote:\s*$', stripped):
+            break
+        # "---------- Forwarded message ----------"
+        if "forwarded message" in stripped.lower() and "---" in stripped:
+            break
+        # Gmail quote marker: "> " repeated lines
+        if stripped.startswith(">") and len(result) > 0 and (not result[-1].strip() or result[-1].strip().startswith(">")):
+            break
+        # "From: <email>" header in quoted section
+        if _re.match(r'^From:\s+\S+@\S+', stripped) and len(result) > 2:
+            break
+        result.append(line)
+    # Trim trailing blank lines
+    while result and not result[-1].strip():
+        result.pop()
+    return "\n".join(result)
+
 @router.get("/emails/{message_id}")
 async def get_email(message_id: str, request: Request):
     user = await get_current_user(request)
