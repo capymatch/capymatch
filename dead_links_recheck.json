@@ -1,0 +1,742 @@
+{
+  "timestamp": "2026-02-27T22:58:50.757073+00:00",
+  "total": 1053,
+  "dead": 147,
+  "items": [
+    {
+      "university_name": "Alabama State University",
+      "url": "https://bamastatesports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Alfred State College",
+      "url": "https://alfredstateathletics.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Angelo State University",
+      "url": "https://angelosports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Augusta University",
+      "url": "https://augustajags.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Belmont University",
+      "url": "https://belmontbruins.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Benedict College",
+      "url": "https://benedicttigers.com/sports/wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Bentley University",
+      "url": "https://bentleyfalcons.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Black Hills State University",
+      "url": "https://bhsuathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Bloomfield College",
+      "url": "https://bcbearsathletics.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Bluefield State University",
+      "url": "https://gobstate.com/sports/womens-volleyball",
+      "error": ""
+    },
+    {
+      "university_name": "Cal Poly Humboldt",
+      "url": "https://humboldtathletics.com/splash.aspx?id=splash_167&path=vball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Caldwell University",
+      "url": "https://caldwellathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "California State Polytechnic University \u2013 Pomona",
+      "url": "https://broncoathletics.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "California State University \u2013 Monterey Bay",
+      "url": "https://otterathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "California State University \u2013 San Bernardino",
+      "url": "https://csusbathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "California State University \u2013 San Marcos",
+      "url": "https://csusmcougars.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "California University of Pennsylvania",
+      "url": "https://calvulcans.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Cameron University",
+      "url": "https://cameronaggies.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Canisius University",
+      "url": "https://gogriffs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Centenary College of Louisiana",
+      "url": "https://centenarycyclones.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Central State University",
+      "url": "https://athletics.central.edu/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Chestnut Hill College",
+      "url": "https://griffinathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Chowan University",
+      "url": "https://gocuhawks.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Christopher Newport University",
+      "url": "https://www.cnusports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Clark Atlanta University",
+      "url": "https://clarkatlantasports.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Colorado State University",
+      "url": "https://csurams.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Colorado State University \u2013 Pueblo",
+      "url": "https://gothunderwolves.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Dallas Baptist University",
+      "url": "https://dbupatriots.com/sports/womens-volleyball",
+      "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local "
+    },
+    {
+      "university_name": "Dartmouth College",
+      "url": "https://dartmouthsports.com",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Davenport University",
+      "url": "https://dupanthers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "DePaul University",
+      "url": "https://depaulbluedemons.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "DeSales University",
+      "url": "https://athletics.desales.edu/sports/wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Delaware Valley University",
+      "url": "https://athletics.delval.edu/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Duquesne University",
+      "url": "https://goduquesne.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "East Central University",
+      "url": "https://sports.eastcentral.edu/womens-volleyball/volleyball-camps",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "East Stroudsburg University of Pennsylvania",
+      "url": "https://esuwarriors.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Eastern Illinois University",
+      "url": "https://eiupanthers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Edward Waters University",
+      "url": "https://ewutigerpride.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Elizabeth City State University",
+      "url": "https://ecsuvikings.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Embry-Riddle Aeronautical University",
+      "url": "https://erauathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Emporia State University",
+      "url": "https://esuhornets.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Fairfield University",
+      "url": "https://fairfieldstags.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Florida Southern College",
+      "url": "https://fscmocs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Florida Tech",
+      "url": "https://floridatechsports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Fort Lewis College",
+      "url": "https://goskyhawks.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Fresno Pacific University",
+      "url": "https://www.fpusunbirds.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Gannon University",
+      "url": "https://gannonsports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Geneva College",
+      "url": "https://athletics.geneva.edu/sports/w-volley",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Georgia College & State University",
+      "url": "https://gcsubobcats.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Georgian Court University",
+      "url": "https://gculions.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Glenville State University",
+      "url": "https://gstatepioneers.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Gordon College",
+      "url": "https://athletics.gordon.edu/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Goucher College",
+      "url": "https://athletics.goucher.edu/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Hawaii Pacific University",
+      "url": "https://hpusharks.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Hilbert College",
+      "url": "https://hilberthawks.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Huntingdon College",
+      "url": "https://huntingdonhawks.com/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Kentucky Wesleyan College",
+      "url": "https://kwcpanthers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Keystone College",
+      "url": "https://www.gokcgiants.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Kutztown University of Pennsylvania",
+      "url": "https://kubears.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "La Roche University",
+      "url": "https://www.larochesports.com/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Lake Superior State University",
+      "url": "https://lssulakers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lane College",
+      "url": "https://golcdragons.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lasell University",
+      "url": "https://laserpride.lasell.edu/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Le Moyne College",
+      "url": "https://lemoynedolphins.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lees-McRae College",
+      "url": "https://lmcbobcats.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lenoir-Rhyne University",
+      "url": "https://lrbears.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lincoln University Pennsylvania",
+      "url": "https://lulions.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Livingstone College",
+      "url": "https://bluebearathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lycoming College",
+      "url": "https://lycomingathletics.com/sports/wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Lynn University",
+      "url": "https://lynnfightingknights.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Malone University",
+      "url": "https://malonepioneers.com/sports/wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Marietta College",
+      "url": "https://pioneers.marietta.edu/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "McMurry University",
+      "url": "https://mcmurrysports.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Merrimack College",
+      "url": "https://merrimackathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Methodist University",
+      "url": "https://mumonarchs.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Metropolitan State University of Denver",
+      "url": "https://roadrunnersathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Miami University",
+      "url": "https://miamiredhawks.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Midwestern State University",
+      "url": "https://msumustangs.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Millersville University of Pennsylvania",
+      "url": "https://millersvilleathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Minnesota State University \u2013 Mankato",
+      "url": "https://athletics.minnesota.edu/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Minnesota State University \u2013 Moorhead",
+      "url": "https://athletics.minnesota.edu/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Missouri Southern State University",
+      "url": "https://mssulions.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Morehead State University",
+      "url": "https://msueagles.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Morehouse College",
+      "url": "https://morehouseathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "New Mexico Highlands University",
+      "url": "https://nmhuathletics.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Newberry College",
+      "url": "https://newberrywolves.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Newman University",
+      "url": "https://newmanjets.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Nichols College",
+      "url": "https://nicholsathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "North Dakota State University",
+      "url": "https://gobison.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "North Park University",
+      "url": "https://athletics.northpark.edu/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Northern Arizona University",
+      "url": "https://nauathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Northwestern Oklahoma State University",
+      "url": "https://riderangersride.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Northwood University \u2013 Michigan",
+      "url": "https://www.gonorthwood.com/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "Pacific Lutheran University",
+      "url": "https://golutes.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Paine College",
+      "url": "https://paineathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Penn State Berks",
+      "url": "https://psuberksathletics.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Pepperdine University",
+      "url": "https://pepperdinewaves.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Piedmont University",
+      "url": "https://piedmontlions.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Post University",
+      "url": "https://posteagles.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Radford University",
+      "url": "https://radfordathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Rider University",
+      "url": "https://gobroncs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Roberts Wesleyan University",
+      "url": "https://robertsredhawks.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "SUNY Oswego",
+      "url": "https://oswegolakers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "SUNY Potsdam",
+      "url": "https://potsdambears.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "SUNY University at Albany",
+      "url": "https://ualbanysports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Saint Louis University",
+      "url": "https://slubillikens.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Saint Michael's College",
+      "url": "https://smcathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Saint Vincent College \u2013 Pennsylvania",
+      "url": "https://athletics.stvincent.edu/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Savannah State University",
+      "url": "https://ssuathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Seattle Pacific University",
+      "url": "https://spufalcons.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Siena College",
+      "url": "https://sienasaints.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Sonoma State University",
+      "url": "https://sonomaseawolves.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "South Dakota Mines",
+      "url": "https://gorockers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southeastern Louisiana University",
+      "url": "https://lionsports.net/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southeastern Oklahoma State University",
+      "url": "https://gosoutheastern.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southern Arkansas University",
+      "url": "https://muleriderathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southern Connecticut State University",
+      "url": "https://scsuowls.com/splash.aspx?id=splash_93&path=wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southern University & A&M College",
+      "url": "https://gojagsports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Southwest Minnesota State University",
+      "url": "https://smsumustangs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Texas Southern University",
+      "url": "https://tsusports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Texas State University",
+      "url": "https://txst.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Union University",
+      "url": "https://uuathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of California \u2013 Irvine",
+      "url": "https://ucirvinesports.com",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of California \u2013 Riverside",
+      "url": "https://gohighlanders.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Findlay",
+      "url": "https://findlayoilers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Illinois at Springfield",
+      "url": "https://uisprairiestars.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Mary",
+      "url": "https://goumary.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Maryland Eastern Shore",
+      "url": "https://umeshawksports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Maryland \u2013 Baltimore County",
+      "url": "https://umbcretrievers.com/splash.aspx?id=splash_25&path=wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Minnesota \u2013 Crookston",
+      "url": "https://goldeneaglesports.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Minnesota \u2013 Duluth",
+      "url": "https://umdbulldogs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Missouri \u2013 Kansas City",
+      "url": "https://umsltritons.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Nebraska at Kearney",
+      "url": "https://lopers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of New Orleans",
+      "url": "https://unoprivateers.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of North Carolina at Pembroke",
+      "url": "https://uncpbraves.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Portland",
+      "url": "https://portlandpilots.com/sports/wvball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Tampa",
+      "url": "https://tampaspartans.com/sports/womens-volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "University of Tampa",
+      "url": "https://tampaspartans.com/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "University of Tennessee \u2013 Chattanooga",
+      "url": "https://gomocs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Toledo",
+      "url": "https://utrockets.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "University of Washington",
+      "url": "https://gohuskies.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Virginia Union University",
+      "url": "https://vuusports.com/splash.aspx?id=splash_30&path=general",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Western New Mexico University",
+      "url": "https://wnmumustangs.com/sports/womens-volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Westmont College",
+      "url": "https://athletics.westmont.edu/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Wheeling University",
+      "url": "https://wucardinals.com/sports/volleyball",
+      "error": "Timeout"
+    },
+    {
+      "university_name": "Willamette University",
+      "url": "https://www.wubearcats.com/sports/volleyball",
+      "error": "HTTP 404"
+    },
+    {
+      "university_name": "William Jessup University",
+      "url": "https://jessupathletics.com/sports/womens-volleyball",
+      "error": "Timeout"
+    }
+  ]
+}
