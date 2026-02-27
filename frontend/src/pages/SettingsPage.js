@@ -24,6 +24,7 @@ export default function SettingsPage() {
     const gmailResult = searchParams.get("gmail");
     if (gmailResult === "connected") {
       toast.success("Gmail connected successfully!");
+      setShowImportModal(true);
       searchParams.delete("gmail");
       setSearchParams(searchParams, { replace: true });
     } else if (gmailResult === "error") {
