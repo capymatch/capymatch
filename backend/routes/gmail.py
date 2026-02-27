@@ -468,7 +468,8 @@ async def get_email(message_id: str, request: Request):
             "internal_date": msg.get("internalDate", ""),
             "label_ids": msg.get("labelIds", []),
             "body_html": body_html,
-            "body_text": body_text,
+            "body_text": _strip_quoted_reply(body_text),
+            "body_text_full": body_text,
             "attachments": attachments,
             "is_unread": False,
         }
