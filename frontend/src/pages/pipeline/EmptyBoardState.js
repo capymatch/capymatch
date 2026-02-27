@@ -383,6 +383,9 @@ export default function EmptyBoardState({ onSchoolAdded }) {
           onCancel={() => setShowConsentModal(false)}
         />
       )}
+      {showImportModal && (
+        <GmailImportModal onClose={() => setShowImportModal(false)} />
+      )}
     </div>
   );
 }
