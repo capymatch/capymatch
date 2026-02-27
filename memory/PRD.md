@@ -41,13 +41,19 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Onboarding questionnaire with matching
 - Delete account functionality
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
-- **P0 Fix: Dashboard resilience** — All 6 API calls have individual .catch() handlers, preventing "Failed to load dashboard" errors
-- **P0 Fix: Name display** — Dashboard greeting uses authUser.name from Outlet context as fallback instead of "there"
-- **P0 Fix: Gmail Admin UI** — Admin Integrations page now includes Gmail OAuth credential management (client ID, secret, redirect URI) stored in DB
+- **P0 Fix: Dashboard resilience** — All 6 API calls have individual .catch() handlers
+- **P0 Fix: Name display** — Dashboard greeting uses authUser.name from Outlet context
+- **P0 Fix: Gmail Admin UI** — Admin Integrations page for Gmail OAuth credential management
+- **P0 Fix: Gmail credentials updated** — New OAuth client credentials (576814...) configured in .env and DB, verified working with Google (Feb 26, 2026)
 
 ## Pending Issues
 - NCAA Timeline colors (P2, recurring 5+ times)
 - Dead questionnaire links (P2)
+
+## IMPORTANT: Production Deployment Note
+- The `.env` has updated Gmail credentials that will deploy automatically
+- However, the **production database** may still have old credentials cached in `app_config` collection
+- After deploying, admin should go to Admin -> Integrations and re-enter the new credentials there, OR the .env fallback will be used if no DB config exists
 
 ## Backlog (P2/Future)
 - Full NIL transaction platform
