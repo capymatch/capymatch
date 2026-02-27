@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import GmailConsentModal from "../../components/GmailConsentModal";
+import GmailImportModal from "../../components/GmailImportModal";
 
 /* ── Progress Step ── */
 function ProgressStep({ num, label, done, current }) {
