@@ -219,6 +219,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="terms" element={<TermsOfServicePage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
         <Route path="billing" element={<BillingPage />} />
@@ -251,6 +252,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/signup" element={<LoginPage onAuth={onAuth} defaultMode="register" />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
       <Route path="/welcome" element={<LandingPage />} />
       {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
       <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />
