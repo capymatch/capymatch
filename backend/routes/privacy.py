@@ -25,12 +25,14 @@ async def get_privacy_preferences(request: Request):
         prefs = {
             "tenant_id": tenant_id,
             "inbound_email_scanning": True,
+            "email_notifications": True,
             "gmail_consent_given": False,
             "consent_given_at": None,
         }
 
     return {
         "inbound_email_scanning": prefs.get("inbound_email_scanning", True),
+        "email_notifications": prefs.get("email_notifications", True),
         "gmail_consent_given": prefs.get("gmail_consent_given", False),
         "consent_given_at": prefs.get("consent_given_at"),
     }
