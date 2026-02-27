@@ -773,6 +773,9 @@ async def get_program_journey(program_id: str, request: Request):
                         
                         is_from_coach = coach_email in from_addr
                         snippet = msg.get("snippet", "")
+                        # Decode HTML entities in Gmail snippets (e.g. &#39; → ')
+                        import html as html_mod
+                        snippet = html_mod.unescape(snippet)
                         
                         timeline.append({
                             "id": f"gmail_{msg_ref['id']}",
