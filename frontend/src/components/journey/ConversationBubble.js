@@ -2,6 +2,13 @@ import { useState } from "react";
 import { MapPin, Star } from "lucide-react";
 import { CONV_CONFIG } from "./constants";
 
+function decodeEntities(text) {
+  if (!text) return "";
+  const el = document.createElement("textarea");
+  el.innerHTML = text;
+  return el.value;
+}
+
 export function ConversationBubble({ event }) {
   const [expanded, setExpanded] = useState(false);
   const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
@@ -10,7 +17,7 @@ export function ConversationBubble({ event }) {
     try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
     catch { return d; }
   };
-  const content = event.content || event.notes || "";
+  const content = decodeEntities(event.content || event.notes || "");
   const hasLong = content.length > 150;
 
   if (cfg.side === "center") {
