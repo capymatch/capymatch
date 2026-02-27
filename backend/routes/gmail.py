@@ -861,6 +861,7 @@ async def check_replies_now(request: Request):
                         {"$set": {
                             "reply_status": "Reply Received",
                             "priority": "Very High",
+                            "next_action_due": (datetime.now(timezone.utc) + timedelta(days=2)).strftime("%Y-%m-%d"),
                             "updated_at": datetime.now(timezone.utc).isoformat()
                         }}
                     )
