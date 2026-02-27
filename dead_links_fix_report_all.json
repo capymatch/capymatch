@@ -1,0 +1,456 @@
+{
+  "fixed": [
+    {
+      "school": "Albertus Magnus College",
+      "old": "https://www.albertusfalcons.com/information/directory/bios/Head_Women-s_Volleyball_Coach",
+      "new": "https://www.albertusfalcons.com/sports/wvball/index"
+    },
+    {
+      "school": "Anderson University \u2013 South Carolina",
+      "old": "https://athletics.anderson.edu/sports/wvball/index",
+      "new": "https://athletics.anderson.edu/sports/wvball/index"
+    },
+    {
+      "school": "Anderson University \u2013 Indiana",
+      "old": "https://athletics.anderson.edu/sports/wvball/index",
+      "new": "https://athletics.anderson.edu/sports/wvball/index"
+    },
+    {
+      "school": "Arcadia University",
+      "old": "https://arcadiaknights.com/sports/volleyball",
+      "new": "https://arcadiaknights.com/sports/womens-volleyball"
+    },
+    {
+      "school": "Bay Path University",
+      "old": "https://athletics.baypath.edu/sports/wvball/index",
+      "new": "https://athletics.baypath.edu/sports/wvball/index"
+    },
+    {
+      "school": "Alfred State College",
+      "old": "https://alfredstateathletics.com/sports/womens-volleyball",
+      "new": "https://alfredstateathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Bowie State University",
+      "old": "https://bsubulldogs.com/sports/womens-volleyball",
+      "new": "https://bsubulldogs.com/sports/volleyball"
+    },
+    {
+      "school": "Angelo State University",
+      "old": "https://angelosports.com/sports/volleyball",
+      "new": "https://angelosports.com/sports/womens-volleyball"
+    },
+    {
+      "school": "Bluffton University",
+      "old": "https://blufftonbeavers.com/landing/index",
+      "new": "https://blufftonbeavers.com/sports/wvball/index"
+    },
+    {
+      "school": "Bloomfield College",
+      "old": "https://bcbearsathletics.com/sports/wvball",
+      "new": "https://bcbearsathletics.com/sports/volleyball"
+    },
+    {
+      "school": "California State University \u2013 Dominguez Hills",
+      "old": "https://gotoros.com/sports/womens-volleyball",
+      "new": "https://gotoros.com/sports/volleyball"
+    },
+    {
+      "school": "Carnegie Mellon University",
+      "old": "https://athletics.cmu.edu/sports/wvball/index",
+      "new": "https://athletics.cmu.edu/sports/wvball/index"
+    },
+    {
+      "school": "Cameron University",
+      "old": "https://cameronaggies.com/sports/womens-volleyball",
+      "new": "https://cameronaggies.com/sports/volleyball"
+    },
+    {
+      "school": "Carlow University",
+      "old": "https://athletics.carlow.edu/sports/wvball/index",
+      "new": "https://athletics.carlow.edu/sports/wvball/index"
+    },
+    {
+      "school": "Clark Atlanta University",
+      "old": "https://clarkatlantasports.com/sports/womens-volleyball",
+      "new": "https://clarkatlantasports.com/sports/volleyball"
+    },
+    {
+      "school": "Colorado Christian University",
+      "old": "https://ccucougars.com/sports/womens-volleyball",
+      "new": "https://ccucougars.com/sports/volleyball"
+    },
+    {
+      "school": "Centenary University \u2013 New Jersey",
+      "old": "https://www.gocentenary.com/sports/wvball/index",
+      "new": "https://www.gocentenary.com/sports/wvball/index"
+    },
+    {
+      "school": "Bloomsburg University of Pennsylvania",
+      "old": "https://bloomsburgathletics.com/sports/womens-volleyball",
+      "new": "https://bloomsburgathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Central Connecticut State University",
+      "old": "https://www.ccsubluedevils.com/sports/wvball/index",
+      "new": "https://www.ccsubluedevils.com/sports/wvball/index"
+    },
+    {
+      "school": "Clarion University of Pennsylvania",
+      "old": "https://clariongoldeneagles.com/sports/womens-volleyball",
+      "new": "https://clariongoldeneagles.com/sports/volleyball"
+    },
+    {
+      "school": "Elms College",
+      "old": "https://athletics.elms.edu/sports/wvball/index",
+      "new": "https://athletics.elms.edu/sports/wvball/index"
+    },
+    {
+      "school": "Fayetteville State University",
+      "old": "https://fsubroncos.com/sports/womens-volleyball",
+      "new": "https://fsubroncos.com/sports/volleyball"
+    },
+    {
+      "school": "Endicott College",
+      "old": "https://www.ecgulls.com/sports/wvball/index",
+      "new": "https://www.ecgulls.com/sports/wvball/index"
+    },
+    {
+      "school": "East Texas Baptist University",
+      "old": "https://goetbutigers.com/sports/womens-volleyball",
+      "new": "https://goetbutigers.com/sports/volleyball"
+    },
+    {
+      "school": "Fairleigh Dickinson University \u2013 College at Florham",
+      "old": "https://fdudevils.com/sports/womens-volleyball",
+      "new": "https://fdudevils.com/sports/volleyball"
+    },
+    {
+      "school": "Ferris State University",
+      "old": "https://www.ferrisstatebulldogs.com/sports/wvball/index",
+      "new": "https://www.ferrisstatebulldogs.com/sports/wvball/index"
+    },
+    {
+      "school": "Georgia State University",
+      "old": "https://georgiastatesports.com/sports/womens-volleyball",
+      "new": "https://georgiastatesports.com/sports/volleyball"
+    },
+    {
+      "school": "Furman University",
+      "old": "https://furmanpaladins.com/sports/womens-volleyball",
+      "new": "https://furmanpaladins.com/sports/volleyball"
+    },
+    {
+      "school": "Goucher College",
+      "old": "https://athletics.goucher.edu/sports/wvball/index",
+      "new": "https://athletics.goucher.edu/sports/volleyball"
+    },
+    {
+      "school": "Frostburg State University",
+      "old": "https://frostburgsports.com/sports/volleyball",
+      "new": "https://frostburgsports.com/sports/womens-volleyball"
+    },
+    {
+      "school": "Harding University",
+      "old": "https://hardingsports.com/sports/womens-volleyball",
+      "new": "https://hardingsports.com/sports/volleyball"
+    },
+    {
+      "school": "Huntingdon College",
+      "old": "https://huntingdonhawks.com/sports/wvball/index",
+      "new": "https://huntingdonhawks.com/sports/volleyball"
+    },
+    {
+      "school": "Howard Payne University",
+      "old": "https://hpusports.com/sports/womens-volleyball",
+      "new": "https://hpusports.com/sports/volleyball"
+    },
+    {
+      "school": "Glenville State University",
+      "old": "https://gstatepioneers.com/sports/wvball",
+      "new": "https://gstatepioneers.com/sports/volleyball"
+    },
+    {
+      "school": "Goldey-Beacom College",
+      "old": "https://www.gbcathletics.com/sports/womens-volleyball",
+      "new": "https://www.gbcathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Gordon College",
+      "old": "https://athletics.gordon.edu/sports/wvb",
+      "new": "https://athletics.gordon.edu/sports/volleyball"
+    },
+    {
+      "school": "La Roche University",
+      "old": "https://www.larochesports.com/sports/wvball/index",
+      "new": "https://www.larochesports.com/sports/volleyball"
+    },
+    {
+      "school": "Lasell University",
+      "old": "https://laserpride.lasell.edu/sports/wvball/index",
+      "new": "https://laserpride.lasell.edu/sports/volleyball"
+    },
+    {
+      "school": "Johnson C. Smith University",
+      "old": "https://goldenbullsports.com/sports/womens-volleyball",
+      "new": "https://goldenbullsports.com/sports/volleyball"
+    },
+    {
+      "school": "Kentucky State University",
+      "old": "https://ksuthorobreds.com/sports/womens-volleyball",
+      "new": "https://ksuthorobreds.com/sports/volleyball"
+    },
+    {
+      "school": "Methodist University",
+      "old": "https://mumonarchs.com/sports/womens-volleyball",
+      "new": "https://mumonarchs.com/sports/volleyball"
+    },
+    {
+      "school": "Keystone College",
+      "old": "https://www.gokcgiants.com/sports/womens-volleyball",
+      "new": "https://www.gokcgiants.com/sports/volleyball"
+    },
+    {
+      "school": "Indiana University of Pennsylvania",
+      "old": "https://iupathletics.com/sports/womens-volleyball",
+      "new": "https://iupathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Millikin University",
+      "old": "https://athletics.millikin.edu/sports/volleyball",
+      "new": "https://athletics.millikin.edu/sports/womens-volleyball"
+    },
+    {
+      "school": "LeTourneau University",
+      "old": "https://letuathletics.com/sports/womens-volleyball",
+      "new": "https://letuathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Minnesota State University \u2013 Mankato",
+      "old": "https://athletics.minnesota.edu/sports/wvball/index",
+      "new": "https://athletics.minnesota.edu/sports/volleyball"
+    },
+    {
+      "school": "Minnesota State University \u2013 Moorhead",
+      "old": "https://athletics.minnesota.edu/sports/wvball/index",
+      "new": "https://athletics.minnesota.edu/sports/volleyball"
+    },
+    {
+      "school": "Miles College",
+      "old": "https://milesgoldenbears.com/sports/wvball",
+      "new": "https://milesgoldenbears.com/sports/volleyball"
+    },
+    {
+      "school": "Midwestern State University",
+      "old": "https://msumustangs.com/sports/womens-volleyball",
+      "new": "https://msumustangs.com/sports/volleyball"
+    },
+    {
+      "school": "Mississippi College",
+      "old": "https://www.gochoctaws.com/sports/womens-volleyball",
+      "new": "https://www.gochoctaws.com/sports/volleyball"
+    },
+    {
+      "school": "Misericordia University",
+      "old": "https://athletics.misericordia.edu/sports/womens-volleyball",
+      "new": "https://athletics.misericordia.edu/sports/volleyball"
+    },
+    {
+      "school": "New Mexico Highlands University",
+      "old": "https://nmhuathletics.com/sports/womens-volleyball",
+      "new": "https://nmhuathletics.com/sports/volleyball"
+    },
+    {
+      "school": "McMurry University",
+      "old": "https://mcmurrysports.com/sports/womens-volleyball",
+      "new": "https://mcmurrysports.com/sports/volleyball"
+    },
+    {
+      "school": "Northwood University \u2013 Michigan",
+      "old": "https://www.gonorthwood.com/sports/wvball/index",
+      "new": "https://www.gonorthwood.com/sports/volleyball"
+    },
+    {
+      "school": "Minot State University",
+      "old": "https://msubeavers.com/sports/womens-volleyball",
+      "new": "https://msubeavers.com/sports/volleyball"
+    },
+    {
+      "school": "Ozark Christian College",
+      "old": "http://occambassadors.com/sports/womens-volleyball",
+      "new": "http://occambassadors.com"
+    },
+    {
+      "school": "Newberry College",
+      "old": "https://newberrywolves.com/sports/wvb",
+      "new": "https://newberrywolves.com/sports/volleyball"
+    },
+    {
+      "school": "Nichols College",
+      "old": "https://nicholsathletics.com/sports/volleyball",
+      "new": "https://nicholsathletics.com/sports/womens-volleyball"
+    },
+    {
+      "school": "Post University",
+      "old": "https://posteagles.com/sports/womens-volleyball",
+      "new": "https://posteagles.com/sports/volleyball"
+    },
+    {
+      "school": "Notre Dame of Maryland University",
+      "old": "https://notredamegators.com/sports/womens-volleyball",
+      "new": "https://notredamegators.com/sports/volleyball"
+    },
+    {
+      "school": "Roger Williams University",
+      "old": "https://rwuhawks.com/sports/womens-volleyball",
+      "new": "https://rwuhawks.com/sports/volleyball"
+    },
+    {
+      "school": "Penn State Berks",
+      "old": "https://psuberksathletics.com/sports/womens-volleyball",
+      "new": "https://psuberksathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Saint Vincent College \u2013 Pennsylvania",
+      "old": "https://athletics.stvincent.edu/sports/womens-volleyball",
+      "new": "https://athletics.stvincent.edu/sports/volleyball"
+    },
+    {
+      "school": "Salem College",
+      "old": "https://salemspirits.com/sports/womens-volleyball",
+      "new": "https://salemspirits.com/sports/volleyball"
+    },
+    {
+      "school": "Sonoma State University",
+      "old": "https://sonomaseawolves.com/sports/womens-volleyball",
+      "new": "https://sonomaseawolves.com/sports/volleyball"
+    },
+    {
+      "school": "SUNY College at Old Westbury",
+      "old": "https://www.oldwestburypanthers.com/sports/womens-volleyball",
+      "new": "https://www.oldwestburypanthers.com/sports/wvball"
+    },
+    {
+      "school": "Northwest Nazarene University",
+      "old": "https://nnusports.com/sports/womens-volleyball",
+      "new": "https://nnusports.com/sports/wvb"
+    },
+    {
+      "school": "University of Illinois at Springfield",
+      "old": "https://uisprairiestars.com/sports/womens-volleyball",
+      "new": "https://uisprairiestars.com/sports/volleyball"
+    },
+    {
+      "school": "Rutgers University \u2013 Camden",
+      "old": "https://scarletraptors.com/sports/womens-volleyball",
+      "new": "https://scarletraptors.com/sports/wvball"
+    },
+    {
+      "school": "Palm Beach Atlantic University",
+      "old": "https://pbasailfish.com/sports/womens-volleyball",
+      "new": "https://pbasailfish.com/sports/wvb"
+    },
+    {
+      "school": "University of New Haven",
+      "old": "https://newhavenchargers.com/sports/womens-volleyball",
+      "new": "https://newhavenchargers.com/sports/volleyball"
+    },
+    {
+      "school": "University of Tampa",
+      "old": "https://www.tampaspartans.com/sports/wvball/headlines-featured",
+      "new": "https://www.tampaspartans.com/sports/volleyball"
+    },
+    {
+      "school": "University of Tampa",
+      "old": "https://tampaspartans.com/sports/volleyball",
+      "new": "https://tampaspartans.com/sports/womens-volleyball"
+    },
+    {
+      "school": "The College of St. Scholastica",
+      "old": "https://csssaints.com/sports/womens-volleyball",
+      "new": "https://csssaints.com/sports/volleyball"
+    },
+    {
+      "school": "University of Wisconsin \u2013 Whitewater",
+      "old": "https://uwwsports.com/sports/womens-volleyball",
+      "new": "https://uwwsports.com/sports/volleyball"
+    },
+    {
+      "school": "Utica University",
+      "old": "https://uticapioneers.com/sports/volleyball",
+      "new": "https://uticapioneers.com/sports/womens-volleyball"
+    },
+    {
+      "school": "Virginia Union University",
+      "old": "https://vuusports.com/sports/womens-volleyball",
+      "new": "https://vuusports.com/splash.aspx?id=splash_30&path=general"
+    },
+    {
+      "school": "Webster University",
+      "old": "https://websterathletics.com/sports/womens-volleyball",
+      "new": "https://websterathletics.com/sports/volleyball"
+    },
+    {
+      "school": "Westminster College \u2013 Missouri",
+      "old": "https://athletics.westminster.edu/sports/volleyball",
+      "new": "https://athletics.westminster.edu/sports/womens-volleyball"
+    },
+    {
+      "school": "St. Catherine University",
+      "old": "https://stkatesathletics.com/sports/womens-volleyball",
+      "new": "https://stkatesathletics.com/sports/wvball"
+    },
+    {
+      "school": "University of Indianapolis",
+      "old": "https://athletics.uindy.edu/sports/womens-volleyball",
+      "new": "https://athletics.uindy.edu/sports/wvball"
+    },
+    {
+      "school": "Westmont College",
+      "old": "https://athletics.westmont.edu/sports/wvball",
+      "new": "https://athletics.westmont.edu/sports/volleyball"
+    },
+    {
+      "school": "Willamette University",
+      "old": "https://www.wubearcats.com/sports/wvball/index",
+      "new": "https://www.wubearcats.com/sports/volleyball"
+    },
+    {
+      "school": "Wheeling University",
+      "old": "https://wucardinals.com/sports/womens-volleyball",
+      "new": "https://wucardinals.com/sports/volleyball"
+    },
+    {
+      "school": "Wilkes University",
+      "old": "https://gowilkesu.com/sports/wvball",
+      "new": "https://gowilkesu.com/sports/volleyball"
+    },
+    {
+      "school": "Washburn University",
+      "old": "https://wusports.com/sports/womens-volleyball",
+      "new": "https://wusports.com/sports/wvball"
+    },
+    {
+      "school": "University of South Carolina Aiken",
+      "old": "https://pacersports.com/sports/womens-volleyball",
+      "new": "https://pacersports.com/sports/wvball"
+    },
+    {
+      "school": "Wilson College",
+      "old": "https://wilsonphoenix.com/sports/womens-volleyball",
+      "new": "https://wilsonphoenix.com/sports/volleyball"
+    }
+  ],
+  "not_fixed": [
+    {
+      "school": "Anna Maria College",
+      "old": "https://www.masslive.com/highschoolsports/2023/06/agawams-kevin-pender-hired-as-anna-maria-college-womens-volleyball-head-coach.html",
+      "tried": 24
+    },
+    {
+      "school": "Dallas Baptist University",
+      "old": "https://dbupatriots.com/sports/womens-volleyball",
+      "tried": 23
+    }
+  ]
+}
