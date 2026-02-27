@@ -183,12 +183,14 @@ async def delete_account(request: Request):
     # Delete user-level data
     await db.gmail_tokens.delete_many({"user_id": user_id})
     await db.gmail_oauth_states.delete_many({"user_id": user_id})
+    await db.gmail_emails.delete_many({"user_id": user_id})
     await db.user_sessions.delete_many({"user_id": user_id})
     await db.temp_attachments.delete_many({"user_id": user_id})
     await db.ai_conversations.delete_many({"user_id": user_id})
     await db.user_tours.delete_many({"user_id": user_id})
     await db.import_runs.delete_many({"user_id": user_id})
     await db.gmail_import_events.delete_many({"user_id": user_id})
+    await db.password_resets.delete_many({"user_id": user_id})
 
     # Delete user account last
     await db.users.delete_one({"user_id": user_id})
