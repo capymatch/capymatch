@@ -284,6 +284,32 @@ export default function SettingsPage() {
           </button>
         </div>
 
+        {/* Email notifications toggle */}
+        <div className="flex items-center justify-between p-3 rounded-xl mb-3" style={{ backgroundColor: "var(--t-surface-alt)" }}>
+          <div className="flex items-center gap-3 flex-1">
+            <Mail className="w-4 h-4 flex-shrink-0" style={{ color: "var(--t-text-muted)" }} />
+            <div>
+              <p className="text-sm font-medium" style={{ color: "var(--t-text)" }}>Email notifications</p>
+              <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                {privacyPrefs.email_notifications
+                  ? "Receive welcome emails, team invitations, and product updates"
+                  : "Only essential emails (password resets, security alerts) will be sent"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleToggleEmailNotifications(!privacyPrefs.email_notifications)}
+            className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ml-3"
+            style={{ backgroundColor: privacyPrefs.email_notifications ? "#1a8a80" : "var(--t-border)" }}
+            data-testid="email-notifications-toggle"
+          >
+            <div
+              className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform shadow-sm"
+              style={{ left: privacyPrefs.email_notifications ? "22px" : "2px" }}
+            />
+          </button>
+        </div>
+
         {/* Privacy Policy link */}
         <button
           onClick={() => navigate("/privacy")}
