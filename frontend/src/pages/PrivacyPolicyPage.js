@@ -150,7 +150,8 @@ const SECTIONS = [
           <li>Clearly identifies missing or unknown information</li>
           <li>Does not invent facts or make guarantees</li>
         </ul>
-        <p>We do not use personal data to train public or generalized AI models.</p>
+        <p>To provide AI-powered features such as email drafting, next-step suggestions, and recruiting insights, CapyMatch sends limited personal data (such as athlete profile information, school preferences, and interaction history) to a third-party AI service provider (Anthropic) for processing. This data is transmitted securely and used solely to generate responses within CapyMatch.</p>
+        <p>CapyMatch does not use personal data to train public or generalized AI models. Our AI service provider processes data only to fulfill requests and does not retain it for model training.</p>
       </>
     ),
   },
