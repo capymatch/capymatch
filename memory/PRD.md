@@ -45,6 +45,12 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **P0 Fix: Name display** — Dashboard greeting uses authUser.name from Outlet context
 - **P0 Fix: Gmail Admin UI** — Admin Integrations page for Gmail OAuth credential management
 - **P0 Fix: Gmail credentials updated** — New OAuth client credentials (576814...) configured in .env and DB, verified working with Google (Feb 26, 2026)
+- **P0 Fix: Gmail token revocation** — Disconnect endpoint now calls Google's revoke API before deleting tokens locally
+- **Domain mapper KB fallback** — Import scan now checks university_knowledge_base.domain as fallback when school_domain_aliases has no match
+- **Import confirm domain resolution** — Confirm endpoint resolves domains to schools via KB lookup for previously unmapped items
+- **Import review checkboxes** — "Needs Review" items are now selectable (not disabled), allowing users to select and attempt import
+- **Privacy Policy page** — Full legal privacy policy at /privacy, publicly accessible without login
+- **Terms of Service page** — Full legal ToS at /terms, publicly accessible without login
 
 ## Pending Issues
 - NCAA Timeline colors (P2, recurring 5+ times)
