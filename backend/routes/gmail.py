@@ -319,6 +319,19 @@ async def gmail_status(request: Request):
 @router.post("/disconnect")
 async def gmail_disconnect(request: Request):
     user = await get_current_user(request)
+    # Revoke the token with Google before deleting locally
+    creds = await get_gmail_credentials(user["user_id"])
+    if creds and creds.token:
+        try:
+            import httpx
+            await httpx.AsyncClient().post(
+                "https://oauth2.googleapis.com/revoke",
+                params={"token": creds.token},
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+            )
+            logger.info(f"Gmail token revoked with Google for user {user['user_id']}")
+        except Exception as e:
+            logger.warning(f"Google token revoke failed (non-blocking): {e}")
     await db.gmail_tokens.delete_one({"user_id": user["user_id"]})
     await db.gmail_emails.delete_many({"user_id": user["user_id"]})
     logger.info(f"Gmail disconnected for user {user['user_id']}")
