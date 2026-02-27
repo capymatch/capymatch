@@ -53,7 +53,6 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **Terms of Service page** — Full legal ToS at /terms, publicly accessible without login
 
 ## Pending Issues
-- NCAA Timeline colors (P2, recurring 5+ times)
 - Dead questionnaire links (P2)
 
 ## IMPORTANT: Production Deployment Note
