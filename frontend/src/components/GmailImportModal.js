@@ -110,7 +110,7 @@ function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManua
       {isUnmapped && (
         <div className="mt-2 ml-7 space-y-1.5">
           <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.35)" }}>
-            Not in our database yet — can't import automatically.
+            Not in our database yet — we'll try to match it when you confirm.
           </p>
           {discoveredCount > 0 && onAddManually && (
             <button
@@ -120,7 +120,7 @@ function SuggestionRow({ s, checked, onToggle, onMapSchool, disabled, onAddManua
               data-testid={`add-manually-btn-${s.normalized_domain}`}
             >
               <ExternalLink className="w-3 h-3" />
-              Add manually
+              Add manually instead
             </button>
           )}
         </div>
