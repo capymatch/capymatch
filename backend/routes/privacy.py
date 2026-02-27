@@ -48,6 +48,8 @@ async def update_privacy_preferences(request: Request):
     updates = {}
     if "inbound_email_scanning" in body:
         updates["inbound_email_scanning"] = bool(body["inbound_email_scanning"])
+    if "email_notifications" in body:
+        updates["email_notifications"] = bool(body["email_notifications"])
     if "gmail_consent_given" in body:
         updates["gmail_consent_given"] = bool(body["gmail_consent_given"])
         if updates["gmail_consent_given"]:
