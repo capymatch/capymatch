@@ -27,7 +27,8 @@ def extract_registrable_domain(email_or_url: str) -> str | None:
 
 async def map_email_to_school(db: AsyncIOMotorDatabase, email: str) -> dict:
     """
-    Map an email address to a school via the school_domain_aliases collection.
+    Map an email address to a school via the school_domain_aliases collection,
+    falling back to university_knowledge_base.domain if no alias exists.
     Returns: { school_id, normalized_domain, match_type, confidence, match_reason }
     """
     domain = extract_registrable_domain(email)
@@ -40,7 +41,7 @@ async def map_email_to_school(db: AsyncIOMotorDatabase, email: str) -> dict:
             "match_reason": "Could not parse domain",
         }
 
-    # Lookup in aliases (highest confidence first)
+    # 1. Lookup in aliases (highest confidence first)
     alias = await db.school_domain_aliases.find_one(
         {"domain": domain},
         {"_id": 0},
@@ -54,6 +55,20 @@ async def map_email_to_school(db: AsyncIOMotorDatabase, email: str) -> dict:
             "match_type": "exact_alias",
             "confidence": alias["confidence"],
             "match_reason": f"Matched by domain: {email.split('@')[1] if '@' in email else email} → {domain} → {alias['school_id']}",
+        }
+
+    # 2. Fallback: check university_knowledge_base by domain field
+    kb_entry = await db.university_knowledge_base.find_one(
+        {"domain": domain},
+        {"_id": 0, "university_name": 1, "domain": 1},
+    )
+    if kb_entry and kb_entry.get("university_name"):
+        return {
+            "school_id": kb_entry["university_name"],
+            "normalized_domain": domain,
+            "match_type": "kb_domain",
+            "confidence": 85,
+            "match_reason": f"Matched by KB domain: {domain} → {kb_entry['university_name']}",
         }
 
     return {
