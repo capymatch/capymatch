@@ -1,0 +1,119 @@
+Checking 1053 schools...
+  Checked 100/1053...
+  Checked 200/1053...
+  Checked 300/1053...
+  Checked 400/1053...
+  Checked 500/1053...
+  Checked 600/1053...
+  Checked 700/1053...
+  Checked 800/1053...
+  Checked 900/1053...
+  Checked 1000/1053...
+
+Done! 105 dead links found out of 1053 schools.
+Report saved to /app/dead_links_report.json
+  DEAD: Albertus Magnus College [website] → HTTP 403 — https://www.albertusfalcons.com/information/directory/bios/Head_Women-s_Volleyball_Coach
+  DEAD: Alfred State College [website] → Timeout (15s) — https://alfredstateathletics.com/sports/womens-volleyball
+  DEAD: Anderson University – Indiana [website] → HTTP 403 — https://athletics.anderson.edu/sports/wvball/index
+  DEAD: Anderson University – South Carolina [website] → HTTP 403 — https://athletics.anderson.edu/sports/wvball/index
+  DEAD: Angelo State University [website] → Timeout (15s) — https://angelosports.com/sports/volleyball
+  DEAD: Anna Maria College [website] → HTTP 403 — https://www.masslive.com/highschoolsports/2023/06/agawams-kevin-pender-hired-as-anna-maria-college-womens-volleyball-head-coach.html
+  DEAD: Arcadia University [website] → Timeout (15s) — https://arcadiaknights.com/sports/volleyball
+  DEAD: Auburn University [website] → HTTP 404 — https://auburntigers.com/sports/womens-volleyball
+  DEAD: Bay Path University [website] → HTTP 403 — https://athletics.baypath.edu/sports/wvball/index
+  DEAD: Bloomfield College [website] → Timeout (15s) — https://bcbearsathletics.com/sports/wvball
+  DEAD: Bloomsburg University of Pennsylvania [website] → Timeout (15s) — https://bloomsburgathletics.com/sports/womens-volleyball
+  DEAD: Bluffton University [website] → HTTP 403 — https://blufftonbeavers.com/landing/index
+  DEAD: Bowie State University [website] → Timeout (15s) — https://bsubulldogs.com/sports/womens-volleyball
+  DEAD: California State University – Dominguez Hills [website] → Timeout (15s) — https://gotoros.com/sports/womens-volleyball
+  DEAD: Cameron University [website] → Timeout (15s) — https://cameronaggies.com/sports/womens-volleyball
+  DEAD: Carlow University [website] → HTTP 403 — https://athletics.carlow.edu/sports/wvball/index
+  DEAD: Carnegie Mellon University [website] → HTTP 403 — https://athletics.cmu.edu/sports/wvball/index
+  DEAD: Centenary University – New Jersey [website] → HTTP 403 — https://www.gocentenary.com/sports/wvball/index
+  DEAD: Central Connecticut State University [website] → HTTP 403 — https://www.ccsubluedevils.com/sports/wvball/index
+  DEAD: Clarion University of Pennsylvania [website] → Timeout (15s) — https://clariongoldeneagles.com/sports/womens-volleyball
+  DEAD: Clark Atlanta University [website] → Timeout (15s) — https://clarkatlantasports.com/sports/womens-volleyball
+  DEAD: Clemson University [website] → HTTP 404 — https://clemsontigers.com/sports/womens-volleyball
+  DEAD: Colorado Christian University [website] → Timeout (15s) — https://ccucougars.com/sports/womens-volleyball
+  DEAD: Dallas Baptist University [website] → Connection failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local  — https://dbupatriots.com/sports/womens-volleyball
+  DEAD: East Texas Baptist University [website] → Timeout (15s) — https://goetbutigers.com/sports/womens-volleyball
+  DEAD: Elms College [website] → HTTP 403 — https://athletics.elms.edu/sports/wvball/index
+  DEAD: Endicott College [website] → HTTP 403 — https://www.ecgulls.com/sports/wvball/index
+  DEAD: Fairleigh Dickinson University [website] → Request URL is missing an 'http://' or 'https://' protocol. — https:
+  DEAD: Fairleigh Dickinson University – College at Florham [website] → Timeout (15s) — https://fdudevils.com/sports/womens-volleyball
+  DEAD: Fayetteville State University [website] → Timeout (15s) — https://fsubroncos.com/sports/womens-volleyball
+  DEAD: Ferris State University [website] → HTTP 403 — https://www.ferrisstatebulldogs.com/sports/wvball/index
+  DEAD: Frostburg State University [website] → Timeout (15s) — https://frostburgsports.com/sports/volleyball
+  DEAD: Furman University [website] → Timeout (15s) — https://furmanpaladins.com/sports/womens-volleyball
+  DEAD: Georgia State University [website] → Timeout (15s) — https://georgiastatesports.com/sports/womens-volleyball
+  DEAD: Georgia Tech [website] → HTTP 404 — https://ramblinwreck.com/sports/volleyball
+  DEAD: Glenville State University [website] → Timeout (15s) — https://gstatepioneers.com/sports/wvball
+  DEAD: Goldey-Beacom College [website] → Timeout (15s) — https://www.gbcathletics.com/sports/womens-volleyball
+  DEAD: Gordon College [website] → Timeout (15s) — https://athletics.gordon.edu/sports/wvb
+  DEAD: Goucher College [website] → HTTP 403 — https://athletics.goucher.edu/sports/wvball/index
+  DEAD: Harding University [website] → Timeout (15s) — https://hardingsports.com/sports/womens-volleyball
+  DEAD: Howard Payne University [website] → Timeout (15s) — https://hpusports.com/sports/womens-volleyball
+  DEAD: Huntingdon College [website] → HTTP 403 — https://huntingdonhawks.com/sports/wvball/index
+  DEAD: Indiana University of Pennsylvania [website] → Timeout (15s) — https://iupathletics.com/sports/womens-volleyball
+  DEAD: Johnson C. Smith University [website] → Timeout (15s) — https://goldenbullsports.com/sports/womens-volleyball
+  DEAD: Kentucky State University [website] → Timeout (15s) — https://ksuthorobreds.com/sports/womens-volleyball
+  DEAD: Keystone College [website] → Timeout (15s) — https://www.gokcgiants.com/sports/womens-volleyball
+  DEAD: La Roche University [website] → HTTP 403 — https://www.larochesports.com/sports/wvball/index
+  DEAD: Lasell University [website] → HTTP 403 — https://laserpride.lasell.edu/sports/wvball/index
+  DEAD: LeTourneau University [website] → Timeout (15s) — https://letuathletics.com/sports/womens-volleyball
+  DEAD: Mary Baldwin University [website] → HTTP 404 — https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/womens-volleyball-head-coach
+  DEAD: McMurry University [website] → Timeout (15s) — https://mcmurrysports.com/sports/womens-volleyball
+  DEAD: Methodist University [website] → Timeout (15s) — https://mumonarchs.com/sports/womens-volleyball
+  DEAD: Midwestern State University [website] → Timeout (15s) — https://msumustangs.com/sports/womens-volleyball
+  DEAD: Miles College [website] → Timeout (15s) — https://milesgoldenbears.com/sports/wvball
+  DEAD: Millikin University [website] → Timeout (15s) — https://athletics.millikin.edu/sports/volleyball
+  DEAD: Minnesota State University – Mankato [website] → HTTP 403 — https://athletics.minnesota.edu/sports/wvball/index
+  DEAD: Minnesota State University – Moorhead [website] → HTTP 403 — https://athletics.minnesota.edu/sports/wvball/index
+  DEAD: Minot State University [website] → Timeout (15s) — https://msubeavers.com/sports/womens-volleyball
+  DEAD: Misericordia University [website] → Timeout (15s) — https://athletics.misericordia.edu/sports/womens-volleyball
+  DEAD: Mississippi College [website] → Timeout (15s) — https://www.gochoctaws.com/sports/womens-volleyball
+  DEAD: New Mexico Highlands University [website] → Timeout (15s) — https://nmhuathletics.com/sports/womens-volleyball
+  DEAD: Newberry College [website] → Timeout (15s) — https://newberrywolves.com/sports/wvb
+  DEAD: Nichols College [website] → Timeout (15s) — https://nicholsathletics.com/sports/volleyball
+  DEAD: Northwest Nazarene University [website] → Timeout (15s) — https://nnusports.com/sports/womens-volleyball
+  DEAD: Northwood University – Michigan [website] → HTTP 403 — https://www.gonorthwood.com/sports/wvball/index
+  DEAD: Notre Dame of Maryland University [website] → Timeout (15s) — https://notredamegators.com/sports/womens-volleyball
+  DEAD: Ozark Christian College [website] → Server disconnected without sending a response. — http://occambassadors.com/sports/womens-volleyball
+  DEAD: Palm Beach Atlantic University [website] → Timeout (15s) — https://pbasailfish.com/sports/womens-volleyball
+  DEAD: Penn State Berks [website] → Timeout (15s) — https://psuberksathletics.com/sports/womens-volleyball
+  DEAD: Post University [website] → Timeout (15s) — https://posteagles.com/sports/womens-volleyball
+  DEAD: Purdue University [website] → HTTP 404 — https://purduesports.com/sports/womens-volleyball
+  DEAD: Roger Williams University [website] → Timeout (15s) — https://rwuhawks.com/sports/womens-volleyball
+  DEAD: Rutgers University – Camden [website] → Timeout (15s) — https://scarletraptors.com/sports/womens-volleyball
+  DEAD: SUNY College at Old Westbury [website] → Timeout (15s) — https://www.oldwestburypanthers.com/sports/womens-volleyball
+  DEAD: SUNY Stony Brook University [website] → Request URL is missing an 'http://' or 'https://' protocol. — https:
+  DEAD: Saint Vincent College – Pennsylvania [website] → Timeout (15s) — https://athletics.stvincent.edu/sports/womens-volleyball
+  DEAD: Salem College [website] → Timeout (15s) — https://salemspirits.com/sports/womens-volleyball
+  DEAD: Sonoma State University [website] → Timeout (15s) — https://sonomaseawolves.com/sports/womens-volleyball
+  DEAD: St. Catherine University [website] → Timeout (15s) — https://stkatesathletics.com/sports/womens-volleyball
+  DEAD: The College of St. Scholastica [website] → Timeout (15s) — https://csssaints.com/sports/womens-volleyball
+  DEAD: University of Illinois at Springfield [website] → Timeout (15s) — https://uisprairiestars.com/sports/womens-volleyball
+  DEAD: University of Indianapolis [website] → Timeout (15s) — https://athletics.uindy.edu/sports/womens-volleyball
+  DEAD: University of Iowa [website] → HTTP 404 — https://hawkeyesports.com/sports/womens-volleyball
+  DEAD: University of Kentucky [website] → HTTP 404 — https://ukathletics.com/sports/womens-volleyball
+  DEAD: University of Nebraska [website] → HTTP 404 — https://huskers.com/sports/womens-volleyball
+  DEAD: University of New Haven [website] → Timeout (15s) — https://newhavenchargers.com/sports/womens-volleyball
+  DEAD: University of Notre Dame [website] → HTTP 404 — https://und.com/sports/womens-volleyball
+  DEAD: University of South Carolina [website] → HTTP 404 — https://gamecocksonline.com/sports/womens-volleyball
+  DEAD: University of South Carolina Aiken [website] → Timeout (15s) — https://pacersports.com/sports/womens-volleyball
+  DEAD: University of Tampa [website] → HTTP 403 — https://www.tampaspartans.com/sports/wvball/headlines-featured
+  DEAD: University of Tampa [website] → HTTP 403 — https://tampaspartans.com/sports/volleyball
+  DEAD: University of Virginia [website] → HTTP 404 — https://virginiasports.com/sports/womens-volleyball
+  DEAD: University of Wisconsin – Whitewater [website] → Timeout (15s) — https://uwwsports.com/sports/womens-volleyball
+  DEAD: Utica University [website] → Timeout (15s) — https://uticapioneers.com/sports/volleyball
+  DEAD: Vanderbilt University [website] → HTTP 404 — https://vucommodores.com/sports/womens-volleyball
+  DEAD: Virginia Tech [website] → HTTP 404 — https://hokiesports.com/sports/womens-volleyball
+  DEAD: Virginia Union University [website] → Timeout (15s) — https://vuusports.com/sports/womens-volleyball
+  DEAD: Washburn University [website] → Timeout (15s) — https://wusports.com/sports/womens-volleyball
+  DEAD: Webster University [website] → Timeout (15s) — https://websterathletics.com/sports/womens-volleyball
+  DEAD: Westminster College – Missouri [website] → Timeout (15s) — https://athletics.westminster.edu/sports/volleyball
+  DEAD: Westmont College [website] → Timeout (15s) — https://athletics.westmont.edu/sports/wvball
+  DEAD: Wheeling University [website] → Timeout (15s) — https://wucardinals.com/sports/womens-volleyball
+  DEAD: Wilkes University [website] → Timeout (15s) — https://gowilkesu.com/sports/wvball
+  DEAD: Willamette University [website] → HTTP 403 — https://www.wubearcats.com/sports/wvball/index
+  DEAD: Wilson College [website] → Timeout (15s) — https://wilsonphoenix.com/sports/womens-volleyball
