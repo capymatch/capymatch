@@ -585,8 +585,7 @@ export default function GmailImportModal({ onClose, onComplete }) {
                         s={s}
                         checked={selected.has(s.school_id || s.normalized_domain)}
                         onToggle={toggleSuggestion}
-                        disabled={!s.school_id}
-                        onAddManually={handleAddManually}
+                        onAddManually={!s.school_id ? handleAddManually : undefined}
                       />
                     ))}
                   </div>
