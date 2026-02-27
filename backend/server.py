@@ -560,6 +560,18 @@ async def startup_event():
     demo_refresh_task = asyncio.create_task(demo_date_refresh_loop())
     logger.info("Started background task: demo date refresh (runs daily)")
 
+    # One-time KB domain fixes
+    domain_fixes = {
+        "Palm Beach Atlantic University": "pba.edu",
+    }
+    for uni_name, correct_domain in domain_fixes.items():
+        r = await db.university_knowledge_base.update_one(
+            {"university_name": uni_name, "domain": {"$ne": correct_domain}},
+            {"$set": {"domain": correct_domain}},
+        )
+        if r.modified_count:
+            logger.info(f"KB fix: {uni_name} domain → {correct_domain}")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
