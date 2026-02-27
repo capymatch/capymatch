@@ -67,4 +67,3 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
 - Redesign "Find Schools" page
-- Private per-school notes feature
