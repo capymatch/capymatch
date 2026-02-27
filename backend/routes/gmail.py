@@ -419,7 +419,7 @@ def _strip_quoted_reply(text):
         return text
     lines = text.split("\n")
     result = []
-    for line in lines:
+    for i, line in enumerate(lines):
         stripped = line.strip()
         # "On <date> <name> wrote:" pattern
         if _re.match(r'^On .+ wrote:\s*$', stripped):
@@ -427,14 +427,19 @@ def _strip_quoted_reply(text):
         # "---------- Forwarded message ----------"
         if "forwarded message" in stripped.lower() and "---" in stripped:
             break
+        # Quoted email header block: "From: Name <email>" or "From: email"
+        if _re.match(r'^From:\s+.+[@<]', stripped) and len(result) > 2:
+            # Verify next lines look like email headers (Date:, To:, Subject:)
+            next_lines = "\n".join(lines[i:i+4])
+            if _re.search(r'Date:|To:|Subject:', next_lines):
+                break
         # Gmail quote marker: "> " repeated lines
         if stripped.startswith(">") and len(result) > 0 and (not result[-1].strip() or result[-1].strip().startswith(">")):
             break
-        # "From: <email>" header in quoted section
-        if _re.match(r'^From:\s+\S+@\S+', stripped) and len(result) > 2:
-            break
+        # Strip inline image CID references like [cid:abc123-...]
+        line = _re.sub(r'\[cid:[a-f0-9\-]+\]', '', line)
         result.append(line)
-    # Trim trailing blank lines
+    # Trim trailing blank lines and signature duplicates
     while result and not result[-1].strip():
         result.pop()
     return "\n".join(result)
