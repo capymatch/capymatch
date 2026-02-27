@@ -37,6 +37,7 @@ const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const BillingPage = lazy(() => import("./pages/BillingPage"));
 const SchoolInfoPage = lazy(() => import("./pages/SchoolInfoPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 import InstallPrompt from "./components/InstallPrompt";
