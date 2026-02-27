@@ -91,6 +91,7 @@ export default function EmptyBoardState({ onSchoolAdded }) {
   const [profile, setProfile] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [gmailConnected, setGmailConnected] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [addingSchool, setAddingSchool] = useState(null);
   const [gmailConnecting, setGmailConnecting] = useState(false);
