@@ -1113,13 +1113,24 @@ async def confirm_import(run_id: str, request: Request):
             continue
 
         school_id = item.get("school_id")
+        domain_hint = item.get("domain")
+
+        # If no school_id but a domain is provided, try to resolve it
+        if not school_id and domain_hint:
+            kb_match = await db.university_knowledge_base.find_one(
+                {"domain": domain_hint},
+                {"_id": 0, "university_name": 1}
+            )
+            if kb_match and kb_match.get("university_name"):
+                school_id = kb_match["university_name"]
+
         if not school_id:
             skipped_count += 1
             skip_reasons["no_school_id"] += 1
             continue
 
         # Find matching suggestion
-        suggestion = suggestion_map.get(school_id)
+        suggestion = suggestion_map.get(school_id) or suggestion_map.get(domain_hint or "")
         if not suggestion:
             skipped_count += 1
             skip_reasons["no_suggestion"] += 1
