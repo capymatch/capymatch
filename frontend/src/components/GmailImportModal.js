@@ -332,8 +332,8 @@ export default function GmailImportModal({ onClose, onComplete }) {
     try {
       const payload = Array.from(selected).map(id => {
         const s = suggestions.find(sg => (sg.school_id || sg.normalized_domain) === id);
-        return { school_id: s?.school_id || id };
-      }).filter(x => x.school_id);
+        return { school_id: s?.school_id || null, domain: s?.normalized_domain || null };
+      }).filter(x => x.school_id || x.domain);
 
       const res = await api.post(`/gmail/import-history/${runId}/confirm`, { selected: payload });
       const { created_count, skipped_count } = res.data;
