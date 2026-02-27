@@ -816,16 +816,16 @@ async def check_replies_now(request: Request):
         if not coach_email_to_program:
             return {"updated_count": 0, "message": "No coach emails found"}
         
-        # Get programs with "No Reply" status
+        # Get programs awaiting a reply (either never replied or waiting for response)
         no_reply_programs = await db.programs.find(
-            {"tenant_id": tenant_id, "reply_status": "No Reply"},
+            {"tenant_id": tenant_id, "reply_status": {"$in": ["No Reply", "Awaiting Reply", "", None]}},
             {"_id": 0, "program_id": 1, "university_name": 1}
         ).to_list(500)
         
         no_reply_program_ids = {p["program_id"]: p.get("university_name", "") for p in no_reply_programs}
         
         if not no_reply_program_ids:
-            return {"updated_count": 0, "message": "No programs with 'No Reply' status"}
+            return {"updated_count": 0, "message": "No programs awaiting replies"}
         
         service = get_gmail_service(creds)
         
