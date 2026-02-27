@@ -38,6 +38,15 @@ async def send_welcome_email(name: str, email: str):
     if settings and not settings.get("welcome_email", True):
         return None
 
+    # Check user notification preference
+    user = await db.users.find_one({"email": email}, {"_id": 0, "user_id": 1})
+    if user:
+        tenant = await db.tenants.find_one({"owner_user_id": user["user_id"]}, {"_id": 0, "tenant_id": 1})
+        if tenant:
+            prefs = await db.privacy_preferences.find_one({"tenant_id": tenant["tenant_id"]}, {"_id": 0})
+            if prefs and not prefs.get("email_notifications", True):
+                return None
+
     html = f"""
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px;">
       <div style="text-align: center; margin-bottom: 32px;">
