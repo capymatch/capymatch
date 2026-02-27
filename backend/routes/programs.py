@@ -543,6 +543,7 @@ async def create_interaction(data: InteractionCreate, request: Request):
         "email_sent": 14,
         "showcase": 5,
         "text_message": 7,
+        "coach_reply": 2, "email_received": 2,
     }
     days = follow_up_days_map.get(event_type)
     if days:
