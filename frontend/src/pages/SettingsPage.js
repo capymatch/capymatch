@@ -109,6 +109,18 @@ export default function SettingsPage() {
     }
   };
 
+  const handleToggleEmailNotifications = async (enabled) => {
+    setPrivacyPrefs(prev => ({ ...prev, email_notifications: enabled }));
+    try {
+      await api.put("/privacy/preferences", { email_notifications: enabled });
+      toast.success(enabled ? "Email notifications enabled" : "Email notifications disabled");
+    } catch {
+      setPrivacyPrefs(prev => ({ ...prev, email_notifications: !enabled }));
+      toast.error("Failed to update preference");
+    }
+  };
+
+
   const handleExportData = async () => {
     setExporting(true);
     try {
