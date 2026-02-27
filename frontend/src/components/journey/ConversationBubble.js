@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, Loader2 } from "lucide-react";
 import { CONV_CONFIG } from "./constants";
+
+const API = process.env.REACT_APP_BACKEND_URL;
 
 function decodeEntities(text) {
   if (!text) return "";
@@ -11,14 +13,48 @@ function decodeEntities(text) {
 
 export function ConversationBubble({ event }) {
   const [expanded, setExpanded] = useState(false);
+  const [fullBody, setFullBody] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const evtType = (event.event_type || event.type || "interaction").toLowerCase().replace(/\s+/g, "_");
   const cfg = CONV_CONFIG[evtType] || CONV_CONFIG.interaction;
   const formatDate = (d) => {
     try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
     catch { return d; }
   };
-  const content = decodeEntities(event.content || event.notes || "");
-  const hasLong = content.length > 150;
+
+  const snippet = decodeEntities(event.content || event.notes || "");
+  const isGmail = (event.id || "").startsWith("gmail_");
+  const gmailId = isGmail ? event.id.replace("gmail_", "") : null;
+  const hasLong = snippet.length > 150;
+
+  const displayText = fullBody || snippet;
+  const isExpanded = expanded && (fullBody || !isGmail);
+
+  async function handleShowMore(e) {
+    e.stopPropagation();
+    if (fullBody) {
+      setExpanded(true);
+      return;
+    }
+    if (isGmail && gmailId) {
+      setLoading(true);
+      try {
+        const token = document.cookie.split(";").map(c => c.trim()).find(c => c.startsWith("session_token="))?.split("=")[1]
+          || localStorage.getItem("session_token");
+        const res = await fetch(`${API}/api/gmail/emails/${gmailId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const body = data.body_text || data.body_html?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || snippet;
+          setFullBody(decodeEntities(body));
+        }
+      } catch { /* fallback to snippet */ }
+      setLoading(false);
+    }
+    setExpanded(true);
+  }
 
   if (cfg.side === "center") {
     return (
@@ -49,23 +85,23 @@ export function ConversationBubble({ event }) {
         <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isRight ? "text-teal-700" : "text-slate-500"}`}>
           {isRight ? "You" : (event.coach_name || "Coach")}
         </p>
-        {content && (
+        {displayText && (
           <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
-            {hasLong && !expanded ? (
+            {hasLong && !isExpanded ? (
               <>
-                <p className="line-clamp-3">{content}</p>
+                <p className="line-clamp-3">{snippet}</p>
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
-                  className="text-teal-600 text-[11px] mt-1 font-semibold cursor-pointer hover:underline"
+                  onClick={handleShowMore}
+                  className="text-teal-600 text-[11px] mt-1 font-semibold cursor-pointer hover:underline flex items-center gap-1"
                   data-testid="show-more-btn"
                 >
-                  Show more
+                  {loading ? <><Loader2 className="w-3 h-3 animate-spin" /> Loading...</> : "Show more"}
                 </button>
               </>
-            ) : hasLong && expanded ? (
+            ) : isExpanded ? (
               <>
-                <p className="whitespace-pre-wrap">{content}</p>
+                <p className="whitespace-pre-wrap">{displayText}</p>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setExpanded(false); }}
@@ -75,10 +111,10 @@ export function ConversationBubble({ event }) {
                   Show less
                 </button>
               </>
-            ) : <p>{content}</p>}
+            ) : <p>{snippet}</p>}
           </div>
         )}
-        {!content && <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{event.title || cfg.label}</p>}
+        {!displayText && <p className="text-xs" style={{ color: "var(--t-text-secondary)" }}>{event.title || cfg.label}</p>}
         <p className="text-[10px] mt-1.5" style={{ color: "var(--t-text-muted)" }}>{formatDate(event.date)} &middot; {cfg.label}</p>
       </div>
     </div>
