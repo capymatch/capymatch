@@ -264,3 +264,68 @@ async def seed_knowledge_base(request: Request):
         "skipped": skipped,
         "total": total,
     }
+
+
+
+@router.post("/run-migrations")
+async def run_kb_migrations(request: Request):
+    """One-time admin endpoint to apply KB domain and URL fixes."""
+    domain_fixes = {
+        "Palm Beach Atlantic University": "pba.edu",
+        "Ball State University": "bsu.edu",
+        "University of Tampa": "ut.edu",
+        "Murray State University": "murraystate.edu",
+        "Loyola University Chicago": "luc.edu",
+        "University of South Carolina – Upstate": "uscupstate.edu",
+        "Southern Illinois University Carbondale": "siu.edu",
+        "Texas State University": "txstate.edu",
+        "Penn State": "psu.edu",
+    }
+
+    url_fixes = {
+        "Auburn University": "https://auburntigers.com/sports/volleyball",
+        "Clemson University": "https://clemsontigers.com/sports/volleyball/",
+        "Georgia Tech": "https://ramblinwreck.com/sports/w-volley/",
+        "Purdue University": "https://purduesports.com/sports/volleyball",
+        "University of Iowa": "https://hawkeyesports.com/sports/wvball",
+        "University of Kentucky": "https://ukathletics.com/sports/wvball/",
+        "University of Nebraska": "https://huskers.com/sports/volleyball",
+        "University of Notre Dame": "https://fightingirish.com/sports/wvball/",
+        "University of South Carolina": "https://gamecocksonline.com/sports/wvball/",
+        "University of Virginia": "https://virginiasports.com/sports/wvball",
+        "Vanderbilt University": "https://vucommodores.com/sports/volleyball",
+        "Virginia Tech": "https://hokiesports.com/sports/volleyball",
+        "Fairleigh Dickinson University": "https://fduknights.com/sports/volleyball",
+        "SUNY Stony Brook University": "https://stonybrookathletics.com/sports/volleyball",
+        "Mary Baldwin University": "https://www.marybaldwin.edu",
+        "Anna Maria College": "https://www.goamcats.com/sports/wvball/index",
+        "Dallas Baptist University": "https://dbupatriots.com/sports/womens-volleyball",
+        "Goucher College": "https://athletics.goucher.edu/sports/wvball/index",
+        "Huntingdon College": "https://huntingdonhawks.com/sports/wvball/index",
+        "La Roche University": "https://www.larochesports.com/sports/wvball/index",
+        "Lasell University": "https://laserpride.lasell.edu/sports/wvball/index",
+        "Minnesota State University – Mankato": "https://athletics.minnesota.edu/sports/wvball/index",
+        "Minnesota State University – Moorhead": "https://athletics.minnesota.edu/sports/wvball/index",
+        "Northwood University – Michigan": "https://www.gonorthwood.com/sports/wvball/index",
+        "University of Tampa": "https://tampaspartans.com/sports/wvball/index",
+        "Willamette University": "https://www.wubearcats.com/sports/womens-volleyball",
+    }
+
+    domain_count = 0
+    for uni_name, correct_domain in domain_fixes.items():
+        r = await db.university_knowledge_base.update_one(
+            {"university_name": uni_name, "domain": {"$ne": correct_domain}},
+            {"$set": {"domain": correct_domain, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        )
+        domain_count += r.modified_count
+
+    url_count = 0
+    for uni_name, correct_url in url_fixes.items():
+        r = await db.university_knowledge_base.update_one(
+            {"university_name": uni_name, "website": {"$ne": correct_url}},
+            {"$set": {"website": correct_url, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        )
+        url_count += r.modified_count
+
+    logger.info(f"KB migrations: {domain_count} domains fixed, {url_count} URLs fixed")
+    return {"ok": True, "domains_fixed": domain_count, "urls_fixed": url_count}
