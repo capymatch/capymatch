@@ -14,7 +14,7 @@ export default function SettingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [privacyPrefs, setPrivacyPrefs] = useState({ inbound_email_scanning: true });
+  const [privacyPrefs, setPrivacyPrefs] = useState({ inbound_email_scanning: true, email_notifications: true });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [exporting, setExporting] = useState(false);
