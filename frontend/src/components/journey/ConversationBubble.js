@@ -52,9 +52,29 @@ export function ConversationBubble({ event }) {
         {content && (
           <div className="text-[13px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>
             {hasLong && !expanded ? (
-              <><p className="line-clamp-3">{content}</p><button onClick={() => setExpanded(true)} className="text-teal-700 text-[10px] mt-1 font-medium">Show more</button></>
+              <>
+                <p className="line-clamp-3">{content}</p>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
+                  className="text-teal-600 text-[11px] mt-1 font-semibold cursor-pointer hover:underline"
+                  data-testid="show-more-btn"
+                >
+                  Show more
+                </button>
+              </>
             ) : hasLong && expanded ? (
-              <><p className="whitespace-pre-wrap">{content}</p><button onClick={() => setExpanded(false)} className="text-teal-700 text-[10px] mt-1 font-medium">Show less</button></>
+              <>
+                <p className="whitespace-pre-wrap">{content}</p>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded(false); }}
+                  className="text-teal-600 text-[11px] mt-1 font-semibold cursor-pointer hover:underline"
+                  data-testid="show-less-btn"
+                >
+                  Show less
+                </button>
+              </>
             ) : <p>{content}</p>}
           </div>
         )}
