@@ -39,10 +39,8 @@ const SECTIONS = [
         <h4>B. Information Collected Automatically</h4>
         <p>When you use CapyMatch, we may automatically collect:</p>
         <ul>
-          <li>Device and browser information</li>
-          <li>IP address and approximate location</li>
-          <li>Usage activity (pages viewed, features used)</li>
           <li>Dates and times of access</li>
+          <li>General usage activity (pages viewed, features used)</li>
         </ul>
         <p>This information helps us operate, secure, and improve the Services.</p>
         <h4>C. Cookies and Analytics</h4>
