@@ -857,7 +857,7 @@ async def check_replies_now(request: Request):
             for coach_email, program_id in coach_email_to_program.items():
                 if coach_email in from_addr and program_id in no_reply_program_ids:
                     result = await db.programs.update_one(
-                        {"program_id": program_id, "tenant_id": tenant_id, "reply_status": "No Reply"},
+                        {"program_id": program_id, "tenant_id": tenant_id, "reply_status": {"$in": ["No Reply", "Awaiting Reply", "", None]}},
                         {"$set": {
                             "reply_status": "Reply Received",
                             "priority": "Very High",
