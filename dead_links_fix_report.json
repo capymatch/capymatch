@@ -1,0 +1,92 @@
+[
+  {
+    "school": "Auburn University",
+    "status": "fixed",
+    "old_url": "https://auburntigers.com/sports/womens-volleyball",
+    "new_url": "https://auburntigers.com/sports/volleyball"
+  },
+  {
+    "school": "Clemson University",
+    "status": "fixed",
+    "old_url": "https://clemsontigers.com/sports/womens-volleyball",
+    "new_url": "https://clemsontigers.com/sports/volleyball/"
+  },
+  {
+    "school": "Georgia Tech",
+    "status": "fixed",
+    "old_url": "https://ramblinwreck.com/sports/volleyball",
+    "new_url": "https://ramblinwreck.com/sports/w-volley/"
+  },
+  {
+    "school": "Mary Baldwin University",
+    "status": "fixed",
+    "old_url": "https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/womens-volleyball-head-coach",
+    "new_url": "https://marybaldwin.edu"
+  },
+  {
+    "school": "Purdue University",
+    "status": "fixed",
+    "old_url": "https://purduesports.com/sports/womens-volleyball",
+    "new_url": "https://purduesports.com/sports/volleyball"
+  },
+  {
+    "school": "University of Iowa",
+    "status": "fixed",
+    "old_url": "https://hawkeyesports.com/sports/womens-volleyball",
+    "new_url": "https://hawkeyesports.com/sports/wvball"
+  },
+  {
+    "school": "University of Kentucky",
+    "status": "fixed",
+    "old_url": "https://ukathletics.com/sports/womens-volleyball",
+    "new_url": "https://ukathletics.com/sports/wvball/"
+  },
+  {
+    "school": "University of Nebraska",
+    "status": "fixed",
+    "old_url": "https://huskers.com/sports/womens-volleyball",
+    "new_url": "https://huskers.com/sports/volleyball"
+  },
+  {
+    "school": "University of Notre Dame",
+    "status": "fixed",
+    "old_url": "https://und.com/sports/womens-volleyball",
+    "new_url": "https://fightingirish.com/sports/wvball/"
+  },
+  {
+    "school": "University of South Carolina",
+    "status": "fixed",
+    "old_url": "https://gamecocksonline.com/sports/womens-volleyball",
+    "new_url": "https://gamecocksonline.com/sports/wvball/"
+  },
+  {
+    "school": "University of Virginia",
+    "status": "fixed",
+    "old_url": "https://virginiasports.com/sports/womens-volleyball",
+    "new_url": "https://virginiasports.com/sports/wvball"
+  },
+  {
+    "school": "Vanderbilt University",
+    "status": "fixed",
+    "old_url": "https://vucommodores.com/sports/womens-volleyball",
+    "new_url": "https://vucommodores.com/vanderbilt-adds-volleyball-as-varsity-sport/volleyball/"
+  },
+  {
+    "school": "Virginia Tech",
+    "status": "fixed",
+    "old_url": "https://hokiesports.com/sports/womens-volleyball",
+    "new_url": "https://hokiesports.com/sports/volleyball"
+  },
+  {
+    "school": "Fairleigh Dickinson University",
+    "status": "fixed",
+    "old_url": "https:",
+    "new_url": "https://fduknights.com/sports/volleyball"
+  },
+  {
+    "school": "SUNY Stony Brook University",
+    "status": "fixed",
+    "old_url": "https:",
+    "new_url": "https://stonybrookathletics.com/sports/volleyball"
+  }
+]
