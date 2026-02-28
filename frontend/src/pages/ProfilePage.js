@@ -318,7 +318,7 @@ export default function ProfilePage() {
           <Field testId="field-grad-year" label="Graduation Year" value={profile.graduation_year} onChange={v => updateField("graduation_year", v)} />
           <Field testId="field-position" label="Position" value={profile.position} onChange={v => updateField("position", v)} coachVisible />
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           <Field testId="field-height" label="Height" value={profile.height} onChange={v => updateField("height", v)} coachVisible />
           <Field testId="field-weight" label="Weight (lbs)" value={profile.weight} onChange={v => updateField("weight", v)} />
           <Field testId="field-jersey" label="Jersey #" value={profile.jersey_number} onChange={v => updateField("jersey_number", v)} />
