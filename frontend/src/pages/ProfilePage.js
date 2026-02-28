@@ -61,7 +61,7 @@ function SectionCard({ icon, iconBg, title, summary, status, statusColor, childr
           <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>{icon}</div>
           <div>
             <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{title}</div>
-            <div className="text-[11px] mt-0.5 truncate max-w-[160px] sm:max-w-[200px]" style={{ color: status === "complete" ? "var(--t-text-muted)" : "#d97706" }}>{summary}</div>
+            <div className="text-[11px] mt-0.5 truncate max-w-[220px] sm:max-w-[280px]" style={{ color: status === "complete" ? "var(--t-text-muted)" : "#d97706" }}>{summary}</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
