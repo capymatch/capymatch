@@ -17,6 +17,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 7. Gmail integration (read-only scan + send emails)
 8. Follow-up automation system
 9. School detail pages with intelligence cards
+10. Coach Card — shareable, always-current, coach-ready package per school
 
 ## Architecture
 - **Frontend**: React + TailwindCSS + Shadcn/UI (lazy-loaded pages)
@@ -30,7 +31,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **Demo User**: demo@capymatch.com / demo2026
 - **Admin User**: douglas@yeslms.com (Google auth, also demo2026 in preview)
 
-## What's Implemented (as of Feb 26, 2026)
+## What's Implemented (as of Mar 1, 2026)
 - Full recruiting board with stages, signals, next-step suggestions
 - Gmail integration (read-only + send, import history)
 - AI intelligence cards with source-aware reasoning
@@ -41,30 +42,48 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Onboarding questionnaire with matching
 - Delete account functionality
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
-- **P0 Fix: Dashboard resilience** — All 6 API calls have individual .catch() handlers
-- **P0 Fix: Name display** — Dashboard greeting uses authUser.name from Outlet context
-- **P0 Fix: Gmail Admin UI** — Admin Integrations page for Gmail OAuth credential management
-- **P0 Fix: Gmail credentials updated** — New OAuth client credentials (576814...) configured in .env and DB, verified working with Google (Feb 26, 2026)
-- **P0 Fix: Gmail token revocation** — Disconnect endpoint now calls Google's revoke API before deleting tokens locally
-- **Domain mapper KB fallback** — Import scan now checks university_knowledge_base.domain as fallback when school_domain_aliases has no match
-- **Import confirm domain resolution** — Confirm endpoint resolves domains to schools via KB lookup for previously unmapped items
-- **Import review checkboxes** — "Needs Review" items are now selectable (not disabled), allowing users to select and attempt import
-- **Privacy Policy page** — Full legal privacy policy at /privacy, publicly accessible without login
-- **Terms of Service page** — Full legal ToS at /terms, publicly accessible without login
+- Privacy Policy & Terms of Service public pages
+- Gmail credential management & token revocation
+- Domain mapper KB fallback for import
+- **Coach Card Feature (MVP)**: 
+  - Schedule CRUD (add/edit/delete events)
+  - Bulk event creation
+  - AI-powered schedule parsing (upload text -> Claude extracts events)
+  - Coach Card config per school (coach note, featured video, visibility toggles)
+  - Auto-generated slugs (athlete-name-school-name-id)
+  - Public shareable page at /card/:slug with profile, measurables, academics, schedule, video links
+  - ScheduleSection integrated on Profile page
+  - CoachCardConfig integrated on Journey page per school
 
-## Pending Issues
-- Dead questionnaire links (P2)
+## Key DB Collections (Coach Card)
+- `schedule_events`: `{ event_id, tenant_id, name, start_date, end_date, location, division, jersey_number, notes, created_at }`
+- `coach_cards`: `{ tenant_id, program_id, coach_note, featured_video, show_schedule, show_academics, show_measurables, show_videos, slug, updated_at }`
+
+## Key API Endpoints (Coach Card)
+- `GET, POST /api/schedule` - List/create schedule events
+- `PUT, DELETE /api/schedule/{event_id}` - Update/delete event
+- `POST /api/schedule/bulk` - Bulk add events
+- `POST /api/schedule/parse` - AI-powered text parsing to events
+- `GET, PUT /api/coach-card/{program_id}` - Get/update coach card config
+- `GET /api/card/{slug}` - Public coach card data (no auth)
 
 ## IMPORTANT: Production Deployment Note
 - The `.env` has updated Gmail credentials that will deploy automatically
 - However, the **production database** may still have old credentials cached in `app_config` collection
-- After deploying, admin should go to Admin -> Integrations and re-enter the new credentials there, OR the .env fallback will be used if no DB config exists
+- After deploying, admin should go to Admin -> Integrations and re-enter the new credentials there
+
+## Upcoming Tasks (P1)
+- **Coach Card Phase 2**:
+  - AI-generated 1-page PDF snapshot
+  - Per-school "featured clip" selector UI
+  - "Email Coach Card" button in email drafting flow
 
 ## Backlog (P2/Future)
+- Microsoft Outlook/365 email import
 - Full NIL transaction platform
 - Separate Girls/Boys volleyball data
 - Email templates & bulk outreach
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
 - Redesign "Find Schools" page
-- Microsoft Outlook email import (same concept as Gmail import, uses Microsoft Graph API)
+- Fix dead links for school recruiting questionnaires (recurring maintenance)
