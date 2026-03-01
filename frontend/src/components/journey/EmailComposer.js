@@ -6,12 +6,12 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import EmailPreviewModal from "../EmailPreviewModal";
 
-export function EmailComposer({ coaches, programId, universityName, onSent, onCancel }) {
+export function EmailComposer({ coaches, programId, universityName, onSent, onCancel, initialSubject, initialBody }) {
   const { subscription } = useSubscription();
   const canUseAIDrafts = subscription?.tier === "premium";
   const [to, setTo] = useState(coaches?.[0]?.email || "");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
+  const [subject, setSubject] = useState(initialSubject || "");
+  const [body, setBody] = useState(initialBody || "");
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
   const [attachments, setAttachments] = useState([]);
