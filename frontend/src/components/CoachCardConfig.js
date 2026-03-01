@@ -34,6 +34,11 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
         setProfileVideos(vids);
       })
       .catch(() => {});
+
+    // Fetch analytics
+    api.get(`/coach-card/${programId}/analytics`)
+      .then(setAnalytics)
+      .catch(() => {});
   }, [programId, api]);
 
   const save = async (updates) => {
