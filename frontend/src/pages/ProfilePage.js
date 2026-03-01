@@ -403,6 +403,14 @@ export default function ProfilePage() {
           <Field testId="field-coach-phone" label="Phone" value={profile.parent_phone} onChange={v => updateField("parent_phone", v)} />
         </div>
       </SectionCard>
+
+      {/* Section: Tournament Schedule */}
+      <SectionCard testId="section-schedule"
+        icon="📅" iconBg="rgba(26,138,128,0.15)"
+        title="Tournament Schedule" summary={`${0} upcoming events`}
+        status="optional" statusColor="optional" defaultOpen={false}>
+        <ScheduleSection api={api} />
+      </SectionCard>
     </div>
   );
 
