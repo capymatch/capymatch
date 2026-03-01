@@ -64,9 +64,9 @@ export default function PublicCoachCard() {
           )}
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "#e2e8f0" }}>{fullName}</h1>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mt-1.5 text-sm" style={{ color: "#94a3b8" }}>
-            {p.position && <span>{p.position}</span>}
-            {p.secondary_position && <span>/ {p.secondary_position}</span>}
-            {p.graduation_year && <span>Class of {p.graduation_year}</span>}
+            {position && <span>{position}</span>}
+            {secondaryPosition && <span>/ {secondaryPosition}</span>}
+            {gradYear && <span>Class of {gradYear}</span>}
           </div>
           {(p.club_team || p.high_school) && (
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mt-1 text-xs" style={{ color: "#64748b" }}>
