@@ -1,157 +1,171 @@
 <analysis>**original_problem_statement:**
-The user's project is a public-facing Volleyball Recruiting CRM. The initial goals included redesigning the Recruiting Journey and Recruiting Board, populating a knowledge base, and making the application mobile-friendly. The scope expanded to a full-app visual redesign, UI cleanup, a collapsible sidebar, a comprehensive admin area, and a subscription engine.
+The user's project is a public-facing Volleyball Recruiting CRM, CapyMatch. The initial request was to fix a critical deleted_client error for the Gmail connection. After fixing that, the agent resolved a long series of user-reported bugs, including UI/UX issues, incorrect follow-up logic, dead links, and data mismatches in the knowledge base. A comprehensive privacy policy audit was conducted and all identified gaps were closed. The latest and current task is to build a major new feature called Coach Card—a shareable, always-current, coach-ready package for each school a player is targeting. This feature will include an AI-powered schedule parser for PDF/image uploads.
 
-Most recently, the user requested a complete overhaul of the Recruiting Pipeline to make it more intuitive and easy to understand for parents, moving away from confusing CRM jargon. This led to multiple major refactors of the core logic and UI.
-
-PRODUCT REQUIREMENTS:
-1.  Dynamic Recruiting Board with custom, parent-friendly grouping.
-2.  Populate and manage a University Knowledge Base.
-3.  Make the entire application mobile-friendly.
-4.  Full-app visual redesign (dark theme with pink/coral accents).
-5.  Admin Area with: User, University Data, Subscription, and Integration Management.
-6.  Subscription Engine with feature gating (Starter, Pro, Premium).
-7.  Stripe integration for payments.
-8.  AI-powered Next Step suggestions.
-9.  Separate data and features for Girls and Boys volleyball (New).
+**PRODUCT REQUIREMENTS:**
+(From Handoff & Session - Abbreviated)
+1.  **Coach Card Feature**: A shareable link per school with highlights, schedule, academics, and a 1-page PDF.
+    -   AI to parse uploaded schedule files (PDF/Image).
+    -   Dedicated config section on the Journey page.
+    -   Unlisted public page for the card.
+    -   AI to generate the PDF snapshot.
+2.  **Microsoft Outlook/365 Import**: (Backlog) Implement email import for Outlook users.
+3.  Full NIL transaction/payment processing platform. (Backlog)
+4.  Separate Girls/Boys Volleyball data models and features. (Backlog)
+5.  Email templates & bulk outreach functionality. (Backlog)
+6.  Camp/Tournament ROI tracker. (Backlog)
+7.  Family Collaboration Roles. (Backlog)
+8.  Redesign Find Schools page. (Backlog)
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack Volleyball Recruiting CRM (React, FastAPI, MongoDB). The core recruiting pipeline has been completely rewritten twice in this session.
+The application is a feature-rich Volleyball Recruiting CRM. All previously reported bugs (Gmail connection, UI glitches, follow-up logic, dead links) have been resolved. A comprehensive privacy policy audit was completed, and all identified gaps were closed. The athlete profile and login pages were updated per user requests.
 
-First, it was refactored from a manual status system to a data-driven 4-stage pipeline (Action Required, Upcoming, In Progress, Closed) based on timeline interactions.
-
-Second, based on user feedback that the pipeline was still confusing, it was completely redesigned into an Apple-inspired Focus + Overview UI. This new design features:
--   **A 5-stage funnel logic**: , , , , .
--   **Focus Card**: A prominent card at the top showing the single most urgent action item.
--   **Progress Ring**: A donut chart providing a quick visual overview of the pipeline's health.
--   **Smart List**: A single, scrollable list of all schools, replacing the old accordion layout. Each school has a colored pill tag indicating its stage.
--   **Filter Chips**: To quickly filter the smart list by stage.
-
-A data migration script was also created and run to align the user's existing data with the new pipeline logic. The agent has just finished a series of rapid UI fixes for spacing and alignment on this new board based on user feedback.
+The agent has just started building the new Coach Card feature. The backend foundation (data models for  and , initial API routes) has been laid out, but the new endpoints are currently broken due to a bug. Placeholder frontend components have been created but are not yet functional or integrated.
 
 **Last working item**:
--   **Last item agent was working**: The user pointed out that the Progress Ring and Focus Card at the top of the new pipeline board were not vertically aligned at the bottom. The agent implemented a fix to make both cards stretch to the full height of their shared container.
+-   **Last item agent was working**: Building the backend APIs for the Coach Card and Schedule features. An API call was failing due to an incorrect parameter being passed to the  utility function. The agent was in the process of fixing this bug across two new route files.
 -   **Status**: IN PROGRESS
 -   **Agent Testing Done**: N
--   **Which testing method agent to use?**: screenshot tool. The agent needs to take a screenshot of the  page to verify that the top two cards are now perfectly aligned, especially at the bottom.
+-   **Which testing method agent to use?**: backend testing agent to verify all new CRUD endpoints for Schedule and Coach Card.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: Verify the vertical alignment of the top cards on the pipeline board. (Priority: P0)
-    -   **Attempted fixes**: The agent added  to the flex container and both the  and  wrappers for the Progress Ring and Focus Card in .
+-   **Issue 1**: **(P0)** Newly created Coach Card and Schedule APIs are failing.
+
+**Issues Detail**:
+-   **Issue 1: Coach Card/Schedule APIs failing due to  error.**
+    -   **Attempted fixes**: The agent correctly identified that the  helper function was being called with a  string instead of the expected  dictionary object. The agent attempted to patch this in  and .
     -   **Next debug checklist**:
-        1.  Take a screenshot of the  page.
-        2.  Inspect the  with class .
-        3.  Confirm both child elements (the Progress Ring card and the Focus Card) have the same rendered height.
-    -   **Why fix this issue and what will be achieved with the fix?**: To resolve the user's final UI feedback and complete the pipeline redesign with a clean, polished look.
+        1.  Confirm the fixes applied to  and  are correct and complete.
+        2.  Re-run  tests against the  and  endpoints to ensure the  error is resolved and they return a 200 OK status.
+        3.  Once the backend is stable, proceed with implementing the frontend components.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a critical blocker. Fixing it will unblock the entire development of the Coach Card feature.
     -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y (This is part of a series of spacing/alignment issues on the new UI).
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on other issue**: No
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
+    -   **Blocked on other issue**: None
 
 **In progress Task List**:
-None.
+-   **Task 1: Build the Coach Card feature (Phase 1)** (P0)
+    -   **Where to resume**:
+        1.  **Backend**: Finish debugging the  and  endpoints (resolve Issue 1).
+        2.  **Frontend**: Once the backend is stable, build out the new components:
+            -   : Integrate with backend APIs to fetch/display/manage schedule events and implement the AI-powered file upload for parsing.
+            -   : Integrate the  component to manage per-school settings (featured video, note) and display the shareable link.
+            -   : Build the public page to display Coach Card content based on its slug.
+    -   **What will be achieved with this?**: The Minimum Viable Product (MVP) of the Coach Card feature, a major new value proposition for the app.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on something**: Issue 1: Coach Card/Schedule APIs failing
 
 **Upcoming and Future Tasks**
-*   **Upcoming Tasks:**
-    *   **Separate Girls/Boys Volleyball (P0)**: The user wants to separate the app's data and logic for girls' and boys' volleyball. This is a significant data architecture task affecting the knowledge base, coach watch, and potentially user profiles.
-    *   **Camp/Tournament ROI tracker (P1)**: Add a feature to track the return on investment for camps and tournaments.
-    - **Email templates & bulk outreach (P1)**: Add email template functionality and the ability to send bulk emails.
-*   **Future Tasks:**
-    *   **App Naming (P2)**: Decide on a new name for the app since Vollura was taken.
-    *   **Multi-sport capability (P2)**: A broader version of the girls/boys volleyball task, to support sports beyond volleyball.
-    *   **Family Collaboration Roles (P2)**: Add a read-only Parent/Viewer role for more granular permissions.
-    *   ** Refactoring (P2)**: The component is very large and could be broken down for better maintainability.
+*   **Upcoming Tasks (P1):**
+    *   **Coach Card - Phase 2:**
+        *   Implement AI-generated 1-page PDF snapshot.
+        *   Build the per-school featured clip selector UI and logic.
+        *   Integrate the Email Coach Card button into the email drafting flow.
+*   **Future Tasks (P2 / Backlog):**
+    *   **Microsoft Outlook/365 Import**: Implement email import functionality for Outlook users.
+    *   Full NIL transaction/payment processing platform.
+    *   Separate Girls/Boys Volleyball data models and features.
+    *   Email templates & bulk outreach functionality.
+    *   Camp/Tournament ROI tracker.
+    *   Family Collaboration Roles.
+    *   Redesign Find Schools page.
+    *   Fix dead links for school recruiting questionnaires (recurring maintenance).
 
 **Completed work in this session**
--   **Recruiting Pipeline UI/UX Overhaul**: Replaced the accordion-style pipeline with a new Focus + Overview design, including a Focus Card, Progress Ring, and Smart List.
--   **Recruiting Pipeline Logic Refactor**: Re-architected the backend logic in  to support a 5-stage funnel (, , , , ), making it more intuitive for parents.
--   **Data Migration**: Created and executed a script () to convert old  data into new  interactions, ensuring user data works with the new pipeline logic.
--   **Bug Fixes & UI Polish**:
-    -   Fixed multiple logic bugs in program categorization.
-    -   Resolved an issue where the Progress Ring colors didn't render by switching from SVG to CSS .
-    -   Addressed numerous user requests for spacing and alignment on the new pipeline UI.
-    -   Suppressed a benign  error from showing in the development overlay.
-    -   Made the Next Step logic consistent between the Board and Journey pages.
-
-**Earlier issues found/mentioned but not fixed**
-None.
-
-**Known issue recurrence from previous fork**
-None in this session. The previous AI gating bug was tested and confirmed resolved.
+-   **Gmail Connection & Security**: Fixed  error with new credentials and implemented proper token revocation on disconnect.
+-   **Legal Pages & Compliance**: Created public  and  pages, audited the privacy policy against the codebase, and fixed all identified gaps (account deletion, AI data disclosure, email opt-out).
+-   **KB Data Integrity**: Scanned and programmatically fixed 105 dead school website links and 9 incorrect school domains, and created a startup migration to apply these fixes in production.
+-   **Core App Bugs**:
+    -   Fixed follow-up logic to correctly detect coach replies and reset due dates.
+    -   Resolved multiple UI bugs, including show more functionality (now fetches full email), HTML entity decoding, and import review screen logic.
+-   **UX Improvements**: Made the athlete profile mobile-friendly and removed the Google login button from the login page per user request.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Frontend**: React, Tailwind CSS. A significant UI/UX redesign was performed, focusing on a Focus + Overview pattern with components like a  (using CSS ) and a Smart List.
--   **Backend**: FastAPI, Pydantic, MongoDB. The application's core state logic was moved to the backend, which now computes a program's pipeline stage () from a stream of interactions.
--   **Data-Driven Architecture**: The application state (e.g., pipeline stage) is derived automatically from user interactions () rather than manual status fields.
--   **Data Migration**: A one-time Python script using  was created to update the database schema and ensure old data is compatible with the new system.
+-   **AI-powered File Parsing**: The approved approach for the Schedule Upload feature. A user uploads a file (PDF/image), and an AI model extracts structured event data for user confirmation.
+-   **Dynamic Shareable Pages**: The Coach Card introduces unlisted public pages () generated dynamically for a specific athlete-school combination.
+-   **Startup Migrations**: A script was created to run on backend startup, applying one-time data fixes to the database, ensuring production data consistency after deployment.
+-   **Privacy Policy Compliance**: Audited and systematically updated the application (code and policy) to close gaps related to account deletion, AI data sharing, and user consent.
+-   **Email Reply Parsing**: Implemented backend logic to strip quoted history from email bodies, showing only the most recent message.
 
 **key DB schema**
--   **program_interactions**: {, : (string - 'email_sent', 'coach_reply', 'video_sent', etc.), Tue Feb 17 13:25:18 UTC 2026: (datetime), : (string)}
--   **programs**: Contains school info. Its pipeline status is now computed dynamically and not stored.
-
-**changes in tech stack**
--   No new dependencies. A technical approach was changed from SVG to CSS  for the progress ring for better reliability.
+-   : 
+-   : 
+-   : Modified to include .
 
 **All files of reference**
--   : The file containing the entire new pipeline UI.
--   : The file containing all the new data-driven logic for categorizing programs.
--   : The component for the visual donut chart.
--   : The one-time data migration script.
-
-**Areas that need refactoring**:
--    is still considered a very large component and is a candidate for future refactoring.
+*   **Current Task (Coach Card)**:
+    *    (New, Bugged)
+    *    (New, Bugged)
+    *    (New UI)
+    *    (New UI)
+    *    (New UI)
+*   **Supporting Files**:
+    *    (Account deletion logic)
+    *   
+    *    (Email parsing and disconnect logic)
 
 **key api endpoints**
--   : Returns programs organized into the new 5-stage pipeline structure.
--   : Creates a  interaction for a program.
+-   **NEW (Currently Broken)**:
+    -   
+    -   
+    -    (AI parsing)
+    -   
+-   **NEW (For Public Page)**:
+    -   
 
 **Critical Info for New Agent**
-1.  **Verify Last UI Fix**: Your immediate first action is to verify the vertical alignment of the Progress Ring and Focus Card on the  page. The user is very attentive to UI details. Use the screenshot tool.
-2.  **Understand the New Pipeline**: The recruiting board has been completely rewritten. Familiarize yourself with the Focus + Overview design (Focus Card, Progress Ring, Smart List) in  and the 5-stage logic (, , etc.) in . The old accordion layout is gone.
-3.  **Data-Driven is King**: All pipeline stages are computed on the backend from timeline interactions. Do not look for or try to implement manual status fields.
-4.  **Prepare for Girls/Boys Volleyball Discussion**: The user's next big feature request is to separate the app by gender (Girls/Boys Volleyball). Be ready to plan the necessary data architecture changes.
+1.  **Priority #1 is fixing the bug in the new backend APIs** for the Coach Card feature. The  helper is being called with an incorrect parameter type. Resolve this before any frontend work.
+2.  Once the backend is stable, the main task is to **build the frontend components** for the Coach Card feature: the schedule section (with AI file upload), the per-school configuration UI, and the public-facing card page.
+3.  The user has approved an **AI-powered approach** for parsing uploaded schedule files. You will need to implement this.
+4.  The NCAA Timeline colors issue was dismissed by the user. Do not bring it up again. All other bugs reported in the session have been fixed.
 
 **documents and test reports created in this job**
 -   
 -   
--   
--    (Updated)
--   
 
 **Last 10 User Messages and any pending HUMAN messages**
--   A series of rapid-fire messages from the user identifying UI spacing and alignment issues on the new pipeline board.
--   The agent made multiple iterative fixes to address spacing between cards, inside cards, and between page sections.
--   The user pointed out that the progress ring circle had no colors, which the agent fixed.
--   The user pointed out that the top cards (Progress Ring & Focus Card) were not aligned, which the agent fixed.
--   The final user message was the bottom is not aligned, prompting the agent's last code change.
+10. **User**: Likes the name Coach Card and confirms requirements: unlisted, AI for PDF generation, dedicated config section, and AI parsing for uploaded schedules. -> Acknowledged, work started.
+9.  **Agent**: Suggests alternative names for the feature, recommending Coach Card. -> Responded to.
+8.  **User**: Asks for name suggestions for the new feature. -> Responded to.
+7.  **User**: Approves starting the new Coach Card feature. -> Acknowledged.
+6.  **Agent**: Analyzes the feature, praises it, and proposes an MVP build plan. -> Responded to.
+5.  **User**: Proposes a major new feature: the Coach Kit (now Coach Card). -> In Progress.
+4.  **User**: Asks about adding Outlook import but says not to implement it now. -> Added to backlog.
+3.  **Agent**: Adds the Outlook import feature to the backlog. -> Completed.
+2.  **User**: Requests removal of the Google login button from the login page. -> Completed.
+1.  **User**: Asks how to remove Emergent branding from the Gmail login. -> Answered.
 
 **Project Health Check:**
--   **Broken**: None.
+-   **Broken**: The new backend APIs for the Coach Card feature are non-functional due to a bug.
 -   **Mocked**: None.
 
 **3rd Party Integrations**
--   Gmail API
--   Anthropic Claude Sonnet 4.5 — uses Emergent LLM Key
--    (Product Tour)
--    (Icons)
--   Stripe (Payments) — requires User API Key
--   Resend (Email Notifications) — requires User API Key
--    /  (Web Scraping for Coach Watch feature)
+-   **Playwright**: Used for initial data scraping (inactive).
+-   **Anthropic Claude (via Emergent LLM Key)**: Powers AI intelligence cards. Privacy policy updated to disclose this.
+-   **Emergent-managed Google Auth**: Button removed from the login page per user request, but the backend integration still exists for admin login.
+-   **Google APIs (user-consent)**: Used for Gmail import. **Working.**
+-   **Resend**: Used for transactional emails.
+-   **Stripe**: Manages subscriptions and payments.
+-   **tldextract**: Backend dependency.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, multiple times after major refactors.
+-   **Testing agent used after significant changes**: NO
 -   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: None.
+-   **Test files created**: None in this session.
 -   **Known regressions**: None.
 
 **Credentials to test flow:**
--   **Pro User**:  / 
--   **Premium User**:  / 
+-   **Demo User**:  / 
+-   **Admin User**:  (password managed by Google)
 
 **What agent forgot to execute**
-The agent has followed user requests closely. The only pending action is to verify the result of the very last code change made in response to user feedback.</analysis>
+- The agent was in the middle of fixing a bug in the new backend routes; the fix needs to be completed and verified.
+- The agent did not get to implement the full functionality of the placeholder frontend components for the Coach Card feature.
+- The agent did not update the  file to reflect the numerous tasks completed during this long session.</analysis>
