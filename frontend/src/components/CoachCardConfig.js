@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Share2, Copy, Mail, Check, Link, Eye, Download, ChevronDown, Video } from "lucide-react";
+import { Share2, Copy, Mail, Check, Link, Eye, Download, ChevronDown, Video, BarChart3, Users, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 const APP_URL = window.location.origin;
@@ -11,8 +11,9 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [profileVideos, setProfileVideos] = useState([]);
-  const [videoMode, setVideoMode] = useState("profile"); // "profile" | "custom"
+  const [videoMode, setVideoMode] = useState("profile");
   const [downloading, setDownloading] = useState(false);
+  const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
     api.get(`/coach-card/${programId}`)
