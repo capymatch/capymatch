@@ -77,6 +77,8 @@ app.include_router(intelligence_router)
 app.include_router(intelligence_contribute_router)
 app.include_router(admin_contributions_router)
 app.include_router(admin_import_analytics_router)
+app.include_router(schedule_router)
+app.include_router(coach_card_router)
 
 
 # ─── Serve Audit Report ───
