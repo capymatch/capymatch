@@ -650,7 +650,7 @@ export default function RecruitingJourney() {
 
           {/* Coach Card Config */}
           <div className="mt-4">
-            <CoachCardConfig programId={programId} universityName={program.university_name} api={api} />
+            <CoachCardConfig programId={programId} universityName={program.university_name} api={api} onEmailCard={openEmailWithCard} />
           </div>
         </div>
       </div>
