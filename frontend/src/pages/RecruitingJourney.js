@@ -638,6 +638,11 @@ export default function RecruitingJourney() {
               </div>
             </div>
           ) : null}
+
+          {/* Coach Card Config */}
+          <div className="mt-4">
+            <CoachCardConfig programId={programId} universityName={program.university_name} api={api} />
+          </div>
         </div>
       </div>
       </>)}
