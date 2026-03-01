@@ -68,11 +68,11 @@ export default function ScheduleSection({ api }) {
       }
 
       const res = await api.post("/schedule/parse", { text });
-      if (res.events && res.events.length > 0) {
-        setParsedEvents(res.events);
-        toast.success(`Found ${res.events.length} events`);
+      if (res.data.events && res.data.events.length > 0) {
+        setParsedEvents(res.data.events);
+        toast.success(`Found ${res.data.events.length} events`);
       } else {
-        toast.error(res.error || "Could not parse schedule");
+        toast.error(res.data.error || "Could not parse schedule");
       }
     } catch {
       toast.error("Failed to parse schedule");
