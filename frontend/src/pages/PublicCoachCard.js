@@ -183,17 +183,24 @@ export default function PublicCoachCard() {
           </div>
         )}
 
-        {/* Contact */}
-        {p.contact_email && (
-          <div className="text-center mt-6">
+        {/* Download PDF */}
+        <div className="text-center mt-6 flex flex-wrap items-center justify-center gap-3">
+          <a href={`${API}/api/card/${slug}/pdf`}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-90"
+            style={{ backgroundColor: "#1a8a80", color: "white" }}
+            data-testid="download-pdf-public-btn">
+            <Download className="w-4 h-4" />
+            Download PDF
+          </a>
+          {p.contact_email && (
             <a href={`mailto:${p.contact_email}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-90"
-              style={{ backgroundColor: "#1a8a80", color: "white" }}>
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-90 border"
+              style={{ borderColor: "rgba(26,138,128,0.3)", color: "#1a8a80" }}>
               <Mail className="w-4 h-4" />
-              Contact {p.first_name || "Athlete"}
+              Contact {p.first_name || p.athlete_name?.split(" ")[0] || "Athlete"}
             </a>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Footer */}
         <div className="text-center mt-8 text-[10px]" style={{ color: "#475569" }}>
