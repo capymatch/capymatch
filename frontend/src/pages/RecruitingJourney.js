@@ -542,7 +542,7 @@ export default function RecruitingJourney() {
       {/* Inline Forms */}
       {activeForm === "replied" && <MarkAsRepliedModal programId={programId} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
       {activeForm === "log" && <LogInteractionForm programId={programId} universityName={program.university_name} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
-      {activeForm === "email" && <EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
+      {activeForm === "email" && <EmailComposer coaches={coaches} programId={programId} universityName={program?.university_name} onSent={() => { closeForm(); fetchData(); }} onCancel={closeForm} initialSubject={emailInitial.subject} initialBody={emailInitial.body} />}
       {activeForm === "coach" && <CoachForm initial={editCoach} programId={programId} onSave={saveCoach} onCancel={closeForm} />}
       {activeForm === "followup" && <FollowUpScheduler program={program} onSaved={() => { closeForm(); fetchData(); }} onCancel={closeForm} />}
 
