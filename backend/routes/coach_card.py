@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import StreamingResponse
 from database import db
 from auth import get_current_user, get_tenant_id
 from datetime import datetime, timezone
 import uuid
 import logging
+import io
+import re
 
 logger = logging.getLogger("coach_card")
 router = APIRouter(prefix="/api")
