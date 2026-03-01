@@ -102,8 +102,8 @@ export default function PublicCoachCard() {
               <ExternalLink className="w-3.5 h-3.5" />
               Watch highlights
             </a>
-            {p.hudl_url && p.hudl_url !== featuredVideo && (
-              <a href={p.hudl_url} target="_blank" rel="noopener noreferrer"
+            {(p.hudl_url || p.highlight_video) && (p.hudl_url || p.highlight_video) !== featuredVideo && (
+              <a href={p.hudl_url || p.highlight_video} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs mt-2 transition-colors hover:underline" style={{ color: "#64748b" }}>
                 <ExternalLink className="w-3 h-3" />
                 Hudl profile
