@@ -1,0 +1,89 @@
+{
+  "summary": "Coach Card Analytics Testing Complete - All 9/9 backend tests passed. Found and FIXED a frontend bug where CoachCardConfig wasn't unwrapping axios response (missing .data). After fix, analytics section displays correctly showing total views, unique visitors, 7-day bar chart, and last viewed timestamp.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "CoachCardConfig Analytics Section",
+        "issues": ["Clean display with total/unique counts, 7-day bar chart, last viewed timestamp"]
+      }
+    ]
+  },
+  "passed_tests": [
+    "POST /api/card/{slug}/view records a view and increments view_count (200)",
+    "POST /api/card/nonexistent/view returns 404",
+    "GET /api/card/{slug} returns view_count field",
+    "GET /api/coach-card/{program_id}/analytics requires authentication (401)",
+    "GET /api/coach-card/{program_id}/analytics returns total_views, unique_visitors, recent_views, views_by_day",
+    "Analytics recent_views contain viewed_at, referer, visitor_hash",
+    "Analytics views_by_day is dict keyed by YYYY-MM-DD",
+    "Analytics for nonexistent program returns zero analytics (not 404)",
+    "Recording a view updates analytics (total_views increments)",
+    "Public Coach Card page fires POST /api/card/{slug}/view on load",
+    "CoachCardConfig shows analytics section when total_views > 0",
+    "Analytics shows total views count",
+    "Analytics shows unique visitors count", 
+    "Analytics shows 7-day bar chart",
+    "Analytics shows 'Last viewed' timestamp"
+  ],
+  "bugs_fixed": [
+    {
+      "file": "/app/frontend/src/components/CoachCardConfig.js",
+      "issue": "axios response not unwrapped - api.get().then(c => setConfig(c)) should be api.get().then(res => setConfig(res.data))",
+      "fix": "Changed all api.get/put calls to unwrap response.data before setting state"
+    }
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_coach_card_analytics.py",
+    "/app/test_reports/pytest/coach_card_analytics_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend view tracking endpoint correctly uses fire-and-forget pattern",
+    "Analytics endpoint properly calculates unique visitors from visitor_hash",
+    "views_by_day calculation correctly filters last 7 days",
+    "Frontend now correctly unwraps axios responses in CoachCardConfig"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_coach_card_analytics.py",
+    "/app/frontend/src/components/CoachCardConfig.js"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (All analytics features verified after bug fix)"
+  },
+  "test_credentials": {
+    "email": "demo@capymatch.com",
+    "password": "demo2026"
+  },
+  "seed_data_creation": "View tracking created 7+ test views during testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Coach Card Analytics feature complete. View tracking fires from PublicCoachCard.js on load (fire-and-forget). Analytics endpoint at GET /api/coach-card/{program_id}/analytics returns total_views, unique_visitors, recent_views, views_by_day. CoachCardConfig.js displays analytics when hasSlug && total_views > 0. Known slug: clara-gimenes-stanford-university-a73931, program_id: prog_e8ee256e0c79. Fixed axios response unwrapping bug in CoachCardConfig.js.",
+  "features_verified": {
+    "view_tracking": {
+      "endpoint": "POST /api/card/{slug}/view",
+      "status": "PASS - Records view, increments view_count, stores visitor_hash",
+      "implementation": "Fire-and-forget from PublicCoachCard.js on successful data load"
+    },
+    "analytics_endpoint": {
+      "endpoint": "GET /api/coach-card/{program_id}/analytics",
+      "status": "PASS - Returns total_views, unique_visitors, recent_views, views_by_day",
+      "authentication": "Required (401 without auth)"
+    },
+    "public_card_view_count": {
+      "endpoint": "GET /api/card/{slug}",
+      "status": "PASS - Returns view_count field"
+    },
+    "frontend_analytics_display": {
+      "component": "CoachCardConfig",
+      "status": "PASS (after bug fix) - Shows total views, unique visitors, 7-day bar chart, last viewed timestamp",
+      "condition": "Only visible when hasSlug && analytics.total_views > 0"
+    }
+  }
+}
