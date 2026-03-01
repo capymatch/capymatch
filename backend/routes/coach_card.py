@@ -29,6 +29,12 @@ async def get_coach_card_config(program_id: str, request: Request):
             "show_videos": True,
             "slug": "",
         }
+    else:
+        # Ensure defaults for visibility toggles
+        for field in ["show_schedule", "show_academics", "show_measurables", "show_videos"]:
+            config.setdefault(field, True)
+        config.setdefault("coach_note", "")
+        config.setdefault("featured_video", "")
     return config
 
 
