@@ -201,6 +201,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
+      <Route path="/card/:slug" element={<PublicCoachCard />} />
       <Route path="/login" element={<Navigate to="/board" replace />} />
       <Route path="/welcome" element={<LandingPage />} />
       <Route path="/onboarding" element={<AthleteProfileQuiz />} />
