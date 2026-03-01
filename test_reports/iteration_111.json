@@ -1,0 +1,85 @@
+{
+  "summary": "Coach Card Phase 2 Testing Complete - All backend tests (9/9) passed for PDF generation, video selector API, and featured video updates. Frontend components verified: video mode tabs (My Videos/Custom URL), PDF download button, Send to Coach email button. Public coach card page working with Download PDF button.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Public Coach Card page",
+        "issues": ["Clean, well-designed page with Download PDF button at bottom"]
+      },
+      {
+        "screen": "CoachCardConfig on Journey page", 
+        "issues": ["Properly shows video mode tabs and Generate/action buttons based on card state"]
+      }
+    ]
+  },
+  "passed_tests": [
+    "GET /api/card/{slug}/pdf returns valid PDF with Content-Disposition header (200)",
+    "PDF file starts with %PDF- header (valid PDF format)",
+    "GET /api/card/nonexistent/pdf returns 404",
+    "PDF filename follows format: CoachCard_Name_School.pdf",
+    "GET /api/athlete-profile returns video URL fields (highlight_video, hudl_url, full_game_film_url)",
+    "GET /api/coach-card/{program_id} returns featured_video field",
+    "PUT /api/coach-card/{program_id} can update featured_video",
+    "GET /api/card/{slug} returns config with featured_video field",
+    "GET /api/card/{slug} returns profile with video URL fields",
+    "Public Coach Card page renders with Download PDF button (data-testid='download-pdf-public-btn')",
+    "Download PDF button has correct href to /api/card/{slug}/pdf endpoint",
+    "CoachCardConfig component renders video mode tabs (data-testid='video-mode-profile', 'video-mode-custom')",
+    "EmailComposer accepts initialSubject and initialBody props",
+    "openEmailWithCard function pre-fills email with Coach Card URL"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_coach_card_phase2.py",
+    "/app/test_reports/pytest/coach_card_phase2_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend PDF generation using reportlab is well implemented with proper streaming response",
+    "Frontend CoachCardConfig properly handles both states: no slug (Generate button) vs slug exists (PDF/Email buttons)",
+    "EmailComposer correctly uses initialSubject and initialBody props for pre-filled content",
+    "openEmailWithCard function in RecruitingJourney.js properly constructs email with card URL",
+    "Public Coach Card page correctly links to PDF endpoint"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_coach_card_phase2.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (All Phase 2 features verified)"
+  },
+  "test_credentials": {
+    "email": "demo@capymatch.com",
+    "password": "demo2026"
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Phase 2 features complete and working: 1) PDF generation endpoint at GET /api/card/{slug}/pdf using reportlab, 2) Video selector with My Videos/Custom URL tabs in CoachCardConfig, 3) Send to Coach email integration with pre-filled subject/body. Known working slug: clara-gimenes-stanford-university-a73931. The logged-in demo user's card for Stanford shows 'Generate Coach Card' button (no slug yet for that user's tenant), while the public page for the existing slug shows all features. PDF download and Send to Coach buttons only appear after card slug is generated.",
+  "features_verified": {
+    "pdf_generation": {
+      "endpoint": "GET /api/card/{slug}/pdf",
+      "status": "PASS - Returns valid PDF with Content-Disposition header",
+      "implementation": "Backend uses reportlab to generate 1-page PDF with athlete info, measurables, academics, schedule"
+    },
+    "video_selector": {
+      "my_videos_tab": "PASS - Shows radio buttons from athlete profile videos",
+      "custom_url_tab": "PASS - Shows text input for manual URL entry",
+      "data_testids": "video-mode-profile, video-mode-custom, video-option-{n}, featured-video-input"
+    },
+    "send_to_coach_email": {
+      "button": "PASS - data-testid='email-card-btn' (only appears when slug exists)",
+      "email_prefill": "PASS - EmailComposer receives initialSubject and initialBody with card URL",
+      "implementation": "openEmailWithCard function in RecruitingJourney.js"
+    },
+    "public_pdf_download": {
+      "button": "PASS - data-testid='download-pdf-public-btn' on PublicCoachCard.js",
+      "href": "Points directly to /api/card/{slug}/pdf endpoint"
+    }
+  }
+}
