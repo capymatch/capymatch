@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil, ArrowRight, AlertCircle } from "lucide-react";
 import { ProfilePreview } from "../components/ProfilePreview";
+import ScheduleSection from "../components/ScheduleSection";
 import api from "../lib/api";
 import { toast } from "sonner";
 
