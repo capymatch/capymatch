@@ -128,7 +128,7 @@ TEXT:
         ).with_model("anthropic", "claude-sonnet-4-5-20250929")
 
         response = await chat.send_message(UserMessage(text=prompt))
-        text = response.text.strip()
+        text = (response.text if hasattr(response, "text") else str(response)).strip()
         # Strip markdown code fences if present
         if text.startswith("```"):
             text = text.split("\n", 1)[1]
