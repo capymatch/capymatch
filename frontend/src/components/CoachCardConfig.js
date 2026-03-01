@@ -274,6 +274,61 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
           {cardUrl}
         </div>
       )}
+
+      {/* Analytics */}
+      {hasSlug && analytics && analytics.total_views > 0 && (
+        <div className="mt-3 rounded-lg border p-3" style={{ borderColor: "var(--t-border)", backgroundColor: "var(--t-surface-alt)" }} data-testid="coach-card-analytics">
+          <div className="flex items-center gap-1.5 mb-2">
+            <BarChart3 className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />
+            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--t-text-muted)" }}>Card Views</span>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className="w-3 h-3" style={{ color: "#1a8a80" }} />
+              <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{analytics.total_views}</span>
+              <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>total</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Users className="w-3 h-3" style={{ color: "#1a8a80" }} />
+              <span className="text-lg font-bold" style={{ color: "var(--t-text)" }}>{analytics.unique_visitors}</span>
+              <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>unique</span>
+            </div>
+          </div>
+          {analytics.views_by_day && Object.keys(analytics.views_by_day).length > 0 && (
+            <div className="mt-2 flex items-end gap-1" style={{ height: 32 }}>
+              {(() => {
+                const days = [];
+                for (let i = 6; i >= 0; i--) {
+                  const d = new Date(); d.setDate(d.getDate() - i);
+                  const key = d.toISOString().split("T")[0];
+                  days.push({ key, count: analytics.views_by_day[key] || 0 });
+                }
+                const max = Math.max(...days.map(d => d.count), 1);
+                return days.map((d, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                    <div
+                      className="w-full rounded-sm transition-all"
+                      style={{
+                        height: `${Math.max((d.count / max) * 24, 2)}px`,
+                        backgroundColor: d.count > 0 ? "#1a8a80" : "var(--t-border)",
+                      }}
+                      title={`${d.key}: ${d.count} views`}
+                    />
+                    <span className="text-[8px]" style={{ color: "var(--t-text-muted)" }}>
+                      {new Date(d.key + "T00:00:00").toLocaleDateString("en-US", { weekday: "narrow" })}
+                    </span>
+                  </div>
+                ));
+              })()}
+            </div>
+          )}
+          {analytics.recent_views?.length > 0 && (
+            <p className="text-[10px] mt-2" style={{ color: "var(--t-text-muted)" }}>
+              Last viewed {new Date(analytics.recent_views[0].viewed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
