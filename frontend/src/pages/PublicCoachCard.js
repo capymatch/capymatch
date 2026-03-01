@@ -44,8 +44,11 @@ export default function PublicCoachCard() {
   );
 
   const { profile: p, config, schedule, program } = data;
-  const fullName = `${p.first_name || ""} ${p.last_name || ""}`.trim();
-  const featuredVideo = config.featured_video || p.highlights_url || p.hudl_url || "";
+  const fullName = p.athlete_name || `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Athlete";
+  const gradYear = p.graduation_year || p.grad_year;
+  const position = Array.isArray(p.positions) ? p.positions[0] : (p.position || "");
+  const secondaryPosition = Array.isArray(p.positions) && p.positions.length > 1 ? p.positions[1] : (p.secondary_position || "");
+  const featuredVideo = config.featured_video || p.highlight_video || p.highlights_url || p.hudl_url || "";
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }} data-testid="public-coach-card">
