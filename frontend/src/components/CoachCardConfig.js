@@ -47,7 +47,7 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
     setSaving(true);
     try {
       const res = await api.put(`/coach-card/${programId}`, updates);
-      setConfig(res);
+      setConfig(res.data);
       toast.success("Coach Card updated");
     } catch { toast.error("Failed to save"); }
     setSaving(false);
