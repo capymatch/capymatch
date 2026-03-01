@@ -144,6 +144,7 @@ async def get_public_coach_card(slug: str):
             "show_videos": config.get("show_videos", True),
         },
         "schedule": schedule,
+        "view_count": config.get("view_count", 0),
     }
 
 
