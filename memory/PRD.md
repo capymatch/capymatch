@@ -45,19 +45,21 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
 - Privacy Policy & Terms of Service public pages
 - Gmail credential management & token revocation
-- **Coach Card Feature (Complete MVP + Phase 2)**:
+- **Coach Card Feature (Complete — MVP + Phase 2 + Analytics)**:
   - Schedule CRUD (add/edit/delete events) + bulk creation
   - AI-powered schedule parsing (text -> Claude extracts events)
   - Coach Card config per school (coach note, featured video, visibility toggles)
   - Auto-generated slugs (athlete-name-school-name-id)
   - Public shareable page at /card/:slug
-  - **P2: PDF generation** — 1-page PDF snapshot via reportlab at /api/card/{slug}/pdf
-  - **P2: Featured clip selector** — Radio button UI for athlete's existing videos + custom URL tab
-  - **P2: Send to Coach email** — Opens email composer with pre-filled subject/body containing card URL
+  - PDF generation — 1-page PDF snapshot via reportlab at /api/card/{slug}/pdf
+  - Featured clip selector — radio button UI for athlete's existing videos + custom URL tab
+  - Send to Coach email — email composer with pre-filled subject/body containing card URL
+  - **View analytics** — track views on public cards, show total/unique counts, 7-day bar chart, last viewed timestamp
 
 ## Key DB Collections (Coach Card)
 - `schedule_events`: `{ event_id, tenant_id, name, start_date, end_date, location, division, jersey_number, notes, created_at }`
-- `coach_cards`: `{ tenant_id, program_id, coach_note, featured_video, show_schedule, show_academics, show_measurables, show_videos, slug, updated_at }`
+- `coach_cards`: `{ tenant_id, program_id, coach_note, featured_video, show_schedule, show_academics, show_measurables, show_videos, slug, view_count, updated_at }`
+- `coach_card_views`: `{ slug, tenant_id, viewed_at, user_agent, referer, visitor_hash }`
 
 ## Key API Endpoints (Coach Card)
 - `GET, POST /api/schedule` — List/create schedule events
@@ -65,8 +67,10 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - `POST /api/schedule/bulk` — Bulk add events
 - `POST /api/schedule/parse` — AI-powered text parsing to events
 - `GET, PUT /api/coach-card/{program_id}` — Get/update coach card config
+- `GET /api/coach-card/{program_id}/analytics` — View analytics (auth required)
 - `GET /api/card/{slug}` — Public coach card data (no auth)
 - `GET /api/card/{slug}/pdf` — Download 1-page PDF (no auth)
+- `POST /api/card/{slug}/view` — Record view (no auth, fire-and-forget)
 
 ## IMPORTANT: Production Deployment Note
 - The `.env` has updated Gmail credentials that will deploy automatically
