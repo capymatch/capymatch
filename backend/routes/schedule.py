@@ -122,13 +122,12 @@ TEXT:
 
     try:
         chat = LlmChat(
-            api_key=os.environ.get("EMERGENT_LLM_KEY", ""),
-            provider="anthropic",
-        )
-        response = await chat.send_message(
-            UserMessage(text=prompt),
-            model="claude-sonnet-4-5-20250929",
-        )
+            api_key=os.environ.get("EMERGENT_LLM_KEY"),
+            session_id=f"schedule_parse_{uuid.uuid4().hex[:8]}",
+            system_message="You are a schedule parser. Extract structured event data from text. Return ONLY valid JSON.",
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+        response = await chat.send_message(UserMessage(text=prompt))
         text = response.text.strip()
         # Strip markdown code fences if present
         if text.startswith("```"):
