@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { MapPin, Calendar, GraduationCap, Ruler, Activity, Video, Mail, ExternalLink, User, Award } from "lucide-react";
+import { MapPin, Calendar, GraduationCap, Ruler, Activity, Video, Mail, ExternalLink, User, Award, Download } from "lucide-react";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
