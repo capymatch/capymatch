@@ -17,7 +17,8 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
 
   useEffect(() => {
     api.get(`/coach-card/${programId}`)
-      .then(c => {
+      .then(res => {
+        const c = res.data;
         setConfig(c);
         setVideoMode(c.featured_video && !["highlight_video","hudl_url","full_game_film_url"].includes(c._video_source) ? "custom" : "profile");
       })
@@ -26,7 +27,8 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
 
     // Fetch athlete profile videos
     api.get("/athlete-profile")
-      .then(p => {
+      .then(res => {
+        const p = res.data;
         const vids = [];
         if (p.highlight_video) vids.push({ label: "Highlights", url: p.highlight_video });
         if (p.hudl_url) vids.push({ label: "Hudl Profile", url: p.hudl_url });
@@ -37,7 +39,7 @@ export default function CoachCardConfig({ programId, universityName, api, onEmai
 
     // Fetch analytics
     api.get(`/coach-card/${programId}/analytics`)
-      .then(setAnalytics)
+      .then(res => setAnalytics(res.data))
       .catch(() => {});
   }, [programId, api]);
 
