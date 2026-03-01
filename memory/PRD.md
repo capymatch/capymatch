@@ -67,3 +67,4 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Camp/Tournament ROI tracker
 - Family Collaboration Roles
 - Redesign "Find Schools" page
+- Microsoft Outlook email import (same concept as Gmail import, uses Microsoft Graph API)
