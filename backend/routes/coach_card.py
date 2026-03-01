@@ -52,14 +52,18 @@ async def update_coach_card_config(program_id: str, request: Request):
     )
     if not existing or not existing.get("slug"):
         # Build slug from athlete name + school name
-        profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0, "first_name": 1, "last_name": 1})
+        profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0, "athlete_name": 1, "first_name": 1, "last_name": 1})
         program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0, "university_name": 1})
-        fname = (profile.get("first_name", "") if profile else "").lower().strip()
-        lname = (profile.get("last_name", "") if profile else "").lower().strip()
+        # Support both athlete_name (single field) and first/last name
+        if profile and profile.get("athlete_name"):
+            name_part = profile["athlete_name"].lower().strip()
+        else:
+            fname = (profile.get("first_name", "") if profile else "").lower().strip()
+            lname = (profile.get("last_name", "") if profile else "").lower().strip()
+            name_part = f"{fname} {lname}".strip()
         school = (program.get("university_name", "") if program else "").lower().strip()
-        # Clean for URL
         import re
-        slug_parts = f"{fname}-{lname}-{school}".replace(" ", "-")
+        slug_parts = f"{name_part}-{school}".replace(" ", "-")
         slug_parts = re.sub(r"[^a-z0-9\-]", "", slug_parts)
         slug_parts = re.sub(r"-+", "-", slug_parts).strip("-")
         short_id = uuid.uuid4().hex[:6]
