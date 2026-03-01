@@ -23,7 +23,11 @@ export default function PublicCoachCard() {
   useEffect(() => {
     fetch(`${API}/api/card/${slug}`)
       .then(r => { if (!r.ok) throw new Error("Not found"); return r.json(); })
-      .then(setData)
+      .then(d => {
+        setData(d);
+        // Track view (fire-and-forget)
+        fetch(`${API}/api/card/${slug}/view`, { method: "POST" }).catch(() => {});
+      })
       .catch(() => setError("Coach Card not found"))
       .finally(() => setLoading(false));
   }, [slug]);
