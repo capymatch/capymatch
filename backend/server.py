@@ -49,6 +49,8 @@ from routes.intelligence import router as intelligence_router
 from routes.intelligence_contribute import router as intelligence_contribute_router
 from routes.admin_contributions import router as admin_contributions_router
 from routes.admin_import_analytics import router as admin_import_analytics_router
+from routes.schedule import router as schedule_router
+from routes.coach_card import router as coach_card_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
