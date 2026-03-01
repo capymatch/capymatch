@@ -11,6 +11,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
+import CoachCardConfig from "../components/CoachCardConfig";
 import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
 import {
