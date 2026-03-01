@@ -149,6 +149,84 @@ async def get_public_coach_card(slug: str):
 
 
 
+@router.post("/card/{slug}/view")
+async def record_coach_card_view(slug: str, request: Request):
+    """Public endpoint — records a view on the Coach Card."""
+    config = await db.coach_cards.find_one({"slug": slug}, {"_id": 0, "tenant_id": 1})
+    if not config:
+        raise HTTPException(status_code=404, detail="Coach Card not found")
+
+    # Increment view counter
+    await db.coach_cards.update_one(
+        {"slug": slug},
+        {"$inc": {"view_count": 1}}
+    )
+
+    # Record individual view with metadata
+    ua = request.headers.get("user-agent", "")
+    referer = request.headers.get("referer", "")
+    forwarded = request.headers.get("x-forwarded-for", request.client.host if request.client else "")
+    ip_hash = str(hash(forwarded))[-8:]  # Anonymized
+
+    await db.coach_card_views.insert_one({
+        "slug": slug,
+        "tenant_id": config["tenant_id"],
+        "viewed_at": datetime.now(timezone.utc).isoformat(),
+        "user_agent": ua[:200],
+        "referer": referer[:200],
+        "visitor_hash": ip_hash,
+    })
+
+    return {"ok": True}
+
+
+@router.get("/coach-card/{program_id}/analytics")
+async def get_coach_card_analytics(program_id: str, request: Request):
+    """Get view analytics for a Coach Card (authenticated)."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    config = await db.coach_cards.find_one(
+        {"tenant_id": tenant_id, "program_id": program_id},
+        {"_id": 0, "slug": 1, "view_count": 1}
+    )
+    if not config or not config.get("slug"):
+        return {"total_views": 0, "recent_views": [], "unique_visitors": 0}
+
+    slug = config["slug"]
+    total = config.get("view_count", 0)
+
+    # Recent views (last 30)
+    recent = await db.coach_card_views.find(
+        {"slug": slug}, {"_id": 0, "viewed_at": 1, "referer": 1, "visitor_hash": 1}
+    ).sort("viewed_at", -1).to_list(30)
+
+    # Unique visitors (by hash)
+    unique_hashes = set()
+    for v in recent:
+        unique_hashes.add(v.get("visitor_hash", ""))
+
+    # Views by day (last 7 days)
+    seven_days_ago = (datetime.now(timezone.utc) - __import__("datetime").timedelta(days=7)).isoformat()
+    recent_week = await db.coach_card_views.find(
+        {"slug": slug, "viewed_at": {"$gte": seven_days_ago}},
+        {"_id": 0, "viewed_at": 1}
+    ).to_list(500)
+
+    by_day = {}
+    for v in recent_week:
+        day = v["viewed_at"][:10]
+        by_day[day] = by_day.get(day, 0) + 1
+
+    return {
+        "total_views": total,
+        "unique_visitors": len(unique_hashes),
+        "recent_views": recent[:10],
+        "views_by_day": by_day,
+    }
+
+
+
 def _build_pdf(profile, program, config, schedule):
     """Generate a 1-page PDF Coach Card."""
     from reportlab.lib.pagesizes import letter
