@@ -71,7 +71,6 @@ async def update_coach_card_config(program_id: str, request: Request):
             lname = (profile.get("last_name", "") if profile else "").lower().strip()
             name_part = f"{fname} {lname}".strip()
         school = (program.get("university_name", "") if program else "").lower().strip()
-        import re
         slug_parts = f"{name_part}-{school}".replace(" ", "-")
         slug_parts = re.sub(r"[^a-z0-9\-]", "", slug_parts)
         slug_parts = re.sub(r"-+", "-", slug_parts).strip("-")
