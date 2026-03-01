@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api")
 @router.get("/schedule")
 async def get_schedule(request: Request):
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     events = await db.schedule_events.find(
         {"tenant_id": tenant_id}, {"_id": 0}
     ).sort("start_date", 1).to_list(200)
@@ -22,7 +22,7 @@ async def get_schedule(request: Request):
 @router.post("/schedule")
 async def add_event(request: Request):
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     body = await request.json()
     event = {
         "event_id": f"evt_{uuid.uuid4().hex[:12]}",
@@ -44,7 +44,7 @@ async def add_event(request: Request):
 @router.put("/schedule/{event_id}")
 async def update_event(event_id: str, request: Request):
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     body = await request.json()
     updates = {}
     for field in ["name", "start_date", "end_date", "location", "division", "jersey_number", "notes"]:
@@ -60,7 +60,7 @@ async def update_event(event_id: str, request: Request):
 @router.delete("/schedule/{event_id}")
 async def delete_event(event_id: str, request: Request):
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     await db.schedule_events.delete_one({"event_id": event_id, "tenant_id": tenant_id})
     return {"ok": True}
 
@@ -69,7 +69,7 @@ async def delete_event(event_id: str, request: Request):
 async def bulk_add_events(request: Request):
     """Add multiple events at once (from AI parse or manual)."""
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     body = await request.json()
     events = body.get("events", [])
     created = []

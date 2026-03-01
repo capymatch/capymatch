@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api")
 async def get_coach_card_config(program_id: str, request: Request):
     """Get Coach Card config for a specific program."""
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     config = await db.coach_cards.find_one(
         {"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}
     )
@@ -36,7 +36,7 @@ async def get_coach_card_config(program_id: str, request: Request):
 async def update_coach_card_config(program_id: str, request: Request):
     """Update Coach Card config (coach note, featured video, visibility toggles)."""
     user = await get_current_user(request)
-    tenant_id = await get_tenant_id(user["user_id"])
+    tenant_id = await get_tenant_id(user)
     body = await request.json()
 
     updates = {}
