@@ -254,6 +254,7 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsOfServicePage />} />
+      <Route path="/card/:slug" element={<PublicCoachCard />} />
       <Route path="/welcome" element={<LandingPage />} />
       {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
       <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />
