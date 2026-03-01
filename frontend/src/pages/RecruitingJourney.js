@@ -44,9 +44,18 @@ export default function RecruitingJourney() {
 
   const [activeForm, setActiveForm] = useState(null);
   const [editCoach, setEditCoach] = useState(null);
+  const [emailInitial, setEmailInitial] = useState({});
 
-  const closeForm = () => { setActiveForm(null); setEditCoach(null); };
-  const openEmail = () => { setActiveForm(prev => prev === "email" ? null : "email"); };
+  const closeForm = () => { setActiveForm(null); setEditCoach(null); setEmailInitial({}); };
+  const openEmail = () => { setEmailInitial({}); setActiveForm(prev => prev === "email" ? null : "email"); };
+  const openEmailWithCard = (cardUrl) => {
+    const athleteName = program?.university_name || "your program";
+    setEmailInitial({
+      subject: `My Recruiting Profile — ${athleteName}`,
+      body: `Coach,\n\nI wanted to share my recruiting profile with you. You can view my full Coach Card here:\n\n${cardUrl}\n\nIt includes my athletic measurables, academics, highlight video, and upcoming tournament schedule. I'd love the opportunity to discuss how I can contribute to your program.\n\nThank you for your time!`,
+    });
+    setActiveForm("email");
+  };
   const openLog = () => { setActiveForm(prev => prev === "log" ? null : "log"); };
   const openReplied = () => { setActiveForm(prev => prev === "replied" ? null : "replied"); };
   const openCoach = () => { setActiveForm("coach"); };
