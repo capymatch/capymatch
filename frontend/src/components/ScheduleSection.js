@@ -30,7 +30,7 @@ export default function ScheduleSection({ api }) {
   const fetchEvents = useCallback(async () => {
     try {
       const res = await api.get("/schedule");
-      setEvents(res.events || []);
+      setEvents(res.data.events || []);
     } catch { /* silent */ }
     setLoading(false);
   }, [api]);
