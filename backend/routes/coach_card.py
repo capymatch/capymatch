@@ -96,11 +96,13 @@ async def get_public_coach_card(slug: str):
     # Get athlete profile
     profile = await db.athlete_profiles.find_one(
         {"tenant_id": tenant_id},
-        {"_id": 0, "first_name": 1, "last_name": 1, "graduation_year": 1,
-         "position": 1, "secondary_position": 1, "height": 1, "weight": 1,
+        {"_id": 0, "athlete_name": 1, "first_name": 1, "last_name": 1,
+         "graduation_year": 1, "grad_year": 1,
+         "positions": 1, "position": 1, "secondary_position": 1,
+         "height": 1, "weight": 1,
          "jersey_number": 1, "gpa": 1, "sat_score": 1, "act_score": 1,
          "club_team": 1, "high_school": 1, "state": 1, "city": 1,
-         "highlights_url": 1, "hudl_url": 1, "full_game_film_url": 1,
+         "highlight_video": 1, "highlights_url": 1, "hudl_url": 1, "full_game_film_url": 1,
          "photo_url": 1, "dominant_hand": 1, "reach": 1, "approach_jump": 1,
          "block_jump": 1, "standing_reach": 1, "vertical_jump": 1,
          "wingspan": 1, "speed_60yd": 1}
