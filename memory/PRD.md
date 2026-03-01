@@ -26,6 +26,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **AI**: Claude via Emergent LLM Key
 - **Payments**: Stripe
 - **Email**: Resend (password reset), Gmail API (user emails)
+- **PDF**: reportlab (Coach Card PDF generation)
 
 ## Credentials
 - **Demo User**: demo@capymatch.com / demo2026
@@ -44,39 +45,32 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
 - Privacy Policy & Terms of Service public pages
 - Gmail credential management & token revocation
-- Domain mapper KB fallback for import
-- **Coach Card Feature (MVP)**: 
-  - Schedule CRUD (add/edit/delete events)
-  - Bulk event creation
-  - AI-powered schedule parsing (upload text -> Claude extracts events)
+- **Coach Card Feature (Complete MVP + Phase 2)**:
+  - Schedule CRUD (add/edit/delete events) + bulk creation
+  - AI-powered schedule parsing (text -> Claude extracts events)
   - Coach Card config per school (coach note, featured video, visibility toggles)
   - Auto-generated slugs (athlete-name-school-name-id)
-  - Public shareable page at /card/:slug with profile, measurables, academics, schedule, video links
-  - ScheduleSection integrated on Profile page
-  - CoachCardConfig integrated on Journey page per school
+  - Public shareable page at /card/:slug
+  - **P2: PDF generation** — 1-page PDF snapshot via reportlab at /api/card/{slug}/pdf
+  - **P2: Featured clip selector** — Radio button UI for athlete's existing videos + custom URL tab
+  - **P2: Send to Coach email** — Opens email composer with pre-filled subject/body containing card URL
 
 ## Key DB Collections (Coach Card)
 - `schedule_events`: `{ event_id, tenant_id, name, start_date, end_date, location, division, jersey_number, notes, created_at }`
 - `coach_cards`: `{ tenant_id, program_id, coach_note, featured_video, show_schedule, show_academics, show_measurables, show_videos, slug, updated_at }`
 
 ## Key API Endpoints (Coach Card)
-- `GET, POST /api/schedule` - List/create schedule events
-- `PUT, DELETE /api/schedule/{event_id}` - Update/delete event
-- `POST /api/schedule/bulk` - Bulk add events
-- `POST /api/schedule/parse` - AI-powered text parsing to events
-- `GET, PUT /api/coach-card/{program_id}` - Get/update coach card config
-- `GET /api/card/{slug}` - Public coach card data (no auth)
+- `GET, POST /api/schedule` — List/create schedule events
+- `PUT, DELETE /api/schedule/{event_id}` — Update/delete event
+- `POST /api/schedule/bulk` — Bulk add events
+- `POST /api/schedule/parse` — AI-powered text parsing to events
+- `GET, PUT /api/coach-card/{program_id}` — Get/update coach card config
+- `GET /api/card/{slug}` — Public coach card data (no auth)
+- `GET /api/card/{slug}/pdf` — Download 1-page PDF (no auth)
 
 ## IMPORTANT: Production Deployment Note
 - The `.env` has updated Gmail credentials that will deploy automatically
-- However, the **production database** may still have old credentials cached in `app_config` collection
-- After deploying, admin should go to Admin -> Integrations and re-enter the new credentials there
-
-## Upcoming Tasks (P1)
-- **Coach Card Phase 2**:
-  - AI-generated 1-page PDF snapshot
-  - Per-school "featured clip" selector UI
-  - "Email Coach Card" button in email drafting flow
+- After deploying, admin should go to Admin -> Integrations and re-enter new credentials
 
 ## Backlog (P2/Future)
 - Microsoft Outlook/365 email import
