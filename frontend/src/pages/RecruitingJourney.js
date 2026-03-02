@@ -64,13 +64,14 @@ export default function RecruitingJourney() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [progRes, journeyRes, coachRes, profRes, notesRes, msRes] = await Promise.allSettled([
+      const [progRes, journeyRes, coachRes, profRes, notesRes, msRes, gmailRes] = await Promise.allSettled([
         api.get(`/programs/${programId}`),
         api.get(`/programs/${programId}/journey`),
         api.get(`/coaches?program_id=${programId}`),
         api.get("/athlete-profile"),
         api.get(`/programs/${programId}/notes`),
         !isBasic ? api.get("/match-scores") : Promise.resolve({ data: null }),
+        api.get("/gmail/status"),
       ]);
       if (progRes.status !== "fulfilled" || journeyRes.status !== "fulfilled") {
         throw new Error("Failed to load core data");
