@@ -94,6 +94,7 @@ export default function RecruitingJourney() {
           setRiskBadges(found.risk_badges || []);
         }
       }
+      setGmailConnected(gmailRes.status === "fulfilled" && gmailRes.value.data?.connected === true);
       setLoading(false);
       if (!isBasic) {
         try {
