@@ -18,6 +18,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 8. Follow-up automation system
 9. School detail pages with intelligence cards
 10. Coach Card — shareable, always-current, coach-ready package per school
+11. Non-Gmail user support — manual interaction logging feeds follow-up signals, Gmail nudge banner
 
 ## Architecture
 - **Frontend**: React + TailwindCSS + Shadcn/UI (lazy-loaded pages)
@@ -32,7 +33,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **Demo User**: demo@capymatch.com / demo2026
 - **Admin User**: douglas@yeslms.com (Google auth, also demo2026 in preview)
 
-## What's Implemented (as of Mar 1, 2026)
+## What's Implemented (as of Mar 2, 2026)
 - Full recruiting board with stages, signals, next-step suggestions
 - Gmail integration (read-only + send, import history)
 - AI intelligence cards with source-aware reasoning
@@ -45,16 +46,18 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Performance optimizations (40+ indexes, lazy loading, batch queries)
 - Privacy Policy & Terms of Service public pages
 - Gmail credential management & token revocation
-- **Coach Card Feature (Complete — MVP + Phase 2 + Analytics)**:
-  - Schedule CRUD (add/edit/delete events) + bulk creation
-  - AI-powered schedule parsing (text -> Claude extracts events)
+- **Coach Card Feature (Complete)**:
+  - Schedule CRUD + bulk creation + AI-powered schedule parsing
   - Coach Card config per school (coach note, featured video, visibility toggles)
-  - Auto-generated slugs (athlete-name-school-name-id)
-  - Public shareable page at /card/:slug
-  - PDF generation — 1-page PDF snapshot via reportlab at /api/card/{slug}/pdf
-  - Featured clip selector — radio button UI for athlete's existing videos + custom URL tab
-  - Send to Coach email — email composer with pre-filled subject/body containing card URL
-  - **View analytics** — track views on public cards, show total/unique counts, 7-day bar chart, last viewed timestamp
+  - Auto-generated slugs, public shareable page at /card/:slug (light theme)
+  - PDF generation at /api/card/{slug}/pdf
+  - Featured clip selector (radio buttons for existing videos + custom URL)
+  - Send to Coach email with pre-filled subject/body
+  - View analytics (total/unique counts, 7-day bar chart, last viewed)
+- **Non-Gmail User Support**:
+  - Manual interaction logging (existing LogInteractionForm) feeds into follow-up signals
+  - Gmail nudge banner on Journey page timeline section when Gmail not connected
+  - "Connect Gmail" link directs to Settings page
 
 ## Key DB Collections (Coach Card)
 - `schedule_events`: `{ event_id, tenant_id, name, start_date, end_date, location, division, jersey_number, notes, created_at }`
@@ -71,10 +74,6 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - `GET /api/card/{slug}` — Public coach card data (no auth)
 - `GET /api/card/{slug}/pdf` — Download 1-page PDF (no auth)
 - `POST /api/card/{slug}/view` — Record view (no auth, fire-and-forget)
-
-## IMPORTANT: Production Deployment Note
-- The `.env` has updated Gmail credentials that will deploy automatically
-- After deploying, admin should go to Admin -> Integrations and re-enter new credentials
 
 ## Backlog (P2/Future)
 - Microsoft Outlook/365 email import
