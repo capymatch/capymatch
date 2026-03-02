@@ -19,7 +19,7 @@ function formatDateRange(start, end) {
   return `${s} – ${e}`;
 }
 
-export default function ScheduleSection({ api }) {
+export default function ScheduleSection({ api, onCountChange }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -36,6 +36,15 @@ export default function ScheduleSection({ api }) {
   }, [api]);
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
+
+  // Report upcoming count to parent
+  useEffect(() => {
+    if (onCountChange) {
+      const today = new Date().toISOString().split("T")[0];
+      const count = events.filter(e => !e.start_date || e.start_date >= today).length;
+      onCountChange(count);
+    }
+  }, [events, onCountChange]);
 
   const handleAdd = async () => {
     if (!form.name) return toast.error("Event name is required");

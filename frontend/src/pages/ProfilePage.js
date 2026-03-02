@@ -112,6 +112,7 @@ export default function ProfilePage() {
   const [shareLink, setShareLink] = useState("");
   const [copied, setCopied] = useState(false);
   const [autoSaved, setAutoSaved] = useState(false);
+  const [scheduleCount, setScheduleCount] = useState(0);
   const photoRef = useRef(null);
   const saveTimer = useRef(null);
   const profileRef = useRef(profile);
@@ -148,10 +149,13 @@ export default function ProfilePage() {
   }, [fromOnboarding, profile]);
 
   useEffect(() => {
-    Promise.all([api.get("/athlete-profile"), api.get("/share-link")])
-      .then(([profRes, linkRes]) => {
+    Promise.all([api.get("/athlete-profile"), api.get("/share-link"), api.get("/schedule")])
+      .then(([profRes, linkRes, schedRes]) => {
         setProfile(profRes.data);
         setShareLink(`${window.location.origin}/s/${linkRes.data.tenant_id.replace("tenant_", "")}`);
+        const today = new Date().toISOString().split("T")[0];
+        const events = Array.isArray(schedRes.data) ? schedRes.data : (schedRes.data?.events || []);
+        setScheduleCount(events.filter(e => !e.start_date || e.start_date >= today).length);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -407,8 +411,8 @@ export default function ProfilePage() {
       {/* Section: Tournament Schedule */}
       <SectionCard testId="section-schedule"
         icon="📅" iconBg="rgba(26,138,128,0.15)"
-        title="Tournament Schedule" summary={`${0} upcoming events`}
-        status="optional" statusColor="optional" defaultOpen={false}>
+        title="Tournament Schedule" summary={`${scheduleCount} upcoming events`}
+        status={scheduleCount > 0 ? "complete" : "partial"} statusColor={scheduleCount > 0 ? "complete" : "partial"} defaultOpen={false}>
         <ScheduleSection api={api} />
       </SectionCard>
 
