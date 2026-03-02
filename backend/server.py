@@ -556,7 +556,34 @@ async def startup_event():
             await db.users.update_one({"email": demo_email}, {"$set": {"password_hash": new_hash}})
             logger.info("Demo account password reset to default")
     else:
-        logger.info("Demo account not found — will be created by create_demo.py if needed")
+        # Create demo account
+        import uuid as _uuid
+        demo_uid = f"user_{_uuid.uuid4().hex[:12]}"
+        demo_tid = f"tenant_{demo_uid}"
+        pw_hash = bcrypt.hashpw(demo_pw.encode(), bcrypt.gensalt()).decode()
+        await db.users.insert_one({
+            "user_id": demo_uid,
+            "email": demo_email,
+            "password_hash": pw_hash,
+            "name": "Demo Athlete",
+            "picture": "",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        await db.tenants.insert_one({
+            "tenant_id": demo_tid,
+            "user_id": demo_uid,
+            "plan": "premium",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        await db.athlete_profiles.insert_one({
+            "tenant_id": demo_tid,
+            "athlete_name": "Demo Athlete",
+            "graduation_year": "2027",
+            "positions": ["Outside Hitter"],
+            "club_team": "Demo Club",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        logger.info(f"Created demo account: {demo_email} / {demo_pw}")
     
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
