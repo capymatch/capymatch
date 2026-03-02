@@ -555,6 +555,25 @@ async def startup_event():
             new_hash = bcrypt.hashpw(demo_pw.encode(), bcrypt.gensalt()).decode()
             await db.users.update_one({"email": demo_email}, {"$set": {"password_hash": new_hash}})
             logger.info("Demo account password reset to default")
+        # Fix tenant if it was created with wrong field name
+        demo_uid = demo_user["user_id"]
+        demo_tid = f"tenant_{demo_uid}"
+        tenant = await db.tenants.find_one({"owner_user_id": demo_uid})
+        if not tenant:
+            # Check if there's a broken tenant with "user_id" instead of "owner_user_id"
+            broken = await db.tenants.find_one({"user_id": demo_uid, "owner_user_id": {"$exists": False}})
+            if broken:
+                await db.tenants.update_one({"user_id": demo_uid}, {"$set": {"owner_user_id": demo_uid}})
+                logger.info("Fixed demo tenant: added owner_user_id")
+            else:
+                await db.tenants.insert_one({
+                    "tenant_id": demo_tid,
+                    "owner_user_id": demo_uid,
+                    "athlete_name": "Demo Athlete",
+                    "plan": "premium",
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                })
+                logger.info("Created missing tenant for demo account")
     else:
         # Create demo account
         import uuid as _uuid
@@ -571,7 +590,8 @@ async def startup_event():
         })
         await db.tenants.insert_one({
             "tenant_id": demo_tid,
-            "user_id": demo_uid,
+            "owner_user_id": demo_uid,
+            "athlete_name": "Demo Athlete",
             "plan": "premium",
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
