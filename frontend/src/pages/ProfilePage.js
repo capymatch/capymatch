@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil, ArrowRight, AlertCircle } from "lucide-react";
-import { ProfilePreview } from "../components/ProfilePreview";
+import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, ArrowRight, AlertCircle } from "lucide-react";
 import ScheduleSection from "../components/ScheduleSection";
 import ProfileSharing from "../components/ProfileSharing";
 import api from "../lib/api";
@@ -113,7 +112,6 @@ export default function ProfilePage() {
   const [shareLink, setShareLink] = useState("");
   const [copied, setCopied] = useState(false);
   const [autoSaved, setAutoSaved] = useState(false);
-  const [mobileView, setMobileView] = useState("edit"); // "edit" | "preview"
   const photoRef = useRef(null);
   const saveTimer = useRef(null);
   const profileRef = useRef(profile);
@@ -429,56 +427,16 @@ export default function ProfilePage() {
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold" style={{ color: "var(--t-text)" }}>Athlete Profile</h2>
-        <div className="flex items-center gap-3">
-          {autoSaved && (
-            <div className="flex items-center gap-1.5 text-xs font-medium animate-fade-in" style={{ color: "#10b981" }}>
-              <Check className="w-3.5 h-3.5" /> Auto-saved
-            </div>
-          )}
-          {/* Mobile view toggle */}
-          <div className="flex lg:hidden rounded-lg overflow-hidden border" style={{ borderColor: "var(--t-border)" }}>
-            <button data-testid="mobile-edit-toggle" onClick={() => setMobileView("edit")}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold transition-colors"
-              style={{ background: mobileView === "edit" ? "#1a8a80" : "var(--t-surface)", color: mobileView === "edit" ? "white" : "var(--t-text-muted)" }}>
-              <Pencil className="w-3 h-3" /> Edit
-            </button>
-            <button data-testid="mobile-preview-toggle" onClick={() => setMobileView("preview")}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold transition-colors"
-              style={{ background: mobileView === "preview" ? "#1a8a80" : "var(--t-surface)", color: mobileView === "preview" ? "white" : "var(--t-text-muted)" }}>
-              <Monitor className="w-3 h-3" /> Preview
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Desktop: Split-screen */}
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 -mt-2" style={{ height: "calc(100vh - 6rem)", minHeight: 0 }}>
-        <div className="overflow-y-auto pr-2" style={{ scrollbarWidth: "thin" }}>
-          {editPanel}
-          <div className="h-8" />
-        </div>
-        <div className="overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
-          <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5 py-1" style={{ color: "var(--t-text-muted)" }}>
-            <Monitor className="w-3.5 h-3.5" /> Coach's View — Live Preview
-          </div>
-          <div className="rounded-2xl overflow-hidden shadow-lg" style={{ border: "1px solid var(--t-border)" }}>
-            <ProfilePreview profile={profile} />
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: Toggle */}
-      <div className="lg:hidden">
-        {mobileView === "edit" ? editPanel : (
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: "var(--t-text-muted)" }}>
-              <Monitor className="w-3.5 h-3.5" /> Coach's View — Live Preview
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg" style={{ border: "1px solid var(--t-border)" }}>
-              <ProfilePreview profile={profile} />
-            </div>
+        {autoSaved && (
+          <div className="flex items-center gap-1.5 text-xs font-medium animate-fade-in" style={{ color: "#10b981" }}>
+            <Check className="w-3.5 h-3.5" /> Auto-saved
           </div>
         )}
+      </div>
+
+      {/* Single-column edit panel */}
+      <div className="max-w-2xl">
+        {editPanel}
       </div>
 
       <div className="h-8" />
