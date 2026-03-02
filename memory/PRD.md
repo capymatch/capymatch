@@ -10,7 +10,7 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - **AI**: Claude via Emergent LLM Key
 - **Payments**: Stripe
 - **Email**: Resend + Gmail API
-- **PDF**: reportlab
+- **PDF**: reportlab (via coach_card._build_pdf)
 - **Scraping**: Playwright (social links)
 
 ## Credentials
@@ -27,32 +27,40 @@ Public-facing Volleyball Recruiting CRM ("CapyMatch") — a decision-support sys
 - Knowledge base with 1053 schools
 - Onboarding questionnaire with matching
 - Privacy Policy & Terms of Service
-- **Coach Card Feature (Complete)**:
-  - Schedule CRUD + bulk + AI parsing
-  - Per-school config (coach note, featured video selector, visibility toggles)
-  - Public shareable page at /card/:slug (light theme)
-  - PDF generation at /api/card/{slug}/pdf
-  - Send to Coach email with pre-filled content
-  - View analytics (total/unique, 7-day chart, last viewed)
+- **Public Athlete Profile (Complete - replaces Coach Card)**:
+  - Shareable public URL at /p/:slug (light theme)
+  - View-tracking analytics (total views, unique visitors, 7-day chart)
+  - PDF download at /api/p/{slug}/pdf
+  - Visibility toggles (measurables, academics, schedule, videos, contact)
+  - ProfileSharing component on /profile page with Copy Link, Preview, PDF buttons
+  - "Send Profile to Coach" on Journey page with email pre-fill
+  - Schedule CRUD + bulk + AI parsing (retained from Coach Card)
 - **Non-Gmail User Support**:
-  - Manual logging feeds follow-up signals
   - Gmail nudge banner on Journey timeline
 - **Social Links for D1 Schools**:
   - Playwright scraper extracted social links from 328/348 D1 school athletics pages (94% coverage)
   - 250 schools have volleyball-specific handles (VB, volleyball, vball)
   - Displays X, Instagram, Facebook, YouTube, TikTok icons in Journey page header
   - Data stored in university_knowledge_base.social_links field
-  - Note: Some large schools with both men's/women's programs may show men's VB handles
 
 ## Key DB Collections
-- `schedule_events`, `coach_cards`, `coach_card_views` (Coach Card)
-- `university_knowledge_base.social_links` (social media URLs per school)
+- `athlete_profiles` (includes public_slug, visibility toggles, profile_view_count)
+- `profile_views` (slug, tenant_id, viewed_at, user_agent, referer, visitor_hash)
+- `schedule_events` (tournament/camp schedule)
+- `university_knowledge_base` (school data including social_links)
 
 ## Key API Endpoints
-- Schedule: GET/POST/PUT/DELETE `/api/schedule/*`
-- Coach Card: GET/PUT `/api/coach-card/{program_id}`, GET `/api/card/{slug}`, GET `/api/card/{slug}/pdf`, POST `/api/card/{slug}/view`
-- Analytics: GET `/api/coach-card/{program_id}/analytics`
-- Programs: GET `/api/programs/{program_id}` (now includes social_links from KB)
+- Public Profile: GET /api/p/{slug}, POST /api/p/{slug}/view, GET /api/p/{slug}/pdf
+- Sharing Settings: GET/PUT /api/athlete-profile/sharing
+- Analytics: GET /api/athlete-profile/analytics
+- Schedule: GET/POST/PUT/DELETE /api/schedule/*
+- Programs: GET /api/programs/{program_id} (includes social_links from KB)
+
+## Upcoming Tasks (P1)
+- Manual Email Logging for non-Gmail users
+- Camp Data Integration for universities
+- Scrape D2/D3 social media links
+- Codebase cleanup: remove obsolete Coach Card references (coach_card.py still needed for _build_pdf)
 
 ## Backlog (P2/Future)
 - Microsoft Outlook/365 email import
