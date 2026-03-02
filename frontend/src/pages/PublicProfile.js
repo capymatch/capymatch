@@ -14,6 +14,33 @@ function StatBadge({ label, value }) {
   );
 }
 
+function ScheduleEvent({ ev }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-lg flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: "#f0fdfa" }}>
+        <span className="text-[9px] font-bold uppercase leading-none" style={{ color: "#0f766e" }}>
+          {ev.start_date ? new Date(ev.start_date + "T00:00:00").toLocaleDateString("en-US", { month: "short" }) : "TBA"}
+        </span>
+        <span className="text-sm font-bold leading-none" style={{ color: "#0f766e" }}>
+          {ev.start_date ? new Date(ev.start_date + "T00:00:00").getDate() : "?"}
+        </span>
+      </div>
+      <div className="flex-1">
+        <p className="text-[13px] font-semibold" style={{ color: "#1e293b" }}>{ev.name}</p>
+        <div className="flex items-center gap-2 text-[11px]" style={{ color: "#94a3b8" }}>
+          {ev.location && <span className="flex items-center gap-0.5"><MapPin className="w-3 h-3" />{ev.location}</span>}
+          {ev.division && <span>{ev.division}</span>}
+        </div>
+      </div>
+      {ev.event_type && (
+        <span className="text-[9px] font-semibold uppercase tracking-wider px-2 py-1 rounded" style={{ backgroundColor: "#f8fafc", color: "#64748b" }}>
+          {ev.event_type}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function PublicProfile() {
   const { slug } = useParams();
   const [data, setData] = useState(null);
@@ -53,6 +80,9 @@ export default function PublicProfile() {
   const v = p.videos || {};
   const c = p.contact || {};
   const featuredVideo = v.highlight_video || v.hudl_url || "";
+  const today = new Date().toISOString().split("T")[0];
+  const upcoming = (p.schedule || []).filter(ev => ev.start_date >= today);
+  const past = (p.schedule || []).filter(ev => ev.start_date < today);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }} data-testid="public-profile">
@@ -146,31 +176,35 @@ export default function PublicProfile() {
         {/* Schedule */}
         {p.schedule?.length > 0 && (
           <div className="rounded-xl border p-4 mb-4 shadow-sm" style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}>
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-4 h-4" style={{ color: "#1a8a80" }} />
-              <h2 className="text-sm font-bold" style={{ color: "#0f172a" }}>Upcoming Schedule</h2>
-            </div>
-            <div className="space-y-2">
-              {p.schedule.map((ev, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg flex flex-col items-center justify-center flex-shrink-0" style={{ backgroundColor: "#f0fdfa" }}>
-                    <span className="text-[9px] font-bold uppercase leading-none" style={{ color: "#0f766e" }}>
-                      {ev.start_date ? new Date(ev.start_date + "T00:00:00").toLocaleDateString("en-US", { month: "short" }) : "TBA"}
-                    </span>
-                    <span className="text-sm font-bold leading-none" style={{ color: "#0f766e" }}>
-                      {ev.start_date ? new Date(ev.start_date + "T00:00:00").getDate() : "?"}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-[13px] font-semibold" style={{ color: "#1e293b" }}>{ev.name}</p>
-                    <div className="flex items-center gap-2 text-[11px]" style={{ color: "#94a3b8" }}>
-                      {ev.location && <span className="flex items-center gap-0.5"><MapPin className="w-3 h-3" />{ev.location}</span>}
-                      {ev.division && <span>{ev.division}</span>}
-                    </div>
-                  </div>
+            {/* Upcoming */}
+            {upcoming.length > 0 && (
+              <>
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-4 h-4" style={{ color: "#1a8a80" }} />
+                  <h2 className="text-sm font-bold" style={{ color: "#0f172a" }}>Where to See Me Play</h2>
                 </div>
-              ))}
-            </div>
+                <div className="space-y-2">
+                  {upcoming.map((ev, i) => (
+                    <ScheduleEvent key={`u-${i}`} ev={ev} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Past */}
+            {past.length > 0 && (
+              <div className={upcoming.length > 0 ? "mt-5 pt-4" : ""} style={upcoming.length > 0 ? { borderTop: "1px solid #e2e8f0" } : undefined}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-4 h-4" style={{ color: "#94a3b8" }} />
+                  <h2 className="text-sm font-bold" style={{ color: "#94a3b8" }}>Past Events</h2>
+                </div>
+                <div className="space-y-2 opacity-60">
+                  {past.map((ev, i) => (
+                    <ScheduleEvent key={`p-${i}`} ev={ev} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

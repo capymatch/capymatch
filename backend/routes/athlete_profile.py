@@ -1390,11 +1390,10 @@ async def get_public_profile(slug: str):
         }
 
     if profile.get("show_schedule", True):
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         schedule = await db.schedule_events.find(
-            {"tenant_id": tenant_id, "start_date": {"$gte": today}},
-            {"_id": 0, "name": 1, "start_date": 1, "end_date": 1, "location": 1, "division": 1}
-        ).sort("start_date", 1).to_list(15)
+            {"tenant_id": tenant_id},
+            {"_id": 0, "name": 1, "start_date": 1, "end_date": 1, "location": 1, "division": 1, "event_type": 1}
+        ).sort("start_date", 1).to_list(50)
         data["schedule"] = schedule
     else:
         data["schedule"] = []
