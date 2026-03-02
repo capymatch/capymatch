@@ -557,6 +557,20 @@ export default function RecruitingJourney() {
               <h2 className="text-base font-bold tracking-wide" style={{ color: "var(--t-text)" }}>Timeline</h2>
               <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)" }}>Every email, reply, and interaction — all in one place</p>
             </div>
+            {!gmailConnected && (
+              <div className="flex items-start gap-3 rounded-xl p-3.5 mb-4" style={{ backgroundColor: "rgba(26,138,128,0.08)", border: "1px solid rgba(26,138,128,0.18)" }} data-testid="gmail-nudge-banner">
+                <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#1a8a80" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-medium" style={{ color: "var(--t-text)" }}>
+                    Connect Gmail to automatically track your emails with coaches, detect replies, and get smart follow-up reminders.
+                  </p>
+                  <a href="/settings" className="inline-flex items-center gap-1 text-xs font-semibold mt-1.5 transition-colors hover:underline" style={{ color: "#1a8a80" }} data-testid="gmail-nudge-connect-btn">
+                    Connect Gmail
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            )}
             {timeline.length === 0 ? (
               <div className="text-center py-10">
                 <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: "var(--t-text-muted)" }} />
