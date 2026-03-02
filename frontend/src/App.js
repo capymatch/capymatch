@@ -38,7 +38,7 @@ const BillingPage = lazy(() => import("./pages/BillingPage"));
 const SchoolInfoPage = lazy(() => import("./pages/SchoolInfoPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
-const PublicCoachCard = lazy(() => import("./pages/PublicCoachCard"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 import InstallPrompt from "./components/InstallPrompt";
@@ -201,7 +201,8 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
     <Routes>
       <Route path="/s/:shortId" element={<PublicSchedule />} />
       <Route path="/schedule/:tenantId" element={<PublicSchedule />} />
-      <Route path="/card/:slug" element={<PublicCoachCard />} />
+      <Route path="/card/:slug" element={<PublicProfile />} />
+      <Route path="/p/:slug" element={<PublicProfile />} />
       <Route path="/login" element={<Navigate to="/board" replace />} />
       <Route path="/welcome" element={<LandingPage />} />
       <Route path="/onboarding" element={<AthleteProfileQuiz />} />
@@ -255,7 +256,8 @@ function UnauthRoutes({ onAuth }) {
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsOfServicePage />} />
-      <Route path="/card/:slug" element={<PublicCoachCard />} />
+      <Route path="/card/:slug" element={<PublicProfile />} />
+      <Route path="/p/:slug" element={<PublicProfile />} />
       <Route path="/welcome" element={<LandingPage />} />
       {/* Handle OAuth callback — session_id arrives in URL hash fragment */}
       <Route path="/" element={<OAuthCallbackGate onAuth={onAuth} />} />

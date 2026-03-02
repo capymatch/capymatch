@@ -1,9 +1,14 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import StreamingResponse
 from database import db
 from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription
 from datetime import datetime, timezone
 import re
+import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api")
 
@@ -1274,3 +1279,232 @@ async def get_risk_badges(program_id: str, request: Request):
     commitment_stability = _compute_commitment_stability(program, profile)
     data_confidence = _compute_data_confidence(program)
     return {"badges": badges, "empty_state": len(badges) == 0, "timeline": timeline, "roster": roster, "scholarship": scholarship, "nil": nil_readiness, "commitment_stability": commitment_stability, "data_confidence": data_confidence}
+
+
+
+# ═══════════ PUBLIC PROFILE ═══════════
+
+@router.put("/athlete-profile/sharing")
+async def update_sharing_settings(request: Request):
+    """Update profile visibility toggles and generate/return public slug."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    body = await request.json()
+
+    update = {}
+    for field in ["show_schedule", "show_academics", "show_measurables", "show_videos", "show_contact"]:
+        if field in body:
+            update[field] = bool(body[field])
+
+    # Generate slug if not exists
+    profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0, "public_slug": 1, "athlete_name": 1})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    if not profile.get("public_slug"):
+        name = (profile.get("athlete_name") or "athlete").lower().strip()
+        slug_base = re.sub(r"[^a-z0-9]+", "-", name).strip("-")
+        slug = f"{slug_base}-{uuid.uuid4().hex[:6]}"
+        update["public_slug"] = slug
+
+    if update:
+        update["updated_at"] = datetime.now(timezone.utc).isoformat()
+        await db.athlete_profiles.update_one({"tenant_id": tenant_id}, {"$set": update})
+
+    updated = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0, "public_slug": 1, "show_schedule": 1, "show_academics": 1, "show_measurables": 1, "show_videos": 1, "show_contact": 1})
+    return updated
+
+
+@router.get("/athlete-profile/sharing")
+async def get_sharing_settings(request: Request):
+    """Get current sharing settings and public slug."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+    profile = await db.athlete_profiles.find_one(
+        {"tenant_id": tenant_id},
+        {"_id": 0, "public_slug": 1, "show_schedule": 1, "show_academics": 1, "show_measurables": 1, "show_videos": 1, "show_contact": 1}
+    )
+    if not profile:
+        return {"public_slug": "", "show_schedule": True, "show_academics": True, "show_measurables": True, "show_videos": True, "show_contact": True}
+    profile.setdefault("show_schedule", True)
+    profile.setdefault("show_academics", True)
+    profile.setdefault("show_measurables", True)
+    profile.setdefault("show_videos", True)
+    profile.setdefault("show_contact", True)
+    return profile
+
+
+@router.get("/p/{slug}")
+async def get_public_profile(slug: str):
+    """Public endpoint — return athlete profile data for the public page."""
+    profile = await db.athlete_profiles.find_one({"public_slug": slug}, {"_id": 0})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    tenant_id = profile.get("tenant_id")
+
+    # Build response respecting visibility toggles
+    data = {
+        "athlete_name": profile.get("athlete_name", ""),
+        "graduation_year": profile.get("graduation_year") or profile.get("grad_year", ""),
+        "positions": profile.get("positions", [profile.get("position", "")]),
+        "club_team": profile.get("club_team", ""),
+        "high_school": profile.get("high_school", ""),
+        "city": profile.get("city", ""),
+        "state": profile.get("state", ""),
+        "photo_url": profile.get("photo_url", ""),
+        "jersey_number": profile.get("jersey_number", ""),
+    }
+
+    if profile.get("show_measurables", True):
+        data["measurables"] = {
+            "height": profile.get("height", ""),
+            "weight": profile.get("weight", ""),
+            "standing_reach": profile.get("standing_reach", ""),
+            "approach_touch": profile.get("approach_touch", ""),
+            "block_touch": profile.get("block_touch", ""),
+            "wingspan": profile.get("wingspan", ""),
+            "handed": profile.get("handed", ""),
+        }
+
+    if profile.get("show_academics", True):
+        data["academics"] = {
+            "gpa": profile.get("gpa", ""),
+            "sat_score": profile.get("sat_score", ""),
+            "act_score": profile.get("act_score", ""),
+        }
+
+    if profile.get("show_videos", True):
+        data["videos"] = {
+            "highlight_video": profile.get("highlight_video") or profile.get("video_link", ""),
+            "hudl_url": profile.get("hudl_profile_url", ""),
+            "full_game_film_url": profile.get("full_game_film_url", ""),
+        }
+
+    if profile.get("show_contact", True):
+        data["contact"] = {
+            "email": profile.get("contact_email", ""),
+            "phone": profile.get("contact_phone", ""),
+            "parent_name": profile.get("parent_name", ""),
+            "parent_email": profile.get("parent_email", ""),
+        }
+
+    if profile.get("show_schedule", True):
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        schedule = await db.schedule_events.find(
+            {"tenant_id": tenant_id, "start_date": {"$gte": today}},
+            {"_id": 0, "name": 1, "start_date": 1, "end_date": 1, "location": 1, "division": 1}
+        ).sort("start_date", 1).to_list(15)
+        data["schedule"] = schedule
+    else:
+        data["schedule"] = []
+
+    # View count
+    view_count = profile.get("profile_view_count", 0)
+    data["view_count"] = view_count
+
+    return data
+
+
+@router.post("/p/{slug}/view")
+async def record_profile_view(slug: str, request: Request):
+    """Public endpoint — record a view on the public profile."""
+    profile = await db.athlete_profiles.find_one({"public_slug": slug}, {"_id": 0, "tenant_id": 1})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    await db.athlete_profiles.update_one(
+        {"public_slug": slug},
+        {"$inc": {"profile_view_count": 1}}
+    )
+
+    forwarded = request.headers.get("x-forwarded-for", request.client.host if request.client else "")
+    ip_hash = str(hash(forwarded))[-8:]
+
+    await db.profile_views.insert_one({
+        "slug": slug,
+        "tenant_id": profile["tenant_id"],
+        "viewed_at": datetime.now(timezone.utc).isoformat(),
+        "user_agent": request.headers.get("user-agent", "")[:200],
+        "referer": request.headers.get("referer", "")[:200],
+        "visitor_hash": ip_hash,
+    })
+
+    return {"ok": True}
+
+
+@router.get("/athlete-profile/analytics")
+async def get_profile_analytics(request: Request):
+    """Get view analytics for the athlete's public profile."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    profile = await db.athlete_profiles.find_one(
+        {"tenant_id": tenant_id},
+        {"_id": 0, "public_slug": 1, "profile_view_count": 1}
+    )
+    if not profile or not profile.get("public_slug"):
+        return {"total_views": 0, "unique_visitors": 0, "recent_views": [], "views_by_day": {}}
+
+    slug = profile["public_slug"]
+    total = profile.get("profile_view_count", 0)
+
+    recent = await db.profile_views.find(
+        {"slug": slug}, {"_id": 0, "viewed_at": 1, "referer": 1, "visitor_hash": 1}
+    ).sort("viewed_at", -1).to_list(30)
+
+    unique_hashes = set(v.get("visitor_hash", "") for v in recent)
+
+    from datetime import timedelta
+    seven_days_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    recent_week = await db.profile_views.find(
+        {"slug": slug, "viewed_at": {"$gte": seven_days_ago}},
+        {"_id": 0, "viewed_at": 1}
+    ).to_list(500)
+
+    by_day = {}
+    for v in recent_week:
+        day = v["viewed_at"][:10]
+        by_day[day] = by_day.get(day, 0) + 1
+
+    return {
+        "total_views": total,
+        "unique_visitors": len(unique_hashes),
+        "recent_views": recent[:10],
+        "views_by_day": by_day,
+    }
+
+
+@router.get("/p/{slug}/pdf")
+async def download_profile_pdf(slug: str):
+    """Public endpoint — generate 1-page PDF of the athlete profile."""
+    profile = await db.athlete_profiles.find_one({"public_slug": slug}, {"_id": 0})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    tenant_id = profile.get("tenant_id")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    schedule = []
+    if profile.get("show_schedule", True):
+        schedule = await db.schedule_events.find(
+            {"tenant_id": tenant_id, "start_date": {"$gte": today}},
+            {"_id": 0, "name": 1, "start_date": 1, "end_date": 1, "location": 1, "division": 1}
+        ).sort("start_date", 1).to_list(10)
+
+    # Reuse the coach_card PDF builder
+    from routes.coach_card import _build_pdf
+    config = {
+        "show_schedule": profile.get("show_schedule", True),
+        "show_academics": profile.get("show_academics", True),
+        "show_measurables": profile.get("show_measurables", True),
+        "show_videos": profile.get("show_videos", True),
+        "coach_note": "",
+        "featured_video": profile.get("highlight_video") or profile.get("video_link", ""),
+    }
+    buf = _build_pdf(profile, None, config, schedule)
+
+    name = (profile.get("athlete_name") or "athlete").replace(" ", "_")
+    return StreamingResponse(
+        buf, media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="Profile_{name}.pdf"'}
+    )

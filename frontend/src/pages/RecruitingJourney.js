@@ -6,12 +6,11 @@ import {
   ArrowLeft, Mail, Phone, Clock, Target, DollarSign,
   MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
   Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info,
-  ClipboardCheck, ExternalLink, CheckCircle2
+  ClipboardCheck, ExternalLink, CheckCircle2, Send, Share2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
-import CoachCardConfig from "../components/CoachCardConfig";
 import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
 import {
@@ -21,6 +20,29 @@ import {
   CoachForm, LogInteractionForm, EmailComposer,
   FollowUpScheduler, MarkAsRepliedModal, STAGE_LABELS,
 } from "../components/journey";
+
+function SendProfileCard({ universityName, onSend }) {
+  return (
+    <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="send-profile-card">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.15)" }}>
+          <Share2 className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Share Profile</h3>
+          <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>Send your recruiting profile to {universityName}'s coaches</p>
+        </div>
+      </div>
+      <button onClick={onSend}
+        className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg transition-all"
+        style={{ backgroundColor: "#1a8a80", color: "white" }}
+        data-testid="send-profile-btn"
+      >
+        <Send className="w-3.5 h-3.5" />Send Profile to Coach
+      </button>
+    </div>
+  );
+}
 
 export default function RecruitingJourney() {
   const { programId } = useParams();
@@ -49,13 +71,26 @@ export default function RecruitingJourney() {
 
   const closeForm = () => { setActiveForm(null); setEditCoach(null); setEmailInitial({}); };
   const openEmail = () => { setEmailInitial({}); setActiveForm(prev => prev === "email" ? null : "email"); };
-  const openEmailWithCard = (cardUrl) => {
-    const athleteName = program?.university_name || "your program";
-    setEmailInitial({
-      subject: `My Recruiting Profile — ${athleteName}`,
-      body: `Coach,\n\nI wanted to share my recruiting profile with you. You can view my full Coach Card here:\n\n${cardUrl}\n\nIt includes my athletic measurables, academics, highlight video, and upcoming tournament schedule. I'd love the opportunity to discuss how I can contribute to your program.\n\nThank you for your time!`,
-    });
-    setActiveForm("email");
+  const openEmailWithProfile = async () => {
+    try {
+      const res = await api.get("/athlete-profile/sharing");
+      let slug = res.data?.public_slug;
+      if (!slug) {
+        const createRes = await api.put("/athlete-profile/sharing", {});
+        slug = createRes.data?.public_slug;
+      }
+      if (slug) {
+        const profileUrl = `${window.location.origin}/p/${slug}`;
+        const athleteName = program?.university_name || "your program";
+        setEmailInitial({
+          subject: `My Recruiting Profile — ${athleteName}`,
+          body: `Coach,\n\nI wanted to share my recruiting profile with you. You can view it here:\n\n${profileUrl}\n\nIt includes my athletic measurables, academics, highlight video, and upcoming tournament schedule. I'd love the opportunity to discuss how I can contribute to your program.\n\nThank you for your time!`,
+        });
+        setActiveForm("email");
+      }
+    } catch {
+      toast.error("Failed to get profile link");
+    }
   };
   const openLog = () => { setActiveForm(prev => prev === "log" ? null : "log"); };
   const openReplied = () => { setActiveForm(prev => prev === "replied" ? null : "replied"); };
@@ -700,9 +735,9 @@ export default function RecruitingJourney() {
             </div>
           ) : null}
 
-          {/* Coach Card Config */}
+          {/* Send Profile to Coach */}
           <div className="mt-4">
-            <CoachCardConfig programId={programId} universityName={program.university_name} api={api} onEmailCard={openEmailWithCard} />
+            <SendProfileCard universityName={program.university_name} onSend={openEmailWithProfile} />
           </div>
         </div>
       </div>

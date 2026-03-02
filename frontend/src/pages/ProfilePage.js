@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { User, Camera, Check, Copy, ExternalLink, ChevronDown, Eye, EyeOff, Share2, Loader2, Monitor, Pencil, ArrowRight, AlertCircle } from "lucide-react";
 import { ProfilePreview } from "../components/ProfilePreview";
 import ScheduleSection from "../components/ScheduleSection";
+import ProfileSharing from "../components/ProfileSharing";
 import api from "../lib/api";
 import { toast } from "sonner";
 
@@ -411,6 +412,14 @@ export default function ProfilePage() {
         title="Tournament Schedule" summary={`${0} upcoming events`}
         status="optional" statusColor="optional" defaultOpen={false}>
         <ScheduleSection api={api} />
+      </SectionCard>
+
+      {/* Section: Share Profile */}
+      <SectionCard testId="section-sharing"
+        icon="🔗" iconBg="rgba(26,138,128,0.15)"
+        title="Share Profile" summary="Public link, PDF, visibility controls"
+        status="optional" statusColor="optional" defaultOpen={false}>
+        <ProfileSharing />
       </SectionCard>
     </div>
   );
