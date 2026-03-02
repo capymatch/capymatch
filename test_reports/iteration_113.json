@@ -1,0 +1,100 @@
+{
+  "summary": "Public Athlete Profile Feature - All 15/15 backend tests passed, all frontend components verified. The new feature replaces Coach Card with a shareable public profile at /p/:slug with view tracking, PDF download, visibility toggles, and 'Send Profile to Coach' email flow.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "POST /api/auth/login with demo@capymatch.com / demo2026 returns session_token",
+    "GET /api/athlete-profile/sharing returns sharing settings with public_slug and visibility toggles",
+    "PUT /api/athlete-profile/sharing generates/returns public_slug",
+    "PUT /api/athlete-profile/sharing updates visibility toggles (show_measurables, show_academics, etc.)",
+    "GET /api/p/{slug} returns public profile data respecting visibility toggles",
+    "GET /api/p/{slug} returns 404 for nonexistent slug",
+    "Visibility toggle - when show_academics is False, public profile does NOT include academics key",
+    "POST /api/p/{slug}/view records a view and increments profile_view_count",
+    "POST /api/p/{slug}/view returns 404 for nonexistent slug",
+    "GET /api/athlete-profile/analytics returns total_views, unique_visitors, views_by_day, recent_views",
+    "GET /api/athlete-profile/analytics requires authentication (401 without auth)",
+    "Analytics recent_views contain viewed_at, referer, visitor_hash",
+    "GET /api/p/{slug}/pdf returns valid PDF file (HTTP 200, content-type application/pdf)",
+    "GET /api/p/{slug}/pdf returns 404 for nonexistent slug",
+    "Public profile page at /p/clara-gimenes-d5dd51 renders athlete name, measurables, academics, videos, contact",
+    "Public profile has Download PDF button with data-testid='download-pdf-public-btn'",
+    "Profile page (/profile) has ProfileSharing component with data-testid='profile-sharing'",
+    "ProfileSharing shows visibility toggles (toggle-show_measurables, toggle-show_academics, etc.)",
+    "ProfileSharing shows Copy Link button (data-testid='copy-profile-link-btn') when slug exists",
+    "ProfileSharing shows Preview button (data-testid='preview-profile-btn') when slug exists",
+    "ProfileSharing shows PDF download button (data-testid='download-profile-pdf-btn') when slug exists",
+    "Journey page has Send Profile card (data-testid='send-profile-card')",
+    "Journey page has Send Profile to Coach button (data-testid='send-profile-btn')"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_public_athlete_profile.py",
+    "/app/test_reports/pytest/public_athlete_profile_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Public profile endpoint correctly respects visibility toggles (show_academics=False hides academics key)",
+    "View tracking stores visitor_hash for unique visitor counting",
+    "PDF endpoint correctly imports _build_pdf from routes/coach_card.py",
+    "All data-testid attributes properly implemented for testing",
+    "ProfileSharing component integrates well with athlete-profile sharing API"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_public_athlete_profile.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (All UI components and interactions verified)"
+  },
+  "test_credentials": {
+    "email": "demo@capymatch.com",
+    "password": "demo2026"
+  },
+  "seed_data_creation": "Used existing test slug: clara-gimenes-d5dd51 (created by main agent)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Public Athlete Profile feature complete. Routes at /p/:slug (public) and /api/athlete-profile/sharing (authenticated). Known test slug: clara-gimenes-d5dd51. ProfileSharing component is in section-sharing collapsible on /profile page. Journey page has SendProfileCard component which opens EmailComposer with profile link pre-populated. View tracking fires from PublicProfile.js on successful data load.",
+  "features_verified": {
+    "public_profile_page": {
+      "route": "/p/:slug",
+      "status": "PASS - Renders athlete name, position, measurables, academics, videos, contact, schedule",
+      "data_testid": "public-profile, download-pdf-public-btn"
+    },
+    "sharing_settings_api": {
+      "endpoints": "GET/PUT /api/athlete-profile/sharing",
+      "status": "PASS - Returns and updates visibility toggles and public_slug"
+    },
+    "view_tracking": {
+      "endpoint": "POST /api/p/{slug}/view",
+      "status": "PASS - Records view, increments profile_view_count"
+    },
+    "analytics_api": {
+      "endpoint": "GET /api/athlete-profile/analytics",
+      "status": "PASS - Returns total_views, unique_visitors, views_by_day, recent_views"
+    },
+    "pdf_download": {
+      "endpoint": "GET /api/p/{slug}/pdf",
+      "status": "PASS - Returns valid PDF (application/pdf content-type)"
+    },
+    "visibility_toggles": {
+      "status": "PASS - When show_academics=False, academics key is excluded from public profile response"
+    },
+    "profile_sharing_component": {
+      "location": "/profile page (section-sharing)",
+      "status": "PASS - Shows toggles, Copy Link, Preview, PDF download buttons",
+      "data_testids": "profile-sharing, toggle-show_measurables, toggle-show_academics, copy-profile-link-btn, preview-profile-btn, download-profile-pdf-btn"
+    },
+    "send_profile_to_coach": {
+      "location": "Journey page (/journey/:programId)",
+      "status": "PASS - SendProfileCard and send-profile-btn found",
+      "data_testids": "send-profile-card, send-profile-btn"
+    }
+  }
+}
