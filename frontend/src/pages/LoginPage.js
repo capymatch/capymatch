@@ -260,9 +260,9 @@ export default function LoginPage({ onAuth, defaultMode = "login" }) {
         {/* Footer */}
         <p className="text-center text-xs text-gray-500 mt-8">
           By signing in, you agree to our{" "}
-          <button className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Terms</button>
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Terms</a>
           {" "}&amp;{" "}
-          <button className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Privacy Policy</button>
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-500 underline decoration-gray-300 hover:text-gray-700 hover:decoration-gray-500 transition-colors">Privacy Policy</a>
         </p>
       </div>
     </div>
