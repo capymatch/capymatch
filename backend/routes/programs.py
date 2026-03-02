@@ -306,10 +306,12 @@ async def get_program(program_id: str, request: Request):
     # Enrich with questionnaire_url from KB
     kb = await db.university_knowledge_base.find_one(
         {"university_name": program.get("university_name")},
-        {"_id": 0, "questionnaire_url": 1}
+        {"_id": 0, "questionnaire_url": 1, "social_links": 1}
     )
     if kb and kb.get("questionnaire_url"):
         program["questionnaire_url"] = kb["questionnaire_url"]
+    if kb and kb.get("social_links"):
+        program["social_links"] = kb["social_links"]
     return program
 
 
