@@ -66,14 +66,27 @@ async def public_schedule(tenant_id: str, request: Request):
     if not profile:
         raise HTTPException(status_code=404, detail="Athlete not found")
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    events = await db.events.find(
+    
+    # Merge events from both collections (legacy 'events' + newer 'schedule_events')
+    legacy_upcoming = await db.events.find(
         {"tenant_id": tenant_id, "start_date": {"$gte": today}},
         {"_id": 0},
     ).sort("start_date", 1).to_list(100)
-    past_events = await db.events.find(
+    sched_upcoming = await db.schedule_events.find(
+        {"tenant_id": tenant_id, "start_date": {"$gte": today}},
+        {"_id": 0},
+    ).sort("start_date", 1).to_list(100)
+    events = sorted(legacy_upcoming + sched_upcoming, key=lambda e: e.get("start_date", ""))
+    
+    legacy_past = await db.events.find(
         {"tenant_id": tenant_id, "start_date": {"$lt": today}},
         {"_id": 0},
-    ).sort("start_date", -1).to_list(20)
+    ).sort("start_date", -1).to_list(50)
+    sched_past = await db.schedule_events.find(
+        {"tenant_id": tenant_id, "start_date": {"$lt": today}},
+        {"_id": 0},
+    ).sort("start_date", -1).to_list(50)
+    past_events = sorted(legacy_past + sched_past, key=lambda e: e.get("start_date", ""), reverse=True)
 
     forwarded = request.headers.get("x-forwarded-for", "")
     visitor_ip = forwarded.split(",")[0].strip() if forwarded else request.client.host if request.client else ""
