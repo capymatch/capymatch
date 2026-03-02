@@ -94,7 +94,7 @@ async def bulk_add_events(request: Request):
 
 @router.post("/schedule/parse")
 async def parse_schedule(request: Request):
-    """AI-powered schedule parsing from uploaded file content."""
+    """AI-powered schedule parsing from text content."""
     user = await get_current_user(request)
     body = await request.json()
     file_text = body.get("text", "")
@@ -102,6 +102,46 @@ async def parse_schedule(request: Request):
     if not file_text:
         return {"events": [], "error": "No text provided"}
 
+    return await _parse_text_to_events(file_text)
+
+
+@router.post("/schedule/parse-file")
+async def parse_schedule_file(request: Request, file: UploadFile = File(...)):
+    """AI-powered schedule parsing from uploaded PDF/CSV/TXT file."""
+    user = await get_current_user(request)
+
+    content = await file.read()
+    filename = (file.filename or "").lower()
+
+    # Extract text based on file type
+    if filename.endswith(".pdf"):
+        import pdfplumber
+        import io
+        file_text = ""
+        with pdfplumber.open(io.BytesIO(content)) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    file_text += page_text + "\n"
+                # Also try extracting tables
+                tables = page.extract_tables()
+                for table in tables:
+                    for row in table:
+                        if row:
+                            file_text += " | ".join(str(cell or "") for cell in row) + "\n"
+        if not file_text.strip():
+            return {"events": [], "error": "Could not extract text from PDF. Try a text or CSV file instead."}
+    elif filename.endswith(".csv"):
+        file_text = content.decode("utf-8", errors="ignore")
+    else:
+        file_text = content.decode("utf-8", errors="ignore")
+
+    logger.info(f"Extracted {len(file_text)} chars from {filename}")
+    return await _parse_text_to_events(file_text)
+
+
+async def _parse_text_to_events(file_text: str):
+    """Send extracted text to AI for structured event parsing."""
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     import os, json
 

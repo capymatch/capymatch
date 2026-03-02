@@ -59,15 +59,20 @@ export default function ScheduleSection({ api }) {
 
     setParsing(true);
     try {
-      let text = "";
-      if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-        text = await file.text();
+      let res;
+      if (file.name.endsWith(".pdf") || file.type === "application/pdf") {
+        // Upload PDF as multipart form data for server-side text extraction
+        const formData = new FormData();
+        formData.append("file", file);
+        res = await api.post("/schedule/parse-file", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        // For PDF/images, read as text or use a simple extraction
-        text = await file.text();
+        // CSV/TXT — read as text and send directly
+        const text = await file.text();
+        res = await api.post("/schedule/parse", { text });
       }
 
-      const res = await api.post("/schedule/parse", { text });
       if (res.data.events && res.data.events.length > 0) {
         setParsedEvents(res.data.events);
         toast.success(`Found ${res.data.events.length} events`);
