@@ -544,6 +544,20 @@ async def startup_event():
     if expired.deleted_count or stale_oauth.deleted_count:
         logger.info(f"Cleanup: {expired.deleted_count} expired sessions, {stale_oauth.deleted_count} stale OAuth states")
     
+    # Ensure demo account exists with correct password
+    import bcrypt
+    demo_email = "demo@capymatch.com"
+    demo_pw = "demo2026"
+    demo_user = await db.users.find_one({"email": demo_email})
+    if demo_user:
+        # Verify password matches, reset if not
+        if not bcrypt.checkpw(demo_pw.encode(), demo_user["password_hash"].encode()):
+            new_hash = bcrypt.hashpw(demo_pw.encode(), bcrypt.gensalt()).decode()
+            await db.users.update_one({"email": demo_email}, {"$set": {"password_hash": new_hash}})
+            logger.info("Demo account password reset to default")
+    else:
+        logger.info("Demo account not found — will be created by create_demo.py if needed")
+    
     # Start background task for checking coach replies
     reply_check_task = asyncio.create_task(check_coach_replies())
     logger.info("Started background task: coach reply checker (runs every 10 minutes)")
