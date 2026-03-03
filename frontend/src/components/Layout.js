@@ -382,7 +382,7 @@ export default function Layout({ user, onLogout }) {
 
               {notifOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-80 rounded-xl border shadow-xl overflow-hidden z-50"
+                  className="fixed sm:absolute right-2 sm:right-0 left-2 sm:left-auto top-14 sm:top-full sm:mt-2 sm:w-80 rounded-xl border shadow-xl overflow-hidden z-50"
                   style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }}
                   data-testid="notifications-dropdown"
                 >
