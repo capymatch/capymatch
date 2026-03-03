@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import NotesSidebar from "../components/NotesSidebar";
 import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
+import { CoachSocialLinks } from "../components/CoachSocialLinks";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
@@ -729,6 +730,7 @@ export default function RecruitingJourney() {
                     </div>
                     {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-600 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
                     {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
+                    <CoachSocialLinks coachName={c.coach_name} kbCoaches={program.kb_coaches} />
                   </div>
                 ))}
               </div>
