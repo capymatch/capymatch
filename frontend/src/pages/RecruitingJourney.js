@@ -741,6 +741,25 @@ export default function RecruitingJourney() {
           <div className="mt-4">
             <SendProfileCard universityName={program.university_name} onSend={openEmailWithProfile} />
           </div>
+
+          {/* KB Coaching Staff with Social Links */}
+          {program.kb_coaches && program.kb_coaches.length > 0 && (
+            <div className="mt-4 p-3 rounded-xl border" style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }} data-testid="kb-coaches-section">
+              <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>
+                Coaching Staff Social Media
+              </p>
+              <div className="space-y-1.5">
+                {program.kb_coaches.map((kc, i) => (
+                  <div key={i} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors">
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-medium truncate" style={{ color: "var(--t-text)" }}>{kc.name}</p>
+                    </div>
+                    <CoachSocialLinks coachName={kc.name} kbCoaches={program.kb_coaches} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       </>)}
