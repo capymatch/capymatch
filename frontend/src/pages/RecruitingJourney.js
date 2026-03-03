@@ -21,8 +21,6 @@ import {
   FollowUpScheduler, MarkAsRepliedModal, STAGE_LABELS,
 } from "../components/journey";
 
-function SendProfileCard({ universityName, onSend }) {
-
 function CoachSocialLinks({ coachName, kbCoaches }) {
   if (!kbCoaches || kbCoaches.length === 0) return null;
   const nameLower = (coachName || "").toLowerCase();
@@ -54,6 +52,8 @@ function CoachSocialLinks({ coachName, kbCoaches }) {
     </div>
   );
 }
+
+function SendProfileCard({ universityName, onSend }) {
   return (
     <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="send-profile-card">
       <div className="flex items-center gap-2 mb-2">
