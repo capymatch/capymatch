@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"1e0a592098df42f397e3b68b7dc159ea","collectionName":"intelligence_contracts","type":"collection"}

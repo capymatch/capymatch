@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"tenant_id":{"$numberInt":"1"}},"name":"tenant_id_1"}],"uuid":"34ff84b4f5d640d2949312948ed5fc24","collectionName":"profile_views","type":"collection"}

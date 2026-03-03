@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"university_name":{"$numberInt":"1"}},"name":"university_name_1"},{"v":{"$numberInt":"2"},"key":{"updated_at":{"$numberInt":"1"}},"name":"updated_at_1"}],"uuid":"508b4c73c2264eb48c91c4723289fe6a","collectionName":"intelligence_cache","type":"collection"}

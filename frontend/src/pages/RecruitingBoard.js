@@ -441,9 +441,17 @@ function HeroCard({ program, navigate }) {
           <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={28} />
           {p.university_name}
         </div>
-        <div className="flex items-center gap-2 mb-2.5">
+        <div className="flex items-center gap-2 mb-2.5 flex-wrap">
           {p.division && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(26,138,128,0.12)", color: "rgba(255,255,255,0.6)" }}>{p.division}</span>}
           {p.conference && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{p.conference}</span>}
+          {p.social_links && Object.keys(p.social_links).length > 0 && (
+            <span className="flex items-center gap-1.5 ml-1">
+              {p.social_links.twitter && <a href={p.social_links.twitter} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="X/Twitter"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
+              {p.social_links.instagram && <a href={p.social_links.instagram} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="Instagram"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg></a>}
+              {p.social_links.facebook && <a href={p.social_links.facebook} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="Facebook"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>}
+              {p.social_links.youtube && <a href={p.social_links.youtube} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="YouTube"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>}
+            </span>
+          )}
         </div>
         {advice && (
           <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(26,138,128,0.06)", border: "1px solid rgba(26,138,128,0.12)", borderLeft: "3px solid #1a8a80" }}>
