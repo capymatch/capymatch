@@ -21,38 +21,6 @@ import {
   FollowUpScheduler, MarkAsRepliedModal, STAGE_LABELS,
 } from "../components/journey";
 
-function CoachSocialLinks({ coachName, kbCoaches }) {
-  if (!kbCoaches || kbCoaches.length === 0) return null;
-  const nameLower = (coachName || "").toLowerCase();
-  const match = kbCoaches.find(kc => {
-    const kcName = (kc.name || "").toLowerCase();
-    if (kcName === nameLower) return true;
-    const lastName = nameLower.split(" ").pop();
-    return lastName.length > 2 && kcName.includes(lastName);
-  });
-  if (!match || !match.social_links) return null;
-  const sl = match.social_links;
-  const icons = [
-    { key: "twitter", url: sl.twitter, icon: <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> },
-    { key: "instagram", url: sl.instagram, icon: <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg> },
-    { key: "facebook", url: sl.facebook, icon: <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
-  ];
-  const available = icons.filter(i => i.url);
-  if (available.length === 0) return null;
-  return (
-    <div className="flex items-center gap-1 mt-1">
-      {available.map(i => (
-        <a key={i.key} href={i.url} target="_blank" rel="noopener noreferrer"
-          className="p-1 rounded hover:bg-[var(--t-surface-alt)] transition-colors"
-          style={{ color: "var(--t-text-muted)" }}
-          onClick={e => e.stopPropagation()}>
-          {i.icon}
-        </a>
-      ))}
-    </div>
-  );
-}
-
 function SendProfileCard({ universityName, onSend }) {
   return (
     <div className="rounded-xl border p-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="send-profile-card">
@@ -761,7 +729,6 @@ export default function RecruitingJourney() {
                     </div>
                     {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-600 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
                     {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
-                    <CoachSocialLinks coachName={c.coach_name} kbCoaches={program.kb_coaches} />
                   </div>
                 ))}
               </div>
