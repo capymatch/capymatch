@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import api from "../lib/api";
-import { Play, Lock, Sparkles, RefreshCw, ChevronLeft, ChevronRight, TrendingUp, Eye } from "lucide-react";
+import { Play, Lock, Sparkles, RefreshCw, ChevronLeft, ChevronRight, TrendingUp, Eye, ExternalLink } from "lucide-react";
 import UniversityLogo from "../components/UniversityLogo";
 import { useSubscription } from "../lib/subscription";
 import UpgradeModal from "../components/UpgradeModal";
@@ -410,6 +410,60 @@ function LockedOverlay({ onUpgrade }) {
   );
 }
 
+/* ── Twitter Quick Links Section ── */
+function TwitterSection({ schools }) {
+  if (!schools || schools.length === 0) return null;
+
+  return (
+    <div className="mb-10" data-testid="twitter-section">
+      <div className="flex items-center gap-2 mb-4">
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" style={{ color: "var(--t-text)" }}>
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+        <h2 className="text-sm font-bold tracking-tight" style={{ color: "var(--t-text)" }}>
+          Follow on X
+        </h2>
+        <span
+          className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+          style={{ background: "var(--t-surface)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+        >
+          {schools.length} school{schools.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+        {schools.map((s) => (
+          <a
+            key={s.program_id}
+            href={s.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 px-4 py-3 rounded-xl flex-shrink-0 group transition-all duration-200 hover:-translate-y-0.5"
+            style={{ background: "var(--t-surface)", border: "1px solid var(--t-border)", textDecoration: "none", minWidth: 180 }}
+            data-testid={`twitter-link-${s.program_id}`}
+          >
+            <UniversityLogo
+              domain={s.domain}
+              name={s.university_name}
+              logoUrl={s.logo_url}
+              size={28}
+              className="rounded-full"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-semibold truncate" style={{ color: "var(--t-text)" }}>
+                {s.university_name}
+              </div>
+              <div className="text-[10px] truncate" style={{ color: "var(--t-text-muted)" }}>
+                @{s.twitter.split("/").pop()}
+              </div>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--t-text-muted)" }} />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Skeleton loader ── */
 function FeedSkeleton() {
   return (
@@ -438,6 +492,7 @@ export default function SocialSpotlight() {
   const [loading, setLoading] = useState(true);
   const [feedVideos, setFeedVideos] = useState([]);
   const [trendingVideos, setTrendingVideos] = useState([]);
+  const [twitterSchools, setTwitterSchools] = useState([]);
   const [feedLoading, setFeedLoading] = useState(false);
   const [selectedName, setSelectedName] = useState(null);
   const [vbOnly, setVbOnly] = useState(false);
@@ -475,7 +530,12 @@ export default function SocialSpotlight() {
   }, []);
 
   useEffect(() => {
-    if (tier && tier !== "basic") fetchFeed();
+    if (tier && tier !== "basic") {
+      fetchFeed();
+      api.get("/social-spotlight/social-links")
+        .then((res) => setTwitterSchools(res.data.schools || []))
+        .catch(() => {});
+    }
   }, [tier, fetchFeed]);
 
   const handleRefresh = useCallback(async () => {
@@ -618,6 +678,13 @@ export default function SocialSpotlight() {
               <VideoCard key={v.video_id} video={v} />
             ))}
           </div>
+
+          {/* Twitter Quick Links */}
+          {!selectedName && twitterSchools.length > 0 && (
+            <div className="mt-12">
+              <TwitterSection schools={twitterSchools} />
+            </div>
+          )}
         </>
       )}
 

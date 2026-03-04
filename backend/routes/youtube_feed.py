@@ -304,3 +304,41 @@ async def refresh_feed(request: Request):
     tenant_id = await get_tenant_id(user)
     result = await db.youtube_feed_cache.delete_many({"tenant_id": tenant_id})
     return {"cleared": result.deleted_count}
+
+
+@router.get("/social-links")
+async def get_social_links(request: Request):
+    """Return Twitter/social links for pipeline schools."""
+    user = await get_current_user(request)
+    tenant_id = await get_tenant_id(user)
+
+    programs = await db.programs.find(
+        {"tenant_id": tenant_id, "board_group": {"$ne": "archived"}},
+        {"_id": 0, "program_id": 1, "university_name": 1,
+         "logo_url": 1, "domain": 1}
+    ).to_list(200)
+
+    if not programs:
+        return {"schools": []}
+
+    names = [p["university_name"] for p in programs]
+    kb_docs = await db.university_knowledge_base.find(
+        {"university_name": {"$in": names}},
+        {"_id": 0, "university_name": 1, "social_links": 1}
+    ).to_list(300)
+    kb_map = {d["university_name"]: d.get("social_links", {}) for d in kb_docs}
+
+    schools = []
+    for p in programs:
+        sl = kb_map.get(p["university_name"], {}) or {}
+        twitter = sl.get("twitter")
+        if twitter:
+            schools.append({
+                "program_id": p["program_id"],
+                "university_name": p["university_name"],
+                "logo_url": p.get("logo_url"),
+                "domain": p.get("domain"),
+                "twitter": twitter,
+            })
+
+    return {"schools": schools}
