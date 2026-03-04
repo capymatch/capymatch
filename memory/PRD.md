@@ -20,6 +20,14 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 
 ## What's Been Implemented
 
+### Campus Diversity Data Scrape & Display (Mar 4, 2026)
+- Scraped campus diversity data from productiverecruit.com for all 12 pipeline schools
+- 9 demographic categories per school: American Indian/Alaska Native, Asian, Black, Hispanic/Latino, Native Hawaiian/Pacific Islander, Non Resident, Two or more, Unknown, White
+- Each category shows Student % and Faculty % with color-coded progress bars
+- Displayed on SchoolInfoPage below Financial section
+- Scraper script: `backend/scripts/scrape_diversity.py`
+- Frontend: `frontend/src/pages/SchoolInfoPage.js`
+
 ### YouTube URL Data Audit & Fix (Mar 4, 2026)
 - Audited all 455 YouTube URLs in knowledge base
 - Fixed 16 wrong channels (pointing to wrong schools: CollegeSquash, Yahoo Sports, SEC, TV stations, etc.)
