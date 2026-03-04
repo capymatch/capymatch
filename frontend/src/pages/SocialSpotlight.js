@@ -326,16 +326,25 @@ function VideoCard({ video }) {
   );
 }
 
+/* ── Volleyball keyword filter ── */
+const VB_KEYWORDS = /volley|vball|\bvb\b/i;
+
 /* ── Gated Live Feed Section ── */
 function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
+  const [vbOnly, setVbOnly] = useState(false);
   const isLocked = !tier || tier === "basic";
   const isProPlus = tier === "pro" || tier === "premium";
+
+  const displayVideos = useMemo(() => {
+    if (!vbOnly) return videos;
+    return videos.filter(v => VB_KEYWORDS.test(v.title) || VB_KEYWORDS.test(v.description || ""));
+  }, [videos, vbOnly]);
 
   return (
     <div className="mb-6">
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: isProPlus && videos.length > 0 ? "#22c55e" : "#94a3b8" }} />
           <span className="text-[11px] font-extrabold tracking-[1px] uppercase" style={{ color: "var(--t-text-muted)" }}>
             Live Feed
@@ -347,10 +356,24 @@ function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
           )}
           {isProPlus && videos.length > 0 && (
             <span className="text-[9px] font-semibold" style={{ color: "var(--t-text-faint, #aaa)" }}>
-              {videos.length} videos · YouTube
+              {displayVideos.length}{vbOnly ? ` of ${videos.length}` : ""} videos · YouTube
             </span>
           )}
         </div>
+        {/* Volleyball-only toggle — only shown when there are real videos */}
+        {isProPlus && videos.length > 0 && (
+          <button
+            onClick={() => setVbOnly(v => !v)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border-[1.5px] transition-all"
+            style={vbOnly
+              ? { background: "#1a8a80", borderColor: "#1a8a80", color: "white" }
+              : { background: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary, #555)" }
+            }
+            data-testid="vb-only-toggle"
+          >
+            🏐 Volleyball Only
+          </button>
+        )}
       </div>
 
       {isLocked ? (
@@ -401,9 +424,25 @@ function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
 
       ) : videos.length > 0 ? (
         /* ── REAL videos grid ── */
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {videos.slice(0, 9).map(v => <VideoCard key={v.video_id} video={v} />)}
-        </div>
+        displayVideos.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {displayVideos.slice(0, 9).map(v => <VideoCard key={v.video_id} video={v} />)}
+          </div>
+        ) : (
+          <div className="rounded-2xl border p-5 text-center" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: "var(--t-text)" }}>No volleyball videos found</p>
+            <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+              None of the {videos.length} videos mention volleyball. Turn off the filter to see all content.
+            </p>
+            <button
+              onClick={() => setVbOnly(false)}
+              className="mt-3 text-[11px] font-bold px-3 py-1.5 rounded-lg"
+              style={{ background: "var(--t-surface-alt, #f0f0f0)", color: "var(--t-text-secondary, #555)" }}
+            >
+              Show all videos
+            </button>
+          </div>
+        )
 
       ) : (
         /* ── No YouTube data ── */
