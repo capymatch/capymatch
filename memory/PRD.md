@@ -22,7 +22,7 @@ A public-facing Volleyball Recruiting CRM called "CapyMatch." Athletes use it to
 
 ### Data Enrichment
 - **[2025] Social Media Scraping**: Scraped social links for schools (D1, D2, D3) and 751 individual coaches using Playwright.
-- **[Mar 2026] Social Spotlight page** (`/spotlight`): New top-level sidebar page. Shows all pipeline schools with their social media profiles, platform filter chips, coverage donut stat, "Most Connected" ranking. Includes gated "Live Feed" section: blurred preview + upgrade CTA for basic users, "coming soon" variant for Pro/Premium users.
+- **[Mar 2026] Social Spotlight — Live Feed (YouTube)**: Real YouTube videos from pipeline schools displayed in a 3-column grid for Pro/Premium users. Backed by `GET /api/social-spotlight/feed` (batch KB lookup → YouTube Data API v3 → 6-hour MongoDB cache). Basic users see blurred preview + upgrade CTA. Google API key stored in `backend/.env` as `YOUTUBE_API_KEY`.
 - New collection: `coaches_scraped` stores `{ school_id, coach_name, social_links }`.
 
 ### Features

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { Radio, RefreshCw, MapPin, ChevronRight, Layers, Flame, UserCheck, Trophy, Lock, Sparkles, Heart, Repeat2, MessageCircle } from "lucide-react";
+import { Radio, RefreshCw, MapPin, ChevronRight, Layers, Flame, UserCheck, Trophy, Lock, Sparkles, Heart, Repeat2, MessageCircle, Play, ExternalLink } from "lucide-react";
 import UniversityLogo from "../components/UniversityLogo";
 import { useSubscription } from "../lib/subscription";
 import UpgradeModal from "../components/UpgradeModal";
@@ -251,8 +251,83 @@ function FakePostCard({ post }) {
   );
 }
 
+/* ── Relative time helper ── */
+function timeAgo(iso) {
+  if (!iso) return "";
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+/* ── Real YouTube video card ── */
+function VideoCard({ video }) {
+  const ss = getStageStyle({ board_group: video.board_group, recruiting_status: video.recruiting_status });
+  return (
+    <a
+      href={video.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block rounded-2xl border overflow-hidden transition-all hover:-translate-y-0.5 group"
+      style={{ background: "var(--t-surface)", borderColor: "var(--t-border)", textDecoration: "none" }}
+      data-testid={`video-card-${video.video_id}`}
+    >
+      {/* Thumbnail */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: "16/9", background: "#000" }}>
+        {video.thumbnail_url ? (
+          <img
+            src={video.thumbnail_url}
+            alt={video.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--t-surface-alt, #111)" }}>
+            <Play className="w-8 h-8 opacity-30" />
+          </div>
+        )}
+        {/* Play overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ background: "rgba(0,0,0,0.35)" }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,0,0,0.9)" }}>
+            <Play className="w-4 h-4 text-white ml-0.5" />
+          </div>
+        </div>
+        {/* YouTube badge */}
+        <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg text-[9px] font-bold"
+          style={{ background: "rgba(255,0,0,0.9)", color: "white" }}>
+          <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          YouTube
+        </div>
+        {/* Time badge */}
+        <div className="absolute bottom-2 left-2 text-[9px] font-semibold px-1.5 py-0.5 rounded"
+          style={{ background: "rgba(0,0,0,0.7)", color: "rgba(255,255,255,0.85)" }}>
+          {timeAgo(video.published_at)}
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="p-3">
+        <div className="flex items-start gap-2 mb-2">
+          <UniversityLogo domain={video.domain} name={video.university_name} logoUrl={video.logo_url} size={26} />
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] font-bold truncate" style={{ color: "var(--t-text)" }}>{video.university_name}</div>
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: ss.bg, color: ss.color }}>{ss.label}</span>
+          </div>
+          <ExternalLink className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-60 transition-opacity mt-0.5" style={{ color: "var(--t-text-muted)" }} />
+        </div>
+        <p className="text-[12px] font-semibold leading-snug line-clamp-2" style={{ color: "var(--t-text-secondary, #555)" }}>
+          {video.title}
+        </p>
+      </div>
+    </a>
+  );
+}
+
 /* ── Gated Live Feed Section ── */
-function LiveFeedSection({ tier, onUpgrade }) {
+function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
   const isLocked = !tier || tier === "basic";
   const isProPlus = tier === "pro" || tier === "premium";
 
@@ -261,7 +336,7 @@ function LiveFeedSection({ tier, onUpgrade }) {
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full" style={{ background: isProPlus ? "#22c55e" : "#94a3b8" }} />
+          <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: isProPlus && videos.length > 0 ? "#22c55e" : "#94a3b8" }} />
           <span className="text-[11px] font-extrabold tracking-[1px] uppercase" style={{ color: "var(--t-text-muted)" }}>
             Live Feed
           </span>
@@ -270,23 +345,20 @@ function LiveFeedSection({ tier, onUpgrade }) {
               <Lock className="w-2.5 h-2.5" /> Pro
             </span>
           )}
+          {isProPlus && videos.length > 0 && (
+            <span className="text-[9px] font-semibold" style={{ color: "var(--t-text-faint, #aaa)" }}>
+              {videos.length} videos · YouTube
+            </span>
+          )}
         </div>
-        {isProPlus && (
-          <span className="text-[10px] font-semibold" style={{ color: "var(--t-text-muted)" }}>
-            API connection required to enable
-          </span>
-        )}
       </div>
 
       {isLocked ? (
         /* ── LOCKED: blurred preview + CTA ── */
         <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid var(--t-border)" }}>
-          {/* Blurred cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 p-4" style={{ filter: "blur(5px)", userSelect: "none", pointerEvents: "none", opacity: 0.7 }}>
             {FAKE_POSTS.map((post, i) => <FakePostCard key={i} post={post} />)}
           </div>
-
-          {/* Overlay */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
             style={{ background: "linear-gradient(to bottom, rgba(var(--t-bg-rgb,15,20,32),0.3) 0%, rgba(var(--t-bg-rgb,15,20,32),0.92) 60%)" }}>
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
@@ -312,26 +384,39 @@ function LiveFeedSection({ tier, onUpgrade }) {
             </p>
           </div>
         </div>
+
+      ) : loading ? (
+        /* ── Loading state ── */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {[1,2,3].map(i => (
+            <div key={i} className="rounded-2xl border overflow-hidden animate-pulse" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+              <div className="h-36" style={{ background: "var(--t-border)" }} />
+              <div className="p-3 space-y-2">
+                <div className="h-3 rounded w-3/4" style={{ background: "var(--t-border)" }} />
+                <div className="h-3 rounded w-1/2" style={{ background: "var(--t-border)" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+      ) : videos.length > 0 ? (
+        /* ── REAL videos grid ── */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {videos.slice(0, 9).map(v => <VideoCard key={v.video_id} video={v} />)}
+        </div>
+
       ) : (
-        /* ── UNLOCKED: Coming soon state for Pro+ ── */
+        /* ── No YouTube data ── */
         <div className="rounded-2xl border p-6 flex flex-col items-center text-center"
           style={{ background: "var(--t-surface)", borderColor: "rgba(26,138,128,0.25)", borderStyle: "dashed" }}>
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3"
             style={{ background: "rgba(26,138,128,0.1)" }}>
             <Radio className="w-5 h-5" style={{ color: "#1a8a80" }} />
           </div>
-          <p className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>Live Feed is coming soon</p>
+          <p className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>No YouTube channels yet</p>
           <p className="text-[11px] max-w-sm" style={{ color: "var(--t-text-muted)", lineHeight: 1.6 }}>
-            You're on the <strong>{tier === "premium" ? "Premium" : "Pro"}</strong> plan — you'll get access to live posts, camp alerts, and commitment tracking as soon as the feature launches.
+            None of your pipeline schools have YouTube channels in our database. Add more schools to see videos here.
           </p>
-          <div className="flex gap-2 mt-4 flex-wrap justify-center">
-            {["Live Posts", "Camp Alerts", "Commit Watch"].map(tag => (
-              <span key={tag} className="text-[10px] font-bold px-2.5 py-1 rounded-full"
-                style={{ background: "rgba(26,138,128,0.1)", color: "#1a8a80", border: "1px solid rgba(26,138,128,0.2)" }}>
-                {tag}
-              </span>
-            ))}
-          </div>
         </div>
       )}
     </div>
@@ -351,6 +436,22 @@ export default function SocialSpotlight() {
   const { subscription } = useSubscription();
   const tier = subscription?.tier || "basic";
 
+  // Live feed state (Pro/Premium only)
+  const [feedVideos, setFeedVideos] = useState([]);
+  const [feedLoading, setFeedLoading] = useState(false);
+
+  const fetchFeed = useCallback(async () => {
+    setFeedLoading(true);
+    try {
+      const res = await api.get("/social-spotlight/feed");
+      setFeedVideos(res.data.videos || []);
+    } catch (e) {
+      setFeedVideos([]);
+    } finally {
+      setFeedLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     api.get("/programs").then(res => {
       const data = Array.isArray(res.data) ? res.data.filter(p => p.board_group !== "archived") : [];
@@ -359,6 +460,11 @@ export default function SocialSpotlight() {
       if (data.length > 0) setSelectedSchool(data[0].program_id);
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
+
+  // Fetch live feed for Pro/Premium users
+  useEffect(() => {
+    if (tier && tier !== "basic") fetchFeed();
+  }, [tier, fetchFeed]);
 
   const platformCounts = useMemo(() => {
     const counts = {};
@@ -483,7 +589,13 @@ export default function SocialSpotlight() {
           <button
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all border"
             style={{ background: "rgba(26,138,128,0.08)", borderColor: "rgba(26,138,128,0.2)", color: "#1a8a80" }}
-            onClick={() => setLastUpdated(new Date())}
+            onClick={async () => {
+              setLastUpdated(new Date());
+              if (tier !== "basic") {
+                await api.post("/social-spotlight/feed/refresh").catch(() => {});
+                fetchFeed();
+              }
+            }}
             data-testid="spotlight-refresh"
           >
             <RefreshCw className="w-3 h-3" /> Refresh
@@ -536,7 +648,7 @@ export default function SocialSpotlight() {
         </div>
 
         {/* Live Feed — gated by subscription tier */}
-        <LiveFeedSection tier={tier} onUpgrade={() => setShowUpgrade(true)} />
+        <LiveFeedSection tier={tier} onUpgrade={() => setShowUpgrade(true)} videos={feedVideos} loading={feedLoading} />
 
         {/* Grid */}
         {filtered.length === 0 ? (
@@ -588,6 +700,11 @@ export default function SocialSpotlight() {
               <div className="text-xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{withSocial}</div>
               <div className="text-[10px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>of {programs.length} schools</div>
               <div className="text-[10px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>have social links</div>
+              {feedVideos.length > 0 && (
+                <div className="text-[10px] mt-1 font-bold" style={{ color: "#ff0000" }}>
+                  {feedVideos.length} videos in feed
+                </div>
+              )}
             </div>
           </div>
           {/* Platform breakdown */}
