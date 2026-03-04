@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
-import { Radio, RefreshCw, ExternalLink, MapPin, ChevronRight, Layers, Flame, Tent, UserCheck, Trophy } from "lucide-react";
+import { Radio, RefreshCw, MapPin, ChevronRight, Layers, Flame, UserCheck, Trophy, Lock, Sparkles, Heart, Repeat2, MessageCircle } from "lucide-react";
 import UniversityLogo from "../components/UniversityLogo";
+import { useSubscription } from "../lib/subscription";
+import UpgradeModal from "../components/UpgradeModal";
 
 /* ── Platform definitions ── */
 const PLATFORMS = {
@@ -171,6 +173,171 @@ function SchoolCard({ program: p, active, onClick }) {
   );
 }
 
+/* ── Fake post data for blurred preview ── */
+const FAKE_POSTS = [
+  {
+    school: "Georgia Tech Volleyball",
+    handle: "@GTVolleyball",
+    platform: "twitter",
+    badge: { label: "Camp Alert", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
+    body: "CAMP REGISTRATION IS OPEN! Join us for Elite Camp — June 14–16 at McCamish Pavilion. Limited spots for Class of 2026 & 2027.",
+    likes: 284, reposts: 91, comments: 18, time: "2 hrs ago",
+  },
+  {
+    school: "Penn State Women's VB",
+    handle: "@PennStateVB",
+    platform: "instagram",
+    badge: { label: "New Commit", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
+    body: "Welcome to Happy Valley, Emma Hartley! So excited to announce our first commitment for the Class of 2026.",
+    likes: 1240, reposts: 203, comments: 47, time: "5 hrs ago",
+  },
+  {
+    school: "UCLA Volleyball",
+    handle: "@UCLAVolleyball",
+    platform: "twitter",
+    badge: null,
+    body: "Back-to-back sets won in Tuesday's scrimmage. Our setters are dialing in connections early — this roster is looking sharp.",
+    likes: 892, reposts: 134, comments: 29, time: "7 hrs ago",
+  },
+];
+
+const PLATFORM_ICONS = {
+  twitter: () => <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
+  instagram: () => <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>,
+};
+const PLATFORM_COLORS = { twitter: "#e7e7e7", instagram: "#e1306c", facebook: "#1877f2", youtube: "#ff0000" };
+const PLATFORM_BG = { twitter: "rgba(231,231,231,0.06)", instagram: "rgba(225,48,108,0.08)", facebook: "rgba(24,119,242,0.08)", youtube: "rgba(255,0,0,0.08)" };
+
+function FakePostCard({ post }) {
+  const PIcon = PLATFORM_ICONS[post.platform];
+  return (
+    <div className="rounded-2xl border p-4" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+      {post.badge && (
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mb-3 border"
+          style={{ background: post.badge.bg, color: post.badge.color, borderColor: `${post.badge.color}30` }}>
+          {post.badge.label}
+        </span>
+      )}
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+          style={{ background: "var(--t-surface-alt, #eee)", color: "var(--t-text)" }}>
+          {post.school.slice(0, 2).toUpperCase()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-bold truncate" style={{ color: "var(--t-text)" }}>{post.school}</div>
+          <div className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{post.handle}</div>
+        </div>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ background: PLATFORM_BG[post.platform], color: PLATFORM_COLORS[post.platform] }}>
+          {PIcon && <PIcon />}
+        </div>
+      </div>
+      <p className="text-[12px] leading-relaxed mb-3" style={{ color: "var(--t-text-secondary, #666)" }}>{post.body}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+            <Heart className="w-3 h-3" /> {post.likes.toLocaleString()}
+          </span>
+          <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+            <Repeat2 className="w-3 h-3" /> {post.reposts}
+          </span>
+          <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+            <MessageCircle className="w-3 h-3" /> {post.comments}
+          </span>
+        </div>
+        <span className="text-[10px]" style={{ color: "var(--t-text-faint, #bbb)" }}>{post.time}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Gated Live Feed Section ── */
+function LiveFeedSection({ tier, onUpgrade }) {
+  const isLocked = !tier || tier === "basic";
+  const isProPlus = tier === "pro" || tier === "premium";
+
+  return (
+    <div className="mb-6">
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full" style={{ background: isProPlus ? "#22c55e" : "#94a3b8" }} />
+          <span className="text-[11px] font-extrabold tracking-[1px] uppercase" style={{ color: "var(--t-text-muted)" }}>
+            Live Feed
+          </span>
+          {isLocked && (
+            <span className="flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)" }}>
+              <Lock className="w-2.5 h-2.5" /> Pro
+            </span>
+          )}
+        </div>
+        {isProPlus && (
+          <span className="text-[10px] font-semibold" style={{ color: "var(--t-text-muted)" }}>
+            API connection required to enable
+          </span>
+        )}
+      </div>
+
+      {isLocked ? (
+        /* ── LOCKED: blurred preview + CTA ── */
+        <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid var(--t-border)" }}>
+          {/* Blurred cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 p-4" style={{ filter: "blur(5px)", userSelect: "none", pointerEvents: "none", opacity: 0.7 }}>
+            {FAKE_POSTS.map((post, i) => <FakePostCard key={i} post={post} />)}
+          </div>
+
+          {/* Overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+            style={{ background: "linear-gradient(to bottom, rgba(var(--t-bg-rgb,15,20,32),0.3) 0%, rgba(var(--t-bg-rgb,15,20,32),0.92) 60%)" }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+              style={{ background: "rgba(26,138,128,0.15)", border: "1px solid rgba(26,138,128,0.25)" }}>
+              <Lock className="w-5 h-5" style={{ color: "#1a8a80" }} />
+            </div>
+            <h3 className="text-base font-extrabold mb-1.5" style={{ color: "var(--t-text)" }}>
+              Live Feed — Pro & Premium
+            </h3>
+            <p className="text-[12px] max-w-xs mb-5" style={{ color: "var(--t-text-muted)", lineHeight: 1.6 }}>
+              See real posts from your target schools — camp announcements, new commits, coaching updates — all in one feed.
+            </p>
+            <button
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
+              style={{ background: "linear-gradient(135deg, #1a8a80, #0f5c55)", boxShadow: "0 4px 20px rgba(26,138,128,0.35)" }}
+              onClick={onUpgrade}
+              data-testid="live-feed-upgrade-btn"
+            >
+              <Sparkles className="w-4 h-4" /> Unlock Live Feed
+            </button>
+            <p className="text-[10px] mt-3" style={{ color: "var(--t-text-faint, #aaa)" }}>
+              14-day money-back guarantee · Cancel anytime
+            </p>
+          </div>
+        </div>
+      ) : (
+        /* ── UNLOCKED: Coming soon state for Pro+ ── */
+        <div className="rounded-2xl border p-6 flex flex-col items-center text-center"
+          style={{ background: "var(--t-surface)", borderColor: "rgba(26,138,128,0.25)", borderStyle: "dashed" }}>
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3"
+            style={{ background: "rgba(26,138,128,0.1)" }}>
+            <Radio className="w-5 h-5" style={{ color: "#1a8a80" }} />
+          </div>
+          <p className="text-sm font-bold mb-1" style={{ color: "var(--t-text)" }}>Live Feed is coming soon</p>
+          <p className="text-[11px] max-w-sm" style={{ color: "var(--t-text-muted)", lineHeight: 1.6 }}>
+            You're on the <strong>{tier === "premium" ? "Premium" : "Pro"}</strong> plan — you'll get access to live posts, camp alerts, and commitment tracking as soon as the feature launches.
+          </p>
+          <div className="flex gap-2 mt-4 flex-wrap justify-center">
+            {["Live Posts", "Camp Alerts", "Commit Watch"].map(tag => (
+              <span key={tag} className="text-[10px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: "rgba(26,138,128,0.1)", color: "#1a8a80", border: "1px solid rgba(26,138,128,0.2)" }}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Main Page ── */
 export default function SocialSpotlight() {
   const navigate = useNavigate();
@@ -180,6 +347,9 @@ export default function SocialSpotlight() {
   const [activePlatform, setActivePlatform] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [selectedSchool, setSelectedSchool] = useState(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { subscription } = useSubscription();
+  const tier = subscription?.tier || "basic";
 
   useEffect(() => {
     api.get("/programs").then(res => {
@@ -365,6 +535,9 @@ export default function SocialSpotlight() {
           })}
         </div>
 
+        {/* Live Feed — gated by subscription tier */}
+        <LiveFeedSection tier={tier} onUpgrade={() => setShowUpgrade(true)} />
+
         {/* Grid */}
         {filtered.length === 0 ? (
           <div className="text-center py-16 text-sm" style={{ color: "var(--t-text-muted)" }}>
@@ -503,19 +676,34 @@ export default function SocialSpotlight() {
           </button>
         </div>
 
-        {/* Coming soon */}
-        <div className="rounded-2xl border p-4" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-          <div className="text-[9px] font-extrabold tracking-[1.5px] uppercase mb-1" style={{ color: "var(--t-text-faint, #aaa)" }}>Coming Soon</div>
-          <p className="text-[11px] leading-relaxed mt-2" style={{ color: "var(--t-text-muted)" }}>
-            Live post feed, camp alerts, and commitment tracking — powered by social media API integration.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {["Live Feed", "Camp Alerts", "Commit Watch", "Trending"].map(tag => (
-              <span key={tag} className="text-[9px] font-bold px-2 py-0.5 rounded-full border" style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }}>{tag}</span>
-            ))}
+        {/* Upgrade CTA for basic users */}
+        {tier === "basic" && (
+          <div
+            className="rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "linear-gradient(135deg, rgba(26,138,128,0.12), rgba(15,92,85,0.06))", border: "1px solid rgba(26,138,128,0.2)" }}
+            onClick={() => setShowUpgrade(true)}
+            data-testid="sidebar-upgrade-cta"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-3.5 h-3.5" style={{ color: "#1a8a80" }} />
+              <span className="text-[10px] font-extrabold tracking-[1px] uppercase" style={{ color: "#1a8a80" }}>Upgrade to Pro</span>
+            </div>
+            <p className="text-[11px] leading-relaxed mb-3" style={{ color: "var(--t-text-muted)" }}>
+              Unlock live posts, camp alerts, and commitment tracking from your target schools.
+            </p>
+            <div className="text-[10px] font-bold" style={{ color: "#1a8a80" }}>See plans →</div>
           </div>
-        </div>
+        )}
       </aside>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgrade}
+        onClose={() => setShowUpgrade(false)}
+        feature="social_spotlight"
+        message="Unlock the Live Feed to see real posts from your target schools — camp announcements, new commits, and coaching updates."
+        currentTier={tier}
+      />
     </div>
   );
 }
