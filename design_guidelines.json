@@ -1,127 +1,122 @@
 {
-  "identity": {
-    "name": "E1",
-    "role": "Anti-AI Creative Designer",
-    "philosophy": "Fusion over Imitation. Emotion First. Content is King."
-  },
-  "project_context": {
-    "app_name": "Volleyball Recruiting CRM",
-    "theme": "Dark Mode (Sports/High-Energy)",
-    "primary_font": "Plus Jakarta Sans",
-    "key_colors": {
-      "background": "#0f1219",
-      "surface": "#161b25",
-      "brand_pink": "#e8628a",
-      "text_main": "#e2e8f0",
-      "text_muted": "#a0aec0"
+  "typography": {
+    "font_family": "Plus Jakarta Sans, sans-serif",
+    "headings": {
+      "h3": "text-sm font-bold text-[--t-text]",
+      "h4": "text-xs font-bold uppercase tracking-wider text-[--t-text-muted]"
+    },
+    "body": {
+      "text-sm": "text-sm leading-5",
+      "text-xs": "text-xs leading-4",
+      "text-tiny": "text-[10px] leading-3"
     }
   },
-  "design_strategies": {
-    "modal_philosophy": "The 'Final Proofread' Protocol. Do not treat this as a system alert. Treat it as a physical letter review before dropping it in the mailbox.",
-    "visual_style": {
-      "glassmorphism": "Use heavy blur (backdrop-blur-xl) for the overlay to silence the background noise.",
-      "card_texture": "Matte dark surface (#161b25) with a subtle 1px border (rgba(232, 98, 138, 0.2)).",
-      "typography_hierarchy": {
-        "recipient": "Large, distinctive. 'Sending to COACH NAME'. Verify identity.",
-        "subject": "Bold, clear. No truncation.",
-        "body": "Monospace or clean sans-serif (Inter/Jakarta) with generous line-height (1.6) for readability."
-      }
+  "colors": {
+    "theme": "dark",
+    "background": "#0f1219",
+    "surface": "#161b25",
+    "surface_hover": "#1e2330",
+    "border": "rgba(255,255,255,0.07)",
+    "text": {
+      "primary": "#e2e8f0",
+      "secondary": "#a0aec0",
+      "muted": "#718096",
+      "accent": "#1a8a80"
     },
-    "interaction_design": {
-      "entrance": "Scale up from 0.95 opacity 0 to 1 opacity 1 (spring physics).",
-      "hover_states": "Buttons must physically lift (-translate-y-0.5) and glow.",
-      "send_action": "The 'Commit' button. Gradient background (Pink to Red). 100% width on mobile."
+    "status": {
+      "success": "#10b981",
+      "warning": "#f59e0b",
+      "info": "#3b82f6",
+      "danger": "#ef4444",
+      "engagement": {
+        "opens": "#10b981",
+        "clicks": "#3b82f6",
+        "unique": "#a855f7"
+      }
+    }
+  },
+  "layout": {
+    "right_panel": {
+      "width": "350px-400px",
+      "spacing": "space-y-4",
+      "container_class": "flex flex-col gap-4"
     }
   },
   "components": {
-    "EmailPreviewModal": {
-      "path": "src/components/EmailPreviewModal.js",
-      "structure": [
-        {
-          "element": "Dialog",
-          "props": {
-            "open": "controlled",
-            "onOpenChange": "controlled"
-          }
-        },
-        {
-          "element": "DialogContent",
-          "classes": "bg-[#161b25] border-white/10 sm:max-w-[600px] p-0 overflow-hidden shadow-2xl"
-        },
-        {
-          "element": "HeaderSection",
-          "classes": "p-6 border-b border-white/5 bg-white/2",
-          "children": [
-            {
-              "element": "Title",
-              "text": "Review Message",
-              "classes": "text-lg font-semibold text-white tracking-tight"
-            },
-            {
-              "element": "RecipientBadge",
-              "classes": "mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e8628a]/10 text-[#e8628a] text-sm border border-[#e8628a]/20"
-            }
-          ]
-        },
-        {
-          "element": "ScrollArea",
-          "classes": "max-h-[60vh] p-6 space-y-4",
-          "children": [
-            {
-              "element": "SubjectLine",
-              "classes": "text-white/90 font-medium text-lg"
-            },
-            {
-              "element": "EmailBody",
-              "classes": "text-white/70 whitespace-pre-wrap font-sans leading-relaxed text-sm"
-            }
-          ]
-        },
-        {
-          "element": "FooterSection",
-          "classes": "p-6 bg-[#0f1219]/50 border-t border-white/5 flex items-center justify-between gap-4",
-          "children": [
-            {
-              "element": "EditButton",
-              "label": "Edit Message",
-              "variant": "ghost",
-              "classes": "text-white/50 hover:text-white hover:bg-white/5 transition-colors"
-            },
-            {
-              "element": "SendButton",
-              "label": "Confirm & Send",
-              "icon": "Send",
-              "classes": "bg-gradient-to-r from-[#e8628a] to-[#d63659] text-white hover:shadow-[0_0_20px_rgba(232,98,138,0.4)] transition-all duration-300 font-semibold px-6"
-            }
-          ]
-        }
-      ]
+    "notifications": {
+      "follow_up": {
+        "bg": "#1e1e2e",
+        "border_top_gradient": "linear-gradient(90deg, #f97316, rgba(249,115,22,0.2))",
+        "icon_bg": "rgba(249,115,22,0.15)",
+        "icon_color": "#f97316",
+        "button_primary": "bg-orange-600 hover:bg-orange-700 text-white",
+        "button_secondary": "border border-white/10 text-white/60 hover:bg-white/5"
+      },
+      "ai_next_step": {
+        "bg": "#1e1e2e",
+        "border_top_gradient": "linear-gradient(90deg, #1a8a80, rgba(26,138,128,0.2))",
+        "icon_bg": "rgba(26,138,128,0.15)",
+        "icon_color": "#2dd4bf",
+        "button_primary": "bg-[#1a8a80] hover:bg-[#158075] text-white",
+        "button_secondary": "border border-white/10 text-white/60 hover:bg-white/5"
+      }
+    },
+    "coaches_card": {
+      "container": "rounded-2xl border border-[--t-border] bg-[--t-surface] overflow-hidden shadow-sm",
+      "header": {
+        "wrapper": "flex items-center justify-between px-4 py-3 border-b border-[--t-border]",
+        "title": "flex items-center gap-2 text-sm font-bold text-[--t-text]",
+        "icon": "w-4 h-4 text-teal-500",
+        "action_btn": "p-1.5 rounded-md hover:bg-[--t-surface-hover] text-[--t-text-muted] transition-colors"
+      },
+      "staff_alert": {
+        "wrapper": "mx-4 mt-4 p-3 rounded-lg border border-amber-500/20 bg-amber-500/10 flex items-start gap-3",
+        "icon": "w-4 h-4 text-amber-500 mt-0.5",
+        "title": "text-xs font-bold text-amber-500",
+        "text": "text-[11px] text-[--t-text-secondary] mt-0.5 leading-relaxed"
+      },
+      "coach_list": {
+        "wrapper": "divide-y divide-[--t-border]",
+        "item": "p-4 hover:bg-[--t-surface-hover] transition-colors group relative",
+        "row_1": "flex items-center justify-between mb-1",
+        "name": "text-sm font-semibold text-[--t-text]",
+        "health_badge": "text-[10px] font-bold px-1.5 py-0.5 rounded border",
+        "row_2": "text-xs text-[--t-text-muted] mb-2",
+        "row_3": "flex items-center justify-between",
+        "email": "text-xs text-[--t-accent] hover:underline flex items-center gap-1.5",
+        "stats_inline": "flex items-center gap-2 text-[10px] text-[--t-text-muted]"
+      },
+      "engagement_summary": {
+        "wrapper": "grid grid-cols-3 border-t border-[--t-border] bg-[--t-surface-alt]/50",
+        "item": "px-2 py-3 text-center border-r border-[--t-border] last:border-r-0",
+        "value": "text-lg font-extrabold",
+        "label": "text-[9px] uppercase tracking-wider font-semibold text-[--t-text-muted] mt-1"
+      }
+    },
+    "share_profile": {
+      "container": "rounded-xl border border-[--t-border] bg-[--t-surface] p-4 flex items-center justify-between gap-3 mt-4 hover:border-[--t-accent]/40 transition-colors cursor-pointer group",
+      "content": "flex items-center gap-3",
+      "icon_box": "w-10 h-10 rounded-lg bg-[--t-accent]/10 flex items-center justify-center text-[--t-accent]",
+      "text_wrapper": "flex flex-col",
+      "title": "text-sm font-bold text-[--t-text]",
+      "subtitle": "text-[11px] text-[--t-text-muted]",
+      "button": "h-8 px-3 rounded-lg bg-[--t-accent] text-white text-xs font-medium hover:bg-[--t-accent-hover] transition-colors flex items-center gap-1.5 shadow-sm"
     }
   },
-  "assets": {
-    "icons": [
-      "Send",
-      "Edit2",
-      "User",
-      "AlertCircle"
-    ],
-    "library": "lucide-react"
-  },
-  "universal_guidelines": [
-    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
-    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
-    "Create depth through layered design elements with z-index hierarchy.",
-    "Use glass-morphism effects with backdrop filters (12-24px blur).",
-    "You MUST NOT apply universal transition. Eg: transition: all.",
-    "All interactive and key informational elements MUST include a data-testid attribute.",
-    "Use 'sonner' for toasts."
-  ],
   "instructions_to_main_agent": [
-    "Create a new component 'EmailPreviewModal.js' in 'src/components/'.",
-    "Use the existing 'Dialog' component from 'src/components/ui/dialog.jsx'.",
-    "Integrate this modal into the parent page (likely 'RecruitingBoard.js' or where the email send logic resides).",
-    "Ensure the modal intercepts the send action.",
-    "Use the 'ScrollArea' component for the email body if it is long.",
-    "Match the pink/red gradient from the sidebar for the primary action button."
+    "Redesign the Right Panel of the RecruitingJourney.js page.",
+    "Remove 'AtAGlanceCard' entirely.",
+    "Keep 'Follow-up' and 'AI Next Step' cards as they are (or slightly refined to match the new style).",
+    "Create a new 'CoachesCard' component that merges the coach list and engagement stats.",
+    "The 'CoachesCard' should have the Staff Change alert at the top (if active).",
+    "Each coach entry should show: Name, Health Badge (e.g. 'In Conversation' - Green, 'Going Cold' - Yellow), Role, Email.",
+    "The Health Badge colors should be: 'In Conversation': green, 'Going Cold': yellow, 'Closed': red, 'New': blue. Use 'badge-outline' variant or similar.",
+    "Add inline engagement stats (tiny icons) next to the email or below it for each coach if data permits. Use 'Mail' icon (opens) and 'MousePointerClick' (clicks).",
+    "The footer of the 'CoachesCard' must show the aggregate engagement stats: Email Opens (Green, #10b981), Link Clicks (Blue, #3b82f6), Unique Opens (Purple, #a855f7). Format as a 3-column grid.",
+    "Place the 'Share Profile' card at the bottom of the stack. Make it look like a CTA card.",
+    "Ensure the design works on desktop (fixed width ~350px) and mobile (full width).",
+    "Use 'lucide-react' for icons: Users, Mail, MousePointerClick, Eye, AlertTriangle, Share2, Plus, MoreHorizontal, AlertCircle.",
+    "Use existing 'Shadcn' UI primitives where possible (Badge, Button, Avatar, Separator).",
+    "Respect the dark theme variables: --t-surface (#161b25), --t-border (rgba(255,255,255,0.07)), --t-accent (#1a8a80)."
   ]
 }
