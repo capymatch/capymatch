@@ -35,6 +35,7 @@ const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const AthleteProfileQuiz = lazy(() => import("./pages/AthleteProfileQuiz"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const BillingPage = lazy(() => import("./pages/BillingPage"));
+const SocialSpotlight = lazy(() => import("./pages/SocialSpotlight"));
 const SchoolInfoPage = lazy(() => import("./pages/SchoolInfoPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
@@ -226,6 +227,7 @@ function AuthedRoutes({ user, onAuth, onLogout }) {
         <Route path="account" element={<AccountPage />} />
         <Route path="payment-success" element={<PaymentSuccess />} />
         <Route path="billing" element={<BillingPage />} />
+        <Route path="spotlight" element={<SocialSpotlight />} />
       </Route>
       <Route path="/admin" element={user?.email === "douglas@yeslms.com" ? <AdminLayout /> : <Navigate to="/board" replace />}>
         <Route index element={<AdminDashboard />} />

@@ -4,7 +4,7 @@ import {
   LayoutGrid, GraduationCap, Settings, 
   Bell, PlusCircle, Sparkles, Home, Kanban, Calendar,
   User, ChevronDown, ChevronRight, X, MessageSquare, Eye, Clock, Menu, Sidebar as SidebarIcon, Shield,
-  Video, TrendingUp, LogOut, CreditCard, Crown, Sun, Moon, Receipt
+  Video, TrendingUp, LogOut, CreditCard, Crown, Sun, Moon, Receipt, Radio
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import api from "../lib/api";
@@ -120,6 +120,7 @@ export default function Layout({ user, onLogout }) {
   const sidebarItems = [
     { to: "/board", icon: Home, label: "Dashboard" },
     { to: "/pipeline", icon: Kanban, label: "My Schools" },
+    { to: "/spotlight", icon: Radio, label: "Social Spotlight" },
     { to: "/knowledge-base", icon: GraduationCap, label: "Find Schools" },
     { to: "/calendar", icon: Calendar, label: "Calendar" },
   ];
@@ -350,7 +351,7 @@ export default function Layout({ user, onLogout }) {
               <Menu className="w-5 h-5" style={{ color: "var(--t-text)" }} />
             </button>
             {(() => {
-              const titles = { "/board": "Dashboard", "/pipeline": "My Schools", "/calendar": "Calendar", "/knowledge-base": "Schools", "/school": "School Info", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/billing": "Billing", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
+              const titles = { "/board": "Dashboard", "/pipeline": "My Schools", "/spotlight": "Social Spotlight", "/calendar": "Calendar", "/knowledge-base": "Schools", "/school": "School Info", "/outreach-analysis": "Engagement Analysis", "/highlight-advisor": "Highlight Advisor", "/settings": "Settings", "/account": "Account", "/billing": "Billing", "/profile": "Profile", "/journey": "Journey", "/programs": "Program Details" };
               const match = Object.entries(titles).find(([path]) => location.pathname.startsWith(path));
               const icon = match ? sidebarItems.find(s => s.to === match[0])?.icon : null;
               const Icon = icon || Home;

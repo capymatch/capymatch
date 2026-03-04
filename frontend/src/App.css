@@ -2,3 +2,12 @@
 .font-heading {
   font-family: 'Lora', serif;
 }
+
+/* Social Spotlight page — card entrance animation */
+@keyframes spotlightCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.spotlight-card-enter {
+  animation: spotlightCardIn 0.3s ease both;
+}
