@@ -21,7 +21,8 @@ A public-facing Volleyball Recruiting CRM called "CapyMatch." Athletes use it to
 - **[2025] MongoDB Atlas Migration**: Migrated from ephemeral local Docker to persistent Atlas M0 Free Tier. Data survives deployments.
 
 ### Data Enrichment
-- **[2025] Social Media Scraping**: Scraped social links for 955 schools (D1, D2, D3) and 751 individual coaches using Playwright. ~91% coverage.
+- **[2025] Social Media Scraping**: Scraped social links for schools (D1, D2, D3) and 751 individual coaches using Playwright.
+- **[Mar 2026] Re-scrape hard cases**: Enhanced scraper with `networkidle` wait + multi-path URL strategy. Coverage improved from 955/1053 (90.7%) → 1037/1053 (98.5%). Fixed bad URLs for Bradley University and Wilmington University. 16 schools remain with no accessible social links.
 - New collection: `coaches_scraped` stores `{ school_id, coach_name, social_links }`.
 
 ### Features
