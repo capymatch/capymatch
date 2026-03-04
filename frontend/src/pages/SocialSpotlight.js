@@ -326,8 +326,9 @@ function VideoCard({ video }) {
   );
 }
 
-/* ── Volleyball keyword filter (women's only) ── */
+/* ── Volleyball keyword filter (women's indoor only) ── */
 const VB_KEYWORDS = /w\.?\s*volley|women'?s?\s*volley|wvb|\bwvball\b/i;
+const BEACH_EXCLUDE = /\bbeach\b/i;
 
 /* ── Gated Live Feed Section ── */
 function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
@@ -336,8 +337,8 @@ function LiveFeedSection({ tier, onUpgrade, videos, loading }) {
   const isProPlus = tier === "pro" || tier === "premium";
 
   const displayVideos = useMemo(() => {
-    if (!vbOnly) return videos;
-    return videos.filter(v => VB_KEYWORDS.test(v.title) || VB_KEYWORDS.test(v.description || ""));
+    if (!vbOnly) return videos.filter(v => !BEACH_EXCLUDE.test(v.title));
+    return videos.filter(v => VB_KEYWORDS.test(v.title) || VB_KEYWORDS.test(v.description || "")).filter(v => !BEACH_EXCLUDE.test(v.title));
   }, [videos, vbOnly]);
 
   return (

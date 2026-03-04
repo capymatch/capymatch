@@ -88,15 +88,18 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
         channel_title = channel["snippet"]["title"]
         channel_thumb = channel["snippet"]["thumbnails"].get("default", {}).get("url", "")
 
-        # Step 2: search channel for women's volleyball content (costs 100 quota units — cached 6h)
+        # Step 2: search channel for women's indoor volleyball only (cached 6h)
         search_resp = yt.search().list(
             part="snippet",
             channelId=channel_id,
-            q="women's volleyball",
+            q="women's volleyball -beach",
             type="video",
             order="date",
             maxResults=max_results
         ).execute()
+
+        EXCLUDE = re.compile(r'\bbeach\b', re.I)
+        REQUIRE = re.compile(r'volley', re.I)
 
         videos = []
         for item in search_resp.get("items", []):
@@ -104,6 +107,13 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
                 continue
             video_id = item["id"]["videoId"]
             snip = item["snippet"]
+            title = snip.get("title", "")
+            desc = snip.get("description", "")
+            # Must mention volleyball; must not be beach volleyball
+            if not REQUIRE.search(title) and not REQUIRE.search(desc):
+                continue
+            if EXCLUDE.search(title):
+                continue
             thumb = (
                 snip["thumbnails"].get("maxres")
                 or snip["thumbnails"].get("high")
@@ -113,7 +123,7 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
             )
             videos.append({
                 "video_id": video_id,
-                "title": snip.get("title", ""),
+                "title": title,
                 "description": snip.get("description", "")[:200],
                 "thumbnail_url": thumb.get("url", ""),
                 "published_at": snip.get("publishedAt", ""),
@@ -192,7 +202,7 @@ async def get_social_feed(request: Request):
         if cached:
             videos = cached.get("videos", [])
         else:
-            videos = fetch_channel_videos(yt, yt_url, max_results=5)
+            videos = fetch_channel_videos(yt, yt_url, max_results=8)
             # Upsert cache
             await db.youtube_feed_cache.update_one(
                 {"program_id": pid, "tenant_id": tenant_id},
