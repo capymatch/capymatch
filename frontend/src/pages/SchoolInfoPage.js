@@ -198,12 +198,14 @@ export default function SchoolInfoPage() {
   }
   if (!school) return null;
 
-  const coaches = school.coaches_scraped?.length
-    ? school.coaches_scraped
-    : [
-        school.primary_coach && { name: school.primary_coach, title: "Head Coach", email: school.coach_email },
-        school.recruiting_coordinator && { name: school.recruiting_coordinator, title: "Recruiting Coordinator", email: school.coordinator_email },
-      ].filter(Boolean);
+  const coaches = school.coaching_staff?.length
+    ? school.coaching_staff.map(c => ({ ...c, title: c.role || c.title || "Coach" }))
+    : school.coaches_scraped?.length
+      ? school.coaches_scraped
+      : [
+          school.primary_coach && { name: school.primary_coach, title: "Head Coach", email: school.coach_email },
+          school.recruiting_coordinator && { name: school.recruiting_coordinator, title: "Recruiting Coordinator", email: school.coordinator_email },
+        ].filter(Boolean);
 
   const sc = school.scorecard || {};
   const divLabel = { D1: "NCAA D1", D2: "NCAA D2", D3: "NCAA D3", NAIA: "NAIA", JUCO: "JUCO" };
@@ -346,13 +348,16 @@ export default function SchoolInfoPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[15px] font-bold" style={{ color: "var(--t-text)" }}>{c.name}</div>
-                      <div className="text-[12px] text-slate-400 mt-0.5">{c.title || "Coach"}</div>
+                      <div className="text-[12px] text-slate-400 mt-0.5">{c.title || c.role || "Coach"}</div>
                     </div>
                   </div>
                   {c.email && (
                     <div className="flex items-center gap-2.5 mt-4">
                       <Mail className="w-3.5 h-3.5 text-slate-400" />
                       <span className="text-[13px] text-[#1a8a80] font-medium">{c.email}</span>
+                      {c.email_verified && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded-full">Verified</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -403,33 +408,6 @@ export default function SchoolInfoPage() {
           </div>
         </div>
 
-        {/* ── Coaching Staff ── */}
-        {school.coaching_staff_pr && school.coaching_staff_pr.length > 0 && (
-          <div data-testid="coaching-staff-section">
-            <SectionHeader icon={Users} title="Coaching Staff" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {school.coaching_staff_pr.map((coach, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl border p-4 flex items-center gap-3"
-                  style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}
-                  data-testid={`coach-card-${i}`}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
-                    style={{ background: "var(--t-border)", color: "var(--t-text-muted)" }}
-                  >
-                    {coach.name?.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[13px] font-semibold truncate" style={{ color: "var(--t-text)" }}>{coach.name}</div>
-                    <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{coach.role}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* ── Campus Diversity ── */}
         {school.campus_diversity && Object.keys(school.campus_diversity).length > 0 && (

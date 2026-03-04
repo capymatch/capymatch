@@ -1,113 +1,76 @@
-# CapyMatch - Volleyball Recruiting CRM
+# CapyMatch – Volleyball Recruiting CRM
 
-## Original Problem Statement
-Build a comprehensive volleyball recruiting CRM platform for student-athletes. The platform helps athletes track their recruiting pipeline, manage communications with coaches, and stay informed about schools they're interested in.
+## Product Overview
+CapyMatch is a full-stack React/FastAPI volleyball recruiting CRM that helps athletes track and manage their college recruiting pipeline.
 
-## Core Requirements
-1. **Persistent Database**: MongoDB Atlas for data persistence across deployments (DONE)
-2. **Social Media Integration**: Display social media activity for schools and coaches (DONE)
-3. **UI/UX Improvements**: Continuously refine UI based on user feedback (IN PROGRESS)
-4. **Data Accuracy**: Ensure all data shown is correct and relevant (IN PROGRESS)
-5. **Manual Email Logging**: Allow non-Gmail users to manually log emails (UPCOMING)
-6. **Camp Data Integration**: Add university camp info to knowledge base (UPCOMING)
-7. **Microsoft Outlook/365 Import**: Email import for Outlook users (BACKLOG)
+## Core Features (Implemented)
+- **Pipeline Board**: Kanban-style board to track school recruiting status
+- **School Info Pages**: Detailed school profiles with academic, financial, admissions, coaching staff data
+- **Social Spotlight**: Tabbed YouTube/Twitter feed for pipeline schools
+- **Gmail Import**: OAuth-based email import for tracking coach communications
+- **AI Assistant**: Claude-powered AI for recruiting advice
+- **Coach Cards**: Shareable athlete profile cards
+- **Stripe Payments**: Subscription management
 
 ## Architecture
-- **Frontend**: React (CRA) with Tailwind CSS, Shadcn/UI components
-- **Backend**: FastAPI (Python) 
-- **Database**: MongoDB Atlas (persistent)
-- **3rd Party**: YouTube Data API v3, Stripe, Anthropic Claude, Google APIs, Resend
+- **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
+- **Backend**: FastAPI + Motor (async MongoDB)
+- **Database**: MongoDB Atlas (capymatch DB)
+- **Hosting**: Kubernetes preview environment
 
-## What's Been Implemented
+## Data Sources
+- **College Scorecard API**: Academic/financial data
+- **Productive Recruit**: Coach names, campus diversity, financial details
+- **Official Athletics Websites**: Verified coach emails
+- **YouTube Data API v3**: Video content for social feed
+- **DuckDuckGo**: Fallback for URL discovery
 
-### Financial Data Fix & Coaching Staff (Mar 4, 2026)
-- Fixed Financial section to match Productive Recruit: Avg Annual Cost, Federal Loans %, Median Debt, Monthly Loan, Median Earnings
-- Added Coaching Staff section scraped from PR (names + roles for each school)
-- Full batch scraper running for all 930+ remaining schools
-- Scraper: `backend/scripts/scrape_financial_coaches.py`
-- Frontend: `frontend/src/pages/SchoolInfoPage.js`
+## Key DB Schema: `university_knowledge_base`
+- `university_name`, `division`, `conference`, `region`, `domain`
+- `coaching_staff`: [{name, role, email, email_verified}] — merged PR names + verified emails
+- `coaching_staff_pr`: [{name, role, email_likely, email_patterns}] — raw PR data
+- `coaches_scraped`: [{name, title, email}] — raw athletics site data
+- `primary_coach`, `coach_email` — head coach summary fields
+- `scorecard`: {graduation_rate, retention_rate, tuition_*, sat_avg, etc.}
+- `campus_diversity`: {category: {students, faculty}}
+- `social_links`: {youtube, twitter}
+- `pr_slug`, `pr_state` — Productive Recruit identifiers
 
-### Campus Diversity Data Scrape & Display (Mar 4, 2026)
-- Scraped campus diversity data from productiverecruit.com for all 12 pipeline schools
-- 9 demographic categories per school: American Indian/Alaska Native, Asian, Black, Hispanic/Latino, Native Hawaiian/Pacific Islander, Non Resident, Two or more, Unknown, White
-- Each category shows Student % and Faculty % with color-coded progress bars
-- Displayed on SchoolInfoPage below Financial section
-- Scraper script: `backend/scripts/scrape_diversity.py`
-- Frontend: `frontend/src/pages/SchoolInfoPage.js`
+## Coaching Data Coverage (as of Mar 4, 2026)
+- **1053 total schools** (D1: 348, D2: 284, D3: 421)
+- **939 schools (89%)** have complete coaching_staff with real names from PR
+- **374 schools (35%)** have at least 1 verified email from athletics sites
+- **1032 schools (98%)** have a coach email (verified or generated)
+- **2820 individual coaches**: 772 verified, 2038 likely, 10 missing email
+- **D1**: 95% have names, 100% have email, 43% verified
+- **D2**: 73% have names, 95% have email, 20% verified
+- **D3**: 93% have names, 98% have email, 38% verified
 
-### YouTube URL Data Audit & Fix (Mar 4, 2026)
-- Audited all 455 YouTube URLs in knowledge base
-- Fixed 16 wrong channels (pointing to wrong schools: CollegeSquash, Yahoo Sports, SEC, TV stations, etc.)
-- Fixed 7 duplicate URL issues (unrelated schools sharing the same channel URL)
-- Total: 23 schools corrected. 5 remaining duplicates are same-named schools (low priority)
-- Schools fixed: Franklin & Marshall, Tufts, LIU, LSU, Schreiner, MSOE, North Central, North Park, Dominican (IL & NY), Ouachita Baptist, Pacific, Covenant, Harding, Fairfield, SUNY Maritime, Virginia State, Illinois State, UW-Eau Claire, UNO, Bridgewater State, Anderson SC, Wheaton MA
+## Completed Work
+- Social Spotlight redesign (YouTube tabs, trending, Twitter quick links)
+- Campus Diversity scraping (958 schools)
+- Financial data + coaching staff names from Productive Recruit (930+ schools)
+- YouTube URL audit (fixed 23 incorrect URLs)
+- **Coach email enrichment**: 3-phase pipeline (PR names → email matching → athletics scraping)
+- Frontend coaching staff display with "VERIFIED" email badges
 
-### Twitter Quick Links & YouTube Data Fix (Mar 4, 2026)
-- Added "Follow on X" section to Social Spotlight — horizontally scrollable cards linking to each school's Twitter/X profile (no API key needed)
-- Fixed YouTube URLs for 9 schools (Stanford, Penn State, Texas, Florida, Georgia Tech, Johns Hopkins, Tampa, Emory, ACU) — feed went from 1 school/7 videos to 5 schools/20 videos
-- Fixed Alabama A&M Twitter URL (was pointing to Marquette)
-- Backend endpoint: GET /api/social-spotlight/social-links
-- Files: `backend/routes/youtube_feed.py`, `frontend/src/pages/SocialSpotlight.js`
+## Upcoming Tasks (P1)
+- Manual Email Logging: UI for non-Gmail users to log emails
+- Camp Data Integration: Add camp_url to knowledge base
 
-### "New This Week" Badge (Mar 4, 2026)
-- Auto-tags videos published within last 7 days with teal "NEW" badge on thumbnail
-- Appears on both regular video cards (top-right) and trending cards (top-right)
-- Pure frontend logic — no backend changes needed
-- File: `frontend/src/pages/SocialSpotlight.js` (isNewThisWeek helper)
-
-### Trending Section Enhancement (Mar 4, 2026)
-- "Trending" row at top of Social Spotlight showing top 3 most-viewed videos
-- Backend fetches YouTube view counts via statistics API (batched, max 50/call)
-- Rank badges (#1, #2, #3) and view count badges on each card
-- Minimum 100 views threshold to qualify for trending
-- Trending hides when filtering by specific school, reappears on "All Schools"
-- File: `backend/routes/youtube_feed.py` (enrich_view_counts), `frontend/src/pages/SocialSpotlight.js` (TrendingSection)
-
-### Social Spotlight Page (Redesigned - Mar 4, 2026)
-- Complete UI redesign from cluttered sidebar layout to clean Apple-like design
-- Horizontal scrollable school pill filters replacing left sidebar
-- Full-width 3-column video grid with generous spacing
-- School click filtering (click school pill → filter feed, click again → show all)
-- Video count badges on school pills
-- Women's Only toggle and Refresh controls
-- Gated content overlay for basic tier users
-- HTML entity decoding for YouTube titles
-- Empty state with clear filters button
-- File: `frontend/src/pages/SocialSpotlight.js`
-
-### Previous Features (Complete)
-- YouTube API live feed integration (backend: `backend/routes/youtube_feed.py`)
-- Data enrichment - 98.5% social media coverage
-- Social icons on Hero Card (My Schools page)
-- Feature gating UI for premium content
-- Advanced video filtering (women's volleyball only, no beach, recency fallback)
-- Full auth system (Google OAuth + email/password)
-- Recruiting pipeline board with drag-and-drop
-- Journey tracking per school
-- Gmail import
-- AI features (Engagement AI, Highlight AI, AI Advisor)
-- Calendar, Analytics, School Info pages
-- Stripe billing integration
-- Admin dashboard
-
-## Prioritized Backlog
-
-### P1 - Upcoming
-- Manual Email Logging UI for non-Gmail users
-- Camp Data Integration (add camp_url to knowledge base)
-- Add Twitter/X to Live Feed for off-season content
-
-### P2 - Future
+## Backlog (P2)
 - Microsoft Outlook/365 Import
-- Full NIL transaction/payment platform
+- Full NIL transaction/payment processing
 - Separate Girls/Boys Volleyball data models
 - Email templates & bulk outreach
 - Redesign "Find Schools" page
+- Resolve duplicate YouTube URLs for similarly-named schools
 
-## Key Endpoints
-- `GET /api/social-spotlight/feed` - YouTube videos for user's pipeline schools
-- `POST /api/social-spotlight/feed/refresh` - Force cache clear
-- `GET /api/programs` - User's recruiting pipeline
-
-## Test Credentials
-- Demo: `demo@capymatch.com` / `demo2026`
+## 3rd Party Integrations
+- Google YouTube Data API v3
+- Anthropic Claude (via Emergent LLM Key)
+- Google APIs (Gmail OAuth)
+- Resend (transactional email)
+- Stripe (payments)
+- Playwright (web scraping)
+- MongoDB Atlas

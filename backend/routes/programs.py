@@ -309,13 +309,18 @@ async def get_program(program_id: str, request: Request):
     # Enrich with questionnaire_url from KB
     kb = await db.university_knowledge_base.find_one(
         {"university_name": program.get("university_name")},
-        {"_id": 0, "questionnaire_url": 1, "social_links": 1, "coaches_scraped": 1}
+        {"_id": 0, "questionnaire_url": 1, "social_links": 1, "coaches_scraped": 1, "coaching_staff": 1}
     )
     if kb and kb.get("questionnaire_url"):
         program["questionnaire_url"] = kb["questionnaire_url"]
     if kb and kb.get("social_links"):
         program["social_links"] = kb["social_links"]
-    if kb and kb.get("coaches_scraped"):
+    if kb and kb.get("coaching_staff"):
+        program["kb_coaches"] = [
+            {"name": str(c.get("name", "")), "role": str(c.get("role", "")), "email": str(c.get("email", "")), "email_verified": c.get("email_verified", False)}
+            for c in kb["coaching_staff"]
+        ]
+    elif kb and kb.get("coaches_scraped"):
         program["kb_coaches"] = [
             {"name": str(c.get("name", "")), "social_links": {k: str(v) for k, v in c.get("social_links", {}).items() if v}}
             for c in kb["coaches_scraped"]
