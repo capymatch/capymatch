@@ -20,6 +20,13 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 
 ## What's Been Implemented
 
+### Twitter Quick Links & YouTube Data Fix (Mar 4, 2026)
+- Added "Follow on X" section to Social Spotlight — horizontally scrollable cards linking to each school's Twitter/X profile (no API key needed)
+- Fixed YouTube URLs for 9 schools (Stanford, Penn State, Texas, Florida, Georgia Tech, Johns Hopkins, Tampa, Emory, ACU) — feed went from 1 school/7 videos to 5 schools/20 videos
+- Fixed Alabama A&M Twitter URL (was pointing to Marquette)
+- Backend endpoint: GET /api/social-spotlight/social-links
+- Files: `backend/routes/youtube_feed.py`, `frontend/src/pages/SocialSpotlight.js`
+
 ### "New This Week" Badge (Mar 4, 2026)
 - Auto-tags videos published within last 7 days with teal "NEW" badge on thumbnail
 - Appears on both regular video cards (top-right) and trending cards (top-right)
