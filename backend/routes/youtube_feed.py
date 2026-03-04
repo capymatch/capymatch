@@ -88,28 +88,47 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
         channel_title = channel["snippet"]["title"]
         channel_thumb = channel["snippet"]["thumbnails"].get("default", {}).get("url", "")
 
-        # Step 2: search channel for women's indoor volleyball only (cached 6h)
-        search_resp = yt.search().list(
-            part="snippet",
-            channelId=channel_id,
-            q="women's volleyball -beach",
-            type="video",
-            order="date",
-            maxResults=max_results
-        ).execute()
+        # Step 2: two-stage search
+        # Stage 1 — current-year content (camps, spring practice, commits, off-season)
+        # Stage 2 — fallback to last 6 months if current year has nothing
+        from datetime import datetime as _dt, timedelta as _td
+        now_dt = _dt.utcnow()
+        jan_1 = _dt(now_dt.year, 1, 1).strftime("%Y-%m-%dT00:00:00Z")
+        six_months_ago = (now_dt - _td(days=180)).strftime("%Y-%m-%dT00:00:00Z")
 
-        EXCLUDE = re.compile(r'\bbeach\b', re.I)
+        def _search(published_after, q_str):
+            return yt.search().list(
+                part="snippet",
+                channelId=channel_id,
+                q=q_str,
+                type="video",
+                order="date",
+                publishedAfter=published_after,
+                maxResults=max_results
+            ).execute()
+
+        # Stage 1: current year, women's volleyball content
+        current_year = now_dt.year
+        search_resp = _search(jan_1, f"women's volleyball {current_year} -beach")
+        raw_items = search_resp.get("items", [])
+
+        # Stage 2: last 6 months of women's volleyball if stage 1 yielded < 2
+        if len(raw_items) < 2:
+            search_resp = _search(six_months_ago, "women's volleyball -beach")
+            raw_items = search_resp.get("items", [])
+
+        EXCLUDE = re.compile(r'\bbeach\b|\bmen\'?s\s+volley|\bm\.\s*volley\b|\bMVB\b', re.I)
         REQUIRE = re.compile(r'volley', re.I)
 
         videos = []
-        for item in search_resp.get("items", []):
+        for item in raw_items:
             if item.get("id", {}).get("kind") != "youtube#video":
                 continue
             video_id = item["id"]["videoId"]
             snip = item["snippet"]
             title = snip.get("title", "")
             desc = snip.get("description", "")
-            # Must mention volleyball; must not be beach volleyball
+            # Must mention volleyball somewhere; must not be beach volleyball
             if not REQUIRE.search(title) and not REQUIRE.search(desc):
                 continue
             if EXCLUDE.search(title):
