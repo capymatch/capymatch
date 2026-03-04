@@ -20,6 +20,14 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 
 ## What's Been Implemented
 
+### Trending Section Enhancement (Mar 4, 2026)
+- "Trending" row at top of Social Spotlight showing top 3 most-viewed videos
+- Backend fetches YouTube view counts via statistics API (batched, max 50/call)
+- Rank badges (#1, #2, #3) and view count badges on each card
+- Minimum 100 views threshold to qualify for trending
+- Trending hides when filtering by specific school, reappears on "All Schools"
+- File: `backend/routes/youtube_feed.py` (enrich_view_counts), `frontend/src/pages/SocialSpotlight.js` (TrendingSection)
+
 ### Social Spotlight Page (Redesigned - Mar 4, 2026)
 - Complete UI redesign from cluttered sidebar layout to clean Apple-like design
 - Horizontal scrollable school pill filters replacing left sidebar
