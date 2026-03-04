@@ -5,7 +5,7 @@ import { useSubscription, canAccess } from "../lib/subscription";
 import { toast } from "sonner";
 import {
   ChevronLeft, Plus, Mail, ExternalLink, Users, User,
-  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone, Sparkles
+  Check, Loader2, Lock, Activity, GraduationCap, DollarSign, BookOpen, Phone, Sparkles, PieChart
 } from "lucide-react";
 import { CommitmentStabilityCard } from "../components/CommitmentStabilityCard";
 import { TimelineStatusCard } from "../components/TimelineIntelligence";
@@ -402,6 +402,64 @@ export default function SchoolInfoPage() {
             <StatCard value={fmtMoney(sc.median_earnings)} label="Median Earnings" subtitle="After graduation" accent />
           </div>
         </div>
+
+        {/* ── Campus Diversity ── */}
+        {school.campus_diversity && Object.keys(school.campus_diversity).length > 0 && (
+          <div data-testid="campus-diversity-section">
+            <SectionHeader icon={PieChart} title="Campus Diversity" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {Object.entries(school.campus_diversity)
+                .sort((a, b) => b[1].students - a[1].students)
+                .map(([category, data]) => (
+                  <div
+                    key={category}
+                    className="rounded-xl border p-4"
+                    style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}
+                    data-testid={`diversity-${category.replace(/[\s/]+/g, '-').toLowerCase()}`}
+                  >
+                    <div className="text-[13px] font-semibold mb-3" style={{ color: "var(--t-text)" }}>
+                      {category}
+                    </div>
+                    <div className="space-y-2.5">
+                      {/* Students bar */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Students</span>
+                          <span className="text-[12px] font-bold" style={{ color: "var(--t-text)" }}>{data.students}%</span>
+                        </div>
+                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--t-border)" }}>
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${Math.min(data.students, 100)}%`, background: "#1a8a80" }}
+                          />
+                        </div>
+                      </div>
+                      {/* Faculty bar */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Faculty</span>
+                          <span className="text-[12px] font-bold" style={{ color: "var(--t-text)" }}>{data.faculty}%</span>
+                        </div>
+                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--t-border)" }}>
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${Math.min(data.faculty, 100)}%`, background: "#6366f1" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <div className="flex items-center gap-4 mt-3 text-[10px] text-slate-400">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full inline-block" style={{ background: "#1a8a80" }} /> Students</span>
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full inline-block" style={{ background: "#6366f1" }} /> Faculty</span>
+              {school.campus_diversity_source && (
+                <span className="ml-auto">Source: {school.campus_diversity_source}</span>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ── Additional Details ── */}
         {(school.mascot || school.scholarship_type || school.region) && (
