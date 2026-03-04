@@ -1,76 +1,71 @@
-# CapyMatch — Product Requirements Document
+# CapyMatch - Volleyball Recruiting CRM
 
 ## Original Problem Statement
-A public-facing Volleyball Recruiting CRM called "CapyMatch." Athletes use it to manage their college volleyball recruiting process — tracking schools, logging interactions, sending emails, and monitoring their pipeline.
+Build a comprehensive volleyball recruiting CRM platform for student-athletes. The platform helps athletes track their recruiting pipeline, manage communications with coaches, and stay informed about schools they're interested in.
 
-## Target Users
-- High school volleyball athletes actively recruiting for college programs
-- Coaches/staff reviewing athlete profiles (via public-facing profile links)
+## Core Requirements
+1. **Persistent Database**: MongoDB Atlas for data persistence across deployments (DONE)
+2. **Social Media Integration**: Display social media activity for schools and coaches (DONE)
+3. **UI/UX Improvements**: Continuously refine UI based on user feedback (IN PROGRESS)
+4. **Data Accuracy**: Ensure all data shown is correct and relevant (IN PROGRESS)
+5. **Manual Email Logging**: Allow non-Gmail users to manually log emails (UPCOMING)
+6. **Camp Data Integration**: Add university camp info to knowledge base (UPCOMING)
+7. **Microsoft Outlook/365 Import**: Email import for Outlook users (BACKLOG)
 
-## Core Architecture
-- **Frontend**: React (CRA), Tailwind CSS, Shadcn UI
-- **Backend**: FastAPI (Python), MongoDB Atlas (persistent cloud DB)
-- **Auth**: JWT-based custom auth + Google OAuth (Gmail import)
-- **Integrations**: Anthropic Claude (AI features), Resend (email), Stripe (payments), Google APIs (Gmail import)
-
----
+## Architecture
+- **Frontend**: React (CRA) with Tailwind CSS, Shadcn/UI components
+- **Backend**: FastAPI (Python) 
+- **Database**: MongoDB Atlas (persistent)
+- **3rd Party**: YouTube Data API v3, Stripe, Anthropic Claude, Google APIs, Resend
 
 ## What's Been Implemented
 
-### Database & Infrastructure
-- **[2025] MongoDB Atlas Migration**: Migrated from ephemeral local Docker to persistent Atlas M0 Free Tier. Data survives deployments.
+### Social Spotlight Page (Redesigned - Mar 4, 2026)
+- Complete UI redesign from cluttered sidebar layout to clean Apple-like design
+- Horizontal scrollable school pill filters replacing left sidebar
+- Full-width 3-column video grid with generous spacing
+- School click filtering (click school pill → filter feed, click again → show all)
+- Video count badges on school pills
+- Women's Only toggle and Refresh controls
+- Gated content overlay for basic tier users
+- HTML entity decoding for YouTube titles
+- Empty state with clear filters button
+- File: `frontend/src/pages/SocialSpotlight.js`
 
-### Data Enrichment
-- **[2025] Social Media Scraping**: Scraped social links for schools (D1, D2, D3) and 751 individual coaches using Playwright.
-- **[Mar 2026] Social Spotlight — Live Feed (YouTube)**: Real YouTube videos from pipeline schools displayed in a 3-column grid for Pro/Premium users. Backed by `GET /api/social-spotlight/feed` (batch KB lookup → YouTube Data API v3 → 6-hour MongoDB cache). Basic users see blurred preview + upgrade CTA. Google API key stored in `backend/.env` as `YOUTUBE_API_KEY`.
-- New collection: `coaches_scraped` stores `{ school_id, coach_name, social_links }`.
-
-### Features
-- **Public Athlete Profile**: Full public-facing profile page with schedule, stats, highlights.
-- **Recruiting Board / My Schools** (`/pipeline`): Kanban-style pipeline with Hero Card, filter chips, compact/expanded view.
-  - Hero Card shows most urgent school with advice, action button, **and social media icons** [Added Mar 2026].
-  - Pipeline cards show school social icons (X, Instagram, Facebook, YouTube).
-- **Journey Page** (`/journey/:id`): Detailed per-school recruiting journey with interaction log, coach info, coaching staff social links section (isolated `CoachSocialLinks.js` component).
-- **Dashboard**: Stats, school spotlight, pipeline snapshot, recent activity.
-- **AI Features**: AI assistant drawer, highlight advisor, outreach analysis, NIL readiness.
-- **Gmail Import**: OAuth-based email import for Gmail users.
-- **Calendar**: Recruiting events calendar.
-- **Find Schools / Knowledge Base**: Browse/search 1000+ schools.
-
-### UI/UX Improvements
-- Removed donut chart from "My Schools" for cleaner look.
-- Simplified Profile Page to single-column layout.
-- Fixed mobile notification dropdown CSS overflow bug.
-- Hero Card and Pipeline cards now both show social media icons for consistency.
-
----
+### Previous Features (Complete)
+- YouTube API live feed integration (backend: `backend/routes/youtube_feed.py`)
+- Data enrichment - 98.5% social media coverage
+- Social icons on Hero Card (My Schools page)
+- Feature gating UI for premium content
+- Advanced video filtering (women's volleyball only, no beach, recency fallback)
+- Full auth system (Google OAuth + email/password)
+- Recruiting pipeline board with drag-and-drop
+- Journey tracking per school
+- Gmail import
+- AI features (Engagement AI, Highlight AI, AI Advisor)
+- Calendar, Analytics, School Info pages
+- Stripe billing integration
+- Admin dashboard
 
 ## Prioritized Backlog
 
-### P0 — In Progress / Immediate
-- ✅ Hero Card social media icons (DONE Mar 2026)
+### P1 - Upcoming
+- Manual Email Logging UI for non-Gmail users
+- Camp Data Integration (add camp_url to knowledge base)
+- Add Twitter/X to Live Feed for off-season content
 
-### P1 — Upcoming
-- **Manual Email Logging**: UI on Journey page for non-Gmail users to manually log email interactions.
-- **Camp Data Integration**: Add `camp_url` field to knowledge base; scrape and display university camp info in UI.
-- **Re-scrape Missing Schools**: ~98 schools that failed during initial social media scraping passes.
-
-### P2 — Backlog
-- Microsoft Outlook/365 email import
-- NIL transaction/payment processing platform
+### P2 - Future
+- Fix Alabama A&M YouTube URL (data integrity, production-only issue)
+- Microsoft Outlook/365 Import
+- Full NIL transaction/payment platform
 - Separate Girls/Boys Volleyball data models
-- Email templates & bulk outreach functionality
+- Email templates & bulk outreach
 - Redesign "Find Schools" page
-- Consolidate scraper scripts into a single parameterized utility (`python scraper.py --division D2 --retry`)
 
----
+## Key Endpoints
+- `GET /api/social-spotlight/feed` - YouTube videos for user's pipeline schools
+- `POST /api/social-spotlight/feed/refresh` - Force cache clear
+- `GET /api/programs` - User's recruiting pipeline
 
-## Key Technical Notes
-- **Journey Page sensitivity**: `RecruitingJourney.js` is sensitive to changes. Always isolate new features into separate components with error handling (pattern: `CoachSocialLinks.js`).
-- **Data may not exist for demo user**: Coach social links may not be present for Stanford. Test with "Abilene Christian University" for social data.
-- **Scraping is done**: Do NOT re-run main scrapers unless explicitly requested.
-- **All MongoDB responses**: Must exclude `_id` field to avoid JSON serialization errors.
-
-## Credentials
-- Demo user: `demo@capymatch.com` / `demo2026`
-- DB: MongoDB Atlas (connection in `backend/.env`)
+## Test Credentials
+- Demo: `demo@capymatch.com` / `demo2026`
