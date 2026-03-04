@@ -395,13 +395,41 @@ export default function SchoolInfoPage() {
         <div data-testid="financial-section">
           <SectionHeader icon={DollarSign} title="Financial" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <StatCard value={fmtMoney(sc.tuition_out_of_state)} label="Out-of-State Tuition" />
-            <StatCard value={fmtMoney(sc.tuition_in_state)} label="In-State Tuition" />
+            <StatCard value={fmtMoney(sc.avg_annual_cost || sc.tuition_out_of_state)} label="Avg. Annual Cost" />
+            <StatCard value={sc.receive_federal_loans ? `${sc.receive_federal_loans}%` : "N/A"} label="Receive Federal Loans" />
             <StatCard value={fmtMoney(sc.median_debt)} label="Median Debt" subtitle="At graduation" />
             <StatCard value={fmtMoney(sc.monthly_loan_payment)} label="Monthly Loan" subtitle="After graduation" />
             <StatCard value={fmtMoney(sc.median_earnings)} label="Median Earnings" subtitle="After graduation" accent />
           </div>
         </div>
+
+        {/* ── Coaching Staff ── */}
+        {school.coaching_staff_pr && school.coaching_staff_pr.length > 0 && (
+          <div data-testid="coaching-staff-section">
+            <SectionHeader icon={Users} title="Coaching Staff" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {school.coaching_staff_pr.map((coach, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border p-4 flex items-center gap-3"
+                  style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}
+                  data-testid={`coach-card-${i}`}
+                >
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                    style={{ background: "var(--t-border)", color: "var(--t-text-muted)" }}
+                  >
+                    {coach.name?.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-semibold truncate" style={{ color: "var(--t-text)" }}>{coach.name}</div>
+                    <div className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{coach.role}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Campus Diversity ── */}
         {school.campus_diversity && Object.keys(school.campus_diversity).length > 0 && (

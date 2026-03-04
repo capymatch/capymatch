@@ -20,6 +20,13 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 
 ## What's Been Implemented
 
+### Financial Data Fix & Coaching Staff (Mar 4, 2026)
+- Fixed Financial section to match Productive Recruit: Avg Annual Cost, Federal Loans %, Median Debt, Monthly Loan, Median Earnings
+- Added Coaching Staff section scraped from PR (names + roles for each school)
+- Full batch scraper running for all 930+ remaining schools
+- Scraper: `backend/scripts/scrape_financial_coaches.py`
+- Frontend: `frontend/src/pages/SchoolInfoPage.js`
+
 ### Campus Diversity Data Scrape & Display (Mar 4, 2026)
 - Scraped campus diversity data from productiverecruit.com for all 12 pipeline schools
 - 9 demographic categories per school: American Indian/Alaska Native, Asian, Black, Hispanic/Latino, Native Hawaiian/Pacific Islander, Non Resident, Two or more, Unknown, White
