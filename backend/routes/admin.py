@@ -548,3 +548,51 @@ async def build_payload_endpoint(program_id: str, request: Request):
         raise HTTPException(status_code=500, detail=f"Payload Builder failed: {str(e)}")
 
 
+
+
+# ─── Monthly Coach Refresh ───
+
+import subprocess
+import json
+
+_refresh_process = None
+
+@router.post("/coach-refresh/trigger")
+async def trigger_coach_refresh():
+    """Manually trigger the monthly coach data refresh."""
+    global _refresh_process
+    if _refresh_process and _refresh_process.poll() is None:
+        return {"status": "already_running", "pid": _refresh_process.pid}
+
+    _refresh_process = subprocess.Popen(
+        ["python3", "scripts/monthly_coach_refresh.py"],
+        cwd="/app/backend",
+        stdout=open("/tmp/monthly_refresh.log", "w"),
+        stderr=subprocess.STDOUT,
+    )
+    return {"status": "started", "pid": _refresh_process.pid}
+
+
+@router.get("/coach-refresh/status")
+async def get_coach_refresh_status():
+    """Get the status of the monthly coach refresh."""
+    global _refresh_process
+    running = _refresh_process is not None and _refresh_process.poll() is None
+
+    progress = {}
+    try:
+        with open("/tmp/monthly_refresh_progress.json") as f:
+            progress = json.load(f)
+    except Exception:
+        pass
+
+    # Get last run from DB
+    last_run = await db.coach_refresh_runs.find_one(
+        {}, {"_id": 0}, sort=[("run_date", -1)]
+    )
+
+    return {
+        "running": running,
+        "progress": progress,
+        "last_run": last_run,
+    }

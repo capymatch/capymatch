@@ -179,6 +179,7 @@ coach_watch_task = None
 inbound_scan_task = None
 gpa_refresh_task = None
 demo_refresh_task = None
+coach_refresh_task = None
 
 async def check_coach_replies():
     """Background task that checks for coach email replies every 10 minutes"""
@@ -531,9 +532,41 @@ async def demo_date_refresh_loop():
         await asyncio.sleep(86400)  # 24 hours
 
 
+async def monthly_coach_refresh_loop():
+    """Run coach data refresh on the 1st of each month at 3 AM UTC."""
+    import subprocess
+    while True:
+        now = datetime.now(timezone.utc)
+        # Calculate next 1st of month at 3 AM UTC
+        if now.day == 1 and now.hour < 3:
+            next_run = now.replace(hour=3, minute=0, second=0, microsecond=0)
+        else:
+            # Next month's 1st
+            if now.month == 12:
+                next_run = now.replace(year=now.year + 1, month=1, day=1, hour=3, minute=0, second=0, microsecond=0)
+            else:
+                next_run = now.replace(month=now.month + 1, day=1, hour=3, minute=0, second=0, microsecond=0)
+
+        wait_seconds = (next_run - now).total_seconds()
+        logger.info(f"Monthly coach refresh: next run at {next_run.isoformat()} ({wait_seconds/3600:.1f}h from now)")
+        await asyncio.sleep(wait_seconds)
+
+        logger.info("Monthly coach refresh: STARTING")
+        try:
+            proc = subprocess.Popen(
+                ["python3", "scripts/monthly_coach_refresh.py"],
+                cwd="/app/backend",
+                stdout=open("/tmp/monthly_refresh.log", "w"),
+                stderr=subprocess.STDOUT,
+            )
+            logger.info(f"Monthly coach refresh: launched PID {proc.pid}")
+        except Exception as e:
+            logger.error(f"Monthly coach refresh failed to launch: {e}")
+
+
 @app.on_event("startup")
 async def startup_event():
-    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task
+    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task, coach_refresh_task
     
     # Create database indexes (idempotent, runs fast if indexes exist)
     from create_indexes import create_indexes
@@ -627,6 +660,10 @@ async def startup_event():
     demo_refresh_task = asyncio.create_task(demo_date_refresh_loop())
     logger.info("Started background task: demo date refresh (runs daily)")
 
+    # Start monthly coach data refresh scheduler
+    coach_refresh_task = asyncio.create_task(monthly_coach_refresh_loop())
+    logger.info("Started background task: monthly coach data refresh (1st of each month)")
+
     # One-time KB domain fixes
     domain_fixes = {
         "Palm Beach Atlantic University": "pba.edu",
@@ -650,10 +687,10 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task
+    global reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task, coach_refresh_task
     
     # Cancel background tasks
-    for task in [reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task]:
+    for task in [reply_check_task, coach_watch_task, inbound_scan_task, gpa_refresh_task, demo_refresh_task, coach_refresh_task]:
         if task:
             task.cancel()
             try:
