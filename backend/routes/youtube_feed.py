@@ -162,6 +162,32 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
         return []
 
 
+def enrich_view_counts(yt, videos: list):
+    """Batch-fetch view counts for a list of videos (max 50 per call)."""
+    if not videos:
+        return
+    ids = [v["video_id"] for v in videos if v.get("video_id")]
+    if not ids:
+        return
+    try:
+        for i in range(0, len(ids), 50):
+            batch = ids[i:i + 50]
+            resp = yt.videos().list(
+                part="statistics",
+                id=",".join(batch)
+            ).execute()
+            stats_map = {}
+            for item in resp.get("items", []):
+                vid = item["id"]
+                view_count = int(item.get("statistics", {}).get("viewCount", 0))
+                stats_map[vid] = view_count
+            for v in videos:
+                if v["video_id"] in stats_map:
+                    v["view_count"] = stats_map[v["video_id"]]
+    except Exception as e:
+        logger.warning(f"Failed to fetch view counts: {e}")
+
+
 # ── Route ─────────────────────────────────────────────────────────────────────
 
 @router.get("/feed")
@@ -247,14 +273,25 @@ async def get_social_feed(request: Request):
                 "recruiting_status": school.get("recruiting_status"),
             })
 
+    # Enrich with view counts for trending
+    enrich_view_counts(yt, feed_items)
+
     # Sort by published_at descending
     feed_items.sort(
         key=lambda x: x.get("published_at", ""),
         reverse=True
     )
 
+    # Build trending: top 3 by view count (minimum 100 views to qualify)
+    trending = sorted(
+        [v for v in feed_items if v.get("view_count", 0) >= 100],
+        key=lambda x: x.get("view_count", 0),
+        reverse=True
+    )[:3]
+
     return {
         "videos": feed_items[:30],
+        "trending": trending,
         "school_count": len(yt_schools),
         "total_videos": len(feed_items),
     }

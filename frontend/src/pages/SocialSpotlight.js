@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import api from "../lib/api";
-import { Play, Lock, Sparkles, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, Lock, Sparkles, RefreshCw, ChevronLeft, ChevronRight, TrendingUp, Eye } from "lucide-react";
 import UniversityLogo from "../components/UniversityLogo";
 import { useSubscription } from "../lib/subscription";
 import UpgradeModal from "../components/UpgradeModal";
@@ -91,6 +91,126 @@ function VideoCard({ video }) {
         </div>
       </div>
     </a>
+  );
+}
+
+/* ── Format view count ── */
+function formatViews(count) {
+  if (!count) return "0 views";
+  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M views`;
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}K views`;
+  return `${count.toLocaleString()} views`;
+}
+
+/* ── Trending Card (larger, featured) ── */
+function TrendingCard({ video, rank }) {
+  return (
+    <a
+      href={video.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block group outline-none relative"
+      style={{ textDecoration: "none" }}
+      data-testid={`trending-card-${video.video_id}`}
+    >
+      {/* Rank badge */}
+      <div
+        className="absolute top-3 left-3 z-10 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
+        style={{ background: "rgba(0,0,0,0.7)", color: "#fff", backdropFilter: "blur(8px)" }}
+      >
+        {rank}
+      </div>
+
+      {/* Thumbnail */}
+      <div
+        className="relative rounded-xl overflow-hidden mb-3"
+        style={{ aspectRatio: "16/9", background: "#0a0a0a" }}
+      >
+        {video.thumbnail_url ? (
+          <img
+            src={video.thumbnail_url}
+            alt={decodeHtml(video.title)}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--t-surface)" }}>
+            <Play className="w-8 h-8 opacity-20" style={{ color: "var(--t-text-muted)" }} />
+          </div>
+        )}
+        {/* Play overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm"
+            style={{ background: "rgba(255,255,255,0.9)" }}
+          >
+            <Play className="w-6 h-6 ml-0.5" style={{ color: "#000" }} fill="#000" />
+          </div>
+        </div>
+        {/* View count badge */}
+        {video.view_count > 0 && (
+          <div
+            className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold"
+            style={{ background: "rgba(0,0,0,0.7)", color: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}
+          >
+            <Eye className="w-3 h-3" />
+            {formatViews(video.view_count)}
+          </div>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="flex gap-3">
+        <UniversityLogo
+          domain={video.domain}
+          name={video.university_name}
+          logoUrl={video.logo_url}
+          size={36}
+          className="mt-0.5 rounded-full"
+        />
+        <div className="flex-1 min-w-0">
+          <h3
+            className="text-sm font-semibold leading-snug line-clamp-2 mb-1 transition-colors duration-200 group-hover:opacity-80"
+            style={{ color: "var(--t-text)" }}
+          >
+            {decodeHtml(video.title)}
+          </h3>
+          <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>
+            {video.university_name}
+          </p>
+          <p className="text-xs mt-0.5" style={{ color: "var(--t-text-muted)", opacity: 0.7 }}>
+            {timeAgo(video.published_at)}
+          </p>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+/* ── Trending Section ── */
+function TrendingSection({ videos }) {
+  if (!videos || videos.length === 0) return null;
+
+  return (
+    <div className="mb-10" data-testid="trending-section">
+      <div className="flex items-center gap-2 mb-4">
+        <TrendingUp className="w-4 h-4" style={{ color: "#ef4444" }} />
+        <h2 className="text-sm font-bold tracking-tight" style={{ color: "var(--t-text)" }}>
+          Trending
+        </h2>
+        <span
+          className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+          style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+        >
+          Most viewed
+        </span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
+        {videos.map((v, i) => (
+          <TrendingCard key={v.video_id} video={v} rank={i + 1} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -291,6 +411,7 @@ export default function SocialSpotlight() {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedVideos, setFeedVideos] = useState([]);
+  const [trendingVideos, setTrendingVideos] = useState([]);
   const [feedLoading, setFeedLoading] = useState(false);
   const [selectedName, setSelectedName] = useState(null);
   const [vbOnly, setVbOnly] = useState(false);
@@ -318,8 +439,10 @@ export default function SocialSpotlight() {
     try {
       const res = await api.get("/social-spotlight/feed");
       setFeedVideos(res.data.videos || []);
+      setTrendingVideos(res.data.trending || []);
     } catch {
       setFeedVideos([]);
+      setTrendingVideos([]);
     } finally {
       setFeedLoading(false);
     }
@@ -450,6 +573,11 @@ export default function SocialSpotlight() {
         </div>
       ) : (
         <>
+          {/* Trending section - shows globally regardless of school filter */}
+          {!selectedName && trendingVideos.length > 0 && (
+            <TrendingSection videos={trendingVideos} />
+          )}
+
           {/* Result count */}
           <div className="mb-5">
             <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>
