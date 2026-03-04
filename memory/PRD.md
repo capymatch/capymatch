@@ -69,7 +69,6 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 - Add Twitter/X to Live Feed for off-season content
 
 ### P2 - Future
-- Fix Alabama A&M YouTube URL (data integrity, production-only issue)
 - Microsoft Outlook/365 Import
 - Full NIL transaction/payment platform
 - Separate Girls/Boys Volleyball data models
