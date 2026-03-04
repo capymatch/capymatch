@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Spotlight — CapyMatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b12;
+      --surface: #0f1420;
+      --surface-2: #151c2c;
+      --surface-3: #1c2438;
+      --border: rgba(255,255,255,0.06);
+      --border-strong: rgba(255,255,255,0.12);
+      --teal: #1a8a80;
+      --teal-glow: rgba(26,138,128,0.18);
+      --teal-dim: rgba(26,138,128,0.08);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245,158,11,0.08);
+      --green: #22c55e;
+      --green-dim: rgba(34,197,94,0.08);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.08);
+      --purple: #a78bfa;
+      --purple-dim: rgba(167,139,250,0.08);
+      --text: #f0f2f5;
+      --text-2: #8b97b1;
+      --text-3: #4d5a72;
+      --x-color: #e7e7e7;
+      --ig-color: #e1306c;
+      --fb-color: #1877f2;
+      --yt-color: #ff0000;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── Top nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      height: 56px;
+      background: rgba(8,11,18,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .nav-logo .capy-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .nav-center {
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .nav-tab {
+      padding: 5px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .nav-tab.active {
+      background: var(--surface-3);
+      color: var(--text);
+    }
+    .nav-tab:hover:not(.active) { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-badge {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), #0f5c55);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: white;
+      cursor: pointer;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 0;
+      max-width: 1280px;
+      margin: 0 auto;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── Left sidebar ── */
+    .sidebar-left {
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .sidebar-left::-webkit-scrollbar { width: 0; }
+
+    .sidebar-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+
+    .school-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.12s;
+      margin-bottom: 2px;
+      position: relative;
+    }
+    .school-item:hover { background: var(--surface-2); }
+    .school-item.active { background: var(--teal-dim); }
+    .school-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 20%; bottom: 20%;
+      width: 3px;
+      background: var(--teal);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .school-avatar {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid var(--border-strong);
+    }
+    .school-info { flex: 1; min-width: 0; }
+    .school-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .school-stage {
+      font-size: 10px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+    .school-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .unread-count {
+      font-size: 9px;
+      font-weight: 700;
+      background: var(--teal);
+      color: white;
+      border-radius: 10px;
+      padding: 1px 5px;
+      min-width: 16px;
+      text-align: center;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* ── Main feed ── */
+    .feed {
+      border-right: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .feed-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .feed-subtitle {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+
+    /* Filter chips */
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--teal); color: var(--teal); }
+    .chip.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+    .chip .chip-count {
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 0 5px;
+      font-size: 9px;
+    }
+    .chip.active .chip-count { background: rgba(0,0,0,0.2); }
+
+    /* ── Post Card ── */
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .post-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(26,138,128,0.04), transparent 40%);
+      pointer-events: none;
+    }
+    .post-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    /* Alert variant */
+    .post-card.alert-camp {
+      border-color: rgba(245,158,11,0.25);
+      background: linear-gradient(135deg, #0f1420, #12100a);
+    }
+    .post-card.alert-camp::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--amber);
+      border-radius: 0 3px 3px 0;
+    }
+    .post-card.alert-commit {
+      border-color: rgba(34,197,94,0.2);
+      background: linear-gradient(135deg, #0f1420, #0a1209);
+    }
+    .post-card.alert-commit::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--green);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .post-school-avatar {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      border: 1px solid var(--border-strong);
+      flex-shrink: 0;
+    }
+    .post-meta { flex: 1; min-width: 0; }
+    .post-school-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .post-handle {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+    .post-platform {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .post-platform.x { background: rgba(231,231,231,0.06); color: var(--x-color); }
+    .post-platform.ig { background: rgba(225,48,108,0.08); color: var(--ig-color); }
+    .post-platform.fb { background: rgba(24,119,242,0.08); color: var(--fb-color); }
+    .post-platform.yt { background: rgba(255,0,0,0.08); color: var(--yt-color); }
+
+    .post-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-2);
+      margin-bottom: 12px;
+    }
+    .post-body strong { color: var(--text); font-weight: 600; }
+    .post-body .hashtag { color: var(--teal); }
+    .post-body .mention { color: var(--purple); }
+
+    .post-image {
+      width: 100%;
+      height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      background: var(--surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      font-size: 12px;
+      overflow: hidden;
+    }
+    .post-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .post-stats {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .post-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .post-stat i { font-size: 10px; }
+    .post-time {
+      font-size: 10px;
+      color: var(--text-3);
+    }
+
+    /* Alert badge */
+    .alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .alert-badge.camp {
+      background: var(--amber-dim);
+      color: var(--amber);
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+    .alert-badge.commit {
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+    .alert-badge.roster {
+      background: var(--purple-dim);
+      color: var(--purple);
+      border: 1px solid rgba(167,139,250,0.2);
+    }
+    .alert-badge.coaching {
+      background: rgba(59,130,246,0.08);
+      color: #60a5fa;
+      border: 1px solid rgba(59,130,246,0.15);
+    }
+
+    /* Stage badge */
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    /* ── Right sidebar ── */
+    .sidebar-right {
+      padding: 20px 16px;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .sidebar-right::-webkit-scrollbar { width: 0; }
+
+    .widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .widget-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+
+    .trending-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .trending-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .trending-rank {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      min-width: 16px;
+    }
+    .trending-info { flex: 1; min-width: 0; }
+    .trending-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trending-posts {
+      font-size: 10px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+    .trending-spark {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 20px;
+    }
+    .spark-bar {
+      width: 4px;
+      border-radius: 2px;
+      background: var(--teal);
+      opacity: 0.6;
+    }
+
+    .alert-strip {
+      background: var(--amber-dim);
+      border: 1px solid rgba(245,158,11,0.15);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .alert-strip-title {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .alert-event {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(245,158,11,0.1);
+    }
+    .alert-event:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .alert-event-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .alert-event-text {
+      font-size: 11px;
+      color: rgba(245,158,11,0.85);
+      line-height: 1.5;
+    }
+    .alert-event-text strong { color: var(--amber); }
+
+    /* Commitment tracker */
+    .commit-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .commit-row:last-child { border-bottom: none; }
+    .commit-avatar {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .commit-info { flex: 1; }
+    .commit-name { font-size: 11px; font-weight: 600; color: var(--text); }
+    .commit-school { font-size: 10px; color: var(--text-3); }
+    .commit-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+
+    /* Refresh button */
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(26,138,128,0.2);
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .refresh-btn:hover { background: var(--teal-glow); }
+
+    /* Glow header */
+    .page-glow {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 200px;
+      background: radial-gradient(ellipse, rgba(26,138,128,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Skeleton loader style for "live" feel */
+    .live-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+      margin-right: 4px;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Entrance animations */
+    .post-card {
+      animation: slideUp 0.3s ease forwards;
+      opacity: 0;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .post-card:nth-child(1) { animation-delay: 0.05s; }
+    .post-card:nth-child(2) { animation-delay: 0.12s; }
+    .post-card:nth-child(3) { animation-delay: 0.19s; }
+    .post-card:nth-child(4) { animation-delay: 0.26s; }
+    .post-card:nth-child(5) { animation-delay: 0.33s; }
+    .post-card:nth-child(6) { animation-delay: 0.40s; }
+    .post-card:nth-child(7) { animation-delay: 0.47s; }
+
+    /* Divider with label */
+    .feed-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0 14px;
+    }
+    .feed-divider span {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+    .feed-divider::before, .feed-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 0 1fr 260px; }
+      .sidebar-left { display: none; }
+    }
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar-right { display: none; }
+      .feed { padding: 16px; }
+    }
+
+    /* Tooltip */
+    [data-tip] { position: relative; }
+    [data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface-3);
+      border: 1px solid var(--border-strong);
+      color: var(--text-2);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="capy-icon">🐾</div>
+    CapyMatch
+  </div>
+  <div class="nav-center">
+    <button class="nav-tab">Dashboard</button>
+    <button class="nav-tab">My Schools</button>
+    <button class="nav-tab active">Social Spotlight</button>
+    <button class="nav-tab">Journey</button>
+    <button class="nav-tab">Profile</button>
+  </div>
+  <div class="nav-right">
+    <button class="refresh-btn">
+      <i class="fa-solid fa-rotate"></i> Refresh
+    </button>
+    <div class="nav-badge">SC</div>
+  </div>
+</nav>
+
+<!-- PAGE GLOW -->
+<div style="position:relative; overflow: hidden; height: 0;">
+  <div class="page-glow"></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- ── LEFT SIDEBAR ── -->
+  <aside class="sidebar-left">
+    <div class="sidebar-label">Your Pipeline</div>
+
+    <div class="school-item active">
+      <div class="school-avatar" style="background:#1e293b; color:#38bdf8;">GT</div>
+      <div class="school-info">
+        <div class="school-name">Georgia Tech</div>
+        <div class="school-stage">Waiting · D1</div>
+      </div>
+      <span class="unread-count">4</span>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#a78bfa;">SU</div>
+      <div class="school-info">
+        <div class="school-name">Stanford</div>
+        <div class="school-stage">Committed · D1</div>
+      </div>
+      <div class="school-dot" style="background:#22c55e;"></div>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#f59e0b;">UCLA</div>
+      <div class="school-info">
+        <div class="school-name">UCLA</div>
+        <div class="school-stage">Offer · D1</div>
+      </div>
+      <span class="unread-count">2</span>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#1a8a80;">PSU</div>
+      <div class="school-info">
+        <div class="school-name">Penn State</div>
+        <div class="school-stage">In Convo · D1</div>
+      </div>
+      <div class="school-dot" style="background:#1a8a80;"></div>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#fb923c;">UF</div>
+      <div class="school-info">
+        <div class="school-name">Univ. of Florida</div>
+        <div class="school-stage">Camp · D1</div>
+      </div>
+      <span class="unread-count">1</span>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#e2e8f0;">UT</div>
+      <div class="school-info">
+        <div class="school-name">Univ. of Texas</div>
+        <div class="school-stage">In Convo · D1</div>
+      </div>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#60a5fa;">JHU</div>
+      <div class="school-info">
+        <div class="school-name">Johns Hopkins</div>
+        <div class="school-stage">Outreach · D3</div>
+      </div>
+    </div>
+
+    <div class="school-item">
+      <div class="school-avatar" style="background:#1e293b; color:#f87171;">UT</div>
+      <div class="school-info">
+        <div class="school-name">Univ. of Tampa</div>
+        <div class="school-stage">Outreach · D2</div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Platforms Active</div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; padding: 0 8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:20px; height:20px; border-radius:5px; background:rgba(231,231,231,0.06); display:flex; align-items:center; justify-content:center;">
+          <i class="fa-brands fa-x-twitter" style="font-size:9px; color:#e7e7e7;"></i>
+        </div>
+        <span style="font-size:11px; color:var(--text-2);">X / Twitter</span>
+        <span style="margin-left:auto; font-size:10px; color:var(--text-3);">8 schools</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:20px; height:20px; border-radius:5px; background:rgba(225,48,108,0.08); display:flex; align-items:center; justify-content:center;">
+          <i class="fa-brands fa-instagram" style="font-size:9px; color:#e1306c;"></i>
+        </div>
+        <span style="font-size:11px; color:var(--text-2);">Instagram</span>
+        <span style="margin-left:auto; font-size:10px; color:var(--text-3);">6 schools</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:20px; height:20px; border-radius:5px; background:rgba(24,119,242,0.08); display:flex; align-items:center; justify-content:center;">
+          <i class="fa-brands fa-facebook-f" style="font-size:9px; color:#1877f2;"></i>
+        </div>
+        <span style="font-size:11px; color:var(--text-2);">Facebook</span>
+        <span style="margin-left:auto; font-size:10px; color:var(--text-3);">7 schools</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:20px; height:20px; border-radius:5px; background:rgba(255,0,0,0.08); display:flex; align-items:center; justify-content:center;">
+          <i class="fa-brands fa-youtube" style="font-size:9px; color:#ff0000;"></i>
+        </div>
+        <span style="font-size:11px; color:var(--text-2);">YouTube</span>
+        <span style="margin-left:auto; font-size:10px; color:var(--text-3);">4 schools</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN FEED ── -->
+  <main class="feed">
+    <div class="feed-header">
+      <div>
+        <div class="feed-title">
+          <span class="live-dot"></span>Social Spotlight
+        </div>
+        <div class="feed-subtitle">Latest from your 8 tracked schools · Updated 4 min ago</div>
+      </div>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="filter-row">
+      <div class="chip active"><i class="fa-solid fa-layer-group"></i> All <span class="chip-count">24</span></div>
+      <div class="chip"><i class="fa-solid fa-campground"></i> Camp Alerts <span class="chip-count">3</span></div>
+      <div class="chip"><i class="fa-solid fa-trophy"></i> Commits <span class="chip-count">2</span></div>
+      <div class="chip"><i class="fa-solid fa-user-tie"></i> Coaching <span class="chip-count">4</span></div>
+      <div class="chip"><i class="fa-solid fa-fire"></i> Trending</div>
+    </div>
+
+    <!-- ── POST 1: Camp alert ── -->
+    <div class="post-card alert-camp">
+      <div class="alert-badge camp"><i class="fa-solid fa-campground"></i> Camp Alert</div>
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#38bdf8;">GT</div>
+        <div class="post-meta">
+          <div class="post-school-name">Georgia Tech Volleyball</div>
+          <div class="post-handle">@GTVolleyball · <span class="stage-pill" style="background:rgba(245,158,11,0.1); color:#f59e0b;">Waiting on Reply</span></div>
+        </div>
+        <div class="post-platform x"><i class="fa-brands fa-x-twitter"></i></div>
+      </div>
+      <div class="post-body">
+        <strong>CAMP REGISTRATION IS OPEN!</strong> Join us for our annual <strong>Elite Camp</strong> — June 14–16 at McCamish Pavilion. Limited spots for incoming Class of 2026 &amp; 2027. 🏐<br><br>
+        Register now to get on our radar. Link in bio.<br>
+        <span class="hashtag">#GTVolleyball</span> <span class="hashtag">#RecruitingClass2026</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 284</span>
+          <span class="post-stat"><i class="fa-solid fa-retweet"></i> 91</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 18</span>
+        </div>
+        <div class="post-time">2 hrs ago</div>
+      </div>
+    </div>
+
+    <!-- ── POST 2: Commitment ── -->
+    <div class="post-card alert-commit">
+      <div class="alert-badge commit"><i class="fa-solid fa-check-circle"></i> Commitment Watch</div>
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#a78bfa;">PSU</div>
+        <div class="post-meta">
+          <div class="post-school-name">Penn State Women's Volleyball</div>
+          <div class="post-handle">@PennStateVB · <span class="stage-pill" style="background:rgba(26,138,128,0.1); color:#1a8a80;">In Conversation</span></div>
+        </div>
+        <div class="post-platform ig"><i class="fa-brands fa-instagram"></i></div>
+      </div>
+      <div class="post-body">
+        Welcome to Happy Valley, <strong>Emma Hartley</strong>! 🦁 So excited to announce our first commitment for the Class of 2026. Emma is a 6'2" OH from Naperville, IL with an elite serve.<br><br>
+        The roster is coming together. More announcements soon. <span class="hashtag">#WeAre</span> <span class="hashtag">#PennStateVB</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 1.2k</span>
+          <span class="post-stat"><i class="fa-solid fa-retweet"></i> 203</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 47</span>
+        </div>
+        <div class="post-time">5 hrs ago</div>
+      </div>
+    </div>
+
+    <!-- ── POST 3: Regular ── -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#fbbf24;">UCLA</div>
+        <div class="post-meta">
+          <div class="post-school-name">UCLA Volleyball</div>
+          <div class="post-handle">@UCLAVolleyball · <span class="stage-pill" style="background:rgba(245,158,11,0.1); color:#f59e0b;">Offer Received</span></div>
+        </div>
+        <div class="post-platform x"><i class="fa-brands fa-x-twitter"></i></div>
+      </div>
+      <div class="post-body">
+        Back-to-back sets won in Tuesday's scrimmage. Our setters are dialing in connections early in the season — this roster is looking sharp 🔥<br><br>
+        <span class="hashtag">#GoBruins</span> <span class="hashtag">#UCLAvolleyball</span> <span class="hashtag">#Spring2026</span>
+      </div>
+      <div class="post-image">
+        <img src="https://images.unsplash.com/photo-1762341582228-5a023ead47f7?w=800&q=60" alt="volleyball action" />
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 892</span>
+          <span class="post-stat"><i class="fa-solid fa-retweet"></i> 134</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 29</span>
+        </div>
+        <div class="post-time">7 hrs ago</div>
+      </div>
+    </div>
+
+    <div class="feed-divider"><span>Earlier Today</span></div>
+
+    <!-- ── POST 4: Coaching ── -->
+    <div class="post-card">
+      <div class="alert-badge coaching"><i class="fa-solid fa-user-tie"></i> Coach Update</div>
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#fb923c;">UF</div>
+        <div class="post-meta">
+          <div class="post-school-name">Florida Gators Volleyball</div>
+          <div class="post-handle">@GatorsVB · <span class="stage-pill" style="background:rgba(167,139,250,0.1); color:#a78bfa;">Camp Attended</span></div>
+        </div>
+        <div class="post-platform fb"><i class="fa-brands fa-facebook-f"></i></div>
+      </div>
+      <div class="post-body">
+        Proud to announce we've extended the contract of Head Coach <strong>Mary Wise</strong> through 2028. She's the heart of this program. 🐊<br><br>
+        Stability at the top. Recruiting class of 2026, take note — the foundation is here for years to come.<br>
+        <span class="hashtag">#GoGators</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 541</span>
+          <span class="post-stat"><i class="fa-solid fa-share"></i> 88</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 31</span>
+        </div>
+        <div class="post-time">9 hrs ago</div>
+      </div>
+    </div>
+
+    <!-- ── POST 5: Camp alert ── -->
+    <div class="post-card alert-camp">
+      <div class="alert-badge camp"><i class="fa-solid fa-campground"></i> Camp Alert</div>
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#e2e8f0;">UT</div>
+        <div class="post-meta">
+          <div class="post-school-name">Texas Longhorns Volleyball</div>
+          <div class="post-handle">@TexasVB · <span class="stage-pill" style="background:rgba(26,138,128,0.1); color:#1a8a80;">In Conversation</span></div>
+        </div>
+        <div class="post-platform ig"><i class="fa-brands fa-instagram"></i></div>
+      </div>
+      <div class="post-body">
+        🚨 <strong>2026 Elite ID Camp</strong> — May 30–31, Gregory Gymnasium. Spots filling FAST. This is the best way to get in front of our staff. We're watching the class of '26 &amp; '27 closely.<br><br>
+        DM us or visit the link in bio. <span class="hashtag">#HookEm</span> <span class="hashtag">#TexasVB</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 713</span>
+          <span class="post-stat"><i class="fa-solid fa-retweet"></i> 177</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 52</span>
+        </div>
+        <div class="post-time">11 hrs ago</div>
+      </div>
+    </div>
+
+    <!-- ── POST 6: Regular ── -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#60a5fa;">JHU</div>
+        <div class="post-meta">
+          <div class="post-school-name">Johns Hopkins Volleyball</div>
+          <div class="post-handle">@JHUvolleyball · <span class="stage-pill" style="background:rgba(148,163,184,0.1); color:#94a3b8;">Needs Outreach</span></div>
+        </div>
+        <div class="post-platform yt"><i class="fa-brands fa-youtube"></i></div>
+      </div>
+      <div class="post-body">
+        Spring practice recap is up on YouTube! 18 minutes of the team working on serve-receive and transition offense. Our OH corps is looking electric this year 🎬<br><br>
+        <span class="hashtag">#BlueJaysVB</span> <span class="hashtag">#JHU</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-eye"></i> 3.1k views</span>
+          <span class="post-stat"><i class="fa-solid fa-thumbs-up"></i> 142</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 9</span>
+        </div>
+        <div class="post-time">Yesterday</div>
+      </div>
+    </div>
+
+    <!-- ── POST 7: Commit ── -->
+    <div class="post-card alert-commit">
+      <div class="alert-badge commit"><i class="fa-solid fa-check-circle"></i> Commitment Watch</div>
+      <div class="post-header">
+        <div class="post-school-avatar" style="background:#1a2540; color:#38bdf8;">GT</div>
+        <div class="post-meta">
+          <div class="post-school-name">Georgia Tech Volleyball</div>
+          <div class="post-handle">@GTVolleyball · <span class="stage-pill" style="background:rgba(245,158,11,0.1); color:#f59e0b;">Waiting on Reply</span></div>
+        </div>
+        <div class="post-platform x"><i class="fa-brands fa-x-twitter"></i></div>
+      </div>
+      <div class="post-body">
+        Thrilled to welcome <strong>Sofia Mendez</strong> (MB, 6'3", Houston TX) to the GT family! Sofia chose us over offers from Oregon and TCU. 🐝<br><br>
+        The 2026 class is shaping up. <span class="hashtag">#TogetherWeSwarm</span> <span class="hashtag">#GTVolleyball</span>
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span class="post-stat"><i class="fa-solid fa-heart"></i> 961</span>
+          <span class="post-stat"><i class="fa-solid fa-retweet"></i> 155</span>
+          <span class="post-stat"><i class="fa-regular fa-comment"></i> 38</span>
+        </div>
+        <div class="post-time">Yesterday</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── RIGHT SIDEBAR ── -->
+  <aside class="sidebar-right">
+
+    <!-- Camp alerts strip -->
+    <div class="alert-strip">
+      <div class="alert-strip-title">
+        <i class="fa-solid fa-campground"></i> Upcoming Camps
+      </div>
+      <div class="alert-event">
+        <div class="alert-event-dot"></div>
+        <div class="alert-event-text"><strong>Georgia Tech</strong> Elite Camp · Jun 14–16</div>
+      </div>
+      <div class="alert-event">
+        <div class="alert-event-dot"></div>
+        <div class="alert-event-text"><strong>Texas</strong> ID Camp · May 30–31</div>
+      </div>
+      <div class="alert-event">
+        <div class="alert-event-dot"></div>
+        <div class="alert-event-text"><strong>Florida</strong> Spring Open Gym · May 10</div>
+      </div>
+    </div>
+
+    <!-- Trending widget -->
+    <div class="widget">
+      <div class="widget-title">Most Active This Week</div>
+      <div class="trending-item">
+        <div class="trending-rank">01</div>
+        <div class="trending-avatar" style="width:28px;height:28px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fbbf24;flex-shrink:0;">UCLA</div>
+        <div class="trending-info">
+          <div class="trending-name">UCLA Volleyball</div>
+          <div class="trending-posts">14 posts · 8.4k engagements</div>
+        </div>
+        <div class="trending-spark">
+          <div class="spark-bar" style="height:6px;"></div>
+          <div class="spark-bar" style="height:10px;"></div>
+          <div class="spark-bar" style="height:8px;"></div>
+          <div class="spark-bar" style="height:16px;"></div>
+          <div class="spark-bar" style="height:12px;"></div>
+          <div class="spark-bar" style="height:20px;"></div>
+        </div>
+      </div>
+      <div class="trending-item">
+        <div class="trending-rank">02</div>
+        <div class="trending-avatar" style="width:28px;height:28px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#38bdf8;flex-shrink:0;">GT</div>
+        <div class="trending-info">
+          <div class="trending-name">Georgia Tech VB</div>
+          <div class="trending-posts">11 posts · 5.2k engagements</div>
+        </div>
+        <div class="trending-spark">
+          <div class="spark-bar" style="height:10px;"></div>
+          <div class="spark-bar" style="height:14px;"></div>
+          <div class="spark-bar" style="height:10px;"></div>
+          <div class="spark-bar" style="height:18px;"></div>
+          <div class="spark-bar" style="height:14px;"></div>
+          <div class="spark-bar" style="height:16px;"></div>
+        </div>
+      </div>
+      <div class="trending-item">
+        <div class="trending-rank">03</div>
+        <div class="trending-avatar" style="width:28px;height:28px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#e2e8f0;flex-shrink:0;">UT</div>
+        <div class="trending-info">
+          <div class="trending-name">Texas Longhorns VB</div>
+          <div class="trending-posts">9 posts · 4.8k engagements</div>
+        </div>
+        <div class="trending-spark">
+          <div class="spark-bar" style="height:8px;"></div>
+          <div class="spark-bar" style="height:12px;"></div>
+          <div class="spark-bar" style="height:16px;"></div>
+          <div class="spark-bar" style="height:10px;"></div>
+          <div class="spark-bar" style="height:14px;"></div>
+          <div class="spark-bar" style="height:12px;"></div>
+        </div>
+      </div>
+      <div class="trending-item">
+        <div class="trending-rank">04</div>
+        <div class="trending-avatar" style="width:28px;height:28px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#a78bfa;flex-shrink:0;">PSU</div>
+        <div class="trending-info">
+          <div class="trending-name">Penn State VB</div>
+          <div class="trending-posts">7 posts · 3.9k engagements</div>
+        </div>
+        <div class="trending-spark">
+          <div class="spark-bar" style="height:12px;"></div>
+          <div class="spark-bar" style="height:8px;"></div>
+          <div class="spark-bar" style="height:14px;"></div>
+          <div class="spark-bar" style="height:12px;"></div>
+          <div class="spark-bar" style="height:18px;"></div>
+          <div class="spark-bar" style="height:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roster spots widget -->
+    <div class="widget">
+      <div class="widget-title">Roster Watch · Class of 2026</div>
+      <div class="commit-row">
+        <div class="commit-avatar" style="background:#1e293b; color:#a78bfa;">PSU</div>
+        <div class="commit-info">
+          <div class="commit-name">Emma Hartley · OH</div>
+          <div class="commit-school">Penn State · 6'2" Naperville IL</div>
+        </div>
+        <span class="commit-badge">Committed</span>
+      </div>
+      <div class="commit-row">
+        <div class="commit-avatar" style="background:#1e293b; color:#38bdf8;">GT</div>
+        <div class="commit-info">
+          <div class="commit-name">Sofia Mendez · MB</div>
+          <div class="commit-school">Georgia Tech · 6'3" Houston TX</div>
+        </div>
+        <span class="commit-badge">Committed</span>
+      </div>
+      <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
+        <div style="font-size:10px; color:var(--text-3); margin-bottom:6px;">Estimated open spots (2026)</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:11px; color:var(--text-2);">Georgia Tech</span>
+            <div style="display:flex; gap:3px;">
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--border-strong);"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--border-strong);"></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:11px; color:var(--text-2);">Penn State</span>
+            <div style="display:flex; gap:3px;">
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--border-strong);"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--border-strong);"></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:11px; color:var(--text-2);">UCLA</span>
+            <div style="display:flex; gap:3px;">
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+              <div style="width:8px;height:8px;border-radius:2px;background:var(--teal);opacity:0.9;"></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:9px; color:var(--text-3); margin-top:6px;"><i class="fa-solid fa-circle-info" style="margin-right:3px;"></i>Teal = estimated open spots</div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <button style="width:100%; padding:9px 12px; border-radius:10px; background:var(--teal-dim); border:1px solid rgba(26,138,128,0.2); color:var(--teal); font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-family:inherit;">
+        <i class="fa-solid fa-bell"></i> Set Up Camp Alerts
+      </button>
+      <button style="width:100%; padding:9px 12px; border-radius:10px; background:var(--surface); border:1px solid var(--border); color:var(--text-2); font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-family:inherit;">
+        <i class="fa-solid fa-gear"></i> Manage Followed Schools
+      </button>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>
+  // Mouse-following radial glow on post cards
+  document.querySelectorAll('.post-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // Filter chip toggle
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  // School sidebar toggle
+  document.querySelectorAll('.school-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.school-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
