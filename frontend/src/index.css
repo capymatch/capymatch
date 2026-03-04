@@ -209,3 +209,8 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3) !i
 .t-section { background-color: var(--t-section-bg); border-color: var(--t-border); }
 .t-colheader { background-color: var(--t-colheader-bg); border-color: var(--t-border); }
 .t-funnel { background-color: var(--t-funnel-bg); border-color: var(--t-border); }
+
+
+/* Hide scrollbar for horizontal filter bars */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
