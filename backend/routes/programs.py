@@ -75,7 +75,7 @@ async def batch_compute_signals(tenant_id: str, program_ids: list) -> dict:
     all_interactions = await db.interactions.find(
         {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
         {"_id": 0}
-    ).to_list(None)
+    ).to_list(5000)
 
     # Group by program_id
     by_program = {}
@@ -249,7 +249,7 @@ async def list_programs(
     all_coaches = await db.coaches.find(
         {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
         {"_id": 0}
-    ).to_list(None)
+    ).to_list(5000)
     coaches_by_program = {}
     for coach in all_coaches:
         pid = coach.get("program_id")

@@ -625,7 +625,15 @@ async def send_email(data: ComposeEmail, request: Request):
 
         # ── Engagement tracking injection ──
         tracking_id = str(uuid.uuid4())
-        base_url = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
+        # Derive base URL from request origin (works in both preview and production)
+        origin = request.headers.get("origin", "")
+        if not origin:
+            referer = request.headers.get("referer", "")
+            if referer:
+                from urllib.parse import urlparse
+                parsed = urlparse(referer)
+                origin = f"{parsed.scheme}://{parsed.netloc}"
+        base_url = origin.rstrip("/") if origin else ""
         
         # Find the program for this coach email
         coach_program = await db.coaches.find_one(
