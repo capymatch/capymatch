@@ -496,6 +496,7 @@ export default function SocialSpotlight() {
   const [feedLoading, setFeedLoading] = useState(false);
   const [selectedName, setSelectedName] = useState(null);
   const [vbOnly, setVbOnly] = useState(false);
+  const [activeTab, setActiveTab] = useState("youtube");
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { subscription } = useSubscription();
   const tier = subscription?.tier || "basic";
@@ -578,7 +579,7 @@ export default function SocialSpotlight() {
   return (
     <div className="max-w-6xl mx-auto" data-testid="social-spotlight">
       {/* Header */}
-      <div className="flex items-end justify-between mb-6">
+      <div className="flex items-end justify-between mb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--t-text)" }}>
             Social Spotlight
@@ -589,7 +590,7 @@ export default function SocialSpotlight() {
         </div>
 
         <div className="flex items-center gap-2">
-          {!isLocked && feedVideos.length > 0 && (
+          {!isLocked && activeTab === "youtube" && feedVideos.length > 0 && (
             <button
               onClick={() => setVbOnly((v) => !v)}
               data-testid="vb-only-toggle"
@@ -603,7 +604,7 @@ export default function SocialSpotlight() {
               Women's Only
             </button>
           )}
-          {!isLocked && (
+          {!isLocked && activeTab === "youtube" && (
             <button
               onClick={handleRefresh}
               disabled={feedLoading}
@@ -617,75 +618,141 @@ export default function SocialSpotlight() {
         </div>
       </div>
 
-      {/* School filter pills */}
-      {!isLocked && programs.length > 0 && (
-        <div className="mb-8">
-          <SchoolFilter
-            schools={programs}
-            selected={selectedName}
-            onSelect={setSelectedName}
-            videoCounts={videoCounts}
-          />
+      {/* Tab switcher */}
+      {!isLocked && (
+        <div className="flex gap-1 mb-6 p-1 rounded-lg w-fit" style={{ background: "var(--t-surface)", border: "1px solid var(--t-border)" }} data-testid="platform-tabs">
+          <button
+            onClick={() => setActiveTab("youtube")}
+            data-testid="tab-youtube"
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold transition-all duration-200"
+            style={
+              activeTab === "youtube"
+                ? { background: "var(--t-bg)", color: "var(--t-text)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }
+                : { background: "transparent", color: "var(--t-text-muted)" }
+            }
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" style={{ color: activeTab === "youtube" ? "#FF0000" : "currentColor" }}>
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            YouTube
+          </button>
+          <button
+            onClick={() => setActiveTab("twitter")}
+            data-testid="tab-twitter"
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-semibold transition-all duration-200"
+            style={
+              activeTab === "twitter"
+                ? { background: "var(--t-bg)", color: "var(--t-text)", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }
+                : { background: "transparent", color: "var(--t-text-muted)" }
+            }
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            X / Twitter
+            {twitterSchools.length > 0 && (
+              <span
+                className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
+                style={
+                  activeTab === "twitter"
+                    ? { background: "var(--t-border)", color: "var(--t-text-muted)" }
+                    : { background: "var(--t-border)", color: "var(--t-text-muted)" }
+                }
+              >
+                {twitterSchools.length}
+              </span>
+            )}
+          </button>
         </div>
       )}
 
-      {/* Feed content */}
-      {isLocked ? (
-        <LockedOverlay onUpgrade={() => setShowUpgrade(true)} />
-      ) : feedLoading ? (
-        <FeedSkeleton />
-      ) : displayed.length === 0 ? (
-        <div className="py-20 text-center" data-testid="empty-feed">
-          <p className="text-sm font-medium mb-1" style={{ color: "var(--t-text-muted)" }}>
-            {selectedName
-              ? `No videos found for ${selectedName}`
-              : "No videos yet"}
-          </p>
-          <p className="text-xs" style={{ color: "var(--t-text-muted)", opacity: 0.6 }}>
-            {selectedName
-              ? "Try selecting a different school or remove the filter."
-              : "Add schools to your pipeline or try refreshing."}
-          </p>
-          {(selectedName || vbOnly) && (
-            <button
-              onClick={() => { setSelectedName(null); setVbOnly(false); }}
-              className="mt-4 text-xs font-semibold px-4 py-2 rounded-full transition-all"
-              style={{ background: "var(--t-surface)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
-              data-testid="clear-filters-btn"
-            >
-              Clear filters
-            </button>
-          )}
-        </div>
-      ) : (
+      {/* YouTube tab */}
+      {activeTab === "youtube" && (
         <>
-          {/* Trending section - shows globally regardless of school filter */}
-          {!selectedName && trendingVideos.length > 0 && (
-            <TrendingSection videos={trendingVideos} />
-          )}
-
-          {/* Result count */}
-          <div className="mb-5">
-            <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>
-              {displayed.length} video{displayed.length !== 1 ? "s" : ""}
-              {selectedName && ` from ${selectedName}`}
-            </span>
-          </div>
-
-          {/* Video grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8" data-testid="video-grid">
-            {displayed.map((v) => (
-              <VideoCard key={v.video_id} video={v} />
-            ))}
-          </div>
-
-          {/* Twitter Quick Links */}
-          {!selectedName && twitterSchools.length > 0 && (
-            <div className="mt-12">
-              <TwitterSection schools={twitterSchools} />
+          {/* School filter pills */}
+          {!isLocked && programs.length > 0 && (
+            <div className="mb-8">
+              <SchoolFilter
+                schools={programs}
+                selected={selectedName}
+                onSelect={setSelectedName}
+                videoCounts={videoCounts}
+              />
             </div>
           )}
+
+          {/* Feed content */}
+          {isLocked ? (
+            <LockedOverlay onUpgrade={() => setShowUpgrade(true)} />
+          ) : feedLoading ? (
+            <FeedSkeleton />
+          ) : displayed.length === 0 ? (
+            <div className="py-20 text-center" data-testid="empty-feed">
+              <p className="text-sm font-medium mb-1" style={{ color: "var(--t-text-muted)" }}>
+                {selectedName
+                  ? `No videos found for ${selectedName}`
+                  : "No videos yet"}
+              </p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)", opacity: 0.6 }}>
+                {selectedName
+                  ? "Try selecting a different school or remove the filter."
+                  : "Add schools to your pipeline or try refreshing."}
+              </p>
+              {(selectedName || vbOnly) && (
+                <button
+                  onClick={() => { setSelectedName(null); setVbOnly(false); }}
+                  className="mt-4 text-xs font-semibold px-4 py-2 rounded-full transition-all"
+                  style={{ background: "var(--t-surface)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}
+                  data-testid="clear-filters-btn"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Trending section */}
+              {!selectedName && trendingVideos.length > 0 && (
+                <TrendingSection videos={trendingVideos} />
+              )}
+
+              {/* Result count */}
+              <div className="mb-5">
+                <span className="text-xs font-medium" style={{ color: "var(--t-text-muted)" }}>
+                  {displayed.length} video{displayed.length !== 1 ? "s" : ""}
+                  {selectedName && ` from ${selectedName}`}
+                </span>
+              </div>
+
+              {/* Video grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8" data-testid="video-grid">
+                {displayed.map((v) => (
+                  <VideoCard key={v.video_id} video={v} />
+                ))}
+              </div>
+            </>
+          )}
         </>
+      )}
+
+      {/* Twitter tab */}
+      {activeTab === "twitter" && (
+        <div data-testid="twitter-tab-content">
+          {isLocked ? (
+            <LockedOverlay onUpgrade={() => setShowUpgrade(true)} />
+          ) : twitterSchools.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-sm font-medium mb-1" style={{ color: "var(--t-text-muted)" }}>
+                No Twitter/X accounts found
+              </p>
+              <p className="text-xs" style={{ color: "var(--t-text-muted)", opacity: 0.6 }}>
+                Schools in your pipeline don't have Twitter profiles linked yet.
+              </p>
+            </div>
+          ) : (
+            <TwitterSection schools={twitterSchools} />
+          )}
+        </div>
       )}
 
       {/* Upgrade modal */}
