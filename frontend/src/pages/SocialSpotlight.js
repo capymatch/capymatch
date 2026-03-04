@@ -430,15 +430,15 @@ function TwitterSection({ schools }) {
           {schools.length} school{schools.length !== 1 ? "s" : ""}
         </span>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+      <div className="flex flex-wrap gap-3">
         {schools.map((s) => (
           <a
             key={s.program_id}
             href={s.twitter}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 px-4 py-3 rounded-xl flex-shrink-0 group transition-all duration-200 hover:-translate-y-0.5"
-            style={{ background: "var(--t-surface)", border: "1px solid var(--t-border)", textDecoration: "none", minWidth: 180 }}
+            className="flex items-center gap-2.5 px-4 py-3 rounded-xl group transition-all duration-200 hover:-translate-y-0.5"
+            style={{ background: "var(--t-surface)", border: "1px solid var(--t-border)", textDecoration: "none", width: "calc(33.333% - 8px)", minWidth: 180 }}
             data-testid={`twitter-link-${s.program_id}`}
           >
             <UniversityLogo
