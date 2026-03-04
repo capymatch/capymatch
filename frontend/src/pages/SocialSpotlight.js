@@ -326,8 +326,8 @@ function VideoCard({ video }) {
   );
 }
 
-/* ── Volleyball keyword filter ── */
-const VB_KEYWORDS = /volley|vball|\bvb\b/i;
+/* ── Volleyball keyword filter (women's only) ── */
+const VB_KEYWORDS = /w\.?\s*volley|women'?s?\s*volley|wvb|\bwvball\b/i;
 
 /* ── Gated Live Feed Section ── */
 function LiveFeedSection({ tier, onUpgrade, videos, loading }) {

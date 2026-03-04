@@ -88,11 +88,11 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
         channel_title = channel["snippet"]["title"]
         channel_thumb = channel["snippet"]["thumbnails"].get("default", {}).get("url", "")
 
-        # Step 2: search channel for volleyball content (costs 100 quota units — cached 6h)
+        # Step 2: search channel for women's volleyball content (costs 100 quota units — cached 6h)
         search_resp = yt.search().list(
             part="snippet",
             channelId=channel_id,
-            q="volleyball",
+            q="women's volleyball",
             type="video",
             order="date",
             maxResults=max_results
