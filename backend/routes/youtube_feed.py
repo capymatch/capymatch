@@ -56,26 +56,26 @@ def get_youtube():
 # ── Fetch channel's recent videos ────────────────────────────────────────────
 
 def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
-    """Fetch up to max_results recent videos for a channel. Returns list of video dicts."""
+    """Fetch up to max_results recent volleyball-relevant videos for a channel."""
     kind, value = parse_youtube_url(youtube_url)
     if not kind or not value:
         return []
 
     try:
-        # Step 1: resolve to channel ID + uploads playlist
+        # Step 1: resolve to channel ID
         if kind == "id":
             resp = yt.channels().list(
-                part="id,snippet,contentDetails",
+                part="id,snippet",
                 id=value
             ).execute()
         elif kind == "handle":
             resp = yt.channels().list(
-                part="id,snippet,contentDetails",
+                part="id,snippet",
                 forHandle=value
             ).execute()
-        else:  # username
+        else:  # username / custom
             resp = yt.channels().list(
-                part="id,snippet,contentDetails",
+                part="id,snippet",
                 forUsername=value
             ).execute()
 
@@ -87,19 +87,23 @@ def fetch_channel_videos(yt, youtube_url: str, max_results: int = 5):
         channel_id = channel["id"]
         channel_title = channel["snippet"]["title"]
         channel_thumb = channel["snippet"]["thumbnails"].get("default", {}).get("url", "")
-        uploads_id = channel["contentDetails"]["relatedPlaylists"]["uploads"]
 
-        # Step 2: fetch recent uploads
-        pl_resp = yt.playlistItems().list(
-            part="snippet,contentDetails",
-            playlistId=uploads_id,
+        # Step 2: search channel for volleyball content (costs 100 quota units — cached 6h)
+        search_resp = yt.search().list(
+            part="snippet",
+            channelId=channel_id,
+            q="volleyball",
+            type="video",
+            order="date",
             maxResults=max_results
         ).execute()
 
         videos = []
-        for item in pl_resp.get("items", []):
+        for item in search_resp.get("items", []):
+            if item.get("id", {}).get("kind") != "youtube#video":
+                continue
+            video_id = item["id"]["videoId"]
             snip = item["snippet"]
-            video_id = item["contentDetails"]["videoId"]
             thumb = (
                 snip["thumbnails"].get("maxres")
                 or snip["thumbnails"].get("high")
