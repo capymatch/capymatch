@@ -20,6 +20,12 @@ Build a comprehensive volleyball recruiting CRM platform for student-athletes. T
 
 ## What's Been Implemented
 
+### "New This Week" Badge (Mar 4, 2026)
+- Auto-tags videos published within last 7 days with teal "NEW" badge on thumbnail
+- Appears on both regular video cards (top-right) and trending cards (top-right)
+- Pure frontend logic — no backend changes needed
+- File: `frontend/src/pages/SocialSpotlight.js` (isNewThisWeek helper)
+
 ### Trending Section Enhancement (Mar 4, 2026)
 - "Trending" row at top of Social Spotlight showing top 3 most-viewed videos
 - Backend fetches YouTube view counts via statistics API (batched, max 50/call)

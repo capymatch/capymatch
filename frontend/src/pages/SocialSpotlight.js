@@ -23,6 +23,12 @@ function timeAgo(iso) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+/* ── Check if published within last 7 days ── */
+function isNewThisWeek(iso) {
+  if (!iso) return false;
+  return (Date.now() - new Date(iso)) / 1000 < 604800;
+}
+
 /* ── Filters ── */
 const BEACH_FILTER = /\bbeach\b/i;
 const VB_FILTER = /w\.?\s*volley|women'?s?\s*volley|wvb/i;
@@ -64,6 +70,16 @@ function VideoCard({ video }) {
             <Play className="w-5 h-5 ml-0.5" style={{ color: "#000" }} fill="#000" />
           </div>
         </div>
+        {/* New This Week badge */}
+        {isNewThisWeek(video.published_at) && (
+          <div
+            className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide"
+            style={{ background: "rgba(26,138,128,0.9)", color: "#fff", backdropFilter: "blur(8px)" }}
+            data-testid={`new-badge-${video.video_id}`}
+          >
+            NEW
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -155,6 +171,16 @@ function TrendingCard({ video, rank }) {
           >
             <Eye className="w-3 h-3" />
             {formatViews(video.view_count)}
+          </div>
+        )}
+        {/* New This Week badge */}
+        {isNewThisWeek(video.published_at) && (
+          <div
+            className="absolute top-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide"
+            style={{ background: "rgba(26,138,128,0.9)", color: "#fff", backdropFilter: "blur(8px)" }}
+            data-testid={`trending-new-badge-${video.video_id}`}
+          >
+            NEW
           </div>
         )}
       </div>
