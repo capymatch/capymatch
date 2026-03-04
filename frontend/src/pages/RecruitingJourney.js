@@ -65,6 +65,7 @@ export default function RecruitingJourney() {
   const [coachWatchAlert, setCoachWatchAlert] = useState(null);
   const [questLoading, setQuestLoading] = useState(false);
   const [gmailConnected, setGmailConnected] = useState(true);
+  const [schoolEngagement, setSchoolEngagement] = useState(null);
 
   const [activeForm, setActiveForm] = useState(null);
   const [editCoach, setEditCoach] = useState(null);
@@ -100,7 +101,7 @@ export default function RecruitingJourney() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [progRes, journeyRes, coachRes, profRes, notesRes, msRes, gmailRes] = await Promise.allSettled([
+      const [progRes, journeyRes, coachRes, profRes, notesRes, msRes, gmailRes, engRes] = await Promise.allSettled([
         api.get(`/programs/${programId}`),
         api.get(`/programs/${programId}/journey`),
         api.get(`/coaches?program_id=${programId}`),
@@ -108,6 +109,7 @@ export default function RecruitingJourney() {
         api.get(`/programs/${programId}/notes`),
         !isBasic ? api.get("/match-scores") : Promise.resolve({ data: null }),
         api.get("/gmail/status"),
+        api.get(`/engagement/school/${programId}`),
       ]);
       if (progRes.status !== "fulfilled" || journeyRes.status !== "fulfilled") {
         throw new Error("Failed to load core data");
@@ -131,6 +133,7 @@ export default function RecruitingJourney() {
         }
       }
       setGmailConnected(gmailRes.status === "fulfilled" && gmailRes.value.data?.connected === true);
+      if (engRes.status === "fulfilled") setSchoolEngagement(engRes.value.data);
       setLoading(false);
       if (!isBasic) {
         try {
@@ -508,6 +511,61 @@ export default function RecruitingJourney() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── Coach Engagement Tracker ── */}
+      {schoolEngagement && (schoolEngagement.total_opens > 0 || schoolEngagement.total_clicks > 0) && (
+        <div className="mt-4 rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="engagement-tracker">
+          <div className="px-5 py-3 border-b flex items-center gap-2.5" style={{ borderColor: "var(--t-border)" }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(16,185,129,0.12)" }}>
+              <svg className="w-4 h-4" style={{ color: "#10b981" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Coach Engagement</h3>
+              <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>How coaches interact with your emails & links</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 border-b" style={{ borderColor: "var(--t-border)" }}>
+            <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
+              <div className="text-xl font-extrabold" style={{ color: "#10b981" }}>{schoolEngagement.total_opens}</div>
+              <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Email Opens</div>
+            </div>
+            <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
+              <div className="text-xl font-extrabold" style={{ color: "#3b82f6" }}>{schoolEngagement.total_clicks}</div>
+              <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Link Clicks</div>
+            </div>
+            <div className="px-4 py-3 text-center">
+              <div className="text-xl font-extrabold" style={{ color: "#a855f7" }}>{schoolEngagement.unique_opens}</div>
+              <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Unique Opens</div>
+            </div>
+          </div>
+          {schoolEngagement.timeline?.length > 0 && (
+            <div className="px-5 py-3">
+              <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Recent Activity</p>
+              <div className="space-y-2">
+                {schoolEngagement.timeline.slice(0, 5).map((ev, i) => (
+                  <div key={i} className="flex items-center gap-2.5" data-testid={`engagement-event-${i}`}>
+                    <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: ev.event_type === "email_open" ? "rgba(16,185,129,0.1)" : "rgba(59,130,246,0.1)" }}>
+                      {ev.event_type === "email_open"
+                        ? <Mail className="w-3 h-3" style={{ color: "#10b981" }} />
+                        : <ExternalLink className="w-3 h-3" style={{ color: "#3b82f6" }} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-medium" style={{ color: "var(--t-text)" }}>
+                        {ev.event_type === "email_open" ? "Opened" : "Clicked link in"} {ev.email_subject ? `"${ev.email_subject}"` : "your email"}
+                      </p>
+                      {ev.coach_email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{ev.coach_email}</p>}
+                    </div>
+                    <span className="text-[10px] flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>
+                      {new Date(ev.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

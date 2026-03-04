@@ -59,7 +59,7 @@ function getMatchColor(m) {
 }
 
 /* ── Pipeline Card ── */
-function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }) {
+function PipelineCard({ program: p, section, matchScore, engagement, navigate, forceExpand }) {
   const [expanded, setExpanded] = useState(false);
   const [interactions, setInteractions] = useState(null);
   const [loadingIx, setLoadingIx] = useState(false);
@@ -161,6 +161,16 @@ function PipelineCard({ program: p, section, matchScore, navigate, forceExpand }
                   style={{ backgroundColor: "rgba(99,102,241,0.08)", color: "#818cf8" }}
                   data-testid={`imported-badge-${p.program_id}`}>
                   Imported
+                </span>
+              )}
+              {engagement && (engagement.email_opens > 0 || engagement.link_clicks > 0) && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
+                  style={{ backgroundColor: "rgba(16,185,129,0.08)", color: "#10b981" }}
+                  data-testid={`engagement-badge-${p.program_id}`}>
+                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  {engagement.email_opens > 0 && `${engagement.email_opens} open${engagement.email_opens > 1 ? "s" : ""}`}
+                  {engagement.email_opens > 0 && engagement.link_clicks > 0 && " · "}
+                  {engagement.link_clicks > 0 && `${engagement.link_clicks} click${engagement.link_clicks > 1 ? "s" : ""}`}
                 </span>
               )}
             </div>
@@ -492,7 +502,7 @@ function AllCaughtUpCard({ navigate }) {
 }
 
 /* ── Pipeline Section ── */
-function PipelineSection({ sectionCfg, programs, matchScores, navigate, expandAll }) {
+function PipelineSection({ sectionCfg, programs, matchScores, engagementBySchool, navigate, expandAll }) {
   const [collapsed, setCollapsed] = useState(false);
   if (programs.length === 0) return null;
 
@@ -521,6 +531,7 @@ function PipelineSection({ sectionCfg, programs, matchScores, navigate, expandAl
               program={p}
               section={sectionCfg.key}
               matchScore={matchScores[p.program_id]}
+              engagement={engagementBySchool[p.program_id] || engagementBySchool[p.university_name]}
               navigate={navigate}
               forceExpand={expandAll}
             />
@@ -593,6 +604,7 @@ export default function RecruitingBoard() {
   const [activeSection, setActiveSection] = useState(null);
   const [viewMode, setViewMode] = useState("compact");
   const [matchScores, setMatchScores] = useState({});
+  const [engagementBySchool, setEngagementBySchool] = useState({});
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -607,7 +619,7 @@ export default function RecruitingBoard() {
     }
   }, [searchParams, setSearchParams]);
 
-  // Fetch match scores
+  // Fetch match scores + engagement
   useEffect(() => {
     api.get("/match-scores").then(res => {
       if (res.data?.scores) {
@@ -615,6 +627,9 @@ export default function RecruitingBoard() {
         res.data.scores.forEach(s => { map[s.program_id] = s; });
         setMatchScores(map);
       }
+    }).catch(() => {});
+    api.get("/engagement/summary").then(res => {
+      setEngagementBySchool(res.data?.by_school || {});
     }).catch(() => {});
   }, []);
 
@@ -799,6 +814,7 @@ export default function RecruitingBoard() {
           sectionCfg={s}
           programs={sectionGroups[s.key]}
           matchScores={matchScores}
+          engagementBySchool={engagementBySchool}
           navigate={navigate}
           expandAll={expandAll}
         />

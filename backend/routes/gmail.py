@@ -623,7 +623,64 @@ async def send_email(data: ComposeEmail, request: Request):
         if data.bcc:
             message["bcc"] = data.bcc
 
-        msg_body = email.mime.text.MIMEText(data.body, "html")
+        # ── Engagement tracking injection ──
+        tracking_id = str(uuid.uuid4())
+        base_url = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
+        
+        # Find the program for this coach email
+        coach_program = await db.coaches.find_one(
+            {"tenant_id": tenant_id, "email": {"$regex": f"^{data.to.strip().lower()}$", "$options": "i"}},
+            {"_id": 0, "program_id": 1}
+        )
+        program_id = coach_program.get("program_id", "") if coach_program else ""
+        university_name = ""
+        if program_id:
+            prog = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0, "university_name": 1})
+            university_name = prog.get("university_name", "") if prog else ""
+
+        # Save tracking record
+        await db.email_tracking.insert_one({
+            "tracking_id": tracking_id,
+            "tenant_id": tenant_id,
+            "program_id": program_id,
+            "university_name": university_name,
+            "coach_email": data.to.strip().lower(),
+            "subject": data.subject,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+
+        # Replace links with tracked redirects
+        import re as _re
+        tracked_body = data.body
+        link_pattern = _re.compile(r'href=["\']((https?://[^"\']+))["\']', _re.IGNORECASE)
+        for match in link_pattern.finditer(data.body):
+            original_url = match.group(1)
+            if "capymatch" in original_url.lower() or "unsubscribe" in original_url.lower():
+                continue
+            link_tracking_id = str(uuid.uuid4())
+            tracked_url = f"{base_url}/api/track/click/{link_tracking_id}"
+            await db.link_tracking.insert_one({
+                "tracking_id": link_tracking_id,
+                "email_tracking_id": tracking_id,
+                "tenant_id": tenant_id,
+                "program_id": program_id,
+                "university_name": university_name,
+                "coach_email": data.to.strip().lower(),
+                "destination_url": original_url,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            })
+            tracked_body = tracked_body.replace(f'href="{original_url}"', f'href="{tracked_url}"', 1)
+            tracked_body = tracked_body.replace(f"href='{original_url}'", f"href='{tracked_url}'", 1)
+
+        # Inject tracking pixel at end of email
+        pixel_url = f"{base_url}/api/track/open/{tracking_id}"
+        pixel_tag = f'<img src="{pixel_url}" width="1" height="1" style="display:none" alt="" />'
+        if "</body>" in tracked_body.lower():
+            tracked_body = _re.sub(r'(</body>)', f'{pixel_tag}\\1', tracked_body, flags=_re.IGNORECASE)
+        else:
+            tracked_body += pixel_tag
+
+        msg_body = email.mime.text.MIMEText(tracked_body, "html")
         message.attach(msg_body)
 
         # Attach uploaded files

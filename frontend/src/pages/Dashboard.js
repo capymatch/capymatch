@@ -6,7 +6,8 @@ import {
   ChevronRight, Target, MessageCircle, Mail, Clock,
   Zap, Send, Sparkles, CheckCircle,
   ArrowRight, User, GraduationCap, Calendar,
-  BarChart3, Activity, ChevronDown, ChevronUp, X, Inbox
+  BarChart3, Activity, ChevronDown, ChevronUp, X, Inbox,
+  Eye, MousePointerClick, Flame
 } from "lucide-react";
 import { toast } from "sonner";
 import UpgradeModal from "../components/UpgradeModal";
@@ -235,6 +236,122 @@ function InboundContactCard({ contact, onDismiss, onView }) {
   );
 }
 
+/* ── Who's Watching Card ── */
+function WhosWatching({ engagement, navigate, formatTimeAgo }) {
+  if (!engagement) return null;
+  const { totals, feed, hot_leads } = engagement;
+  const hasActivity = (totals?.email_opens || 0) + (totals?.link_clicks || 0) + (totals?.profile_views || 0) > 0;
+
+  const eventIcon = (type) => {
+    if (type === "email_open") return <Mail className="w-3.5 h-3.5" style={{ color: "#10b981" }} />;
+    if (type === "link_click") return <MousePointerClick className="w-3.5 h-3.5" style={{ color: "#3b82f6" }} />;
+    if (type === "profile_view") return <Eye className="w-3.5 h-3.5" style={{ color: "#a855f7" }} />;
+    return <Eye className="w-3.5 h-3.5" style={{ color: "#94a3b8" }} />;
+  };
+
+  const eventLabel = (ev) => {
+    if (ev.event_type === "email_open") return { text: "Opened your email", highlight: ev.university_name || ev.coach_email, sub: ev.email_subject ? `"${ev.email_subject}"` : "" };
+    if (ev.event_type === "link_click") return { text: "Clicked a link", highlight: ev.university_name || ev.coach_email, sub: "" };
+    if (ev.event_type === "profile_view") return { text: "Viewed your profile", highlight: "", sub: "" };
+    return { text: "Activity", highlight: "", sub: "" };
+  };
+
+  return (
+    <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="whos-watching">
+      <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(16,185,129,0.12)" }}>
+            <Eye className="w-4 h-4" style={{ color: "#10b981" }} strokeWidth={2} />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Who's Watching</h3>
+            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>Coach engagement with your profile & emails</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 border-b" style={{ borderColor: "var(--t-border)" }}>
+        <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
+          <div className="text-lg font-extrabold" style={{ color: "#10b981" }}>{totals?.email_opens || 0}</div>
+          <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Email Opens</div>
+        </div>
+        <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
+          <div className="text-lg font-extrabold" style={{ color: "#3b82f6" }}>{totals?.link_clicks || 0}</div>
+          <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Link Clicks</div>
+        </div>
+        <div className="px-4 py-3 text-center">
+          <div className="text-lg font-extrabold" style={{ color: "#a855f7" }}>{totals?.profile_views || 0}</div>
+          <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Profile Views</div>
+        </div>
+      </div>
+
+      {/* Hot Leads */}
+      {hot_leads && hot_leads.length > 0 && (
+        <div className="px-5 py-3 border-b" style={{ borderColor: "var(--t-border)" }}>
+          <div className="flex items-center gap-1.5 mb-2">
+            <Flame className="w-3.5 h-3.5" style={{ color: "#f59e0b" }} />
+            <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#f59e0b" }}>Hot Leads</span>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {hot_leads.map((h, i) => (
+              <button
+                key={i}
+                onClick={() => h.program_id && navigate(`/journey/${h.program_id}`)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-colors hover:opacity-80"
+                style={{ backgroundColor: "rgba(245,158,11,0.08)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.15)" }}
+                data-testid={`hot-lead-${i}`}
+              >
+                <Flame className="w-3 h-3" />
+                {h.university_name}
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(245,158,11,0.15)" }}>
+                  {h.email_opens}o · {h.link_clicks}c
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Activity Feed */}
+      {hasActivity ? (
+        <div>
+          {feed.slice(0, 6).map((ev, i) => {
+            const label = eventLabel(ev);
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-3 px-5 py-3 border-b last:border-b-0 transition-colors"
+                style={{ borderColor: "var(--t-border)" }}
+                onClick={() => ev.program_id && navigate(`/journey/${ev.program_id}`)}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: ev.event_type === "email_open" ? "rgba(16,185,129,0.1)" : ev.event_type === "link_click" ? "rgba(59,130,246,0.1)" : "rgba(168,85,247,0.1)" }}>
+                  {eventIcon(ev.event_type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
+                    {label.text}{label.highlight && <span style={{ color: "#1a8a80" }}> {label.highlight}</span>}
+                  </p>
+                  {label.sub && <p className="text-[11px] truncate" style={{ color: "var(--t-text-muted)" }}>{label.sub}</p>}
+                </div>
+                <span className="text-[10px] flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>{formatTimeAgo(ev.created_at)}</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-10 px-5">
+          <Eye className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
+          <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>No engagement yet</p>
+          <p className="text-xs mt-1" style={{ color: "var(--t-text-faint)" }}>Send emails to coaches to start tracking</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════ */
 /* ── Dashboard ── */
 /* ══════════════════════════════════════════ */
@@ -248,6 +365,7 @@ export default function Dashboard() {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [spotlightExpanded, setSpotlightExpanded] = useState(false);
   const [inboundContacts, setInboundContacts] = useState([]);
+  const [engagement, setEngagement] = useState(null);
   const { subscription } = useSubscription();
   const { user: authUser } = useOutletContext() || {};
   const navigate = useNavigate();
@@ -260,14 +378,16 @@ export default function Dashboard() {
       api.get("/athlete-profile").catch(() => ({ data: {} })),
       api.get("/gmail/status").catch(() => ({ data: { connected: false } })),
       api.get("/inbound-contacts").catch(() => ({ data: { contacts: [] } })),
+      api.get("/engagement/summary").catch(() => ({ data: null })),
     ])
-      .then(([progRes, evtRes, intRes, profRes, gmailRes, inboundRes]) => {
+      .then(([progRes, evtRes, intRes, profRes, gmailRes, inboundRes, engRes]) => {
         setPrograms(progRes.data || []);
         setEvents(evtRes.data || []);
         setInteractions(Array.isArray(intRes.data) ? intRes.data : []);
         setProfile(profRes.data);
         setGmailConnected(gmailRes.data?.connected || false);
         setInboundContacts(inboundRes.data?.contacts || []);
+        setEngagement(engRes.data);
       })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
@@ -457,6 +577,9 @@ export default function Dashboard() {
           ))}
         </div>
       )}
+
+      {/* ═══ Who's Watching ═══ */}
+      <WhosWatching engagement={engagement} navigate={navigate} formatTimeAgo={formatTimeAgo} />
 
       {/* ═══ Section 2: Today's Actions ═══ */}
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="todays-actions">

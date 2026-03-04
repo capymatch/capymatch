@@ -52,6 +52,7 @@ from routes.admin_import_analytics import router as admin_import_analytics_route
 from routes.schedule import router as schedule_router
 from routes.coach_card import router as coach_card_router
 from routes.youtube_feed import router as youtube_feed_router
+from routes.engagement import router as engagement_router
 
 app.include_router(auth_router)
 app.include_router(programs_router)
@@ -81,6 +82,7 @@ app.include_router(admin_import_analytics_router)
 app.include_router(schedule_router)
 app.include_router(coach_card_router)
 app.include_router(youtube_feed_router)
+app.include_router(engagement_router)
 
 
 # ─── Serve Audit Report ───
