@@ -12,63 +12,51 @@ CapyMatch is a full-stack React/FastAPI volleyball recruiting CRM that helps ath
 - **Athlete Profile**: Public shareable profile for coaches to view
 - **Stripe Payments**: Subscription management
 - **Monthly Coach Data Refresh**: Automated monthly re-scraping of coaching data with email change reports
-- **Engagement Tracking**: Email opens, link clicks, profile views — with Dashboard widget, Pipeline badges, and Journey unified card
-- **Journey Page UI Refactor (Mar 4, 2026)**: Consolidated At a Glance + Coach Engagement + Coaches panel into a single unified "Coaches" card
+- **Engagement Tracking System**: Email opens, link clicks, profile views
+  - Dashboard "Who's Watching" widget
+  - Pipeline card engagement badges
+  - **Journey page**: Unified Coaches card with stats strip + inline email badges with hover tooltips (Mar 5, 2026)
+
+## Journey Page Architecture
+- **Unified Coaches Card** (right sidebar):
+  - Header with staff health badge (Stable/Change)
+  - Engagement stats strip (Opens/Clicks/Unique)
+  - Staff change alert (when detected)
+  - Coach list with edit/delete
+  - Head coach social links from KB
+- **Timeline** (left 2/3):
+  - Sent email bubbles show engagement badge (eye icon + count) in top-right corner
+  - Hover badge to see tooltip: who opened, who clicked, when
+  - Badge matching: Gmail emails match by subject; logged emails match by content keywords
+  - Orphaned link_clicks (no subject) included when opens are matched
+- **Removed**: Old "At a Glance" card, standalone "Coach Engagement Tracker", standalone "Coaching Staff Social Media" section, "Recent Activity" list in sidebar
 
 ## Architecture
 - **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
 - **Backend**: FastAPI + Motor (async MongoDB)
 - **Database**: MongoDB Atlas (capymatch DB)
-- **Hosting**: Kubernetes preview environment
 
-## Engagement Tracking System
-### How it works:
-1. **Email Open Tracking**: 1x1 transparent pixel injected into all outgoing emails via Gmail integration
-2. **Link Click Tracking**: All links wrapped with tracked redirect URLs
-3. **Profile View Tracking**: Via `/api/p/{slug}/view`
+## Key DB Schema
+- **`university_knowledge_base`**: `coaching_staff: [{name, role, email, email_verified}]`
+- **`engagement_events`**: `{user_id, school_id, event_type, email_subject, coach_email, created_at}`
 
-### Endpoints:
-- `GET /api/track/open/{tracking_id}` — Public pixel endpoint
-- `GET /api/track/click/{tracking_id}` — Public redirect endpoint
-- `GET /api/engagement/summary` — Dashboard totals, feed, hot_leads
-- `GET /api/engagement/school/{program_id}` — Per-school engagement details
-
-### Frontend Display:
-- **Dashboard "Who's Watching"**: Stats + Hot Leads + Activity Feed
-- **Pipeline Card Badges**: Engagement badges per school
-- **Journey Unified Coaches Card**: Engagement stats strip + timeline embedded in coaches card
-
-## Key DB Schema: `university_knowledge_base`
-- `coaching_staff`: [{name, role, email, email_verified}]
-- `coaching_staff_pr`, `coaches_scraped`, `primary_coach`, `coach_email`
-- `scorecard`, `campus_diversity`, `social_links`
-
-## Coaching Data Coverage
-- 1053 total schools (D1: 348, D2: 284, D3: 421)
-- 939 schools (89%) have coaching staff with real names
-- 374 schools (35%) have verified emails
-
-## Monthly Coach Refresh System
-- Schedule: 1st of each month at 3 AM UTC
-- Admin API: POST /api/admin/coach-refresh/trigger, GET /api/admin/coach-refresh/status
+## Key API Endpoints
+- `GET /api/engagement/school/{program_id}` — Per-school engagement (total_opens, total_clicks, unique_opens, timeline)
+- `GET /api/programs/{program_id}/journey` — Timeline with interactions + Gmail emails
+- `GET /api/track/open/{tracking_id}` — Pixel tracking endpoint
+- `GET /api/track/click/{tracking_id}` — Link click tracking endpoint
 
 ## Upcoming Tasks (P1)
-- Manual Email Logging: UI for non-Gmail users to log emails
+- Manual Email Logging: UI for non-Gmail users to manually log emails
 - Camp Data Integration: Add camp_url to knowledge base
 
 ## Backlog (P2)
 - Microsoft Outlook/365 Import
-- Full NIL transaction/payment processing
-- Separate Girls/Boys Volleyball data models
 - Email templates & bulk outreach
 - Redesign "Find Schools" page
 - Fix duplicate YouTube URLs for similarly-named schools
+- Full NIL transaction/payment processing
+- Separate Girls/Boys Volleyball data models
 
 ## 3rd Party Integrations
-- Google YouTube Data API v3
-- Anthropic Claude (via Emergent LLM Key)
-- Google APIs (Gmail OAuth)
-- Resend (transactional email + monthly reports)
-- Stripe (payments)
-- Playwright (web scraping)
-- MongoDB Atlas
+- Google YouTube Data API v3, Anthropic Claude (Emergent LLM Key), Google APIs (Gmail OAuth), Resend, Stripe, Playwright, MongoDB Atlas, APScheduler, BeautifulSoup4
