@@ -104,9 +104,10 @@ function SpotlightCard({ program, onClick }) {
 }
 
 /* ── Feed Item ── */
-function FeedItem({ dotColor, title, titleHighlight, detail, time, showLine = true }) {
+function FeedItem({ dotColor, title, titleHighlight, detail, time, showLine = true, onClick }) {
   return (
-    <div className="flex gap-3.5 px-5 py-3.5 transition-colors border-b last:border-b-0" style={{ borderColor: "var(--t-border)" }}
+    <div className="flex gap-3.5 px-5 py-3.5 transition-colors border-b last:border-b-0" style={{ borderColor: "var(--t-border)", cursor: onClick ? "pointer" : undefined }}
+      onClick={onClick}
       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--t-surface-hover)"}
       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
       <div className="flex flex-col items-center pt-1.5">
@@ -119,7 +120,10 @@ function FeedItem({ dotColor, title, titleHighlight, detail, time, showLine = tr
         </p>
         {detail && <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>{detail}</p>}
       </div>
-      <span className="text-[10px] pt-1 flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>{time}</span>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <span className="text-[10px] pt-0.5" style={{ color: "var(--t-text-faint)" }}>{time}</span>
+        {onClick && <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--t-text-faint)" }} />}
+      </div>
     </div>
   );
 }
@@ -761,6 +765,7 @@ export default function Dashboard() {
                     detail={ix.notes || ix.outcome || ""}
                     time={formatTimeAgo(ix.date_time || ix.created_at)}
                     showLine={i < recentActivity.length - 1}
+                    onClick={ix.program_id ? () => navigate(`/journey/${ix.program_id}`) : undefined}
                   />
                 );
               })}
