@@ -14,7 +14,7 @@ import { RAIL_STAGES } from "../components/journey/constants";
 /* ── Section Config ── */
 const SECTIONS = [
   { key: "outreach", label: "Needs outreach", color: "#d97706", bg: "#fffbeb" },
-  { key: "waiting", label: "Waiting on reply", color: "#dc2626", bg: "#fef2f2" },
+  { key: "waiting", label: "Upcoming follow-ups", color: "#dc2626", bg: "#fef2f2" },
   { key: "convo", label: "In conversation", color: "#2563eb", bg: "#eff6ff" },
   { key: "committed", label: "Committed", color: "#16a34a", bg: "#f0fdf4" },
 ];
@@ -490,7 +490,7 @@ function FilterChips({ sectionCounts, total, active, onFilter }) {
     { key: null, label: `All ${total}` },
     ...SECTIONS.filter(s => (sectionCounts[s.key] || 0) > 0).map(s => ({
       key: s.key,
-      label: `${s.key === "outreach" ? "Outreach" : s.key === "waiting" ? "Waiting" : s.key === "convo" ? "In Convo" : "Committed"} ${sectionCounts[s.key]}`,
+      label: `${s.key === "outreach" ? "Outreach" : s.key === "waiting" ? "Upcoming" : s.key === "convo" ? "In Convo" : "Committed"} ${sectionCounts[s.key]}`,
     })),
   ];
   return (
