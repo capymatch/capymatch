@@ -249,7 +249,7 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
             className="rounded-[14px] border-2 border-white/10" />
           <span style={{ fontSize: 24, fontWeight: 800, color: "white", letterSpacing: -0.3 }}>{p.university_name}</span>
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-            <div style={{ width: 260 }} className="hidden md:block">
+            <div style={{ width: 340 }} className="hidden md:block">
               <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
             </div>
             <button
