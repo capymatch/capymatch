@@ -248,13 +248,16 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
           <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={48}
             className="rounded-[14px] border-2 border-white/10" />
           <span style={{ fontSize: 24, fontWeight: 800, color: "white", letterSpacing: -0.3 }}>{p.university_name}</span>
-          <div style={{ marginLeft: "auto", flexShrink: 0 }}>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
+            <div style={{ width: 260 }} className="hidden md:block">
+              <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
+            </div>
             <button
               onClick={() => navigate(`/journey/${p.program_id}`)}
               style={{
                 padding: "10px 22px", borderRadius: 10, border: "none", background: "#0d9488",
                 color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex",
-                alignItems: "center", gap: 6, fontFamily: "inherit",
+                alignItems: "center", gap: 6, fontFamily: "inherit", flexShrink: 0,
               }}
               data-testid="hero-follow-up-btn"
             >
@@ -313,11 +316,6 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
             </div>
           ) : null;
         })()}
-      </div>
-
-      {/* Hero Rail */}
-      <div style={{ padding: "0 26px 22px" }}>
-        <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
       </div>
     </div>
   );
