@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — CapyMatch v8</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap');
+
+  :root {
+    --bg: #f7f7f8; --card: #ffffff; --border: #e2e8ed; --border-s: #eef1f4;
+    --text: #1a2b3c; --text2: #4a5e6f; --text3: #8a9baa; --text4: #c2cdd6;
+    --teal: #008a63; --teal-bg: #e6f5f0; --teal-light: #b3f2da;
+    --red: #d93f2f; --red-bg: #fcdbda;
+    --amber: #d97706; --amber-bg: #fef4e6;
+    --green: #16a34a; --green-bg: #e4f5ed;
+    --blue: #2563eb; --blue-bg: #e8f0fe;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* ── Header ── */
+  .hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .hdr h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  .hdr .cnt { font-size: 11px; font-weight: 700; color: var(--text3); background: var(--card); padding: 4px 10px; border-radius: 16px; border: 1px solid var(--border); }
+  .hdr .spacer { flex: 1; }
+  .hdr .add { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .hdr .add svg { width: 13px; height: 13px; }
+
+  /* ── Spotlight ── */
+  .spotlight {
+    background: #1a2b3c; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .spot-body { flex: 1; min-width: 0; }
+  .spot-tag { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #f87171; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+  .spot-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: #f87171; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .spot-school { font-size: 17px; font-weight: 800; color: white; margin-bottom: 3px; }
+  .spot-advice { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.5; }
+  .spot-advice strong { color: rgba(255,255,255,.85); }
+  .spot-btn { padding: 10px 22px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+
+  /* ── Stats ── */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+  .stat-box { background: var(--card); border-radius: 14px; padding: 14px; text-align: center; border: 1px solid var(--border-s); }
+  .stat-n { font-size: 24px; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+  .stat-l { font-size: 10px; font-weight: 600; color: var(--text3); }
+
+  /* ── Section label ── */
+  .sec { display: flex; align-items: center; gap: 8px; padding: 14px 0 8px; }
+  .sec-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .sec-name { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+  .sec-cnt { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 8px; }
+  .sec-line { flex: 1; height: 1px; background: var(--border-s); }
+
+  /* ════════════════════════════════ */
+  /*        SCHOOL CARD ROW          */
+  /* ════════════════════════════════ */
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: center;
+    gap: 16px; cursor: pointer; transition: all 0.15s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cdd6de; }
+
+  /* -- School identity -- */
+  .card-id { display: flex; align-items: center; gap: 12px; min-width: 180px; flex-shrink: 0; }
+  .card-logo {
+    width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .card-school { font-size: 14px; font-weight: 700; white-space: nowrap; }
+  .card-div { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* -- Progress pipeline -- */
+  .pipeline { display: flex; align-items: center; gap: 0; min-width: 200px; flex: 1; }
+  .pip-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--border); background: white;
+  }
+  .pip-dot.done { background: var(--teal); border-color: var(--teal); }
+  .pip-dot.now { background: var(--teal); border-color: var(--teal); width: 14px; height: 14px; box-shadow: 0 0 0 3px rgba(0,138,99,0.15); }
+  .pip-line { flex: 1; height: 2px; background: var(--border); }
+  .pip-line.done { background: var(--teal); }
+  .pip-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+  .pip-wrap { flex: 1; min-width: 200px; }
+  .pip-labels span { font-size: 8px; font-weight: 600; color: var(--text4); text-align: center; flex: 1; }
+  .pip-labels span.active { color: var(--teal); font-weight: 800; }
+
+  /* -- Temperature tag -- */
+  .temp-tag {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 6px;
+    font-size: 10px; font-weight: 800; flex-shrink: 0;
+  }
+  .temp-tag.hot { background: var(--red-bg); color: var(--red); }
+  .temp-tag.warm { background: var(--amber-bg); color: var(--amber); }
+  .temp-tag.new { background: var(--teal-bg); color: var(--teal); }
+  .temp-tag.active { background: var(--blue-bg); color: var(--blue); }
+
+  /* -- Engagement metrics -- */
+  .metrics { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .metric { display: flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; color: var(--text2); }
+  .metric svg { width: 14px; height: 14px; color: var(--text3); }
+
+  /* -- Next action -- */
+  .next-action { flex-shrink: 0; text-align: right; min-width: 130px; }
+  .next-label { font-size: 10px; color: var(--text3); font-weight: 600; }
+  .next-label strong { color: var(--text); }
+  .next-when {
+    display: inline-block; margin-top: 3px; font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .next-when.urgent { background: var(--red-bg); color: var(--red); }
+  .next-when.soon { background: var(--amber-bg); color: var(--amber); }
+  .next-when.today { background: var(--teal-bg); color: var(--teal); }
+  .next-when.done { background: var(--green-bg); color: var(--green); }
+
+  /* -- Action buttons -- */
+  .card-btns { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  .cta-btn {
+    padding: 9px 18px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; white-space: nowrap; text-align: center;
+  }
+  .cta-btn.primary { background: var(--teal); color: white; }
+  .cta-btn.link { background: transparent; color: var(--text3); font-size: 11px; padding: 4px 0; }
+  .cta-btn.link:hover { color: var(--teal); }
+
+  /* ── Committed ── */
+  .committed {
+    background: var(--green-bg); border: 1px solid rgba(22,163,74,0.12); border-radius: 14px;
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  }
+  .cc-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cc-icon svg { width: 20px; height: 20px; color: white; }
+  .cc-body { flex: 1; }
+  .cc-name { font-size: 15px; font-weight: 800; }
+  .cc-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .cc-badge { padding: 5px 14px; border-radius: 8px; background: white; color: var(--green); font-size: 11px; font-weight: 700; border: 1px solid rgba(22,163,74,0.12); flex-shrink: 0; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .card { flex-wrap: wrap; gap: 12px; }
+    .card-id { min-width: 150px; }
+    .pip-wrap { min-width: 160px; order: 10; flex-basis: 100%; }
+    .metrics { order: 5; }
+    .next-action { order: 6; }
+    .card-btns { order: 7; flex-direction: row; }
+  }
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .spotlight { flex-direction: column; gap: 14px; }
+    .spot-btn { text-align: center; }
+    .card { flex-wrap: wrap; padding: 14px 16px; }
+    .card-id { min-width: auto; flex: 1; }
+    .pipeline { display: none; }
+    .next-action { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="hdr">
+    <h1>My Schools</h1>
+    <span class="cnt">14 schools</span>
+    <span class="spacer"></span>
+    <button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>Add School</button>
+  </div>
+
+  <!-- Spotlight -->
+  <div class="spotlight">
+    <div class="spot-body">
+      <div class="spot-tag"><span class="dot"></span> Overdue — 1 day late</div>
+      <div class="spot-school">University of Florida</div>
+      <div class="spot-advice"><strong>Coach Wise</strong> hasn't heard from you in 14 days. Send a quick follow-up — coaches respect persistence.</div>
+    </div>
+    <button class="spot-btn">Follow Up</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box"><div class="stat-n" style="color:var(--red);">2</div><div class="stat-l">Need Action</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--green);">2</div><div class="stat-l">Interested</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--blue);">4</div><div class="stat-l">In Convo</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--teal);">6</div><div class="stat-l">To Contact</div></div>
+  </div>
+
+  <!-- ═══════ NEEDS ATTENTION ═══════ -->
+  <div class="sec">
+    <div class="sec-dot" style="background:var(--red);"></div>
+    <div class="sec-name" style="color:var(--red);">Needs attention</div>
+    <div class="sec-cnt" style="background:var(--red-bg);color:var(--red);">2</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- University of Florida -->
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#0021A5;">UF</div>
+      <div>
+        <div class="card-school">University of Florida</div>
+        <div class="card-div">D1 · SEC · Gainesville, FL</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag hot">Hot</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send follow-up</div>
+      <span class="next-when urgent">1 day overdue</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Follow up</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- University of Texas -->
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#BF5700;">TX</div>
+      <div>
+        <div class="card-school">University of Texas</div>
+        <div class="card-div">D1 · Big 12 · Austin, TX</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag warm">Warm</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>1</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send follow-up</div>
+      <span class="next-when soon">In 2 days</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Follow up</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- ═══════ COACHES INTERESTED ═══════ -->
+  <div class="sec">
+    <div class="sec-dot" style="background:var(--green);"></div>
+    <div class="sec-name" style="color:var(--green);">Coaches interested</div>
+    <div class="sec-cnt" style="background:var(--green-bg);color:var(--green);">2</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- UCLA -->
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#2774AE;">UC</div>
+      <div>
+        <div class="card-school">UCLA</div>
+        <div class="card-div">D1 · Pac-12 · Los Angeles, CA</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag hot">Hot</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>3</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Reply to coach</div>
+      <span class="next-when today">Today</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reply</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- Penn State -->
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#001E44;">PS</div>
+      <div>
+        <div class="card-school">Penn State University</div>
+        <div class="card-div">D1 · Big Ten · State College, PA</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag hot">Hot</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>2</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send follow-up</div>
+      <span class="next-when today">Today</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Follow up</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- ═══════ IN CONVERSATION ═══════ -->
+  <div class="sec">
+    <div class="sec-dot" style="background:var(--blue);"></div>
+    <div class="sec-name" style="color:var(--blue);">In conversation</div>
+    <div class="sec-cnt" style="background:var(--blue-bg);color:var(--blue);">4</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#154733;">OR</div>
+      <div>
+        <div class="card-school">University of Oregon</div>
+        <div class="card-div">D1 · Big Ten · Eugene, OR</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag active">Active</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>1</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Keep talking</div>
+      <span class="next-when done">On track</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Email</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#00274C;">MI</div>
+      <div>
+        <div class="card-school">University of Michigan</div>
+        <div class="card-div">D1 · Big Ten · Ann Arbor, MI</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag active">Active</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>4</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>2</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>3</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Discuss offer</div>
+      <span class="next-when done">On track</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Email</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#CC0000;">WI</div>
+      <div>
+        <div class="card-school">University of Wisconsin</div>
+        <div class="card-div">D1 · Big Ten · Madison, WI</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag warm">Warm</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>2</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send update</div>
+      <span class="next-when soon">In 3 days</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Email</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#500000;">AM</div>
+      <div>
+        <div class="card-school">Texas A&M University</div>
+        <div class="card-div">D1 · SEC · College Station, TX</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line done"></div>
+        <div class="pip-dot done"></div><div class="pip-line"></div>
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag active">Active</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>2</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Keep talking</div>
+      <span class="next-when done">On track</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Email</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- ═══════ READY TO REACH OUT ═══════ -->
+  <div class="sec">
+    <div class="sec-dot" style="background:var(--teal);"></div>
+    <div class="sec-name" style="color:var(--teal);">Ready to reach out</div>
+    <div class="sec-cnt" style="background:var(--teal-bg);color:var(--teal);">6</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#8B0000;">UT</div>
+      <div>
+        <div class="card-school">University of Tampa</div>
+        <div class="card-div">D2 · SSC · Tampa, FL</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">55% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#4B1F80;">AC</div>
+      <div>
+        <div class="card-school">Abilene Christian University</div>
+        <div class="card-div">D1 · WAC · Abilene, TX</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">18% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#660000;">AA</div>
+      <div>
+        <div class="card-school">Alabama A&M University</div>
+        <div class="card-div">D1 · SWAC · Huntsville, AL</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">18% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#002D72;">JH</div>
+      <div>
+        <div class="card-school">Johns Hopkins University</div>
+        <div class="card-div">D3 · Centennial · Baltimore, MD</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">9% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- More placeholder schools to show scalability -->
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#333F48;">VU</div>
+      <div>
+        <div class="card-school">Vanderbilt University</div>
+        <div class="card-div">D1 · SEC · Nashville, TN</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">42% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-id">
+      <div class="card-logo" style="background:#003831;">TU</div>
+      <div>
+        <div class="card-school">Tulane University</div>
+        <div class="card-div">D1 · AAC · New Orleans, LA</div>
+      </div>
+    </div>
+    <div class="pip-wrap">
+      <div class="pipeline">
+        <div class="pip-dot now"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div><div class="pip-line"></div>
+        <div class="pip-dot"></div>
+      </div>
+      <div class="pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="temp-tag new">New</span>
+    <div class="metrics">
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="next-action">
+      <div class="next-label"><strong>Next:</strong> Send intro email</div>
+      <span class="next-when today">38% match</span>
+    </div>
+    <div class="card-btns">
+      <button class="cta-btn primary">Reach Out</button>
+      <button class="cta-btn link">Journey ></button>
+    </div>
+  </div>
+
+  <!-- ═══════ COMMITTED ═══════ -->
+  <div class="sec">
+    <div class="sec-dot" style="background:var(--green);"></div>
+    <div class="sec-name" style="color:var(--green);">Committed</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="committed">
+    <div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <div class="cc-body">
+      <div class="cc-name">Stanford University</div>
+      <div class="cc-sub">D1 · Pac-12 · Stanford, CA · Coach Kevin Hambly · 95% match</div>
+    </div>
+    <div class="cc-badge">Verbal Commit</div>
+  </div>
+
+</div>
+</body>
+</html>
