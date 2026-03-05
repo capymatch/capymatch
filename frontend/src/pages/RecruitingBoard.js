@@ -137,7 +137,7 @@ function SchoolRail({ journeyStage }) {
                   ? "#0d9488" : "#eee",
               }} />
             )}
-            <div style={{ position: "relative", flexShrink: 0 }} title={stageLabels[s.key] || s.label}>
+            <div className="rail-dot-wrap" style={{ position: "relative", flexShrink: 0 }}>
               <div style={{
                 width: s.state === "active" ? 18 : 12,
                 height: s.state === "active" ? 18 : 12,
@@ -154,6 +154,9 @@ function SchoolRail({ journeyStage }) {
                   animation: "scPulse 2s ease-out infinite", pointerEvents: "none",
                 }} />
               )}
+              <span className="rail-dot-tip" style={{ color: s.state === "active" ? s.color : undefined }}>
+                {stageLabels[s.key]}
+              </span>
             </div>
           </React.Fragment>
         ))}
@@ -527,6 +530,20 @@ function PipelineStyles() {
     <style>{`
       @keyframes heroPulse { 0%{box-shadow:0 0 0 0 currentColor;} 100%{box-shadow:0 0 0 8px transparent;} }
       @keyframes scPulse { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(1.8);opacity:0} }
+      .rail-dot-tip {
+        position:absolute; bottom:100%; left:50%; transform:translateX(-50%) translateY(2px);
+        background:#1e1e2e; color:#e2e8f0; font-size:10px; font-weight:700;
+        padding:3px 8px; border-radius:6px; white-space:nowrap; pointer-events:none;
+        opacity:0; transition:opacity 0.15s, transform 0.15s; z-index:10;
+        box-shadow:0 2px 8px rgba(0,0,0,0.18);
+      }
+      .rail-dot-tip::after {
+        content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+        border:4px solid transparent; border-top-color:#1e1e2e;
+      }
+      .rail-dot-wrap:hover .rail-dot-tip {
+        opacity:1; transform:translateX(-50%) translateY(-4px);
+      }
     `}</style>
   );
 }
