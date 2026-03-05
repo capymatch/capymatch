@@ -655,7 +655,7 @@ export default function RecruitingJourney() {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                {timeline.map((event, i) => <ConversationBubble key={event.id || i} event={event} />)}
+                {timeline.map((event, i) => <ConversationBubble key={event.id || i} event={event} engagement={schoolEngagement} />)}
               </div>
             )}
           </div>
@@ -796,41 +796,7 @@ export default function RecruitingJourney() {
               })()}
             </div>
 
-            {/* Engagement Timeline */}
-            {schoolEngagement?.timeline?.length > 0 && (
-              <div className="px-4 py-3" style={{ borderTop: "1px solid var(--t-border)" }} data-testid="engagement-timeline">
-                <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Recent Activity</p>
-                <div className="space-y-2">
-                  {schoolEngagement.timeline.slice(0, 4).map((ev, i) => (
-                    <div key={i} className="flex items-center gap-2" data-testid={`engagement-event-${i}`}>
-                      <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: ev.event_type === "email_open" ? "rgba(16,185,129,0.1)" : "rgba(59,130,246,0.1)" }}>
-                        {ev.event_type === "email_open"
-                          ? <Mail className="w-2.5 h-2.5" style={{ color: "#10b981" }} />
-                          : <ExternalLink className="w-2.5 h-2.5" style={{ color: "#3b82f6" }} />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-medium truncate" style={{ color: "var(--t-text)" }}>
-                          {ev.event_type === "email_open" ? "Opened" : "Clicked"} {ev.email_subject ? `"${ev.email_subject}"` : "your email"}
-                        </p>
-                      </div>
-                      <span className="text-[9px] flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>
-                        {new Date(ev.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* No engagement empty state */}
-            {(!schoolEngagement || (schoolEngagement.total_opens === 0 && schoolEngagement.total_clicks === 0)) && coaches.length > 0 && (
-              <div className="px-4 py-3 text-center" style={{ borderTop: "1px solid var(--t-border)" }}>
-                <p className="text-[10px]" style={{ color: "var(--t-text-faint)" }}>
-                  No engagement yet — send an email to start tracking
-                </p>
-              </div>
-            )}
+          {/* Engagement badges now shown inline on sent emails in the timeline */}
           </div>
 
           {/* Send Profile to Coach */}
