@@ -677,7 +677,7 @@ export default function RecruitingJourney() {
         <div className="lg:col-span-1">
           {/* ── Next Steps Card ── */}
           {(program.next_action_due || isPremium || !isBasic) && (
-            <div className="rounded-2xl border p-4 mb-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-steps-card">
+            <div className="rounded-2xl border p-4 mb-4 space-y-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-steps-card">
               {program.next_action_due && (
                 <div className="p-2.5 rounded-lg" style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }} data-testid="follow-up-reminder">
                   <div className="flex items-center gap-1.5">
@@ -690,7 +690,7 @@ export default function RecruitingJourney() {
                 </div>
               )}
               {isPremium ? (
-                <div className="rounded-lg p-2.5" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(26,138,128,0.04))", border: "1px solid rgba(168,85,247,0.15)" }} data-testid="ai-next-step">
+                <div className="rounded-lg p-2.5 mt-1" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(26,138,128,0.04))", border: "1px solid rgba(168,85,247,0.15)" }} data-testid="ai-next-step">
                   {aiSummary ? (
                     <div className="space-y-1.5">
                       <p className="text-[9px] font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: "#a855f7" }}>
