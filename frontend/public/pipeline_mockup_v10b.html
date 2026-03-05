@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — CapyMatch v10b</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap');
+
+  :root {
+    --bg: #f5f5f5; --card: #ffffff; --border: #e5e7eb; --border-s: #f0f0f0;
+    --text: #1a1a1a; --text2: #555; --text3: #999; --text4: #ccc;
+    --teal: #0d9488; --teal-bg: #e6f7f5;
+    --red: #dc2626; --red-bg: #fef2f2;
+    --amber: #d97706; --amber-bg: #fffbeb;
+    --green: #16a34a; --green-bg: #f0fdf4;
+    --blue: #2563eb; --blue-bg: #eff6ff;
+    /* Journey stage colors */
+    --stage-added: #94a3b8;
+    --stage-outreach: #1a8a80;
+    --stage-talking: #22c55e;
+    --stage-visit: #3b82f6;
+    --stage-offer: #a855f7;
+    --stage-committed: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* ── Header ── */
+  .hdr { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .hdr h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .view-toggle { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .view-btn { padding: 6px 14px; font-size: 12px; font-weight: 600; border: none; background: white; color: var(--text2); cursor: pointer; font-family: inherit; }
+  .view-btn.active { background: var(--text); color: white; }
+  .hdr .spacer { flex: 1; }
+  .hdr .filter-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .hdr .filter-icon svg { width: 16px; height: 16px; color: var(--text2); }
+  .add-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; background: var(--text); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .add-btn svg { width: 13px; height: 13px; }
+
+  /* ── Hero Card ── */
+  .hero { background: #1a1a2e; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; position: relative; }
+  .hero-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .hero-status-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #f59e0b; display: flex; align-items: center; gap: 5px; }
+  .hero-status-label .dot { width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; }
+  .hero-due { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .hero-school-row { display: flex; align-items: center; gap: 12px; }
+  .hero-logo { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; flex-shrink: 0; }
+  .hero-school { font-size: 20px; font-weight: 800; color: white; }
+  .hero-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .hero-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .hero-social { display: flex; gap: 6px; }
+  .hero-social svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
+
+  /* Hero progress — Journey-consistent */
+  .hero-rail { margin: 16px 0; position: relative; }
+  .hero-rail-track { display: flex; align-items: center; position: relative; height: 26px; }
+  .hero-rail-bg { position: absolute; left: 8.33%; right: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; background: rgba(255,255,255,0.06); }
+  .hero-rail-fill { position: absolute; left: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; transition: width 0.5s; }
+  .hero-rail-dots { display: flex; position: relative; z-index: 1; }
+  .hero-rail-dot-wrap { flex: 1; display: flex; justify-content: center; align-items: center; }
+  .hero-rail-dot { border-radius: 50%; transition: all 0.3s; }
+  .hero-rail-dot.past { width: 14px; height: 14px; }
+  .hero-rail-dot.active { width: 18px; height: 18px; position: relative; }
+  .hero-rail-dot.future { width: 14px; height: 14px; background: #1e1e2e !important; }
+  @keyframes heroPulse { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2);opacity:0} }
+  .hero-rail-pulse { position: absolute; inset: -4px; border-radius: 50%; animation: heroPulse 2s ease-out infinite; pointer-events: none; }
+  .hero-rail-labels { display: flex; margin-top: 5px; }
+  .hero-rail-labels span { flex: 1; text-align: center; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.2); }
+  .hero-rail-labels span.active { font-weight: 800; }
+
+  .hero-advice { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; display: flex; align-items: flex-start; gap: 8px; }
+  .hero-advice-icon svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
+  .hero-advice-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+  .hero-advice-text { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.4; }
+  .hero-cta { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); }
+  .hero-btn { padding: 11px 24px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+  .hero-btn svg { width: 14px; height: 14px; }
+
+  /* ── Filters ── */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .chip { padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: white; color: var(--text2); cursor: pointer; font-family: inherit; }
+  .chip.active { background: var(--text); color: white; border-color: var(--text); }
+
+  /* ── Section header ── */
+  .sec { display: flex; align-items: center; gap: 8px; padding: 18px 0 10px; cursor: pointer; }
+  .sec svg { width: 14px; height: 14px; color: var(--text3); }
+  .sec-name { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  .sec-cnt { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 6px; }
+  .sec-line { flex: 1; height: 1px; background: var(--border-s); margin-left: 6px; }
+
+  /* ════════════════════════════════════════ */
+  /*  SCHOOL CARD — FIXED WIDTH COLUMNS     */
+  /* ════════════════════════════════════════ */
+  .school-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center;
+    gap: 12px; cursor: pointer; transition: all 0.15s;
+  }
+  .school-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-color: #d0d5dd; }
+
+  /* COL 1: School identity — 200px */
+  .col-school { display: flex; align-items: center; gap: 10px; width: 200px; flex-shrink: 0; }
+  .sc-logo { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; flex-shrink: 0; }
+  .sc-name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .sc-meta { font-size: 10px; color: var(--text3); margin-top: 2px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .sc-div { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: #f0f0f0; color: var(--text2); }
+  .sc-due { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+
+  /* COL 2: Progress rail — 200px (Journey-consistent) */
+  .col-rail { width: 200px; flex-shrink: 0; }
+  .sc-rail-track { display: flex; align-items: center; position: relative; height: 22px; }
+  .sc-rail-bg { position: absolute; left: 8.33%; right: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; background: #eee; }
+  .sc-rail-fill { position: absolute; left: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; }
+  .sc-rail-dots { display: flex; position: relative; z-index: 1; }
+  .sc-rail-dot-wrap { flex: 1; display: flex; justify-content: center; align-items: center; }
+  .sc-rail-dot { border-radius: 50%; transition: all 0.3s; }
+  .sc-rail-dot.past { width: 10px; height: 10px; }
+  .sc-rail-dot.active { width: 14px; height: 14px; position: relative; }
+  .sc-rail-dot.future { width: 10px; height: 10px; background: white !important; border: 2px solid #e5e7eb !important; }
+  @keyframes scPulse { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(1.8);opacity:0} }
+  .sc-rail-pulse { position: absolute; inset: -3px; border-radius: 50%; animation: scPulse 2s ease-out infinite; pointer-events: none; }
+  .sc-rail-labels { display: flex; margin-top: 2px; }
+  .sc-rail-labels span { flex: 1; text-align: center; font-size: 7px; font-weight: 600; color: var(--text4); }
+  .sc-rail-labels span.active { font-weight: 800; }
+
+  /* COL 3: Temp tag — 50px */
+  .col-temp { width: 50px; flex-shrink: 0; text-align: center; }
+  .sc-temp { font-size: 10px; font-weight: 800; padding: 3px 0; border-radius: 6px; display: inline-block; width: 100%; text-align: center; }
+  .sc-temp.hot { background: var(--red-bg); color: var(--red); }
+  .sc-temp.warm { background: var(--amber-bg); color: var(--amber); }
+  .sc-temp.new-tag { background: var(--teal-bg); color: var(--teal); }
+  .sc-temp.active-tag { background: var(--blue-bg); color: var(--blue); }
+
+  /* COL 4: Engagement metrics — 100px */
+  .col-metrics { width: 100px; flex-shrink: 0; display: flex; align-items: center; gap: 6px; justify-content: center; }
+  .sc-metric { display: flex; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: var(--text2); }
+  .sc-metric svg { width: 13px; height: 13px; color: var(--text3); }
+
+  /* COL 5: Next action — 120px */
+  .col-next { width: 120px; flex-shrink: 0; text-align: right; }
+  .sc-next-label { font-size: 10px; color: var(--text3); }
+  .sc-next-label strong { color: var(--text); font-weight: 700; }
+  .sc-next-when { display: inline-block; margin-top: 2px; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+  .sc-next-when.overdue { background: var(--red-bg); color: var(--red); }
+  .sc-next-when.soon { background: var(--amber-bg); color: var(--amber); }
+  .sc-next-when.today { background: var(--teal-bg); color: var(--teal); }
+  .sc-next-when.ok { background: var(--green-bg); color: var(--green); }
+
+  /* COL 6: CTA — 120px */
+  .col-cta { width: 120px; flex-shrink: 0; }
+  .sc-cta { padding: 8px 0; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; width: 100%; text-align: center; }
+  .sc-cta.primary { background: var(--teal); color: white; }
+  .sc-cta.warn { background: var(--amber); color: white; }
+  .sc-cta.outline { background: white; color: var(--text2); border: 1px solid var(--border); }
+
+  /* COL 7: Arrow — 20px */
+  .col-arrow { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text4); }
+  .col-arrow svg { width: 16px; height: 16px; }
+
+  /* ── Committed ── */
+  .committed-card {
+    background: var(--green-bg); border: 1px solid rgba(22,163,74,0.12); border-radius: 12px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .cc-check { width: 40px; height: 40px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cc-check svg { width: 18px; height: 18px; color: white; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .col-school { width: 160px; }
+    .col-rail { width: 160px; }
+    .col-metrics { width: 80px; }
+    .col-next { width: 100px; }
+    .col-cta { width: 100px; }
+  }
+  @media (max-width: 640px) {
+    .hero-cta { position: static; transform: none; margin-top: 12px; }
+    .school-card { flex-wrap: wrap; }
+    .col-school { width: auto; flex: 1; }
+    .col-rail { width: 100%; }
+    .col-metrics { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="hdr">
+    <h1>My Schools</h1>
+    <div class="view-toggle"><button class="view-btn active">Compact</button><button class="view-btn">Expanded</button></div>
+    <span class="spacer"></span>
+    <div class="filter-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+    <button class="add-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>Add School</button>
+  </div>
+
+  <!-- Hero Card -->
+  <div class="hero">
+    <div class="hero-status">
+      <span class="hero-status-label"><span class="dot"></span> Keeping warm</span>
+      <span class="hero-due">DUE TODAY</span>
+    </div>
+    <div class="hero-school-row">
+      <div class="hero-logo" style="background:#B3A369;">GT</div>
+      <div>
+        <div class="hero-school">Georgia Tech</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span style="font-size:11px;color:rgba(255,255,255,0.4);">ACC · GA</span>
+        </div>
+      </div>
+    </div>
+    <!-- Journey-consistent progress rail -->
+    <div class="hero-rail">
+      <div class="hero-rail-track">
+        <div class="hero-rail-bg"></div>
+        <div class="hero-rail-fill" style="width: 33%; background: linear-gradient(90deg, #94a3b8 0%, #1a8a80 100%);"></div>
+        <div class="hero-rail-dots">
+          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot past" style="background:#94a3b8; border:2px solid #94a3b8; box-shadow:0 0 8px #94a3b826;"></div></div>
+          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot past" style="background:#1a8a80; border:2px solid #1a8a80; box-shadow:0 0 8px #1a8a8026;"></div></div>
+          <div class="hero-rail-dot-wrap">
+            <div class="hero-rail-dot active" style="background:#22c55e; border:2px solid #22c55e; box-shadow:0 0 12px #22c55e66;">
+              <div class="hero-rail-pulse" style="border:2px solid #22c55e;"></div>
+            </div>
+          </div>
+          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
+          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
+          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
+        </div>
+      </div>
+      <div class="hero-rail-labels">
+        <span>Added</span><span>Outreach</span><span class="active" style="color:#22c55e;">Talking</span><span>Visit</span><span>Offer</span><span>Committed</span>
+      </div>
+    </div>
+    <div class="hero-advice">
+      <div class="hero-advice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg></div>
+      <div>
+        <div class="hero-advice-label">What to do next</div>
+        <div class="hero-advice-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+      </div>
+    </div>
+    <div class="hero-cta"><button class="hero-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Follow Up</button></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <button class="chip active">All 10</button>
+    <button class="chip">Outreach 2</button>
+    <button class="chip">Waiting 3</button>
+    <button class="chip">In Convo 4</button>
+    <button class="chip">Committed 1</button>
+  </div>
+
+  <!-- ═══════ NEEDS OUTREACH ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--amber);">Needs outreach</span>
+    <span class="sec-cnt" style="background:var(--amber-bg);color:var(--amber);">2</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- Johns Hopkins — Stage: Added -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#002D72;">JH</div>
+      <div><div class="sc-name">Johns Hopkins University</div><div class="sc-meta"><span class="sc-div">D3</span><span>Centennial · MD</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#94a3b8;border:2px solid #94a3b8;box-shadow:0 0 12px #94a3b866;"><div class="sc-rail-pulse" style="border:2px solid #94a3b8;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span class="active" style="color:#94a3b8;">Added</span><span>Outreach</span><span>Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp new-tag">New</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Next:</strong> Start outreach</div><span class="sc-next-when today">16% match</span></div>
+    <div class="col-cta"><button class="sc-cta primary">Start Outreach</button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- U of Tampa — Stage: Added -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#8B0000;">UT</div>
+      <div><div class="sc-name">University of Tampa</div><div class="sc-meta"><span class="sc-div">D2</span><span>SSC · FL</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#94a3b8;border:2px solid #94a3b8;box-shadow:0 0 12px #94a3b866;"><div class="sc-rail-pulse" style="border:2px solid #94a3b8;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span class="active" style="color:#94a3b8;">Added</span><span>Outreach</span><span>Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp new-tag">New</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Next:</strong> Start outreach</div><span class="sc-next-when today">55% match</span></div>
+    <div class="col-cta"><button class="sc-cta primary">Start Outreach</button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ WAITING ON REPLY ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--red);">Waiting on reply</span>
+    <span class="sec-cnt" style="background:var(--red-bg);color:var(--red);">3</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- U of Florida — Stage: Outreach (waiting for reply) -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#0021A5;">UF</div>
+      <div><div class="sc-name">University of Florida</div><div class="sc-meta"><span class="sc-div">D1</span><span>SEC · FL</span><span class="sc-due" style="background:var(--red-bg);color:var(--red);">Due 1d</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-fill" style="width:16.6%;background:linear-gradient(90deg,#94a3b8,#1a8a80);"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot past" style="background:#94a3b8;border:2px solid #94a3b8;box-shadow:0 0 8px #94a3b826;"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#1a8a80;border:2px solid #1a8a80;box-shadow:0 0 12px #1a8a8066;"><div class="sc-rail-pulse" style="border:2px solid #1a8a80;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span>Added</span><span class="active" style="color:#1a8a80;">Outreach</span><span>Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp hot">Hot</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>2</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Next:</strong> Follow up</div><span class="sc-next-when overdue">24d ago</span></div>
+    <div class="col-cta"><button class="sc-cta warn">Follow Up</button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- Georgia Tech — Stage: Outreach -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#B3A369;">GT</div>
+      <div><div class="sc-name">Georgia Tech</div><div class="sc-meta"><span class="sc-div">D1</span><span>ACC · GA</span><span class="sc-due" style="background:var(--amber-bg);color:var(--amber);">Due today</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-fill" style="width:16.6%;background:linear-gradient(90deg,#94a3b8,#1a8a80);"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot past" style="background:#94a3b8;border:2px solid #94a3b8;box-shadow:0 0 8px #94a3b826;"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#1a8a80;border:2px solid #1a8a80;box-shadow:0 0 12px #1a8a8066;"><div class="sc-rail-pulse" style="border:2px solid #1a8a80;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span>Added</span><span class="active" style="color:#1a8a80;">Outreach</span><span>Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp warm">Warm</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Next:</strong> Follow up</div><span class="sc-next-when soon">23d ago</span></div>
+    <div class="col-cta"><button class="sc-cta warn">Follow Up</button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- Lewis University — Stage: Outreach -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#C8102E;">LU</div>
+      <div><div class="sc-name">Lewis University</div><div class="sc-meta"><span class="sc-div">D2</span><span>GLVC · IL</span><span class="sc-due" style="background:var(--red-bg);color:var(--red);">Due 1d</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-fill" style="width:16.6%;background:linear-gradient(90deg,#94a3b8,#1a8a80);"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot past" style="background:#94a3b8;border:2px solid #94a3b8;box-shadow:0 0 8px #94a3b826;"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#1a8a80;border:2px solid #1a8a80;box-shadow:0 0 12px #1a8a8066;"><div class="sc-rail-pulse" style="border:2px solid #1a8a80;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span>Added</span><span class="active" style="color:#1a8a80;">Outreach</span><span>Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp warm">Warm</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Next:</strong> Follow up</div><span class="sc-next-when overdue">25d ago</span></div>
+    <div class="col-cta"><button class="sc-cta warn">Follow Up</button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ IN CONVERSATION ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--blue);">In conversation</span>
+    <span class="sec-cnt" style="background:var(--blue-bg);color:var(--blue);">4</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- UCLA — Stage: Talking -->
+  <div class="school-card">
+    <div class="col-school">
+      <div class="sc-logo" style="background:#2774AE;">UC</div>
+      <div><div class="sc-name">UCLA</div><div class="sc-meta"><span class="sc-div">D1</span><span>Pac-12 · CA</span><span class="sc-due" style="background:var(--green-bg);color:var(--green);">5d ago</span></div></div>
+    </div>
+    <div class="col-rail">
+      <div class="sc-rail-track">
+        <div class="sc-rail-bg"></div>
+        <div class="sc-rail-fill" style="width:33%;background:linear-gradient(90deg,#94a3b8,#1a8a80,#22c55e);"></div>
+        <div class="sc-rail-dots">
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot past" style="background:#94a3b8;border:2px solid #94a3b8;"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot past" style="background:#1a8a80;border:2px solid #1a8a80;"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot active" style="background:#22c55e;border:2px solid #22c55e;box-shadow:0 0 12px #22c55e66;"><div class="sc-rail-pulse" style="border:2px solid #22c55e;"></div></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+          <div class="sc-rail-dot-wrap"><div class="sc-rail-dot future"></div></div>
+        </div>
+      </div>
+      <div class="sc-rail-labels"><span>Added</span><span>Outreach</span><span class="active" style="color:#22c55e;">Talking</span><span>Visit</span><span>Offer</span><span>Commit</span></div>
+    </div>
+    <div class="col-temp"><span class="sc-temp hot">Hot</span></div>
+    <div class="col-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>3</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="col-next"><div class="sc-next-label"><strong>Status:</strong> Offer Received</div><span class="sc-next-when ok">81% match</span></div>
+    <div class="col-cta"><button class="sc-cta outline">Journey ></button></div>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ COMMITTED ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--green);">Committed</span>
+    <span class="sec-cnt" style="background:var(--green-bg);color:var(--green);">1</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="committed-card">
+    <div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <div style="flex:1;"><div style="font-size:15px;font-weight:800;">Stanford University</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">D1 · Pac-12 · Stanford, CA · 95% match</div></div>
+    <span style="padding:5px 14px;border-radius:8px;background:white;color:var(--green);font-size:11px;font-weight:700;border:1px solid rgba(22,163,74,0.12);">Verbal Commit</span>
+    <div class="col-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+</div>
+</body>
+</html>
