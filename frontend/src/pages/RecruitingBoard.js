@@ -669,7 +669,6 @@ export default function RecruitingBoard() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
         <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5, color: "var(--t-text, #1a1a1a)" }} data-testid="pipeline-title">My Schools</h1>
-        <ViewToggle mode={viewMode} onChange={setViewMode} />
         <span style={{ flex: 1 }} />
         <Button
           onClick={() => navigate("/knowledge-base")}
