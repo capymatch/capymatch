@@ -49,6 +49,8 @@ async def create_indexes(db: AsyncIOMotorDatabase):
     await db.events.create_index("tenant_id")
     await db.events.create_index("event_id")
 
+    await db.engagement_events.create_index([("tenant_id", 1), ("created_at", -1)])
+
     await db.notifications.create_index("tenant_id")
     await db.notifications.create_index([("tenant_id", 1), ("read", 1)])
 
@@ -65,6 +67,7 @@ async def create_indexes(db: AsyncIOMotorDatabase):
     await db.import_runs.create_index("run_id")
 
     # ─── KNOWLEDGE BASE (1053 docs, queried 30 times in code) ───
+    await db.university_knowledge_base.create_index("university_name")
     await db.university_knowledge_base.create_index("division")
     await db.university_knowledge_base.create_index("region")
     await db.university_knowledge_base.create_index("conference")
@@ -92,6 +95,7 @@ async def create_indexes(db: AsyncIOMotorDatabase):
     await db.inbound_contacts.create_index("tenant_id")
     await db.sent_email_log.create_index("tenant_id")
     await db.profile_views.create_index("tenant_id")
+    await db.profile_views.create_index([("slug", 1), ("viewed_at", -1)])
     await db.ai_conversations.create_index("user_id")
     await db.ai_usage.create_index("user_id")
     await db.temp_attachments.create_index("user_id")

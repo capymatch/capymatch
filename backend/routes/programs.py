@@ -6,6 +6,7 @@ from auth import get_current_user, get_tenant_id
 from subscriptions import get_user_subscription, enforce_school_limit, enforce_feature
 from models import ProgramCreate, ProgramUpdate, CoachCreate, CoachUpdate, InteractionCreate, MarkFollowUpSent, MarkAsReplied
 import uuid
+import asyncio
 from typing import List
 
 router = APIRouter(prefix="/api")
@@ -224,14 +225,23 @@ async def list_programs(
     
     programs = await db.programs.find(query, {"_id": 0}).to_list(1000)
 
-    # Enrich with logo_url and questionnaire_url from KB for programs that don't have one
-    programs_needing_logo = [p for p in programs if not p.get("logo_url")]
-    # Also fetch questionnaire_url for all programs
+    # Run KB, coaches, and signals queries in parallel
     all_names = [p.get("university_name", "") for p in programs]
-    kb_entries = await db.university_knowledge_base.find(
+    program_ids = [p["program_id"] for p in programs]
+
+    kb_future = db.university_knowledge_base.find(
         {"university_name": {"$in": all_names}},
         {"_id": 0, "university_name": 1, "logo_url": 1, "questionnaire_url": 1, "social_links": 1}
     ).to_list(1000)
+    coaches_future = db.coaches.find(
+        {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
+        {"_id": 0}
+    ).to_list(5000)
+    signals_future = batch_compute_signals(tenant_id, program_ids)
+
+    kb_entries, all_coaches, signals_map = await asyncio.gather(kb_future, coaches_future, signals_future)
+
+    # Enrich with KB data
     logo_map = {e["university_name"]: e.get("logo_url") for e in kb_entries if e.get("logo_url")}
     quest_map = {e["university_name"]: e.get("questionnaire_url") for e in kb_entries if e.get("questionnaire_url")}
     social_map = {e["university_name"]: e.get("social_links") for e in kb_entries if e.get("social_links")}
@@ -244,21 +254,13 @@ async def list_programs(
         if uname in social_map:
             p["social_links"] = social_map[uname]
 
-    # Enrich with coach data and interaction signals (batch query to avoid N+1)
-    program_ids = [p["program_id"] for p in programs]
-    all_coaches = await db.coaches.find(
-        {"tenant_id": tenant_id, "program_id": {"$in": program_ids}},
-        {"_id": 0}
-    ).to_list(5000)
+    # Enrich with coach data
     coaches_by_program = {}
     for coach in all_coaches:
         pid = coach.get("program_id")
         if pid not in coaches_by_program:
             coaches_by_program[pid] = []
         coaches_by_program[pid].append(coach)
-
-    # Batch compute interaction signals (single query instead of N+1)
-    signals_map = await batch_compute_signals(tenant_id, program_ids)
 
     for p in programs:
         coaches = coaches_by_program.get(p["program_id"], [])
@@ -299,18 +301,23 @@ async def get_program(program_id: str, request: Request):
     program = await db.programs.find_one({"program_id": program_id, "tenant_id": tenant_id}, {"_id": 0})
     if not program:
         raise HTTPException(status_code=404, detail="Program not found")
-    coaches = await db.coaches.find({"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}).to_list(50)
-    interactions = await db.interactions.find({"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}).sort("date_time", -1).to_list(100)
-    program["coaches"] = coaches
-    program["interactions"] = interactions
-    program["signals"] = await compute_interaction_signals(tenant_id, program_id)
-    program["board_group"] = categorize_program(program)
-    program["journey_rail"] = compute_journey_rail(program)
-    # Enrich with questionnaire_url from KB
-    kb = await db.university_knowledge_base.find_one(
+
+    # Run all enrichment queries in parallel
+    coaches_f = db.coaches.find({"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}).to_list(50)
+    interactions_f = db.interactions.find({"tenant_id": tenant_id, "program_id": program_id}, {"_id": 0}).sort("date_time", -1).to_list(100)
+    signals_f = compute_interaction_signals(tenant_id, program_id)
+    kb_f = db.university_knowledge_base.find_one(
         {"university_name": program.get("university_name")},
         {"_id": 0, "questionnaire_url": 1, "social_links": 1, "coaches_scraped": 1, "coaching_staff": 1}
     )
+
+    coaches, interactions, signals, kb = await asyncio.gather(coaches_f, interactions_f, signals_f, kb_f)
+
+    program["coaches"] = coaches
+    program["interactions"] = interactions
+    program["signals"] = signals
+    program["board_group"] = categorize_program(program)
+    program["journey_rail"] = compute_journey_rail(program)
     if kb and kb.get("questionnaire_url"):
         program["questionnaire_url"] = kb["questionnaire_url"]
     if kb and kb.get("social_links"):

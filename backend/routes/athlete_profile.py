@@ -7,8 +7,26 @@ from datetime import datetime, timezone
 import re
 import uuid
 import logging
+import time
 
 logger = logging.getLogger(__name__)
+
+# In-memory cache for KB data (rarely changes, expensive to load)
+_kb_cache = {"data": None, "indexes": None, "ts": 0}
+_KB_TTL = 300  # 5 minutes
+
+
+async def _get_kb_indexed():
+    """Get KB data with in-memory caching."""
+    now = time.time()
+    if _kb_cache["data"] is not None and (now - _kb_cache["ts"]) < _KB_TTL:
+        return _kb_cache["data"], _kb_cache["indexes"]
+    all_kb = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
+    indexes = _build_kb_index(all_kb)
+    _kb_cache["data"] = all_kb
+    _kb_cache["indexes"] = indexes
+    _kb_cache["ts"] = now
+    return all_kb, indexes
 
 router = APIRouter(prefix="/api")
 
@@ -120,10 +138,19 @@ async def save_recruiting_profile(request: Request):
     )
     return {**profile, "exists": True}
 
+# In-memory cache for match scores (per tenant, short TTL)
+_scores_cache = {}
+_SCORES_TTL = 120  # 2 minutes
+
 @router.get("/match-scores")
 async def get_match_scores(request: Request):
     user = await get_current_user(request)
     tenant_id = await get_tenant_id(user)
+
+    now = time.time()
+    cached = _scores_cache.get(tenant_id)
+    if cached and (now - cached["ts"]) < _SCORES_TTL:
+        return cached["data"]
 
     profile = await db.athlete_profiles.find_one({"tenant_id": tenant_id}, {"_id": 0})
     if not profile:
@@ -133,9 +160,8 @@ async def get_match_scores(request: Request):
         {"tenant_id": tenant_id}, {"_id": 0}
     ).to_list(200)
 
-    # Pre-load KB data for fuzzy matching with scorecard
-    all_kb = await db.university_knowledge_base.find({}, {"_id": 0}).to_list(2000)
-    by_name, by_domain, by_norm = _build_kb_index(all_kb)
+    # Pre-load KB data for fuzzy matching with scorecard (cached)
+    all_kb, (by_name, by_domain, by_norm) = await _get_kb_indexed()
 
     # Enrich programs with scorecard data from KB
     for p in programs:
@@ -332,7 +358,9 @@ async def get_match_scores(request: Request):
     limit = sub.get("match_scores_limit", 3)
     if limit != -1:
         scores = scores[:limit]
-    return {"scores": scores, "profile_exists": True}
+    result = {"scores": scores, "profile_exists": True}
+    _scores_cache[tenant_id] = {"data": result, "ts": time.time()}
+    return result
 
 
 def _compute_suggestion_match(school, profile):
