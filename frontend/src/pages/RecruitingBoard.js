@@ -81,24 +81,17 @@ function getDueInfo(p) {
 
 /* ── Next action ── */
 function getNextAction(p, matchScore) {
-  if (p.recruiting_status === "Committed" || p.journey_stage === "committed") return { label: "Verbal Commit", sub: null };
-  if (p.board_group === "needs_outreach") {
-    const ms = matchScore?.match_score;
-    return { label: "Start outreach", sub: ms ? `${ms}% match` : null, subColor: "#0d9488", subBg: "#e6f7f5" };
-  }
-  if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") {
-    const isOverdue = p.board_group === "overdue" || (p.next_action_due && p.next_action_due <= new Date().toISOString().split("T")[0]);
-    let sub = null;
-    if (p.next_action_due) {
-      sub = new Date(p.next_action_due + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    }
-    return { label: "Follow up", sub, subColor: isOverdue ? "#dc2626" : "#d97706", subBg: isOverdue ? "#fef2f2" : "#fffbeb" };
-  }
-  if (p.board_group === "in_conversation") {
-    const ms = matchScore?.match_score;
-    return { label: p.recruiting_status || "Active", sub: ms ? `${ms}% match` : null, subColor: "#16a34a", subBg: "#f0fdf4" };
-  }
-  return { label: "View", sub: null };
+  const ms = matchScore?.match_score;
+  const sub = ms ? `${ms}% match` : null;
+  const status = p.recruiting_status || "";
+
+  if (p.recruiting_status === "Committed" || p.journey_stage === "committed")
+    return { label: "Committed", sub, subColor: "#16a34a", subBg: "#f0fdf4" };
+  if (status) return { label: status, sub, subColor: "#0d9488", subBg: "#e6f7f5" };
+  if (p.board_group === "needs_outreach") return { label: "New", sub, subColor: "#0d9488", subBg: "#e6f7f5" };
+  if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") return { label: "Waiting", sub, subColor: "#d97706", subBg: "#fffbeb" };
+  if (p.board_group === "in_conversation") return { label: "In Conversation", sub, subColor: "#2563eb", subBg: "#eff6ff" };
+  return { label: "Active", sub, subColor: "#0d9488", subBg: "#e6f7f5" };
 }
 
 /* ── CTA config ── */
@@ -399,9 +392,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       {/* Col 5: Next action */}
       <div style={{ width: 120, flexShrink: 0, textAlign: "right" }} className="hidden sm:block">
         <div style={{ fontSize: 10, color: "var(--t-text-faint, #999)" }}>
-          <strong style={{ color: "var(--t-text, #1a1a1a)", fontWeight: 700 }}>
-            {p.board_group === "in_conversation" ? "Status:" : "Next:"}
-          </strong> {next.label}
+          <strong style={{ color: "var(--t-text, #1a1a1a)", fontWeight: 700 }}>Status:</strong> {next.label}
         </div>
         {next.sub && (
           <span style={{
