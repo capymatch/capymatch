@@ -299,14 +299,26 @@ export default function RecruitingJourney() {
                 <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
               </Button>
               {program.is_active !== false ? (
-                <button onClick={() => { if (window.confirm(`Archive ${program.university_name}? It will move to the Archived section on your pipeline.`)) updateProgram({ is_active: false }); }}
+                <button onClick={async () => {
+                    try {
+                      await api.put(`/programs/${programId}`, { is_active: false });
+                      toast.success(`${program.university_name} archived`);
+                      navigate("/pipeline");
+                    } catch { toast.error("Failed to archive"); }
+                  }}
                   className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
                   style={{ background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
                   data-testid="archive-btn">
                   <Archive className="w-3 h-3" />Archive
                 </button>
               ) : (
-                <button onClick={() => updateProgram({ is_active: true })}
+                <button onClick={async () => {
+                    try {
+                      await api.put(`/programs/${programId}`, { is_active: true });
+                      toast.success(`${program.university_name} reactivated`);
+                      fetchData();
+                    } catch { toast.error("Failed to reactivate"); }
+                  }}
                   className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
                   style={{ background: "rgba(34,197,94,0.15)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.25)" }}
                   data-testid="reactivate-btn">
