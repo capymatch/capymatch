@@ -679,7 +679,7 @@ export default function RecruitingJourney() {
           {(program.next_action_due || isPremium || !isBasic) && (
             <div className="rounded-2xl border p-4 mb-4 space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-steps-card">
               {program.next_action_due && (
-                <div className="p-2.5 rounded-lg" style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }} data-testid="follow-up-reminder">
+                <div className="p-2.5 rounded-lg" style={{ background: "rgba(249,115,22,0.14)", border: "1.5px solid rgba(249,115,22,0.35)" }} data-testid="follow-up-reminder">
                   <div className="flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#f97316" }} />
                     <span className="text-[11px] font-semibold" style={{ color: "#f97316" }}>
