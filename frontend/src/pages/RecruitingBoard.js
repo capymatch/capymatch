@@ -156,16 +156,6 @@ function SchoolRail({ journeyStage }) {
           </React.Fragment>
         ))}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
-        {stages.map(s => (
-          <span key={s.key} style={{
-            flex: 1, textAlign: "center", fontSize: 8, fontWeight: s.state === "active" ? 800 : 600,
-            color: s.state === "active" ? s.color : "#bbb",
-          }}>
-            {s.key === "in_conversation" ? "Talking" : s.key === "campus_visit" ? "Visit" : s.key === "committed" ? "Commit" : s.label}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }
@@ -363,7 +353,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 2: Progress rail */}
-      <div style={{ width: 220, flexShrink: 0 }} className="hidden md:block">
+      <div style={{ width: 160, flexShrink: 0 }} className="hidden md:block">
         <SchoolRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
       </div>
 
@@ -377,7 +367,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 4: Engagement metrics */}
-      <div style={{ width: 100, flexShrink: 0, display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }} className="hidden lg:flex">
+      <div style={{ width: 90, flexShrink: 0, display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }} className="hidden lg:flex">
         <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 11, fontWeight: 700, color: "var(--t-text-muted, #555)" }}>
           <Eye style={{ width: 13, height: 13, color: "var(--t-text-faint, #999)" }} />{eng.email_opens || 0}
         </span>
@@ -390,7 +380,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 5: Next action */}
-      <div style={{ width: 120, flexShrink: 0, textAlign: "right" }} className="hidden xl:block">
+      <div style={{ width: 100, flexShrink: 0, textAlign: "right" }} className="hidden xl:block">
         <div style={{ fontSize: 10, color: "var(--t-text-faint, #999)" }}>
           <strong style={{ color: "var(--t-text, #1a1a1a)", fontWeight: 700 }}>Status:</strong> {next.label}
         </div>
@@ -404,11 +394,11 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 6: CTA */}
-      <div style={{ width: 120, flexShrink: 0 }} className="hidden xl:block">
+      <div style={{ width: 100, flexShrink: 0 }} className="hidden xl:block">
         <button
           onClick={e => { e.stopPropagation(); navigate(`/journey/${p.program_id}`); }}
           style={{
-            padding: "8px 0", borderRadius: 8, fontSize: 12, fontWeight: 700,
+            padding: "8px 0", borderRadius: 8, fontSize: 11, fontWeight: 700,
             cursor: "pointer", fontFamily: "inherit", width: "100%", textAlign: "center",
             ...(ctaStyles[cta.cls] || ctaStyles.outline),
           }}
