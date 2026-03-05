@@ -783,6 +783,17 @@ export default function RecruitingJourney() {
                   <Plus className="w-3.5 h-3.5" /> Add your first coach contact
                 </button>
               )}
+              {/* Head Coach Social Links from KB */}
+              {(() => {
+                const hc = program.kb_coaches?.find(kc => kc.role && /head/i.test(kc.role)) || program.kb_coaches?.[0];
+                if (!hc || !hc.social_links || Object.values(hc.social_links).filter(Boolean).length === 0) return null;
+                return (
+                  <div className="mt-3 pt-3 flex items-center gap-2 flex-wrap" style={{ borderTop: "1px solid var(--t-border)" }} data-testid="head-coach-social">
+                    <span className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>{hc.name}</span>
+                    <CoachSocialLinks coachName={hc.name} kbCoaches={program.kb_coaches} />
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Engagement Timeline */}
@@ -827,24 +838,7 @@ export default function RecruitingJourney() {
             <SendProfileCard universityName={program.university_name} onSend={openEmailWithProfile} />
           </div>
 
-          {/* KB Coaching Staff with Social Links */}
-          {program.kb_coaches && program.kb_coaches.length > 0 && (
-            <div className="mt-4 p-3 rounded-xl border" style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }} data-testid="kb-coaches-section">
-              <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>
-                Coaching Staff Social Media
-              </p>
-              <div className="space-y-1.5">
-                {program.kb_coaches.map((kc, i) => (
-                  <div key={i} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors">
-                    <div className="min-w-0">
-                      <p className="text-[13px] font-medium truncate" style={{ color: "var(--t-text)" }}>{kc.name}</p>
-                    </div>
-                    <CoachSocialLinks coachName={kc.name} kbCoaches={program.kb_coaches} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* KB Coaching Staff Social Media section removed — head coach social shown inside unified card */}
         </div>
       </div>
       </>)}
