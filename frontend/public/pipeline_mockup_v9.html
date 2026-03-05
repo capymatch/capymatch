@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — CapyMatch v9</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap');
+
+  :root {
+    --bg: #f5f5f5; --card: #ffffff; --border: #e5e7eb; --border-s: #f0f0f0;
+    --text: #1a1a1a; --text2: #555; --text3: #999; --text4: #ccc;
+    --teal: #0d9488; --teal-bg: #e6f7f5;
+    --red: #dc2626; --red-bg: #fef2f2;
+    --amber: #d97706; --amber-bg: #fffbeb;
+    --green: #16a34a; --green-bg: #f0fdf4;
+    --blue: #2563eb; --blue-bg: #eff6ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* ── Header ── */
+  .hdr { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .hdr h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .view-toggle { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .view-btn { padding: 6px 14px; font-size: 12px; font-weight: 600; border: none; background: white; color: var(--text2); cursor: pointer; font-family: inherit; }
+  .view-btn.active { background: var(--text); color: white; }
+  .hdr .spacer { flex: 1; }
+  .hdr .filter-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .hdr .filter-icon svg { width: 16px; height: 16px; color: var(--text2); }
+  .add-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; background: var(--text); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .add-btn svg { width: 13px; height: 13px; }
+
+  /* ── Hero Card ── */
+  .hero {
+    background: #1a1a2e; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px;
+    position: relative;
+  }
+  .hero-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .hero-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .hero-status-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #f59e0b; display: flex; align-items: center; gap: 5px; }
+  .hero-status-label .dot { width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; }
+  .hero-due { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .hero-school-row { display: flex; align-items: center; gap: 12px; }
+  .hero-logo { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; flex-shrink: 0; }
+  .hero-school { font-size: 20px; font-weight: 800; color: white; }
+  .hero-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .hero-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .hero-social { display: flex; gap: 6px; }
+  .hero-social svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
+
+  /* Hero progress bar */
+  .hero-pipeline { margin: 16px 0; }
+  .hero-pip-track { display: flex; align-items: center; gap: 0; }
+  .hero-pip-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.2); background: transparent;
+  }
+  .hero-pip-dot.done { background: var(--teal); border-color: var(--teal); }
+  .hero-pip-dot.now { background: var(--teal); border-color: var(--teal); width: 16px; height: 16px; box-shadow: 0 0 0 3px rgba(13,148,136,0.3); }
+  .hero-pip-line { flex: 1; height: 2px; background: rgba(255,255,255,0.12); }
+  .hero-pip-line.done { background: var(--teal); }
+  .hero-pip-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+  .hero-pip-labels span { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.25); text-align: center; flex: 1; }
+  .hero-pip-labels span.active { color: var(--teal); font-weight: 800; }
+
+  /* Hero advice */
+  .hero-advice {
+    background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px;
+    margin-bottom: 14px; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .hero-advice-icon { flex-shrink: 0; margin-top: 1px; }
+  .hero-advice-icon svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
+  .hero-advice-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+  .hero-advice-text { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.4; }
+  .hero-cta { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); }
+  .hero-btn { padding: 11px 24px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+  .hero-btn svg { width: 14px; height: 14px; }
+
+  /* ── Filter chips ── */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .chip {
+    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border); background: white; color: var(--text2);
+    cursor: pointer; font-family: inherit;
+  }
+  .chip.active { background: var(--text); color: white; border-color: var(--text); }
+
+  /* ── Section header ── */
+  .sec { display: flex; align-items: center; gap: 8px; padding: 18px 0 10px; cursor: pointer; }
+  .sec svg { width: 14px; height: 14px; color: var(--text3); }
+  .sec-name { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  .sec-cnt { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 6px; }
+  .sec-line { flex: 1; height: 1px; background: var(--border-s); margin-left: 6px; }
+
+  /* ════════════════════════════════ */
+  /*         SCHOOL CARD ROW         */
+  /* ════════════════════════════════ */
+  .school-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .school-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-color: #d0d5dd; }
+
+  /* School identity */
+  .sc-id { display: flex; align-items: center; gap: 10px; min-width: 200px; flex-shrink: 0; }
+  .sc-logo {
+    width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .sc-name { font-size: 14px; font-weight: 700; }
+  .sc-meta { font-size: 10px; color: var(--text3); margin-top: 1px; display: flex; align-items: center; gap: 5px; }
+  .sc-div { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; background: #f0f0f0; color: var(--text2); }
+  .sc-social { display: flex; gap: 4px; margin-left: 2px; }
+  .sc-social svg { width: 12px; height: 12px; color: var(--text4); }
+
+  /* Pipeline progress */
+  .sc-pip { flex: 1; min-width: 160px; max-width: 240px; }
+  .sc-pip-track { display: flex; align-items: center; gap: 0; }
+  .sc-pip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--border); background: white; }
+  .sc-pip-dot.done { background: var(--teal); border-color: var(--teal); }
+  .sc-pip-dot.now { background: var(--teal); border-color: var(--teal); width: 12px; height: 12px; box-shadow: 0 0 0 2px rgba(13,148,136,0.15); }
+  .sc-pip-line { flex: 1; height: 2px; background: var(--border-s); }
+  .sc-pip-line.done { background: var(--teal); }
+  .sc-pip-labels { display: flex; justify-content: space-between; margin-top: 3px; }
+  .sc-pip-labels span { font-size: 7px; font-weight: 600; color: var(--text4); text-align: center; flex: 1; }
+  .sc-pip-labels span.active { color: var(--teal); font-weight: 800; }
+
+  /* Temperature tag */
+  .sc-temp { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 6px; flex-shrink: 0; }
+  .sc-temp.hot { background: var(--red-bg); color: var(--red); }
+  .sc-temp.warm { background: var(--amber-bg); color: var(--amber); }
+  .sc-temp.new-tag { background: var(--teal-bg); color: var(--teal); }
+  .sc-temp.active-tag { background: var(--blue-bg); color: var(--blue); }
+
+  /* Engagement metrics */
+  .sc-metrics { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .sc-metric { display: flex; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: var(--text2); }
+  .sc-metric svg { width: 13px; height: 13px; color: var(--text3); }
+
+  /* Next action */
+  .sc-next { flex-shrink: 0; text-align: right; min-width: 110px; }
+  .sc-next-label { font-size: 10px; color: var(--text3); }
+  .sc-next-label strong { color: var(--text); font-weight: 700; }
+  .sc-next-when { display: inline-block; margin-top: 2px; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+  .sc-next-when.overdue { background: var(--red-bg); color: var(--red); }
+  .sc-next-when.soon { background: var(--amber-bg); color: var(--amber); }
+  .sc-next-when.today { background: var(--teal-bg); color: var(--teal); }
+  .sc-next-when.ok { background: var(--green-bg); color: var(--green); }
+
+  /* CTA */
+  .sc-cta { padding: 8px 16px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+  .sc-cta.primary { background: var(--teal); color: white; }
+  .sc-cta.warn { background: var(--amber); color: white; }
+  .sc-cta.outline { background: white; color: var(--text2); border: 1px solid var(--border); }
+  .sc-arrow { width: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text4); }
+  .sc-arrow svg { width: 16px; height: 16px; }
+
+  /* ── Committed ── */
+  .committed-card {
+    background: var(--green-bg); border: 1px solid rgba(22,163,74,0.12); border-radius: 12px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  }
+  .cc-check { width: 40px; height: 40px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cc-check svg { width: 18px; height: 18px; color: white; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .school-card { flex-wrap: wrap; }
+    .sc-pip { order: 10; flex-basis: 100%; max-width: none; margin-top: 6px; }
+  }
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .hero-cta { position: static; transform: none; margin-top: 12px; }
+    .hero { padding: 18px 20px; }
+    .sc-pip { display: none; }
+    .sc-metrics { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ Header (matches current app) ═══ -->
+  <div class="hdr">
+    <h1>My Schools</h1>
+    <div class="view-toggle">
+      <button class="view-btn active">Compact</button>
+      <button class="view-btn">Expanded</button>
+    </div>
+    <span class="spacer"></span>
+    <div class="filter-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+    <button class="add-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>Add School</button>
+  </div>
+
+  <!-- ═══ Hero Card (with progress bar added) ═══ -->
+  <div class="hero">
+    <div class="hero-status">
+      <span class="hero-status-label"><span class="dot"></span> Keeping warm</span>
+      <span class="hero-due">DUE TODAY</span>
+    </div>
+    <div class="hero-school-row">
+      <div class="hero-logo" style="background:#B3A369;">GT</div>
+      <div>
+        <div class="hero-school">Georgia Tech</div>
+        <div class="hero-meta">
+          <span class="hero-badge">D1</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.4);">ACC · GA</span>
+          <div class="hero-social">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Progress pipeline in hero -->
+    <div class="hero-pipeline">
+      <div class="hero-pip-track">
+        <div class="hero-pip-dot done"></div><div class="hero-pip-line done"></div>
+        <div class="hero-pip-dot done"></div><div class="hero-pip-line"></div>
+        <div class="hero-pip-dot now"></div><div class="hero-pip-line"></div>
+        <div class="hero-pip-dot"></div><div class="hero-pip-line"></div>
+        <div class="hero-pip-dot"></div>
+      </div>
+      <div class="hero-pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+
+    <div class="hero-advice">
+      <div class="hero-advice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg></div>
+      <div>
+        <div class="hero-advice-label">What to do next</div>
+        <div class="hero-advice-text">It's been a while since your outreach. Consider a brief follow-up.</div>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <button class="hero-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Follow Up</button>
+    </div>
+  </div>
+
+  <!-- ═══ Filter Chips (matches current app) ═══ -->
+  <div class="filters">
+    <button class="chip active">All 10</button>
+    <button class="chip">Outreach 2</button>
+    <button class="chip">Waiting 3</button>
+    <button class="chip">In Convo 4</button>
+    <button class="chip">Committed 1</button>
+  </div>
+
+  <!-- ═══════ NEEDS OUTREACH ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--amber);">Needs outreach</span>
+    <span class="sec-cnt" style="background:var(--amber-bg);color:var(--amber);">2</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- Johns Hopkins -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#002D72;">JH</div>
+      <div>
+        <div class="sc-name">Johns Hopkins University</div>
+        <div class="sc-meta">
+          <span class="sc-div">D3</span>
+          <span>Centennial · MD</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp new-tag">New</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Next:</strong> Start outreach</div>
+      <span class="sc-next-when today">16% match</span>
+    </div>
+    <button class="sc-cta primary">Start Outreach</button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- University of Tampa -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#8B0000;">UT</div>
+      <div>
+        <div class="sc-name">University of Tampa</div>
+        <div class="sc-meta">
+          <span class="sc-div">D2</span>
+          <span>SSC · FL</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span class="active">Added</span><span>Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp new-tag">New</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Next:</strong> Start outreach</div>
+      <span class="sc-next-when today">55% match</span>
+    </div>
+    <button class="sc-cta primary">Start Outreach</button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ WAITING ON REPLY ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--red);">Waiting on reply</span>
+    <span class="sec-cnt" style="background:var(--red-bg);color:var(--red);">3</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- University of Florida -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#0021A5;">UF</div>
+      <div>
+        <div class="sc-name">University of Florida <span class="sc-div" style="background:var(--red-bg);color:var(--red);">Due in 1d</span></div>
+        <div class="sc-meta"><span class="sc-div">D1</span><span>SEC · FL</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp hot">Hot</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>2</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Next:</strong> Follow up</div>
+      <span class="sc-next-when overdue">24d ago</span>
+    </div>
+    <button class="sc-cta warn">Follow Up</button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- Georgia Tech -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#B3A369;">GT</div>
+      <div>
+        <div class="sc-name">Georgia Tech <span class="sc-div" style="background:var(--amber-bg);color:var(--amber);">Due today</span></div>
+        <div class="sc-meta"><span class="sc-div">D1</span><span>ACC · GA</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span>Added</span><span>Contacted</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp warm">Warm</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Next:</strong> Follow up</div>
+      <span class="sc-next-when soon">23d ago</span>
+    </div>
+    <button class="sc-cta warn">Follow Up</button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- Lewis University -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#C8102E;">LU</div>
+      <div>
+        <div class="sc-name">Lewis University <span class="sc-div" style="background:var(--red-bg);color:var(--red);">Due in 1d</span></div>
+        <div class="sc-meta"><span class="sc-div">D2</span><span>GLVC · IL</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span>Added</span><span class="active">Contacted</span><span>Follow up</span><span>Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp warm">Warm</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>0</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Next:</strong> Follow up</div>
+      <span class="sc-next-when overdue">25d ago</span>
+    </div>
+    <button class="sc-cta warn">Follow Up</button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ IN CONVERSATION ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--blue);">In conversation</span>
+    <span class="sec-cnt" style="background:var(--blue-bg);color:var(--blue);">4</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- UCLA -->
+  <div class="school-card">
+    <div class="sc-id">
+      <div class="sc-logo" style="background:#2774AE;">UC</div>
+      <div>
+        <div class="sc-name">UCLA <span class="sc-div" style="background:var(--green-bg);color:var(--green);">5d ago</span></div>
+        <div class="sc-meta"><span class="sc-div">D1</span><span>Pac-12 · CA</span>
+          <div class="sc-social">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pip">
+      <div class="sc-pip-track">
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot done"></div><div class="sc-pip-line done"></div>
+        <div class="sc-pip-dot now"></div><div class="sc-pip-line"></div>
+        <div class="sc-pip-dot"></div>
+      </div>
+      <div class="sc-pip-labels">
+        <span>Added</span><span>Contacted</span><span>Follow up</span><span class="active">Talking</span><span>Commit</span>
+      </div>
+    </div>
+    <span class="sc-temp hot">Hot</span>
+    <div class="sc-metrics">
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>3</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>1</span>
+      <span class="sc-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2</span>
+    </div>
+    <div class="sc-next">
+      <div class="sc-next-label"><strong>Status:</strong> Offer Received</div>
+      <span class="sc-next-when ok">81% match</span>
+    </div>
+    <button class="sc-cta outline">Journey ></button>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+  <!-- ═══════ COMMITTED ═══════ -->
+  <div class="sec">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    <span class="sec-name" style="color:var(--green);">Committed</span>
+    <span class="sec-cnt" style="background:var(--green-bg);color:var(--green);">1</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="committed-card">
+    <div class="cc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:800;">Stanford University</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px;">D1 · Pac-12 · Stanford, CA · 95% match</div>
+    </div>
+    <span style="padding:5px 14px;border-radius:8px;background:white;color:var(--green);font-size:11px;font-weight:700;border:1px solid rgba(22,163,74,0.12);">Verbal Commit</span>
+    <div class="sc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+
+</div>
+</body>
+</html>
