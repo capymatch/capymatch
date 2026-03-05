@@ -350,10 +350,10 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       data-testid={`pipeline-card-${p.program_id}`}
     >
       {/* Col 1: School identity */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, marginRight: "auto" }}>
-        <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={38} className="rounded-[10px]" />
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2, color: "var(--t-text, #1a1a1a)" }}>{p.university_name}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, flex: "1 1 0%", marginRight: "auto" }}>
+        <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={38} className="rounded-[10px] flex-shrink-0" />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2, color: "var(--t-text, #1a1a1a)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.university_name}</div>
           <div style={{ fontSize: 10, color: "var(--t-text-muted, #999)", marginTop: 2, display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
             {p.division && <span style={{ fontSize: 9, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: "var(--t-surface-alt, #f0f0f0)", color: "var(--t-text-muted, #555)" }}>{p.division}</span>}
             <span>{meta}</span>
