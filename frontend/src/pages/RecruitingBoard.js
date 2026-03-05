@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../lib/api";
 import {
   Plus, ChevronRight, ChevronDown, Loader2, Filter,
-  PartyPopper, Rocket, CheckCircle2, Send, Eye, Link2, Users,
+  PartyPopper, Rocket, CheckCircle2, Send, Eye, Link2, Users, Lightbulb,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -105,6 +105,24 @@ function getCTA(p) {
   if (p.board_group === "needs_outreach") return { label: "Start Outreach", cls: "primary" };
   if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") return { label: "Follow Up", cls: "warn" };
   return { label: "Journey >", cls: "outline" };
+}
+
+/* ── Hero advice ── */
+function getHeroAdvice(p) {
+  if (!p) return "";
+  const g = p.board_group;
+  const s = p.signals || {};
+  if (g === "overdue") {
+    const days = p.next_action_due ? Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000)) : "several";
+    return `Coach hasn't heard from you in ${days} days. Send a short follow-up mentioning your recent results.`;
+  }
+  if (g === "needs_outreach") return "This school matches your profile well. Send an introductory email with your highlight reel.";
+  if (g === "waiting_on_reply") {
+    const d = s.days_since_outreach;
+    return d > 5 ? "It's been a while since your outreach. Consider a brief follow-up." : "Give the coach a bit more time, then follow up with a quick check-in.";
+  }
+  if (g === "in_conversation") return "You've got momentum here — keep the conversation going and ask about a campus visit.";
+  return "Review this school's program and plan your next outreach.";
 }
 
 /* ══════════════════════════════════════════ */
@@ -277,6 +295,24 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
             $ {fundingBadge.label}
           </div>
         )}
+
+        {/* What to do next */}
+        {(() => {
+          const advice = getHeroAdvice(p);
+          return advice ? (
+            <div style={{
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(13,148,136,0.2)",
+              borderLeft: "3px solid #0d9488", borderRadius: 10, padding: "14px 18px",
+              marginBottom: 18, display: "flex", gap: 12, alignItems: "flex-start",
+            }} data-testid="hero-advice-card">
+              <Lightbulb style={{ width: 16, height: 16, color: "#5eead4", flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.45)", marginBottom: 4, letterSpacing: 0.3 }}>What to do next</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{advice}</div>
+              </div>
+            </div>
+          ) : null;
+        })()}
       </div>
 
       {/* Hero Rail */}
