@@ -546,13 +546,15 @@ export default function SocialSpotlight() {
     }
   }, [tier, fetchFeed]);
 
-  /* Filtered videos */
+  /* Filtered videos — exclude trending to avoid duplicates */
+  const trendingIds = useMemo(() => new Set(trendingVideos.map(v => v.video_id)), [trendingVideos]);
   const displayed = useMemo(() => {
     let list = feedVideos.filter((v) => !BEACH_FILTER.test(v.title));
+    if (!selectedName) list = list.filter((v) => !trendingIds.has(v.video_id));
     if (selectedName) list = list.filter((v) => v.university_name === selectedName);
     if (vbOnly) list = list.filter((v) => VB_FILTER.test(v.title) || VB_FILTER.test(v.description || ""));
     return list;
-  }, [feedVideos, selectedName, vbOnly]);
+  }, [feedVideos, selectedName, vbOnly, trendingIds]);
 
   /* Video counts per school */
   const videoCounts = useMemo(() => {
