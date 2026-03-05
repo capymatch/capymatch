@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engagement Badge Mockup - Email Timeline</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f6; padding: 40px 20px; }
+
+  .container { max-width: 720px; margin: 0 auto; }
+  .title { font-size: 13px; font-weight: 700; color: #6b7280; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px; text-align: center; }
+
+  .timeline { background: #fff; border-radius: 16px; border: 1px solid #e5e7eb; padding: 24px; }
+  .timeline-header { margin-bottom: 20px; }
+  .timeline-header h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .timeline-header p { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+  .bubble-row { display: flex; margin: 8px 0; }
+  .bubble-row.right { justify-content: flex-end; }
+  .bubble-row.left { justify-content: flex-start; }
+
+  .bubble {
+    max-width: 70%;
+    border-radius: 16px;
+    padding: 12px 16px;
+    border: 1px solid;
+    position: relative;
+  }
+  .bubble.sent {
+    background: rgba(13, 148, 136, 0.08);
+    border-color: rgba(13, 148, 136, 0.2);
+    border-bottom-right-radius: 6px;
+  }
+  .bubble.received {
+    background: rgba(100, 116, 139, 0.06);
+    border-color: rgba(100, 116, 139, 0.15);
+    border-bottom-left-radius: 6px;
+  }
+
+  .bubble-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .bubble.sent .bubble-label { color: #0f766e; }
+  .bubble.received .bubble-label { color: #64748b; }
+
+  .bubble-text { font-size: 13px; line-height: 1.5; color: #374151; }
+  .bubble-meta { font-size: 10px; color: #9ca3af; margin-top: 6px; }
+
+  /* ── Engagement Badge ── */
+  .engagement-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    cursor: default;
+    transition: all 0.15s ease;
+  }
+  .engagement-badge:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.35);
+  }
+  .engagement-badge .eye-icon {
+    width: 12px;
+    height: 12px;
+    color: #10b981;
+  }
+  .engagement-badge .count {
+    font-size: 10px;
+    font-weight: 700;
+    color: #059669;
+  }
+
+  /* ── Hover Tooltip ── */
+  .engagement-badge .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 10px 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .engagement-badge:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .tooltip-arrow {
+    position: absolute;
+    top: 100%;
+    right: 16px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #1a1a2e;
+  }
+  .tooltip-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+  }
+  .tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .tooltip-row + .tooltip-row {
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .tooltip-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .tooltip-icon.open { background: rgba(16, 185, 129, 0.15); }
+  .tooltip-icon.click { background: rgba(59, 130, 246, 0.15); }
+  .tooltip-icon svg { width: 10px; height: 10px; }
+  .tooltip-detail { flex: 1; min-width: 0; }
+  .tooltip-detail .action { font-size: 11px; font-weight: 600; color: #fff; }
+  .tooltip-detail .who { font-size: 10px; color: rgba(255,255,255,0.45); }
+  .tooltip-time { font-size: 9px; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+
+  /* ── No engagement variant ── */
+  .no-badge .bubble-label { padding-right: 0; }
+
+  /* ── Legend ── */
+  .legend {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+  }
+  .legend h3 { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+  .legend-item .sample-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 700;
+  }
+  .legend-item .sample-badge.green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #059669; }
+  .legend-item .sample-badge.none { background: #f3f4f6; border: 1px solid #e5e7eb; color: #9ca3af; }
+  .legend-item span { font-size: 12px; color: #6b7280; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">Engagement Badge Mockup - Timeline Emails</div>
+
+  <div class="timeline">
+    <div class="timeline-header">
+      <h2>Timeline</h2>
+      <p>Every email, reply, and interaction &mdash; all in one place</p>
+    </div>
+
+    <!-- Sent email WITH engagement (3 opens, 1 click) -->
+    <div class="bubble-row right">
+      <div class="bubble sent">
+        <div class="engagement-badge">
+          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="count">3</span>
+          <!-- Tooltip on hover -->
+          <div class="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-title">Engagement</div>
+            <div class="tooltip-row">
+              <div class="tooltip-icon open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div class="tooltip-detail">
+                <div class="action">Opened</div>
+                <div class="who">volleyball@ucla.edu</div>
+              </div>
+              <div class="tooltip-time">Mar 4</div>
+            </div>
+            <div class="tooltip-row">
+              <div class="tooltip-icon open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div class="tooltip-detail">
+                <div class="action">Opened</div>
+                <div class="who">volleyball@ucla.edu</div>
+              </div>
+              <div class="tooltip-time">Mar 3</div>
+            </div>
+            <div class="tooltip-row">
+              <div class="tooltip-icon click">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </div>
+              <div class="tooltip-detail">
+                <div class="action">Clicked link</div>
+                <div class="who">volleyball@ucla.edu</div>
+              </div>
+              <div class="tooltip-time">Mar 4</div>
+            </div>
+          </div>
+        </div>
+        <p class="bubble-label" style="padding-right: 60px;">You</p>
+        <p class="bubble-text">Hi Coach Sealy, I wanted to introduce myself. I'm a Class of 2027 Outside Hitter from Texas. I've attached my highlight reel and academic transcript for your review.</p>
+        <p class="bubble-meta">Mar 3, 2026 &middot; Email Sent</p>
+      </div>
+    </div>
+
+    <!-- Coach reply (no badge - only sent emails get badges) -->
+    <div class="bubble-row left">
+      <div class="bubble received">
+        <p class="bubble-label">Coach Sealy</p>
+        <p class="bubble-text">Emma, thanks for sending your updated schedule. We'll have a coach at the JVA event. Looking forward to seeing you compete.</p>
+        <p class="bubble-meta">Feb 28, 2026 &middot; Coach Reply</p>
+      </div>
+    </div>
+
+    <!-- Sent email WITH engagement (1 open, no clicks) -->
+    <div class="bubble-row right">
+      <div class="bubble sent">
+        <div class="engagement-badge">
+          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="count">1</span>
+          <div class="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-title">Engagement</div>
+            <div class="tooltip-row">
+              <div class="tooltip-icon open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div class="tooltip-detail">
+                <div class="action">Opened</div>
+                <div class="who">volleyball@ucla.edu</div>
+              </div>
+              <div class="tooltip-time">Feb 25</div>
+            </div>
+          </div>
+        </div>
+        <p class="bubble-label" style="padding-right: 60px;">You</p>
+        <p class="bubble-text">Coach, here's my updated tournament schedule for the spring season. I'd love the opportunity to play in front of your staff.</p>
+        <p class="bubble-meta">Feb 24, 2026 &middot; Email Sent</p>
+      </div>
+    </div>
+
+    <!-- Sent email WITHOUT engagement -->
+    <div class="bubble-row right">
+      <div class="bubble sent no-badge">
+        <p class="bubble-label">You</p>
+        <p class="bubble-text">Coach, I wanted to follow up on my initial email. I recently recorded a new highlight video from our regional tournament.</p>
+        <p class="bubble-meta">Feb 15, 2026 &middot; Email Sent</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <h3>How it works</h3>
+    <div class="legend-item">
+      <span class="sample-badge green">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        3
+      </span>
+      <span>Badge appears on sent emails that were opened/clicked. Number = total engagement events.</span>
+    </div>
+    <div class="legend-item">
+      <span class="sample-badge none">&#8212;</span>
+      <span>No badge = email hasn't been opened yet (or no tracking data).</span>
+    </div>
+    <div class="legend-item">
+      <span style="font-size: 12px; color: #6b7280;">Hover the badge to see who opened, who clicked links, and when.</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
