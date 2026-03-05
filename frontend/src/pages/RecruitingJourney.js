@@ -679,14 +679,14 @@ export default function RecruitingJourney() {
           {(program.next_action_due || isPremium || !isBasic) && (
             <div className="rounded-2xl border p-4 mb-4 space-y-5" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-steps-card">
               {program.next_action_due && (
-                <div className="p-2.5 rounded-lg" style={{ background: "rgba(249,115,22,0.14)", border: "1.5px solid rgba(249,115,22,0.35)" }} data-testid="follow-up-reminder">
+                <div className="p-2.5 rounded-lg" style={{ background: "#f97316", border: "1.5px solid #ea580c" }} data-testid="follow-up-reminder">
                   <div className="flex items-center gap-1.5">
-                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#f97316" }} />
-                    <span className="text-[11px] font-semibold" style={{ color: "#f97316" }}>
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "white" }} />
+                    <span className="text-[11px] font-semibold" style={{ color: "white" }}>
                       Follow-up: {new Date(program.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   </div>
-                  {program.next_action && <p className="text-[10px] mt-1 ml-5" style={{ color: "var(--t-text-muted)" }}>{program.next_action}</p>}
+                  {program.next_action && <p className="text-[10px] mt-1 ml-5" style={{ color: "rgba(255,255,255,0.85)" }}>{program.next_action}</p>}
                 </div>
               )}
               {isPremium ? (
