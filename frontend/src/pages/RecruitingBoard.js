@@ -230,30 +230,16 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
   const meta = [p.conference, sig.total_interactions ? `${sig.total_interactions} events` : null].filter(Boolean).join(" · ");
 
   return (
-    <div style={{ background: "#141422", borderRadius: 14, overflow: "hidden" }} data-testid="pipeline-hero-card">
+    <div style={{ background: "#141422", borderRadius: 14, overflow: "hidden", position: "relative" }} data-testid="pipeline-hero-card">
       <div style={{ height: 3, background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
-      <div style={{ padding: "22px 26px 0" }}>
-        {/* Top row */}
+      <div style={{ padding: "22px 26px 22px" }}>
+        {/* Top row: Logo + Name + Progress Rail */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
           <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={48}
             className="rounded-[14px] border-2 border-white/10" />
           <span style={{ fontSize: 24, fontWeight: 800, color: "white", letterSpacing: -0.3 }}>{p.university_name}</span>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-            <div style={{ width: 340 }} className="hidden md:block">
-              <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
-            </div>
-            <button
-              onClick={() => navigate(`/journey/${p.program_id}`)}
-              style={{
-                padding: "10px 22px", borderRadius: 10, border: "none", background: "#0d9488",
-                color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex",
-                alignItems: "center", gap: 6, fontFamily: "inherit", flexShrink: 0,
-              }}
-              data-testid="hero-follow-up-btn"
-            >
-              <Send style={{ width: 14, height: 14 }} />
-              {p.board_group === "needs_outreach" ? "Start Outreach" : "Follow Up"}
-            </button>
+          <div style={{ marginLeft: "auto", flexShrink: 0, width: 420 }} className="hidden md:block">
+            <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
           </div>
         </div>
 
@@ -289,23 +275,40 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
           </div>
         )}
 
-        {/* What to do next */}
-        {(() => {
-          const advice = getHeroAdvice(p);
-          return advice ? (
-            <div style={{
-              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(13,148,136,0.2)",
-              borderLeft: "3px solid #0d9488", borderRadius: 10, padding: "14px 18px",
-              marginBottom: 18, display: "flex", gap: 12, alignItems: "flex-start",
-            }} data-testid="hero-advice-card">
-              <Lightbulb style={{ width: 16, height: 16, color: "#5eead4", flexShrink: 0, marginTop: 1 }} />
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.45)", marginBottom: 4, letterSpacing: 0.3 }}>What to do next</div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{advice}</div>
+        {/* Advice + Follow Up row */}
+        <div style={{ display: "flex", gap: 16, alignItems: "flex-end" }}>
+          {/* What to do next */}
+          {(() => {
+            const advice = getHeroAdvice(p);
+            return advice ? (
+              <div style={{
+                flex: 1, minWidth: 0, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(13,148,136,0.2)",
+                borderLeft: "3px solid #0d9488", borderRadius: 10, padding: "14px 18px",
+                display: "flex", gap: 12, alignItems: "flex-start",
+              }} data-testid="hero-advice-card">
+                <Lightbulb style={{ width: 16, height: 16, color: "#5eead4", flexShrink: 0, marginTop: 1 }} />
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.45)", marginBottom: 4, letterSpacing: 0.3 }}>What to do next</div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{advice}</div>
+                </div>
               </div>
-            </div>
-          ) : null;
-        })()}
+            ) : <div style={{ flex: 1 }} />;
+          })()}
+
+          {/* Follow Up button - bottom right */}
+          <button
+            onClick={() => navigate(`/journey/${p.program_id}`)}
+            style={{
+              padding: "12px 26px", borderRadius: 10, border: "none", background: "#0d9488",
+              color: "white", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex",
+              alignItems: "center", gap: 7, fontFamily: "inherit", flexShrink: 0,
+            }}
+            data-testid="hero-follow-up-btn"
+          >
+            <Send style={{ width: 15, height: 15 }} />
+            {p.board_group === "needs_outreach" ? "Start Outreach" : "Follow Up"}
+          </button>
+        </div>
       </div>
     </div>
   );
