@@ -40,44 +40,46 @@
   .add-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; background: var(--text); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .add-btn svg { width: 13px; height: 13px; }
 
-  /* ── Hero Card ── */
-  .hero { background: #1a1a2e; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; position: relative; }
-  .hero-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .hero-status-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #f59e0b; display: flex; align-items: center; gap: 5px; }
-  .hero-status-label .dot { width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; }
-  .hero-due { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: rgba(245,158,11,0.15); color: #fbbf24; }
-  .hero-school-row { display: flex; align-items: center; gap: 12px; }
-  .hero-logo { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; flex-shrink: 0; }
-  .hero-school { font-size: 20px; font-weight: 800; color: white; }
-  .hero-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-  .hero-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
-  .hero-social { display: flex; gap: 6px; }
-  .hero-social svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
+  /* ── Hero Card (Journey-style) ── */
+  .hero { background: #141422; border-radius: 14px; margin-bottom: 18px; position: relative; overflow: hidden; }
+  .hero-border { height: 3px; background: linear-gradient(90deg, #0d9488, #14b8a6); }
+  .hero-inner { padding: 22px 26px 0; }
+  .hero-top-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .hero-logo { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.1); }
+  .hero-school { font-size: 24px; font-weight: 800; color: white; letter-spacing: -0.3px; }
+  .hero-top-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .hero-follow-btn { padding: 10px 22px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+  .hero-follow-btn svg { width: 14px; height: 14px; }
 
-  /* Hero progress — Journey-consistent */
-  .hero-rail { margin: 16px 0; position: relative; }
-  .hero-rail-track { display: flex; align-items: center; position: relative; height: 26px; }
-  .hero-rail-bg { position: absolute; left: 8.33%; right: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; background: rgba(255,255,255,0.06); }
-  .hero-rail-fill { position: absolute; left: 8.33%; top: 50%; transform: translateY(-50%); height: 2px; transition: width 0.5s; }
-  .hero-rail-dots { display: flex; position: relative; z-index: 1; }
-  .hero-rail-dot-wrap { flex: 1; display: flex; justify-content: center; align-items: center; }
-  .hero-rail-dot { border-radius: 50%; transition: all 0.3s; }
+  /* Hero badges row */
+  .hero-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .hb { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .hb.sentiment { color: rgba(255,255,255,0.5); background: transparent; padding-left: 0; }
+  .hb.sentiment .hb-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+  .hb.division { background: rgba(13,148,136,0.2); color: #5eead4; }
+  .hb.match { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+  .hb.match svg { width: 12px; height: 12px; }
+  .hb.info { color: rgba(255,255,255,0.35); background: transparent; font-weight: 600; }
+  .hero-social-icons { display: flex; gap: 8px; margin-left: 4px; }
+  .hero-social-icons svg { width: 15px; height: 15px; color: rgba(255,255,255,0.3); }
+
+  /* Hero funding tag */
+  .hero-tag { display: inline-flex; align-items: center; gap: 5px; padding: 5px 14px; border-radius: 8px; background: rgba(22,163,74,0.15); color: #4ade80; font-size: 12px; font-weight: 700; margin-bottom: 18px; border: 1px solid rgba(22,163,74,0.2); }
+
+  /* Hero progress rail */
+  .hero-rail { padding: 0 26px 22px; }
+  .hero-rail-track { display: flex; align-items: center; gap: 0; height: 28px; }
+  .hero-rail-dot { border-radius: 50%; flex-shrink: 0; }
   .hero-rail-dot.past { width: 14px; height: 14px; }
-  .hero-rail-dot.active { width: 18px; height: 18px; position: relative; }
-  .hero-rail-dot.future { width: 14px; height: 14px; background: #1e1e2e !important; }
-  @keyframes heroPulse { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2);opacity:0} }
+  .hero-rail-dot.active { width: 20px; height: 20px; position: relative; }
+  .hero-rail-dot.future { width: 14px; height: 14px; background: #141422 !important; border: 2px solid rgba(255,255,255,0.1) !important; }
+  .hero-rail-line { flex: 1; height: 2px; background: rgba(255,255,255,0.06); }
+  .hero-rail-line.done { background: rgba(255,255,255,0.15); }
+  @keyframes heroPulse { 0%{box-shadow:0 0 0 0 currentColor;} 100%{box-shadow:0 0 0 8px transparent;} }
   .hero-rail-pulse { position: absolute; inset: -4px; border-radius: 50%; animation: heroPulse 2s ease-out infinite; pointer-events: none; }
-  .hero-rail-labels { display: flex; margin-top: 5px; }
-  .hero-rail-labels span { flex: 1; text-align: center; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.2); }
+  .hero-rail-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .hero-rail-labels span { flex: 1; text-align: center; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.2); }
   .hero-rail-labels span.active { font-weight: 800; }
-
-  .hero-advice { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; display: flex; align-items: flex-start; gap: 8px; }
-  .hero-advice-icon svg { width: 14px; height: 14px; color: rgba(255,255,255,0.4); }
-  .hero-advice-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
-  .hero-advice-text { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.4; }
-  .hero-cta { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); }
-  .hero-btn { padding: 11px 24px; border-radius: 10px; border: none; background: var(--teal); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; }
-  .hero-btn svg { width: 14px; height: 14px; }
 
   /* ── Filters ── */
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
@@ -195,52 +197,58 @@
     <button class="add-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>Add School</button>
   </div>
 
-  <!-- Hero Card -->
+  <!-- Hero Card (Journey-style) -->
   <div class="hero">
-    <div class="hero-status">
-      <span class="hero-status-label"><span class="dot"></span> Keeping warm</span>
-      <span class="hero-due">DUE TODAY</span>
-    </div>
-    <div class="hero-school-row">
-      <div class="hero-logo" style="background:#B3A369;">GT</div>
-      <div>
+    <div class="hero-border"></div>
+    <div class="hero-inner">
+      <div class="hero-top-row">
+        <div class="hero-logo" style="background:#B3A369;">GT</div>
         <div class="hero-school">Georgia Tech</div>
-        <div class="hero-meta">
-          <span class="hero-badge">D1</span>
-          <span style="font-size:11px;color:rgba(255,255,255,0.4);">ACC · GA</span>
+        <div class="hero-top-right">
+          <button class="hero-follow-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Follow Up
+          </button>
         </div>
       </div>
+      <div class="hero-badges">
+        <span class="hb sentiment"><span class="hb-dot"></span> Neutral</span>
+        <span class="hb division">D1</span>
+        <span class="hb match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 43% Match</span>
+        <span class="hb info">ACC · 2 events</span>
+        <div class="hero-social-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+      </div>
+      <div class="hero-tag">$ Funding Dependent</div>
     </div>
-    <!-- Journey-consistent progress rail -->
     <div class="hero-rail">
       <div class="hero-rail-track">
-        <div class="hero-rail-bg"></div>
-        <div class="hero-rail-fill" style="width: 33%; background: linear-gradient(90deg, #94a3b8 0%, #1a8a80 100%);"></div>
-        <div class="hero-rail-dots">
-          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot past" style="background:#94a3b8; border:2px solid #94a3b8; box-shadow:0 0 8px #94a3b826;"></div></div>
-          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot past" style="background:#1a8a80; border:2px solid #1a8a80; box-shadow:0 0 8px #1a8a8026;"></div></div>
-          <div class="hero-rail-dot-wrap">
-            <div class="hero-rail-dot active" style="background:#22c55e; border:2px solid #22c55e; box-shadow:0 0 12px #22c55e66;">
-              <div class="hero-rail-pulse" style="border:2px solid #22c55e;"></div>
-            </div>
-          </div>
-          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
-          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
-          <div class="hero-rail-dot-wrap"><div class="hero-rail-dot future" style="border:2px solid rgba(255,255,255,0.1);"></div></div>
+        <div class="hero-rail-dot past" style="background:#94a3b8;border:2px solid #94a3b8;"></div>
+        <div class="hero-rail-line done"></div>
+        <div class="hero-rail-dot active" style="background:#1a8a80;border:2px solid #1a8a80;box-shadow:0 0 14px #1a8a8088;">
+          <div class="hero-rail-pulse" style="border:2px solid #1a8a80;"></div>
         </div>
+        <div class="hero-rail-line"></div>
+        <div class="hero-rail-dot future"></div>
+        <div class="hero-rail-line"></div>
+        <div class="hero-rail-dot future"></div>
+        <div class="hero-rail-line"></div>
+        <div class="hero-rail-dot future"></div>
+        <div class="hero-rail-line"></div>
+        <div class="hero-rail-dot future"></div>
       </div>
       <div class="hero-rail-labels">
-        <span>Added</span><span>Outreach</span><span class="active" style="color:#22c55e;">Talking</span><span>Visit</span><span>Offer</span><span>Committed</span>
+        <span>Added</span>
+        <span class="active" style="color:#5eead4;">Outreach</span>
+        <span>Talking</span>
+        <span>Visit</span>
+        <span>Offer</span>
+        <span>Committed</span>
       </div>
     </div>
-    <div class="hero-advice">
-      <div class="hero-advice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg></div>
-      <div>
-        <div class="hero-advice-label">What to do next</div>
-        <div class="hero-advice-text">It's been a while since your outreach. Consider a brief follow-up.</div>
-      </div>
-    </div>
-    <div class="hero-cta"><button class="hero-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Follow Up</button></div>
   </div>
 
   <!-- Filters -->
