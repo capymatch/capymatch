@@ -17,7 +17,7 @@ import { CoachSocialLinks } from "../components/CoachSocialLinks";
 import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
-  AtAGlanceCard, StageLogModal, FloatingActionBar,
+  StageLogModal, FloatingActionBar,
   CoachForm, LogInteractionForm, EmailComposer,
   FollowUpScheduler, MarkAsRepliedModal, STAGE_LABELS,
 } from "../components/journey";
@@ -514,64 +514,7 @@ export default function RecruitingJourney() {
         </div>
       )}
 
-      {/* ── Coach Engagement Tracker ── */}
-      <div className="mt-4 rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="engagement-tracker">
-        <div className="px-5 py-3 border-b flex items-center gap-2.5" style={{ borderColor: "var(--t-border)" }}>
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(16,185,129,0.12)" }}>
-            <svg className="w-4 h-4" style={{ color: "#10b981" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <div>
-            <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Coach Engagement</h3>
-            <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>How coaches interact with your emails & links</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 border-b" style={{ borderColor: "var(--t-border)" }}>
-          <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
-            <div className="text-xl font-extrabold" style={{ color: "#10b981" }}>{schoolEngagement?.total_opens || 0}</div>
-            <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Email Opens</div>
-          </div>
-          <div className="px-4 py-3 text-center border-r" style={{ borderColor: "var(--t-border)" }}>
-            <div className="text-xl font-extrabold" style={{ color: "#3b82f6" }}>{schoolEngagement?.total_clicks || 0}</div>
-            <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Link Clicks</div>
-          </div>
-          <div className="px-4 py-3 text-center">
-            <div className="text-xl font-extrabold" style={{ color: "#a855f7" }}>{schoolEngagement?.unique_opens || 0}</div>
-            <div className="text-[10px] font-medium" style={{ color: "var(--t-text-muted)" }}>Unique Opens</div>
-          </div>
-        </div>
-        {schoolEngagement?.timeline?.length > 0 ? (
-          <div className="px-5 py-3">
-            <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Recent Activity</p>
-            <div className="space-y-2">
-              {schoolEngagement.timeline.slice(0, 5).map((ev, i) => (
-                <div key={i} className="flex items-center gap-2.5" data-testid={`engagement-event-${i}`}>
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: ev.event_type === "email_open" ? "rgba(16,185,129,0.1)" : "rgba(59,130,246,0.1)" }}>
-                    {ev.event_type === "email_open"
-                      ? <Mail className="w-3 h-3" style={{ color: "#10b981" }} />
-                      : <ExternalLink className="w-3 h-3" style={{ color: "#3b82f6" }} />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-medium" style={{ color: "var(--t-text)" }}>
-                      {ev.event_type === "email_open" ? "Opened" : "Clicked link in"} {ev.email_subject ? `"${ev.email_subject}"` : "your email"}
-                    </p>
-                    {ev.coach_email && <p className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>{ev.coach_email}</p>}
-                  </div>
-                  <span className="text-[10px] flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>
-                    {new Date(ev.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-6 px-5">
-            <Mail className="w-6 h-6 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
-            <p className="text-xs" style={{ color: "var(--t-text-muted)" }}>No engagement yet</p>
-            <p className="text-[10px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Send an email to this coach to start tracking opens & clicks</p>
-          </div>
-        )}
-      </div>
+      {/* Coach Engagement data merged into unified Coaches card below */}
 
       {/* Stage Log Modal */}
       {pendingStage && (
@@ -719,85 +662,165 @@ export default function RecruitingJourney() {
         </div>
 
         <div className="lg:col-span-1">
-          <AtAGlanceCard program={program} coaches={coaches} isPremium={isPremium} isBasic={isBasic}
-            programId={programId} onDraftEmail={openEmail} onAddCoach={openCoach} onScheduleFollowup={() => fetchData()} />
-
-          {coaches.length > 0 ? (
-            <div className="rounded-2xl border p-4 mt-4" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="coach-panel">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}><Users className="w-4 h-4 text-teal-700" />Coaches</h3>
-                <div className="flex items-center gap-2">
-                  {coachWatchAlert ? (
-                    <div className="group relative inline-flex items-center gap-1">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                        style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
-                        data-testid="coach-watch-badge-change">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
-                      </span>
-                      <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
-                        style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
-                        Coach Watch detected a coaching staff change. Review and update your contacts.
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
-                      </div>
+          {/* ── Unified Coaches Card ── */}
+          <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="unified-coach-card">
+            {/* Header */}
+            <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: "1px solid var(--t-border)" }}>
+              <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: "var(--t-text)" }}>
+                <Users className="w-4 h-4 text-teal-700" /> Coaches
+              </h3>
+              <div className="flex items-center gap-2">
+                {coachWatchAlert ? (
+                  <div className="group relative inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                      style={{ background: "rgba(245,158,11,0.1)", color: "#d97706", border: "1px solid rgba(245,158,11,0.2)" }}
+                      data-testid="coach-watch-badge-change">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />Staff Change
+                    </span>
+                    <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
+                      style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
+                      Coach Watch detected a coaching staff change. Review and update your contacts.
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
                     </div>
-                  ) : (
-                    <div className="group relative inline-flex items-center gap-1">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                        style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
-                        data-testid="coach-watch-badge-stable">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0" />Staff Stable
-                      </span>
-                      <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
-                        style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
-                        Coach Watch monitors this school's staff page for changes. No recent changes detected.
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
-                      </div>
-                    </div>
-                  )}
-                  <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)]" data-testid="add-coach-btn"><Plus className="w-4 h-4 text-teal-700" /></button>
-                </div>
-              </div>
-              {coachWatchAlert && (
-                <div className="p-2.5 rounded-lg mb-3" data-testid="coach-watch-alert-detail"
-                  style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
-                  <p className="text-[11px] font-semibold flex items-center gap-1" style={{ color: "#d97706" }}>
-                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    {coachWatchAlert.alert_type === "new_coach" ? "New coach detected" :
-                     coachWatchAlert.alert_type === "coach_departure" ? "Coach departure detected" : "Staff change detected"}
-                  </p>
-                  <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
-                    {coachWatchAlert.summary || coachWatchAlert.details || `A coaching staff change was detected at ${program.university_name}. Review and update your contacts.`}
-                  </p>
-                  {coachWatchAlert.created_at && (
-                    <p className="text-[9px] mt-1.5" style={{ color: "var(--t-text-faint, #b0b0c0)" }}>
-                      Detected {new Date(coachWatchAlert.created_at).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-              )}
-              <div className="space-y-2">
-                {coaches.map(c => (
-                  <div key={c.coach_id} className="p-2.5 rounded-lg border group" style={{ borderColor: "var(--t-border)" }}>
-                    <div className="flex items-start justify-between">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{c.coach_name}</p>
-                        <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{c.role}</p>
-                      </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => { setEditCoach(c); setActiveForm("coach"); }} className="p-1 rounded hover:bg-[var(--t-surface-alt)]"><Edit2 className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} /></button>
-                        <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10"><Trash2 className="w-3 h-3 text-red-400" /></button>
-                      </div>
-                    </div>
-                    {c.email && <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-600 flex items-center gap-1 mt-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</a>}
-                    {c.phone && <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}><Phone className="w-3 h-3" />{c.phone}</p>}
-                    <CoachSocialLinks coachName={c.coach_name} kbCoaches={program.kb_coaches} />
                   </div>
-                ))}
+                ) : (
+                  <div className="group relative inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                      style={{ background: "rgba(16,185,129,0.1)", color: "#059669", border: "1px solid rgba(16,185,129,0.2)" }}
+                      data-testid="coach-watch-badge-stable">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />Staff Stable
+                    </span>
+                    <Info className="w-3.5 h-3.5 cursor-help" style={{ color: "var(--t-text-faint, #b0b0c0)" }} />
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 p-2.5 rounded-lg text-[11px] leading-relaxed font-normal opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50 shadow-lg"
+                      style={{ background: "var(--t-text, #1a1a2e)", color: "#fff" }}>
+                      Coach Watch monitors this school's staff page for changes. No recent changes detected.
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px]" style={{ borderTopColor: "var(--t-text, #1a1a2e)" }} />
+                    </div>
+                  </div>
+                )}
+                <button onClick={openCoach} className="p-1 rounded-lg hover:bg-[var(--t-surface-alt)] transition-colors" data-testid="add-coach-btn">
+                  <Plus className="w-4 h-4 text-teal-700" />
+                </button>
               </div>
             </div>
-          ) : null}
+
+            {/* Engagement Stats Strip */}
+            {(schoolEngagement?.total_opens > 0 || schoolEngagement?.total_clicks > 0) && (
+              <div className="grid grid-cols-3" style={{ borderBottom: "1px solid var(--t-border)" }} data-testid="engagement-stats-strip">
+                <div className="px-3 py-2.5 text-center" style={{ borderRight: "1px solid var(--t-border)" }}>
+                  <div className="text-base font-extrabold" style={{ color: "#10b981" }}>{schoolEngagement?.total_opens || 0}</div>
+                  <div className="text-[9px] font-medium" style={{ color: "var(--t-text-muted)" }}>Opens</div>
+                </div>
+                <div className="px-3 py-2.5 text-center" style={{ borderRight: "1px solid var(--t-border)" }}>
+                  <div className="text-base font-extrabold" style={{ color: "#3b82f6" }}>{schoolEngagement?.total_clicks || 0}</div>
+                  <div className="text-[9px] font-medium" style={{ color: "var(--t-text-muted)" }}>Clicks</div>
+                </div>
+                <div className="px-3 py-2.5 text-center">
+                  <div className="text-base font-extrabold" style={{ color: "#a855f7" }}>{schoolEngagement?.unique_opens || 0}</div>
+                  <div className="text-[9px] font-medium" style={{ color: "var(--t-text-muted)" }}>Unique</div>
+                </div>
+              </div>
+            )}
+
+            {/* Staff Change Alert */}
+            {coachWatchAlert && (
+              <div className="mx-4 mt-3 p-2.5 rounded-lg" data-testid="coach-watch-alert-detail"
+                style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
+                <p className="text-[11px] font-semibold flex items-center gap-1" style={{ color: "#d97706" }}>
+                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                  {coachWatchAlert.alert_type === "new_coach" ? "New coach detected" :
+                   coachWatchAlert.alert_type === "coach_departure" ? "Coach departure detected" : "Staff change detected"}
+                </p>
+                <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--t-text-muted)" }}>
+                  {coachWatchAlert.summary || coachWatchAlert.details || `A coaching staff change was detected at ${program.university_name}. Review and update your contacts.`}
+                </p>
+                {coachWatchAlert.created_at && (
+                  <p className="text-[9px] mt-1.5" style={{ color: "var(--t-text-faint, #b0b0c0)" }}>
+                    Detected {new Date(coachWatchAlert.created_at).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Coach List */}
+            <div className="px-4 py-3">
+              {coaches.length > 0 ? (
+                <div className="space-y-2">
+                  {coaches.map(c => (
+                    <div key={c.coach_id} className="p-2.5 rounded-lg border group transition-colors hover:border-teal-700/20" style={{ borderColor: "var(--t-border)" }} data-testid={`coach-item-${c.coach_id}`}>
+                      <div className="flex items-start justify-between">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate" style={{ color: "var(--t-text)" }}>{c.coach_name}</p>
+                          <p className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{c.role}</p>
+                        </div>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => { setEditCoach(c); setActiveForm("coach"); }} className="p-1 rounded hover:bg-[var(--t-surface-alt)]" data-testid={`edit-coach-${c.coach_id}`}>
+                            <Edit2 className="w-3 h-3" style={{ color: "var(--t-text-muted)" }} />
+                          </button>
+                          <button onClick={() => deleteCoach(c.coach_id)} className="p-1 rounded hover:bg-red-500/10" data-testid={`delete-coach-${c.coach_id}`}>
+                            <Trash2 className="w-3 h-3 text-red-400" />
+                          </button>
+                        </div>
+                      </div>
+                      {c.email && (
+                        <a href={`mailto:${c.email}`} className="text-[11px] text-teal-700 hover:text-teal-600 flex items-center gap-1 mt-1 truncate">
+                          <Mail className="w-3 h-3 flex-shrink-0" />{c.email}
+                        </a>
+                      )}
+                      {c.phone && (
+                        <p className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: "var(--t-text-muted)" }}>
+                          <Phone className="w-3 h-3" />{c.phone}
+                        </p>
+                      )}
+                      <CoachSocialLinks coachName={c.coach_name} kbCoaches={program.kb_coaches} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <button onClick={openCoach} className="w-full flex items-center gap-2.5 p-3 rounded-lg border border-dashed text-xs transition-colors hover:border-teal-700/30"
+                  style={{ borderColor: "var(--t-border)", color: "var(--t-text-muted)" }} data-testid="add-first-coach-btn">
+                  <Plus className="w-3.5 h-3.5" /> Add your first coach contact
+                </button>
+              )}
+            </div>
+
+            {/* Engagement Timeline */}
+            {schoolEngagement?.timeline?.length > 0 && (
+              <div className="px-4 py-3" style={{ borderTop: "1px solid var(--t-border)" }} data-testid="engagement-timeline">
+                <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--t-text-muted)" }}>Recent Activity</p>
+                <div className="space-y-2">
+                  {schoolEngagement.timeline.slice(0, 4).map((ev, i) => (
+                    <div key={i} className="flex items-center gap-2" data-testid={`engagement-event-${i}`}>
+                      <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: ev.event_type === "email_open" ? "rgba(16,185,129,0.1)" : "rgba(59,130,246,0.1)" }}>
+                        {ev.event_type === "email_open"
+                          ? <Mail className="w-2.5 h-2.5" style={{ color: "#10b981" }} />
+                          : <ExternalLink className="w-2.5 h-2.5" style={{ color: "#3b82f6" }} />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-medium truncate" style={{ color: "var(--t-text)" }}>
+                          {ev.event_type === "email_open" ? "Opened" : "Clicked"} {ev.email_subject ? `"${ev.email_subject}"` : "your email"}
+                        </p>
+                      </div>
+                      <span className="text-[9px] flex-shrink-0" style={{ color: "var(--t-text-faint)" }}>
+                        {new Date(ev.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* No engagement empty state */}
+            {(!schoolEngagement || (schoolEngagement.total_opens === 0 && schoolEngagement.total_clicks === 0)) && coaches.length > 0 && (
+              <div className="px-4 py-3 text-center" style={{ borderTop: "1px solid var(--t-border)" }}>
+                <p className="text-[10px]" style={{ color: "var(--t-text-faint)" }}>
+                  No engagement yet — send an email to start tracking
+                </p>
+              </div>
+            )}
+          </div>
 
           {/* Send Profile to Coach */}
           <div className="mt-4">
