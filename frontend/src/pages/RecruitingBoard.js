@@ -124,6 +124,7 @@ function getHeroAdvice(p) {
 /* ══════════════════════════════════════════ */
 function SchoolRail({ journeyStage }) {
   const stages = computeRail(journeyStage || "added");
+  const stageLabels = { added: "Added", outreach: "Outreach", in_conversation: "Talking", campus_visit: "Visit", offer: "Offer", committed: "Committed" };
   return (
     <div data-testid="school-rail">
       <div style={{ display: "flex", alignItems: "center", height: 22 }}>
@@ -136,7 +137,7 @@ function SchoolRail({ journeyStage }) {
                   ? "#0d9488" : "#eee",
               }} />
             )}
-            <div style={{ position: "relative", flexShrink: 0 }}>
+            <div style={{ position: "relative", flexShrink: 0 }} title={stageLabels[s.key] || s.label}>
               <div style={{
                 width: s.state === "active" ? 18 : 12,
                 height: s.state === "active" ? 18 : 12,
@@ -144,6 +145,7 @@ function SchoolRail({ journeyStage }) {
                 background: s.state === "future" ? "var(--t-surface, white)" : s.color,
                 border: s.state === "future" ? "2px solid #e5e7eb" : `2px solid ${s.color}`,
                 boxShadow: s.state === "active" ? `0 0 10px ${s.color}66` : "none",
+                cursor: "default",
               }} />
               {s.state === "active" && (
                 <div style={{
