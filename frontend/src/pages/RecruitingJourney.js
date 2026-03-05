@@ -16,6 +16,10 @@ import UniversityLogo from "../components/UniversityLogo";
 import { RiskExplainerDrawer } from "../components/RiskBadges";
 import { CoachSocialLinks } from "../components/CoachSocialLinks";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "../components/ui/alert-dialog";
+import {
   ProgressRail, PulseIndicator, GettingStartedChecklist,
   CommittedHero, CelebrationHero, NextStepCard, ConversationBubble,
   StageLogModal, FloatingActionBar,
@@ -299,18 +303,38 @@ export default function RecruitingJourney() {
                 <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
               </Button>
               {program.is_active !== false ? (
-                <button onClick={async () => {
-                    try {
-                      await api.put(`/programs/${programId}`, { is_active: false });
-                      toast.success(`${program.university_name} archived`);
-                      navigate("/pipeline");
-                    } catch { toast.error("Failed to archive"); }
-                  }}
-                  className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
-                  style={{ background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
-                  data-testid="archive-btn">
-                  <Archive className="w-3 h-3" />Archive
-                </button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                      style={{ background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
+                      data-testid="archive-btn">
+                      <Archive className="w-3 h-3" />Archive
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle style={{ color: "var(--t-text)" }}>Archive {program.university_name}?</AlertDialogTitle>
+                      <AlertDialogDescription style={{ color: "var(--t-text-muted)" }}>
+                        This school will be moved to your Archived section on the pipeline. You can reactivate it anytime — nothing is deleted.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel style={{ color: "var(--t-text-muted)" }}>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={async () => {
+                          try {
+                            await api.put(`/programs/${programId}`, { is_active: false });
+                            toast.success(`${program.university_name} archived`);
+                            navigate("/pipeline");
+                          } catch { toast.error("Failed to archive"); }
+                        }}
+                        style={{ background: "#94a3b8", color: "white" }}
+                        data-testid="confirm-archive-btn"
+                      >Archive</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               ) : (
                 <button onClick={async () => {
                     try {
