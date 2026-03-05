@@ -1,34 +1,32 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../lib/api";
-import { DIVISIONS, REGIONS } from "../lib/constants";
 import {
-  Search, Plus, ChevronRight, ChevronDown, X, Loader2, Filter,
-  PartyPopper, Rocket, CheckCircle2, Send, Clock, MapPin,
-  StickyNote, MessageSquare, AlertTriangle, Lightbulb, ClipboardCheck
+  Plus, ChevronRight, ChevronDown, Loader2, Filter,
+  PartyPopper, Rocket, CheckCircle2, Send, Eye, Link2, Users,
 } from "lucide-react";
-import { Input } from "../components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import EmptyBoardState from "./pipeline/EmptyBoardState";
 import UniversityLogo from "../components/UniversityLogo";
+import { RAIL_STAGES } from "../components/journey/constants";
 
 /* ── Section Config ── */
 const SECTIONS = [
-  { key: "outreach", label: "Needs Outreach", color: "#1a8a80" },
-  { key: "waiting", label: "Waiting on Reply", color: "#f59e0b" },
-  { key: "convo", label: "In Conversation", color: "#16a34a" },
-  { key: "committed", label: "Committed", color: "#d97706" },
+  { key: "outreach", label: "Needs outreach", color: "#d97706", bg: "#fffbeb" },
+  { key: "waiting", label: "Waiting on reply", color: "#dc2626", bg: "#fef2f2" },
+  { key: "convo", label: "In conversation", color: "#2563eb", bg: "#eff6ff" },
+  { key: "committed", label: "Committed", color: "#16a34a", bg: "#f0fdf4" },
 ];
 
-const BAR_COLORS = { outreach: "#1a8a80", waiting: "#f59e0b", convo: "#16a34a", committed: "#d97706" };
-
-/* ── Helpers ── */
+/* ── Grouping ── */
 function groupIntoSections(programs) {
   const s = { outreach: [], waiting: [], convo: [], committed: [] };
   for (const p of programs) {
-    if (p.recruiting_status === "Committed") { s.committed.push(p); continue; }
+    if (p.recruiting_status === "Committed" || p.journey_stage === "committed") {
+      s.committed.push(p);
+      continue;
+    }
     const g = p.board_group;
     if (g === "needs_outreach") s.outreach.push(p);
     else if (g === "waiting_on_reply" || g === "overdue") s.waiting.push(p);
@@ -38,557 +36,480 @@ function groupIntoSections(programs) {
   return s;
 }
 
-function getStatusStyle(status) {
-  const map = {
-    "Not Contacted": { bg: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted, #888)" },
-    "Contacted": { bg: "rgba(26,138,128,0.08)", color: "#1a8a80" },
-    "Some Interest": { bg: "rgba(59,130,246,0.08)", color: "#3b82f6" },
-    "Camp Attended": { bg: "rgba(139,92,246,0.08)", color: "#8b5cf6" },
-    "Active Conversation": { bg: "rgba(16,185,129,0.08)", color: "#10b981" },
-    "Offer Received": { bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
-    "Offer / Commit Talk": { bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
-    "Committed": { bg: "rgba(22,163,74,0.1)", color: "#16a34a" },
-  };
-  return map[status] || { bg: "var(--t-surface-alt, #f5f5f5)", color: "var(--t-text-muted, #888)" };
+/* ── Compute rail from journey_stage ── */
+function computeRail(journeyStage) {
+  const activeIdx = journeyStage
+    ? RAIL_STAGES.findIndex(s => s.key === journeyStage)
+    : 0;
+  const idx = activeIdx >= 0 ? activeIdx : 0;
+  return RAIL_STAGES.map((s, i) => ({
+    ...s,
+    state: i < idx ? "past" : i === idx ? "active" : "future",
+  }));
 }
 
-function getMatchColor(m) {
-  if (m >= 50) return "#16a34a";
-  if (m >= 25) return "#f59e0b";
-  return "#999";
-}
-
-/* ── Pipeline Card ── */
-function PipelineCard({ program: p, section, matchScore, engagement, navigate, forceExpand }) {
-  const [expanded, setExpanded] = useState(false);
-  const [interactions, setInteractions] = useState(null);
-  const [loadingIx, setLoadingIx] = useState(false);
-
-  useEffect(() => { setExpanded(!!forceExpand); }, [forceExpand]);
-
-  const signals = p.signals || {};
-  const ss = getStatusStyle(p.recruiting_status);
-  const match = matchScore?.match_score;
-  const mc = match ? getMatchColor(match) : "#999";
-
-  // Urgency badge
-  let urgency = null;
-  if (p.board_group === "overdue" && p.next_action_due) {
-    const days = Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000));
-    urgency = { text: `${days}d overdue`, type: "red" };
-  } else if (section === "waiting" && p.next_action_due) {
-    const d = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000);
-    if (d <= 3 && d > 0) urgency = { text: `Due in ${d}d`, type: "amber" };
-    else if (d <= 0) urgency = { text: "Due today", type: "amber" };
+/* ── Temperature tag ── */
+function getTemperature(p) {
+  const sig = p.signals || {};
+  if (p.board_group === "in_conversation") {
+    if (sig.days_since_activity != null && sig.days_since_activity <= 3) return { label: "Hot", cls: "hot" };
+    if (sig.days_since_activity != null && sig.days_since_activity <= 7) return { label: "Active", cls: "active-tag" };
+    return { label: "Warm", cls: "warm" };
   }
-
-  // Activity text
-  const actText = signals.days_since_activity != null
-    ? (signals.days_since_activity === 0 ? "Today" : `${signals.days_since_activity}d ago`)
-    : "—";
-
-  // Section-based action buttons (no Mark Replied per user request)
-  const sectionActions = section === "outreach"
-    ? [{ label: "Start Outreach", cls: "primary" }]
-    : section === "waiting"
-    ? [{ label: "Follow Up", cls: "warn" }]
-    : [];
-
-  const handleToggle = (e) => {
-    if (e.target.closest("[data-stop]")) return;
-    const next = !expanded;
-    setExpanded(next);
-    if (next && interactions === null) {
-      setLoadingIx(true);
-      api.get(`/interactions?program_id=${p.program_id}`)
-        .then(res => setInteractions(Array.isArray(res.data) ? res.data.slice(0, 5) : []))
-        .catch(() => setInteractions([]))
-        .finally(() => setLoadingIx(false));
-    }
-  };
-
-  const meta = [p.conference, p.location || p.city_state || p.state].filter(Boolean).join(" \u00b7 ");
-
-  return (
-    <div
-      className={`flex rounded-xl border overflow-hidden transition-all cursor-pointer ${expanded ? "shadow-md" : "hover:shadow-sm"}`}
-      style={{ backgroundColor: "var(--t-surface)", borderColor: expanded ? "var(--t-border-strong, #ddd)" : "var(--t-border)" }}
-      onClick={handleToggle}
-      data-testid={`pipeline-card-${p.program_id}`}
-    >
-      <div className="w-1 flex-shrink-0" style={{ backgroundColor: BAR_COLORS[section] }} />
-      <div className="flex-1 px-4 py-3 min-w-0">
-        {/* ── Compact Row ── */}
-        <div className="flex items-center gap-3">
-          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={34} />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-sm font-bold truncate" style={{ color: "var(--t-text)" }}>{p.university_name}</span>
-              {p.division && (
-                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded"
-                  style={{ background: "var(--t-surface-alt, #f0f0f0)", color: "var(--t-text-muted)", border: "1px solid var(--t-border)" }}>
-                  {p.division}
-                </span>
-              )}
-              {urgency && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
-                  style={{
-                    backgroundColor: urgency.type === "red" ? "rgba(220,38,38,0.08)" : "rgba(245,158,11,0.08)",
-                    color: urgency.type === "red" ? "#dc2626" : "#d97706",
-                  }}>
-                  <Clock className="w-2.5 h-2.5" />{urgency.text}
-                </span>
-              )}
-              {!urgency && actText !== "—" && section !== "outreach" && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
-                  style={{ backgroundColor: "rgba(22,163,74,0.08)", color: "#16a34a" }}>
-                  <CheckCircle2 className="w-2.5 h-2.5" />{actText}
-                </span>
-              )}
-              {p.questionnaire_url && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
-                  title={p.questionnaire_completed ? "Questionnaire completed" : "Questionnaire pending"}
-                  style={{
-                    backgroundColor: p.questionnaire_completed ? "rgba(22,163,74,0.08)" : "rgba(245,158,11,0.08)",
-                    color: p.questionnaire_completed ? "#16a34a" : "#d97706",
-                  }}
-                  data-testid={`quest-badge-${p.program_id}`}>
-                  <ClipboardCheck className="w-2.5 h-2.5" />{p.questionnaire_completed ? "Questionnaire done" : "Questionnaire"}
-                </span>
-              )}
-              {p.imported_at && (new Date() - new Date(p.imported_at)) < 7 * 24 * 60 * 60 * 1000 && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
-                  style={{ backgroundColor: "rgba(99,102,241,0.08)", color: "#818cf8" }}
-                  data-testid={`imported-badge-${p.program_id}`}>
-                  Imported
-                </span>
-              )}
-              {engagement && (engagement.email_opens > 0 || engagement.link_clicks > 0) && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xl inline-flex items-center gap-1"
-                  style={{ backgroundColor: "rgba(16,185,129,0.08)", color: "#10b981" }}
-                  data-testid={`engagement-badge-${p.program_id}`}>
-                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  {engagement.email_opens > 0 && `${engagement.email_opens} open${engagement.email_opens > 1 ? "s" : ""}`}
-                  {engagement.email_opens > 0 && engagement.link_clicks > 0 && " · "}
-                  {engagement.link_clicks > 0 && `${engagement.link_clicks} click${engagement.link_clicks > 1 ? "s" : ""}`}
-                </span>
-              )}
-            </div>
-            <div className="text-[11px] mt-0.5 flex items-center gap-1" style={{ color: "var(--t-text-muted)" }}>
-              <MapPin className="w-2.5 h-2.5" />{meta || "—"}
-              {p.social_links && Object.keys(p.social_links).length > 0 && (
-                <span className="flex items-center gap-1 ml-2">
-                  {p.social_links.twitter && <a href={p.social_links.twitter} target="_blank" rel="noopener noreferrer" data-stop="1" onClick={e => e.stopPropagation()} className="hover:opacity-70 transition-opacity" style={{ color: "var(--t-text-muted)" }} title="X/Twitter"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
-                  {p.social_links.instagram && <a href={p.social_links.instagram} target="_blank" rel="noopener noreferrer" data-stop="1" onClick={e => e.stopPropagation()} className="hover:opacity-70 transition-opacity" style={{ color: "var(--t-text-muted)" }} title="Instagram"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg></a>}
-                  {p.social_links.facebook && <a href={p.social_links.facebook} target="_blank" rel="noopener noreferrer" data-stop="1" onClick={e => e.stopPropagation()} className="hover:opacity-70 transition-opacity" style={{ color: "var(--t-text-muted)" }} title="Facebook"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>}
-                  {p.social_links.youtube && <a href={p.social_links.youtube} target="_blank" rel="noopener noreferrer" data-stop="1" onClick={e => e.stopPropagation()} className="hover:opacity-70 transition-opacity" style={{ color: "var(--t-text-muted)" }} title="YouTube"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Stats (desktop) */}
-          <div className="hidden md:flex items-center gap-4 flex-shrink-0">
-            <div className="text-center">
-              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Status</div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg inline-block" style={{ backgroundColor: ss.bg, color: ss.color }}>
-                {p.recruiting_status || "—"}
-              </span>
-            </div>
-            {match != null && (
-              <div className="text-center">
-                <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Match</div>
-                <div className="text-[13px] font-bold" style={{ color: "var(--t-text)" }}>{match}%</div>
-              </div>
-            )}
-            <div className="text-center">
-              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Outreach</div>
-              <div className="text-[13px] font-bold" style={{ color: "var(--t-text)" }}>{signals.outreach_count || 0}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: "var(--t-text-faint, #bbb)" }}>Activity</div>
-              <div className="text-[13px] font-bold" style={{ color: signals.days_since_activity > 7 ? "#f59e0b" : "var(--t-text)" }}>
-                {actText}
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-1.5 flex-shrink-0" data-stop="1">
-            {sectionActions.length > 0 ? sectionActions.map((a, i) => (
-              <button key={i}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-90"
-                style={a.cls === "primary"
-                  ? { backgroundColor: "#1a8a80", color: "#fff", borderColor: "#1a8a80" }
-                  : { backgroundColor: "var(--t-surface)", color: "#f59e0b", borderColor: "rgba(245,158,11,0.25)" }}
-                onClick={() => navigate(`/journey/${p.program_id}`)}
-                data-testid={`card-action-${p.program_id}`}
-              >
-                <Send className="w-3 h-3" /><span className="hidden sm:inline">{a.label}</span>
-              </button>
-            )) : (
-              <button
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors hover:opacity-80"
-                style={{ backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }}
-                onClick={() => navigate(`/journey/${p.program_id}`)}
-                data-testid={`card-journey-${p.program_id}`}
-              >
-                <span className="hidden sm:inline">Journey</span><ChevronRight className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          <ChevronRight
-            className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
-            style={{ color: expanded ? "var(--t-text-muted)" : "var(--t-text-faint, #ccc)" }}
-          />
-        </div>
-
-        {/* ── Expanded Content ── */}
-        {expanded && (
-          <div className="mt-3.5">
-            {/* Info blocks */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-3">
-              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
-                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Coach</div>
-                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>{p.primary_coach || "—"}</div>
-                {p.coach_title && (
-                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-muted)" }}>{p.coach_title}</div>
-                )}
-                {p.coach_email && (
-                  <div className="text-[11px] mt-0.5">
-                    <a href={`mailto:${p.coach_email}`} className="hover:underline" style={{ color: "#1a8a80" }}
-                      onClick={e => e.stopPropagation()} data-stop="1">{p.coach_email}</a>
-                  </div>
-                )}
-                {!p.primary_coach && !p.coach_email && (
-                  <div className="text-[11px] mt-0.5" style={{ color: "var(--t-text-faint)" }}>Find on school website</div>
-                )}
-              </div>
-              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
-                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Next Step</div>
-                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
-                  {p.next_action || (!(signals.outreach_count > 0) ? "Send introduction email" : signals.has_coach_reply ? "Review coach's reply" : "Follow up on your outreach")}
-                </div>
-                {p.next_action_due && (
-                  <div className="text-[11px] mt-1 font-medium" style={{
-                    color: new Date(p.next_action_due + "T00:00:00") < new Date(new Date().toISOString().split("T")[0] + "T00:00:00")
-                      ? "#dc2626"
-                      : Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date(new Date().toISOString().split("T")[0] + "T00:00:00")) / 86400000) <= 3
-                        ? "#d97706"
-                        : "var(--t-text-muted)"
-                  }}>
-                    {(() => {
-                      const today = new Date().toISOString().split("T")[0];
-                      const diff = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000);
-                      if (diff < 0) return `${Math.abs(diff)}d overdue`;
-                      if (diff === 0) return "Due today";
-                      if (diff === 1) return "Due tomorrow";
-                      return `Due in ${diff}d`;
-                    })()}
-                  </div>
-                )}
-                {!p.next_action && (
-                  <div className="text-[11px] mt-0.5 italic" style={{ color: "var(--t-text-faint)" }}>Suggested</div>
-                )}
-              </div>
-              <div className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "var(--t-surface-alt, #f9f9f9)", border: "1px solid var(--t-border)" }}>
-                <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "var(--t-text-faint, #aaa)" }}>Communication</div>
-                <div className="text-[13px] font-semibold" style={{ color: "var(--t-text)" }}>
-                  {signals.outreach_count || 0} sent &middot; {signals.has_coach_reply ? "1+ replies" : "0 replies"}
-                </div>
-                <div className="text-[11px] mt-1" style={{ color: actText !== "—" ? "var(--t-text-muted)" : "var(--t-text-faint)" }}>
-                  {actText !== "—" ? `Last activity: ${actText}` : "No contact yet"}
-                </div>
-                {signals.outreach_count > 0 && (
-                  <div className="text-[11px] mt-0.5" style={{ color: signals.has_coach_reply ? "#16a34a" : "#d97706" }}>
-                    {signals.has_coach_reply ? "Coach has replied" : "Awaiting reply"}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Timeline */}
-            {loadingIx && (
-              <div className="flex items-center gap-2 py-2 mb-3">
-                <Loader2 className="w-3 h-3 animate-spin" style={{ color: "var(--t-text-faint)" }} />
-                <span className="text-[11px]" style={{ color: "var(--t-text-faint)" }}>Loading timeline...</span>
-              </div>
-            )}
-            {interactions && interactions.length > 0 && (
-              <div className="mb-3">
-                {interactions.map((ix, i) => (
-                  <div key={ix.interaction_id || i}
-                    className="flex gap-2.5 py-1.5 text-[11px] relative"
-                    style={{ borderLeft: "2px solid var(--t-border)", marginLeft: 6, paddingLeft: 14 }}>
-                    <div className="absolute w-2 h-2 rounded-full"
-                      style={{ left: -5, top: 9, backgroundColor: i === 0 ? "#1a8a80" : "var(--t-border)" }} />
-                    <span className="font-semibold flex-shrink-0" style={{ color: "var(--t-text-faint)", minWidth: 65 }}>
-                      {ix.date_time ? new Date(ix.date_time).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
-                    </span>
-                    <span style={{ color: "var(--t-text-secondary)" }}>
-                      {ix.type || "Activity"}{ix.notes ? `: ${ix.notes}` : ""}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Expanded Actions */}
-            <div className="flex gap-2 justify-end flex-wrap" data-stop="1">
-              <button
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#1a8a80", color: "#fff" }}
-                onClick={() => navigate(`/journey/${p.program_id}`)}
-                data-testid={`card-full-journey-${p.program_id}`}>
-                View Full Journey <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  if (p.board_group === "overdue") return { label: "Hot", cls: "hot" };
+  if (p.board_group === "waiting_on_reply") return { label: "Warm", cls: "warm" };
+  if (p.board_group === "needs_outreach" && !sig.outreach_count) return { label: "New", cls: "new-tag" };
+  if (sig.outreach_count > 0) return { label: "Warm", cls: "warm" };
+  return { label: "New", cls: "new-tag" };
 }
 
-/* ── Progress Ring ── */
-const RING_STAGES = [
-  { key: "outreach", label: "Outreach", color: "#1a8a80" },
-  { key: "waiting", label: "Waiting", color: "#f59e0b" },
-  { key: "convo", label: "In Convo", color: "#16a34a" },
-  { key: "committed", label: "Committed", color: "#d97706" },
-];
+/* ── Due text ── */
+function getDueInfo(p) {
+  const sig = p.signals || {};
+  if (p.next_action_due) {
+    const today = new Date().toISOString().split("T")[0];
+    const diff = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date(today + "T00:00:00")) / 86400000);
+    if (diff < 0) return { text: `Due ${Math.abs(diff)}d`, color: "#dc2626", bg: "#fef2f2" };
+    if (diff === 0) return { text: "Due today", color: "#d97706", bg: "#fffbeb" };
+    if (diff <= 3) return { text: `Due ${diff}d`, color: "#d97706", bg: "#fffbeb" };
+  }
+  if (sig.days_since_activity != null && sig.days_since_activity > 0) {
+    return { text: `${sig.days_since_activity}d ago`, color: "#16a34a", bg: "#f0fdf4" };
+  }
+  return null;
+}
 
-function ProgressRing({ sectionCounts, total }) {
-  const active = RING_STAGES.filter(s => (sectionCounts[s.key] || 0) > 0);
-  const stops = [];
-  let acc = 0;
-  active.forEach(s => {
-    const pct = (sectionCounts[s.key] || 0) / Math.max(total, 1) * 100;
-    stops.push(`${s.color} ${acc}% ${acc + pct}%`);
-    acc += pct;
-  });
-  if (acc < 100) stops.push(`var(--t-border, #e5e7eb) ${acc}% 100%`);
-  const gradient = stops.length > 0 ? `conic-gradient(from 0deg, ${stops.join(", ")})` : `conic-gradient(var(--t-border) 0% 100%)`;
+/* ── Next action ── */
+function getNextAction(p, matchScore) {
+  if (p.recruiting_status === "Committed" || p.journey_stage === "committed") return { label: "Verbal Commit", sub: null };
+  if (p.board_group === "needs_outreach") {
+    const ms = matchScore?.match_score;
+    return { label: "Start outreach", sub: ms ? `${ms}% match` : null, subColor: "#0d9488", subBg: "#e6f7f5" };
+  }
+  if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") {
+    const sig = p.signals || {};
+    const days = sig.days_since_outreach || sig.days_since_activity;
+    const sub = days ? `${days}d ago` : null;
+    const isOverdue = p.board_group === "overdue" || (p.next_action_due && p.next_action_due <= new Date().toISOString().split("T")[0]);
+    return { label: "Follow up", sub, subColor: isOverdue ? "#dc2626" : "#d97706", subBg: isOverdue ? "#fef2f2" : "#fffbeb" };
+  }
+  if (p.board_group === "in_conversation") {
+    const ms = matchScore?.match_score;
+    return { label: p.recruiting_status || "Active", sub: ms ? `${ms}% match` : null, subColor: "#16a34a", subBg: "#f0fdf4" };
+  }
+  return { label: "View", sub: null };
+}
 
+/* ── CTA config ── */
+function getCTA(p) {
+  if (p.board_group === "needs_outreach") return { label: "Start Outreach", cls: "primary" };
+  if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") return { label: "Follow Up", cls: "warn" };
+  return { label: "Journey >", cls: "outline" };
+}
+
+/* ══════════════════════════════════════════ */
+/* ── Mini Progress Rail (for school cards) ── */
+/* ══════════════════════════════════════════ */
+function SchoolRail({ journeyStage }) {
+  const stages = computeRail(journeyStage || "added");
   return (
-    <div className="flex items-center gap-4" data-testid="progress-ring">
-      <div className="flex-shrink-0 w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full flex items-center justify-center" style={{ background: gradient }}>
-        <div className="w-[76px] h-[76px] md:w-[108px] md:h-[108px] rounded-full flex flex-col items-center justify-center" style={{ backgroundColor: "var(--t-surface, #fff)" }}>
-          <span className="text-xl md:text-3xl font-extrabold" style={{ color: "var(--t-text)", lineHeight: 1 }}>{total}</span>
-          <span className="text-[9px] md:text-xs" style={{ color: "var(--t-text-muted)" }}>schools</span>
-        </div>
+    <div data-testid="school-rail">
+      <div style={{ display: "flex", alignItems: "center", height: 18 }}>
+        {stages.map((s, i) => (
+          <React.Fragment key={s.key}>
+            {i > 0 && (
+              <div style={{
+                flex: 1, height: 2,
+                background: s.state === "past" || (stages[i - 1]?.state === "past" && s.state === "active")
+                  ? "#0d9488" : "#eee",
+              }} />
+            )}
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div style={{
+                width: s.state === "active" ? 14 : 10,
+                height: s.state === "active" ? 14 : 10,
+                borderRadius: "50%",
+                background: s.state === "future" ? "var(--t-surface, white)" : s.color,
+                border: s.state === "future" ? "2px solid #e5e7eb" : `2px solid ${s.color}`,
+                boxShadow: s.state === "active" ? `0 0 10px ${s.color}66` : "none",
+              }} />
+              {s.state === "active" && (
+                <div style={{
+                  position: "absolute", inset: -3, borderRadius: "50%",
+                  border: `2px solid ${s.color}`,
+                  animation: "scPulse 2s ease-out infinite", pointerEvents: "none",
+                }} />
+              )}
+            </div>
+          </React.Fragment>
+        ))}
       </div>
-      <div className="flex flex-col gap-y-1.5">
-        {active.map(s => (
-          <div key={s.key} className="flex items-center gap-1.5 text-[10px] md:text-sm">
-            <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
-            <span className="font-bold" style={{ color: "var(--t-text)", minWidth: 10 }}>{sectionCounts[s.key] || 0}</span>
-            <span style={{ color: "var(--t-text-muted)" }}>{s.label}</span>
-          </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+        {stages.map(s => (
+          <span key={s.key} style={{
+            flex: 1, textAlign: "center", fontSize: 7, fontWeight: s.state === "active" ? 800 : 600,
+            color: s.state === "active" ? s.color : "#ccc",
+          }}>
+            {s.key === "in_conversation" ? "Talking" : s.key === "campus_visit" ? "Visit" : s.key === "committed" ? "Commit" : s.label}
+          </span>
         ))}
       </div>
     </div>
   );
 }
 
-/* ── Hero Card helpers ── */
-function getHeroAdvice(p) {
-  if (!p) return "";
-  const g = p.board_group;
-  const s = p.signals || {};
-  if (g === "overdue") {
-    const days = p.next_action_due ? Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000)) : "several";
-    return `Coach hasn't heard from you in ${days} days. Send a short follow-up mentioning your recent results.`;
-  }
-  if (g === "needs_outreach") return "This school matches your profile well. Send an introductory email with your highlight reel.";
-  if (g === "waiting_on_reply") {
-    const d = s.days_since_outreach;
-    return d > 5 ? "It's been a while since your outreach. Consider a brief follow-up." : "Give the coach a bit more time, then follow up.";
-  }
-  if (g === "in_conversation") return "You've got momentum — keep the conversation going.";
-  return "";
+/* ══════════════════════════════════════════ */
+/* ── Hero Progress Rail (Journey style) ── */
+/* ══════════════════════════════════════════ */
+function HeroRail({ journeyStage }) {
+  const stages = computeRail(journeyStage || "added");
+  return (
+    <div data-testid="hero-rail">
+      <div style={{ display: "flex", alignItems: "center", height: 28 }}>
+        {stages.map((s, i) => (
+          <React.Fragment key={s.key}>
+            {i > 0 && (
+              <div style={{
+                flex: 1, height: 2,
+                background: s.state === "past" || (stages[i - 1]?.state === "past" && s.state === "active")
+                  ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.06)",
+              }} />
+            )}
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div style={{
+                width: s.state === "active" ? 20 : 14,
+                height: s.state === "active" ? 20 : 14,
+                borderRadius: "50%",
+                background: s.state === "future" ? "#141422" : s.color,
+                border: s.state === "future" ? "2px solid rgba(255,255,255,0.1)" : `2px solid ${s.color}`,
+                boxShadow: s.state === "active" ? `0 0 14px ${s.color}88` : "none",
+              }} />
+              {s.state === "active" && (
+                <div style={{
+                  position: "absolute", inset: -4, borderRadius: "50%",
+                  border: `2px solid ${s.color}`,
+                  animation: "heroPulse 2s ease-out infinite", pointerEvents: "none",
+                }} />
+              )}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+        {stages.map(s => (
+          <span key={s.key} style={{
+            flex: 1, textAlign: "center", fontSize: 10, fontWeight: s.state === "active" ? 800 : 600,
+            color: s.state === "active" ? "#5eead4" : "rgba(255,255,255,0.2)",
+          }}>
+            {s.key === "in_conversation" ? "Talking" : s.key === "campus_visit" ? "Visit" : s.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-function HeroCard({ program, navigate }) {
-  if (!program) return null;
-  const p = program;
-  const stage = p.board_group;
-  const isUrgent = stage === "overdue";
-  const isWaiting = stage === "waiting_on_reply";
-  const advice = getHeroAdvice(p);
-
-  const kicker = isUrgent ? "Needs Attention" : stage === "needs_outreach" ? "Up Next" : isWaiting ? "Keeping Warm" : "Momentum";
-  const kickerColor = isUrgent ? "#f87171" : "#1a8a80";
-
-  let urgencyText = "";
-  if (isUrgent && p.next_action_due) {
-    const days = Math.abs(Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000));
-    urgencyText = `${days} day${days !== 1 ? "s" : ""} overdue`;
-  } else if (isWaiting && p.next_action_due) {
-    const d = Math.ceil((new Date(p.next_action_due + "T00:00:00") - new Date()) / 86400000);
-    urgencyText = d > 0 ? `Due in ${d} day${d !== 1 ? "s" : ""}` : "Due today";
-  }
-
-  const quickLabel = (isUrgent || isWaiting) ? "Follow Up" : stage === "needs_outreach" ? "Start Outreach" : "View Journey";
+/* ══════════════════════════════════════════ */
+/* ── Hero Card (Journey-style) ── */
+/* ══════════════════════════════════════════ */
+function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
+  if (!p) return null;
+  const ms = matchScore?.match_score;
+  const eng = engagement || {};
+  const sig = p.signals || {};
+  const riskBadges = matchScore?.risk_badges || [];
+  const fundingBadge = riskBadges.find(b => b.key === "funding_dependent");
+  const meta = [p.conference, sig.total_interactions ? `${sig.total_interactions} events` : null].filter(Boolean).join(" · ");
 
   return (
-    <div className="rounded-xl overflow-hidden flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={{ background: "#1e1e2e", padding: "16px 18px" }} data-testid="hero-card">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <span className="text-[9px] font-bold uppercase tracking-[1.5px] flex items-center gap-1" style={{ color: kickerColor }}>
-            {isUrgent && <AlertTriangle className="w-3 h-3" />}
-            {isWaiting && <Clock className="w-3 h-3" />}
-            {kicker}
+    <div style={{ background: "#141422", borderRadius: 14, overflow: "hidden" }} data-testid="pipeline-hero-card">
+      <div style={{ height: 3, background: "linear-gradient(90deg, #0d9488, #14b8a6)" }} />
+      <div style={{ padding: "22px 26px 0" }}>
+        {/* Top row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={48}
+            className="rounded-[14px] border-2 border-white/10" />
+          <span style={{ fontSize: 24, fontWeight: 800, color: "white", letterSpacing: -0.3 }}>{p.university_name}</span>
+          <div style={{ marginLeft: "auto", flexShrink: 0 }}>
+            <button
+              onClick={() => navigate(`/journey/${p.program_id}`)}
+              style={{
+                padding: "10px 22px", borderRadius: 10, border: "none", background: "#0d9488",
+                color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex",
+                alignItems: "center", gap: 6, fontFamily: "inherit",
+              }}
+              data-testid="hero-follow-up-btn"
+            >
+              <Send style={{ width: 14, height: 14 }} />
+              {p.board_group === "needs_outreach" ? "Start Outreach" : "Follow Up"}
+            </button>
+          </div>
+        </div>
+
+        {/* Badges */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.5)" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#94a3b8" }} />
+            {sig.has_coach_reply ? "Interested" : "Neutral"}
           </span>
-          {urgencyText && (
-            <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded" style={{ color: kickerColor, background: `${kickerColor}20` }}>
-              {urgencyText}
+          {p.division && (
+            <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(13,148,136,0.2)", color: "#5eead4" }}>{p.division}</span>
+          )}
+          {ms != null && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>
+              {ms}% Match
             </span>
           )}
-        </div>
-        <div className="text-lg font-extrabold mb-1.5 leading-tight tracking-tight text-white flex items-center gap-2">
-          <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={p.logo_url} size={28} />
-          {p.university_name}
-        </div>
-        <div className="flex items-center gap-2 mb-2.5 flex-wrap">
-          {p.division && <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: "rgba(26,138,128,0.12)", color: "rgba(255,255,255,0.6)" }}>{p.division}</span>}
-          {p.conference && <span className="text-[11px] flex items-center gap-1" style={{ color: "rgba(255,255,255,0.3)" }}><MapPin className="w-2.5 h-2.5" />{p.conference}</span>}
-          {p.social_links && Object.keys(p.social_links).length > 0 && (
-            <span className="flex items-center gap-1.5 ml-1">
-              {p.social_links.twitter && <a href={p.social_links.twitter} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="X/Twitter"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
-              {p.social_links.instagram && <a href={p.social_links.instagram} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="Instagram"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg></a>}
-              {p.social_links.facebook && <a href={p.social_links.facebook} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="Facebook"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>}
-              {p.social_links.youtube && <a href={p.social_links.youtube} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="hover:opacity-100 transition-opacity" style={{ color: "rgba(255,255,255,0.45)" }} title="YouTube"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>}
-            </span>
-          )}
-        </div>
-        {advice && (
-          <div className="rounded-lg p-3 flex gap-2.5" style={{ background: "rgba(26,138,128,0.06)", border: "1px solid rgba(26,138,128,0.12)", borderLeft: "3px solid #1a8a80" }}>
-            <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#1a8a80" }} />
-            <div>
-              <span className="text-[10px] font-bold block mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>What to do next</span>
-              <p className="text-[13px] font-medium leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{advice}</p>
+          {meta && <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)" }}>{meta}</span>}
+          {/* Social icons */}
+          {p.social_links && (
+            <div style={{ display: "flex", gap: 8, marginLeft: 4 }}>
+              {p.social_links.twitter && <a href={p.social_links.twitter} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)" }}><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
+              {p.social_links.instagram && <a href={p.social_links.instagram} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)" }}><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>}
+              {p.social_links.facebook && <a href={p.social_links.facebook} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)" }}><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>}
             </div>
+          )}
+        </div>
+
+        {/* Funding tag */}
+        {fundingBadge && (
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "5px 14px", borderRadius: 8, background: "rgba(22,163,74,0.15)", color: "#4ade80", fontSize: 12, fontWeight: 700, marginBottom: 18, border: "1px solid rgba(22,163,74,0.2)" }}>
+            $ {fundingBadge.label}
           </div>
         )}
       </div>
-      <div className="flex sm:flex-col gap-1.5 flex-shrink-0 sm:min-w-[130px]">
-        <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer w-full"
-          style={{ background: "#1a8a80", color: "white", border: "none" }}
-          onClick={() => navigate(`/journey/${p.program_id}`)} data-testid="hero-action-btn">
-          <Send className="w-3 h-3" />{quickLabel}
-        </button>
+
+      {/* Hero Rail */}
+      <div style={{ padding: "0 26px 22px" }}>
+        <HeroRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
       </div>
     </div>
   );
 }
 
-function AllCaughtUpCard({ navigate }) {
-  return (
-    <div className="rounded-xl overflow-hidden flex items-center gap-6" style={{ background: "#1e1e2e", padding: "18px 22px" }} data-testid="all-caught-up">
-      <div className="flex-1 min-w-0">
-        <span className="text-[9px] font-bold uppercase tracking-[1.5px] mb-1.5 block" style={{ color: "#4ade80" }}>All Caught Up</span>
-        <p className="text-lg font-extrabold text-white mb-1 leading-tight">You're on top of recruiting!</p>
-        <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>All schools are in conversation or archived.</p>
-      </div>
-      <button className="flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-[11px] font-bold cursor-pointer flex-shrink-0"
-        style={{ background: "#1a8a80", color: "white", border: "none" }}
-        onClick={() => navigate("/knowledge-base")} data-testid="add-more-schools">
-        <Plus className="w-3 h-3" />Add School
-      </button>
-    </div>
-  );
-}
+/* ══════════════════════════════════════════ */
+/* ── School Card (compact row) ── */
+/* ══════════════════════════════════════════ */
+function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
+  const temp = getTemperature(p);
+  const due = getDueInfo(p);
+  const next = getNextAction(p, matchScore);
+  const cta = getCTA(p);
+  const eng = engagement || {};
+  const meta = [p.conference, p.state].filter(Boolean).join(" · ");
 
-/* ── Pipeline Section ── */
-function PipelineSection({ sectionCfg, programs, matchScores, engagementBySchool, navigate, expandAll }) {
-  const [collapsed, setCollapsed] = useState(false);
-  if (programs.length === 0) return null;
+  const tempStyles = {
+    hot: { background: "#fef2f2", color: "#dc2626" },
+    warm: { background: "#fffbeb", color: "#d97706" },
+    "new-tag": { background: "#e6f7f5", color: "#0d9488" },
+    "active-tag": { background: "#eff6ff", color: "#2563eb" },
+  };
+  const ctaStyles = {
+    primary: { background: "#0d9488", color: "white", border: "none" },
+    warn: { background: "#d97706", color: "white", border: "none" },
+    outline: { background: "var(--t-surface, white)", color: "var(--t-text-muted, #555)", border: "1px solid var(--t-border, #e5e7eb)" },
+  };
 
   return (
-    <div data-testid={`section-${sectionCfg.key}`} className="mb-6">
-      <div
-        className="flex items-center gap-2.5 mb-3 cursor-pointer select-none group"
-        onClick={() => setCollapsed(c => !c)}
-        data-testid={`section-header-${sectionCfg.key}`}
-      >
-        <ChevronDown
-          className={`w-4 h-4 transition-transform duration-200 opacity-50 group-hover:opacity-100 ${collapsed ? "-rotate-90" : ""}`}
-          style={{ color: sectionCfg.color }}
-        />
-        <span className="text-[10px] font-extrabold uppercase tracking-[1.8px]"
-          style={{ color: sectionCfg.color }}>{sectionCfg.label}</span>
-        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg"
-          style={{ backgroundColor: `${sectionCfg.color}15`, color: sectionCfg.color }}>{programs.length}</span>
-        <div className="flex-1 h-px" style={{ backgroundColor: `${sectionCfg.color}30` }} />
-      </div>
-      {!collapsed && (
-        <div className="flex flex-col gap-2.5">
-          {programs.map(p => (
-            <PipelineCard
-              key={p.program_id}
-              program={p}
-              section={sectionCfg.key}
-              matchScore={matchScores[p.program_id]}
-              engagement={engagementBySchool[p.program_id] || engagementBySchool[p.university_name]}
-              navigate={navigate}
-              forceExpand={expandAll}
-            />
-          ))}
+    <div
+      onClick={() => navigate(`/journey/${p.program_id}`)}
+      style={{
+        background: "var(--t-surface, white)", border: "1px solid var(--t-border, #e5e7eb)", borderRadius: 12,
+        padding: "14px 16px", marginBottom: 8, display: "flex", alignItems: "center",
+        gap: 12, cursor: "pointer", transition: "all 0.15s",
+      }}
+      className="hover:shadow-sm"
+      data-testid={`pipeline-card-${p.program_id}`}
+    >
+      {/* Col 1: School identity */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, marginRight: "auto" }}>
+        <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScore?.logo_url} size={38} className="rounded-[10px]" />
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2, color: "var(--t-text, #1a1a1a)" }}>{p.university_name}</div>
+          <div style={{ fontSize: 10, color: "var(--t-text-muted, #999)", marginTop: 2, display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+            {p.division && <span style={{ fontSize: 9, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: "var(--t-surface-alt, #f0f0f0)", color: "var(--t-text-muted, #555)" }}>{p.division}</span>}
+            <span>{meta}</span>
+            {due && <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3, background: due.bg, color: due.color }}>{due.text}</span>}
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Col 2: Progress rail */}
+      <div style={{ width: 200, flexShrink: 0 }} className="hidden md:block">
+        <SchoolRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
+      </div>
+
+      {/* Col 3: Temp tag */}
+      <div style={{ width: 50, flexShrink: 0, textAlign: "center" }} className="hidden sm:block">
+        <span style={{
+          fontSize: 10, fontWeight: 800, padding: "3px 0", borderRadius: 6,
+          display: "inline-block", width: "100%", textAlign: "center",
+          ...(tempStyles[temp.cls] || tempStyles["new-tag"]),
+        }}>{temp.label}</span>
+      </div>
+
+      {/* Col 4: Engagement metrics */}
+      <div style={{ width: 100, flexShrink: 0, display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }} className="hidden lg:flex">
+        <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 11, fontWeight: 700, color: "var(--t-text-muted, #555)" }}>
+          <Eye style={{ width: 13, height: 13, color: "var(--t-text-faint, #999)" }} />{eng.email_opens || 0}
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 11, fontWeight: 700, color: "var(--t-text-muted, #555)" }}>
+          <Link2 style={{ width: 13, height: 13, color: "var(--t-text-faint, #999)" }} />{eng.link_clicks || 0}
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 11, fontWeight: 700, color: "var(--t-text-muted, #555)" }}>
+          <Users style={{ width: 13, height: 13, color: "var(--t-text-faint, #999)" }} />{p.signals?.total_interactions || 0}
+        </span>
+      </div>
+
+      {/* Col 5: Next action */}
+      <div style={{ width: 120, flexShrink: 0, textAlign: "right" }} className="hidden sm:block">
+        <div style={{ fontSize: 10, color: "var(--t-text-faint, #999)" }}>
+          <strong style={{ color: "var(--t-text, #1a1a1a)", fontWeight: 700 }}>
+            {p.board_group === "in_conversation" ? "Status:" : "Next:"}
+          </strong> {next.label}
+        </div>
+        {next.sub && (
+          <span style={{
+            display: "inline-block", marginTop: 2, fontSize: 9, fontWeight: 700,
+            padding: "2px 7px", borderRadius: 4,
+            background: next.subBg || "#f0fdf4", color: next.subColor || "#16a34a",
+          }}>{next.sub}</span>
+        )}
+      </div>
+
+      {/* Col 6: CTA */}
+      <div style={{ width: 120, flexShrink: 0 }} className="hidden sm:block">
+        <button
+          onClick={e => { e.stopPropagation(); navigate(`/journey/${p.program_id}`); }}
+          style={{
+            padding: "8px 0", borderRadius: 8, fontSize: 12, fontWeight: 700,
+            cursor: "pointer", fontFamily: "inherit", width: "100%", textAlign: "center",
+            ...(ctaStyles[cta.cls] || ctaStyles.outline),
+          }}
+          data-testid={`card-cta-${p.program_id}`}
+        >{cta.label}</button>
+      </div>
+
+      {/* Col 7: Arrow */}
+      <div style={{ width: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--t-text-faint, #ccc)" }}>
+        <ChevronRight style={{ width: 16, height: 16 }} />
+      </div>
     </div>
   );
 }
 
-/* ── Filter Bar ── */
-function FilterBar({ sectionCounts, total, active, onFilter }) {
-  const chips = [
-    { key: null, label: "All", count: total },
-    ...SECTIONS.map(s => ({ key: s.key, label: s.key === "outreach" ? "Outreach" : s.key === "waiting" ? "Waiting" : s.key === "convo" ? "In Convo" : "Committed", count: sectionCounts[s.key] || 0 })),
-  ].filter(c => c.key === null || c.count > 0);
-
+/* ══════════════════════════════════════════ */
+/* ── Committed Card ── */
+/* ══════════════════════════════════════════ */
+function CommittedSchoolCard({ program: p, matchScore, navigate }) {
+  const ms = matchScore?.match_score;
+  const meta = [p.division, p.conference, p.state, ms ? `${ms}% match` : null].filter(Boolean).join(" · ");
   return (
-    <div className="flex gap-2 flex-wrap" data-testid="pipeline-filters">
-      {chips.map(c => {
-        const isActive = active === c.key;
-        return (
-          <button key={c.key || "all"}
-            onClick={() => onFilter(isActive && c.key !== null ? null : c.key)}
-            className="px-4 py-1.5 rounded-full text-[13px] font-semibold border-[1.5px] transition-all"
-            style={isActive
-              ? { backgroundColor: "var(--t-text)", color: "var(--t-bg, #fff)", borderColor: "var(--t-text)" }
-              : { backgroundColor: "var(--t-surface)", color: "var(--t-text-secondary, #555)", borderColor: "var(--t-border)" }
-            }
-            data-testid={`filter-${c.key || "all"}`}
-          >
-            {c.label}<span className="font-extrabold ml-1">{c.count}</span>
-          </button>
-        );
-      })}
+    <div
+      onClick={() => navigate(`/journey/${p.program_id}`)}
+      style={{
+        background: "#f0fdf4", border: "1px solid rgba(22,163,74,0.12)", borderRadius: 12,
+        padding: "14px 18px", display: "flex", alignItems: "center", gap: 14, marginBottom: 8, cursor: "pointer",
+      }}
+      data-testid={`committed-card-${p.program_id}`}
+    >
+      <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#16a34a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <CheckCircle2 style={{ width: 18, height: 18, color: "white" }} />
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: "var(--t-text, #1a1a1a)" }}>{p.university_name}</div>
+        <div style={{ fontSize: 11, color: "var(--t-text-muted, #555)", marginTop: 2 }}>{meta}</div>
+      </div>
+      <span style={{ padding: "5px 14px", borderRadius: 8, background: "white", color: "#16a34a", fontSize: 11, fontWeight: 700, border: "1px solid rgba(22,163,74,0.12)" }}>Verbal Commit</span>
+      <div style={{ width: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--t-text-faint, #ccc)" }}>
+        <ChevronRight style={{ width: 16, height: 16 }} />
+      </div>
     </div>
   );
 }
 
+/* ══════════════════════════════════════════ */
+/* ── Section Header ── */
+/* ══════════════════════════════════════════ */
+function SectionHeader({ section, count, collapsed, onToggle }) {
+  return (
+    <div
+      onClick={onToggle}
+      style={{ display: "flex", alignItems: "center", gap: 8, padding: "18px 0 10px", cursor: "pointer" }}
+      data-testid={`section-header-${section.key}`}
+    >
+      <ChevronDown
+        style={{ width: 14, height: 14, color: "var(--t-text-faint, #999)", transition: "transform 0.2s", transform: collapsed ? "rotate(-90deg)" : "none" }}
+      />
+      <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: section.color }}>{section.label}</span>
+      <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 6, background: section.bg, color: section.color }}>{count}</span>
+      <div style={{ flex: 1, height: 1, background: "var(--t-border, #f0f0f0)", marginLeft: 6 }} />
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════ */
+/* ── Filter Chips ── */
+/* ══════════════════════════════════════════ */
+function FilterChips({ sectionCounts, total, active, onFilter }) {
+  const chips = [
+    { key: null, label: `All ${total}` },
+    ...SECTIONS.filter(s => (sectionCounts[s.key] || 0) > 0).map(s => ({
+      key: s.key,
+      label: `${s.key === "outreach" ? "Outreach" : s.key === "waiting" ? "Waiting" : s.key === "convo" ? "In Convo" : "Committed"} ${sectionCounts[s.key]}`,
+    })),
+  ];
+  return (
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 22 }} data-testid="pipeline-filters">
+      {chips.map(c => (
+        <button
+          key={c.key || "all"}
+          onClick={() => onFilter(active === c.key && c.key !== null ? null : c.key)}
+          style={{
+            padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600,
+            fontFamily: "inherit", cursor: "pointer",
+            background: active === c.key ? "var(--t-text, #1a1a1a)" : "var(--t-surface, white)",
+            color: active === c.key ? "var(--t-bg, white)" : "var(--t-text-muted, #555)",
+            border: active === c.key ? "1px solid var(--t-text, #1a1a1a)" : "1px solid var(--t-border, #e5e7eb)",
+          }}
+          data-testid={`filter-${c.key || "all"}`}
+        >{c.label}</button>
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════ */
 /* ── View Toggle ── */
+/* ══════════════════════════════════════════ */
 function ViewToggle({ mode, onChange }) {
   return (
-    <div className="flex gap-1 rounded-lg p-0.5" style={{ backgroundColor: "var(--t-surface-alt, #e8e8e8)" }} data-testid="view-toggle">
+    <div style={{ display: "flex", border: "1px solid var(--t-border, #e5e7eb)", borderRadius: 8, overflow: "hidden" }} data-testid="view-toggle">
       {["compact", "expanded"].map(m => (
         <button key={m}
           onClick={() => onChange(m)}
-          className="px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-all"
-          style={mode === m
-            ? { backgroundColor: "var(--t-surface)", color: "var(--t-text)", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }
-            : { backgroundColor: "transparent", color: "var(--t-text-muted)" }
-          }
+          style={{
+            padding: "6px 14px", fontSize: 12, fontWeight: 600, border: "none",
+            fontFamily: "inherit", cursor: "pointer", textTransform: "capitalize",
+            background: mode === m ? "var(--t-text, #1a1a1a)" : "var(--t-surface, white)",
+            color: mode === m ? "var(--t-bg, white)" : "var(--t-text-muted, #555)",
+          }}
           data-testid={`view-${m}`}
-        >
-          {m}
-        </button>
+        >{m === "compact" ? "Compact" : "Expanded"}</button>
       ))}
     </div>
+  );
+}
+
+/* ══════════════════════════════════════════ */
+/* ── CSS Keyframes ── */
+/* ══════════════════════════════════════════ */
+function PipelineStyles() {
+  return (
+    <style>{`
+      @keyframes heroPulse { 0%{box-shadow:0 0 0 0 currentColor;} 100%{box-shadow:0 0 0 8px transparent;} }
+      @keyframes scPulse { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(1.8);opacity:0} }
+    `}</style>
   );
 }
 
@@ -598,19 +519,15 @@ function ViewToggle({ mode, onChange }) {
 export default function RecruitingBoard() {
   const [allPrograms, setAllPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filterDivision, setFilterDivision] = useState("all");
-  const [filterRegion, setFilterRegion] = useState("all");
   const [activeSection, setActiveSection] = useState(null);
   const [viewMode, setViewMode] = useState("compact");
   const [matchScores, setMatchScores] = useState({});
   const [engagementBySchool, setEngagementBySchool] = useState({});
-  const [showFilters, setShowFilters] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState({});
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCongrats, setShowCongrats] = useState(false);
 
-  // Congrats param
   useEffect(() => {
     if (searchParams.get("congrats") === "true") {
       setShowCongrats(true);
@@ -619,7 +536,6 @@ export default function RecruitingBoard() {
     }
   }, [searchParams, setSearchParams]);
 
-  // Fetch match scores + engagement
   useEffect(() => {
     api.get("/match-scores").then(res => {
       if (res.data?.scores) {
@@ -635,18 +551,14 @@ export default function RecruitingBoard() {
 
   const fetchPrograms = useCallback(async () => {
     try {
-      const params = {};
-      if (search) params.search = search;
-      if (filterDivision && filterDivision !== "all") params.division = filterDivision;
-      if (filterRegion && filterRegion !== "all") params.region = filterRegion;
-      const res = await api.get("/programs", { params });
+      const res = await api.get("/programs");
       setAllPrograms(Array.isArray(res.data) ? res.data : []);
     } catch {
       toast.error("Failed to load programs");
     } finally {
       setLoading(false);
     }
-  }, [search, filterDivision, filterRegion]);
+  }, []);
 
   useEffect(() => { fetchPrograms(); }, [fetchPrograms]);
 
@@ -654,18 +566,15 @@ export default function RecruitingBoard() {
     return (
       <div className="flex items-center justify-center py-24" data-testid="board-loading">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: "var(--t-border)", borderTopColor: "var(--t-text-muted)" }} />
+          <Loader2 className="w-8 h-8 animate-spin" style={{ color: "var(--t-text-muted)" }} />
           <span className="text-sm" style={{ color: "var(--t-text-muted)" }}>Loading your board...</span>
         </div>
       </div>
     );
   }
 
-  // Filter out archived from count/display
   const activePrograms = allPrograms.filter(p => p.board_group !== "archived");
   const total = activePrograms.length;
-
-  // Group into sections
   const sectionGroups = groupIntoSections(activePrograms);
   const sectionCounts = {};
   SECTIONS.forEach(s => { sectionCounts[s.key] = sectionGroups[s.key].length; });
@@ -705,120 +614,85 @@ export default function RecruitingBoard() {
     );
   }
 
-  // Empty state
   if (total === 0) {
     return <EmptyBoardState onSchoolAdded={fetchPrograms} />;
   }
 
-  const expandAll = viewMode === "expanded";
-
-  // Focus program = most urgent school for hero card
+  // Focus program for hero card (most urgent)
   const focusPriority = ["overdue", "waiting_on_reply", "needs_outreach", "in_conversation"];
   const focusProgram = focusPriority.reduce((found, stage) => {
     if (found) return found;
-    const candidates = activePrograms.filter(p => p.board_group === stage && p.recruiting_status !== "Committed");
+    const candidates = activePrograms.filter(p => p.board_group === stage && p.recruiting_status !== "Committed" && p.journey_stage !== "committed");
     if (candidates.length === 0) return null;
     if (stage === "needs_outreach") {
-      // Best match score first — contact your strongest fit first
-      candidates.sort((a, b) => {
-        const ma = matchScores[a.program_id]?.match_score ?? 0;
-        const mb = matchScores[b.program_id]?.match_score ?? 0;
-        return mb - ma;
-      });
-    } else if (stage === "in_conversation") {
-      // Most stale conversation first — don't let relationships go cold
-      candidates.sort((a, b) => {
-        const da = a.signals?.days_since_activity ?? 0;
-        const db = b.signals?.days_since_activity ?? 0;
-        return db - da;
-      });
+      candidates.sort((a, b) => (matchScores[b.program_id]?.match_score ?? 0) - (matchScores[a.program_id]?.match_score ?? 0));
     } else {
-      // overdue & waiting_on_reply — soonest/most overdue due date first
-      candidates.sort((a, b) => {
-        const da = a.next_action_due || "9999-12-31";
-        const db = b.next_action_due || "9999-12-31";
-        return da.localeCompare(db);
-      });
+      candidates.sort((a, b) => (a.next_action_due || "9999").localeCompare(b.next_action_due || "9999"));
     }
     return candidates[0];
   }, null);
 
+  const toggleSection = (key) => setCollapsedSections(prev => ({ ...prev, [key]: !prev[key] }));
+
+  const getEngagement = (p) => engagementBySchool[p.program_id] || engagementBySchool[p.university_name] || null;
+
   return (
-    <div className="flex flex-col gap-5" data-testid="recruiting-board">
-      {/* ── Header ── */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight" style={{ color: "var(--t-text)" }} data-testid="pipeline-title">My Schools</h1>
+    <div style={{ maxWidth: 1120, margin: "0 auto" }} data-testid="recruiting-board">
+      <PipelineStyles />
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5, color: "var(--t-text, #1a1a1a)" }} data-testid="pipeline-title">My Schools</h1>
         <ViewToggle mode={viewMode} onChange={setViewMode} />
-        <div className="ml-auto flex items-center gap-2">
-          <button onClick={() => setShowFilters(!showFilters)}
-            className="p-2 rounded-lg border transition-colors hover:opacity-70"
-            style={{ borderColor: "var(--t-border)" }}
-            data-testid="toggle-filters"
-          >
-            <Filter className="w-4 h-4" style={{ color: "var(--t-text-muted)" }} />
-          </button>
-          <Button data-testid="add-school-btn" onClick={() => navigate("/knowledge-base")}
-            className="text-white text-xs shadow-md"
-            style={{ background: "#1a8a80", padding: "8px 16px", height: "auto" }}>
-            <Plus className="w-3.5 h-3.5 mr-1" />Add School
-          </Button>
-        </div>
+        <span style={{ flex: 1 }} />
+        <Button
+          onClick={() => navigate("/knowledge-base")}
+          style={{ background: "var(--t-text, #1a1a1a)", color: "var(--t-bg, white)", padding: "9px 18px", height: "auto", borderRadius: 8, fontSize: 13, fontWeight: 700 }}
+          data-testid="add-school-btn"
+        >
+          <Plus className="w-3.5 h-3.5 mr-1.5" />Add School
+        </Button>
       </div>
 
-      {/* ── Hero Card ── */}
-      <div data-testid="pipeline-snapshot">
-        <div className="min-w-0">
-          {focusProgram
-            ? <HeroCard program={focusProgram} navigate={navigate} />
-            : <AllCaughtUpCard navigate={navigate} />}
-        </div>
-      </div>
-
-      {/* ── Advanced Filters ── */}
-      {showFilters && (
-        <div className="flex flex-wrap items-center gap-2" data-testid="board-filters">
-          <div className="relative flex-1 min-w-[180px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: "var(--t-text-muted)" }} />
-            <Input data-testid="board-search" placeholder="Search schools..." value={search} onChange={e => setSearch(e.target.value)}
-              className="pl-9 border rounded-lg text-xs h-9"
-              style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text)" }} />
-          </div>
-          <Select value={filterDivision} onValueChange={setFilterDivision}>
-            <SelectTrigger data-testid="filter-division" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-              <SelectValue placeholder="Division" />
-            </SelectTrigger>
-            <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-              <SelectItem value="all">All Divisions</SelectItem>
-              {DIVISIONS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select value={filterRegion} onValueChange={setFilterRegion}>
-            <SelectTrigger data-testid="filter-region" className="w-28 rounded-lg text-xs h-9" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)", color: "var(--t-text-secondary)" }}>
-              <SelectValue placeholder="Region" />
-            </SelectTrigger>
-            <SelectContent style={{ backgroundColor: "var(--t-dropdown-bg)", borderColor: "var(--t-border)" }}>
-              <SelectItem value="all">All Regions</SelectItem>
-              {REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-            </SelectContent>
-          </Select>
+      {/* Hero Card */}
+      {focusProgram && (
+        <div style={{ marginBottom: 18 }}>
+          <PipelineHeroCard
+            program={focusProgram}
+            matchScore={matchScores[focusProgram.program_id]}
+            engagement={getEngagement(focusProgram)}
+            navigate={navigate}
+          />
         </div>
       )}
 
-      {/* ── Filter Chips ── */}
-      <FilterBar sectionCounts={sectionCounts} total={total} active={activeSection} onFilter={setActiveSection} />
+      {/* Filter Chips */}
+      <FilterChips sectionCounts={sectionCounts} total={total} active={activeSection} onFilter={setActiveSection} />
 
-      {/* ── Sections ── */}
-      {SECTIONS.filter(s => activeSection === null || activeSection === s.key).map(s => (
-        <PipelineSection
-          key={s.key}
-          sectionCfg={s}
-          programs={sectionGroups[s.key]}
-          matchScores={matchScores}
-          engagementBySchool={engagementBySchool}
-          navigate={navigate}
-          expandAll={expandAll}
-        />
-      ))}
+      {/* Sections */}
+      {SECTIONS.filter(s => activeSection === null || activeSection === s.key).map(s => {
+        const programs = sectionGroups[s.key];
+        if (programs.length === 0) return null;
+        const isCollapsed = collapsedSections[s.key];
+        const isCommittedSection = s.key === "committed";
+
+        return (
+          <div key={s.key} data-testid={`section-${s.key}`}>
+            <SectionHeader section={s} count={programs.length} collapsed={isCollapsed} onToggle={() => toggleSection(s.key)} />
+            {!isCollapsed && (
+              <>
+                {programs.map(p =>
+                  isCommittedSection ? (
+                    <CommittedSchoolCard key={p.program_id} program={p} matchScore={matchScores[p.program_id]} navigate={navigate} />
+                  ) : (
+                    <PipelineSchoolCard key={p.program_id} program={p} matchScore={matchScores[p.program_id]} engagement={getEngagement(p)} navigate={navigate} />
+                  )
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
 
       {activeSection && (sectionGroups[activeSection]?.length || 0) === 0 && (
         <div className="text-center py-12 text-sm" style={{ color: "var(--t-text-muted)" }} data-testid="filtered-empty">

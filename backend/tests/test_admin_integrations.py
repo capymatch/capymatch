@@ -191,7 +191,7 @@ class TestStripeCheckoutRegression:
             f"{BASE_URL}/api/stripe/checkout",
             json={
                 "plan": "pro",
-                "origin_url": "https://capy-pipeline-v5.preview.emergentagent.com/settings"
+                "origin_url": "https://recruiting-pipeline.preview.emergentagent.com/settings"
             }
         )
         

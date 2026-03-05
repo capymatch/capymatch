@@ -1,0 +1,104 @@
+{
+  "summary": "Complete frontend testing of Pipeline page redesign at /pipeline. All 14 features tested and working correctly. The new design matches the approved mockup with Journey-style dark hero card, compact row-based school cards, filter chips, collapsible sections, and special green committed card.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "pipeline_page_loads": {
+      "status": "PASS",
+      "details": "Pipeline page loads at /pipeline after login, shows all school data from API"
+    },
+    "hero_card": {
+      "status": "PASS",
+      "details": "Dark theme (#141422), shows University of Florida, D1 badge, 75% Match badge, social icons (X/Instagram/Facebook), progress rail with Visit stage active"
+    },
+    "hero_follow_up_button": {
+      "status": "PASS",
+      "details": "Button text 'Follow Up', navigates to /journey/prog_099056ed7f86 on click"
+    },
+    "filter_chips_all": {
+      "status": "PASS",
+      "details": "All 12 shows all 4 sections"
+    },
+    "filter_chips_outreach": {
+      "status": "PASS",
+      "details": "Outreach 4 filter shows only NEEDS OUTREACH section, hides other sections"
+    },
+    "filter_chips_waiting": {
+      "status": "PASS",
+      "details": "Waiting 3 filter shows only WAITING ON REPLY section"
+    },
+    "filter_chips_inconvo": {
+      "status": "PASS",
+      "details": "In Convo 4 filter shows only IN CONVERSATION section with UCLA, Penn State, Texas, Emory"
+    },
+    "filter_chips_committed": {
+      "status": "PASS",
+      "details": "Committed 1 filter shows only COMMITTED section with Stanford"
+    },
+    "section_headers": {
+      "status": "PASS",
+      "details": "Correct labels - Needs outreach (4), Waiting on reply (3), In conversation (4), Committed (1)"
+    },
+    "section_collapsible": {
+      "status": "PASS",
+      "details": "Clicking header collapses section (cards went 11→7), clicking again expands (7→11)"
+    },
+    "school_card_7_columns": {
+      "status": "PASS",
+      "details": "All 7 columns present - school info, progress rail, temp tag, metrics, next action, CTA, arrow"
+    },
+    "progress_rails": {
+      "status": "PASS",
+      "details": "School cards show progress rails with correct stages (Added→Outreach→Talking→Visit→Offer→Committed)"
+    },
+    "temperature_tags": {
+      "status": "PASS",
+      "details": "Outreach: New (teal), Waiting: Warm (orange), In Convo: Hot/Active (red/blue)"
+    },
+    "cta_buttons": {
+      "status": "PASS",
+      "details": "Outreach: Start Outreach (teal), Waiting: Follow Up (amber), In Convo: Journey > (outline)"
+    },
+    "committed_card": {
+      "status": "PASS",
+      "details": "Green background (#f0fdf4), check icon, 'Verbal Commit' badge, Stanford University card"
+    },
+    "card_click_navigation": {
+      "status": "PASS",
+      "details": "Clicking school card navigates to /journey/:programId"
+    },
+    "add_school_button": {
+      "status": "PASS",
+      "details": "Navigates to /knowledge-base page"
+    },
+    "view_toggle": {
+      "status": "PASS",
+      "details": "Compact/Expanded toggle buttons visible and clickable"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Code is well-structured at 705 lines for a complex page - good organization",
+    "Uses proper data-testid attributes for all key interactive elements",
+    "RAIL_STAGES imported correctly from constants.js",
+    "Good use of CSS variables (--t-text, --t-surface, --t-border) for theme support"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - frontend only test",
+    "frontend": "100%"
+  },
+  "test_credentials": "demo@capymatch.com / demo2026",
+  "seed_data_creation": "None - used existing demo data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Pipeline page redesign is complete and working. All features tested: hero card with dark theme, filter chips, collapsible sections, 7-column school cards, progress rails, temperature tags, CTA buttons, committed card with Verbal Commit badge. Navigation works from hero button, CTA buttons, card clicks, and Add School button. View toggle (Compact/Expanded) is visible. Demo account has 12 schools: 4 needs outreach, 3 waiting, 4 in conversation, 1 committed (Stanford)."
+}
