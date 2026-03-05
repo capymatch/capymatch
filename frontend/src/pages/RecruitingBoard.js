@@ -4,6 +4,7 @@ import api from "../lib/api";
 import {
   Plus, ChevronRight, ChevronDown, Loader2, Filter,
   PartyPopper, Rocket, CheckCircle2, Send, Eye, Link2, Users, Lightbulb,
+  Archive, RotateCcw,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -558,7 +559,7 @@ export default function RecruitingBoard() {
   const [viewMode, setViewMode] = useState("compact");
   const [matchScores, setMatchScores] = useState({});
   const [engagementBySchool, setEngagementBySchool] = useState({});
-  const [collapsedSections, setCollapsedSections] = useState({});
+  const [collapsedSections, setCollapsedSections] = useState({ archived: true });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCongrats, setShowCongrats] = useState(false);
@@ -609,6 +610,7 @@ export default function RecruitingBoard() {
   }
 
   const activePrograms = allPrograms.filter(p => p.board_group !== "archived");
+  const archivedPrograms = allPrograms.filter(p => p.board_group === "archived");
   const total = activePrograms.length;
   const sectionGroups = groupIntoSections(activePrograms);
   const sectionCounts = {};
@@ -731,6 +733,64 @@ export default function RecruitingBoard() {
       {activeSection && (sectionGroups[activeSection]?.length || 0) === 0 && (
         <div className="text-center py-12 text-sm" style={{ color: "var(--t-text-muted)" }} data-testid="filtered-empty">
           No schools in {SECTIONS.find(s => s.key === activeSection)?.label || activeSection}
+        </div>
+      )}
+
+      {/* Archived Section */}
+      {archivedPrograms.length > 0 && activeSection === null && (
+        <div data-testid="section-archived">
+          <div
+            onClick={() => toggleSection("archived")}
+            style={{ display: "flex", alignItems: "center", gap: 8, padding: "24px 0 10px", cursor: "pointer" }}
+            data-testid="section-header-archived"
+          >
+            <ChevronDown style={{ width: 14, height: 14, color: "var(--t-text-faint, #999)", transition: "transform 0.2s", transform: collapsedSections.archived ? "rotate(-90deg)" : "none" }} />
+            <Archive style={{ width: 13, height: 13, color: "#94a3b8" }} />
+            <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#94a3b8" }}>Archived</span>
+            <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 6, background: "#f1f5f9", color: "#94a3b8" }}>{archivedPrograms.length}</span>
+            <div style={{ flex: 1, height: 1, background: "var(--t-border, #f0f0f0)", marginLeft: 6 }} />
+          </div>
+          {!collapsedSections.archived && archivedPrograms.map(p => (
+            <div key={p.program_id}
+              style={{
+                background: "var(--t-surface, white)", border: "1px solid var(--t-border, #e5e7eb)", borderRadius: 12,
+                padding: "12px 16px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, opacity: 0.7,
+              }}
+              data-testid={`archived-card-${p.program_id}`}
+            >
+              <UniversityLogo domain={p.domain} name={p.university_name} logoUrl={matchScores[p.program_id]?.logo_url} size={34} className="rounded-[10px] grayscale" />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--t-text, #1a1a1a)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.university_name}</div>
+                <div style={{ fontSize: 10, color: "var(--t-text-muted, #999)", marginTop: 1 }}>
+                  {[p.division, p.conference, p.state].filter(Boolean).join(" · ")}
+                </div>
+              </div>
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await api.put(`/programs/${p.program_id}`, { is_active: true });
+                    toast.success(`${p.university_name} reactivated`);
+                    fetchPrograms();
+                  } catch { toast.error("Failed to reactivate"); }
+                }}
+                style={{
+                  padding: "6px 14px", borderRadius: 8, fontSize: 11, fontWeight: 700,
+                  background: "rgba(13,148,136,0.08)", color: "#0d9488", border: "1px solid rgba(13,148,136,0.15)",
+                  cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 5, flexShrink: 0,
+                }}
+                data-testid={`reactivate-btn-${p.program_id}`}
+              >
+                <RotateCcw style={{ width: 12, height: 12 }} />Reactivate
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); navigate(`/journey/${p.program_id}`); }}
+                style={{ width: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--t-text-faint, #ccc)", background: "none", border: "none", cursor: "pointer" }}
+              >
+                <ChevronRight style={{ width: 16, height: 16 }} />
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

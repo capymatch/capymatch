@@ -7,7 +7,7 @@ import {
   MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
   Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info,
   ClipboardCheck, ExternalLink, CheckCircle2, Send, Share2,
-  Sparkles, Crown
+  Sparkles, Crown, Archive, RotateCcw
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -298,14 +298,21 @@ export default function RecruitingJourney() {
                 style={{ color: "rgba(255,255,255,0.45)", borderColor: "rgba(255,255,255,0.08)", background: "transparent" }} data-testid="compare-btn">
                 <GitCompare className="w-3.5 h-3.5 mr-1.5" />Compare
               </Button>
-              <button onClick={() => updateProgram({ is_active: !(program.is_active !== false) })}
-                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors"
-                style={program.is_active !== false
-                  ? { background: "rgba(34,197,94,0.15)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.25)" }
-                  : { background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
-                data-testid="active-toggle">
-                {program.is_active !== false ? "Active" : "Inactive"}
-              </button>
+              {program.is_active !== false ? (
+                <button onClick={() => { if (window.confirm(`Archive ${program.university_name}? It will move to the Archived section on your pipeline.`)) updateProgram({ is_active: false }); }}
+                  className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                  style={{ background: "rgba(148,163,184,0.1)", color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)" }}
+                  data-testid="archive-btn">
+                  <Archive className="w-3 h-3" />Archive
+                </button>
+              ) : (
+                <button onClick={() => updateProgram({ is_active: true })}
+                  className="px-3 py-1 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                  style={{ background: "rgba(34,197,94,0.15)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.25)" }}
+                  data-testid="reactivate-btn">
+                  <RotateCcw className="w-3 h-3" />Reactivate
+                </button>
+              )}
             </div>
           </div>
 
