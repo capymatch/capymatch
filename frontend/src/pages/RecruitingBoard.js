@@ -126,20 +126,20 @@ function SchoolRail({ journeyStage }) {
   const stages = computeRail(journeyStage || "added");
   return (
     <div data-testid="school-rail">
-      <div style={{ display: "flex", alignItems: "center", height: 18 }}>
+      <div style={{ display: "flex", alignItems: "center", height: 22 }}>
         {stages.map((s, i) => (
           <React.Fragment key={s.key}>
             {i > 0 && (
               <div style={{
-                flex: 1, height: 2,
+                flex: 1, height: 3,
                 background: s.state === "past" || (stages[i - 1]?.state === "past" && s.state === "active")
                   ? "#0d9488" : "#eee",
               }} />
             )}
             <div style={{ position: "relative", flexShrink: 0 }}>
               <div style={{
-                width: s.state === "active" ? 14 : 10,
-                height: s.state === "active" ? 14 : 10,
+                width: s.state === "active" ? 18 : 12,
+                height: s.state === "active" ? 18 : 12,
                 borderRadius: "50%",
                 background: s.state === "future" ? "var(--t-surface, white)" : s.color,
                 border: s.state === "future" ? "2px solid #e5e7eb" : `2px solid ${s.color}`,
@@ -156,11 +156,11 @@ function SchoolRail({ journeyStage }) {
           </React.Fragment>
         ))}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
         {stages.map(s => (
           <span key={s.key} style={{
-            flex: 1, textAlign: "center", fontSize: 7, fontWeight: s.state === "active" ? 800 : 600,
-            color: s.state === "active" ? s.color : "#ccc",
+            flex: 1, textAlign: "center", fontSize: 8, fontWeight: s.state === "active" ? 800 : 600,
+            color: s.state === "active" ? s.color : "#bbb",
           }}>
             {s.key === "in_conversation" ? "Talking" : s.key === "campus_visit" ? "Visit" : s.key === "committed" ? "Commit" : s.label}
           </span>
@@ -363,7 +363,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 2: Progress rail */}
-      <div style={{ width: 200, flexShrink: 0 }} className="hidden md:block">
+      <div style={{ width: 220, flexShrink: 0 }} className="hidden md:block">
         <SchoolRail journeyStage={p.journey_stage || (p.board_group === "needs_outreach" ? "added" : "outreach")} />
       </div>
 
