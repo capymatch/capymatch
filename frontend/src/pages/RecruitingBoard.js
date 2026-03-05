@@ -344,7 +344,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       style={{
         background: "var(--t-surface, white)", border: "1px solid var(--t-border, #e5e7eb)", borderRadius: 12,
         padding: "14px 16px", marginBottom: 8, display: "flex", alignItems: "center",
-        gap: 12, cursor: "pointer", transition: "all 0.15s",
+        gap: 12, cursor: "pointer", transition: "all 0.15s", overflow: "hidden",
       }}
       className="hover:shadow-sm"
       data-testid={`pipeline-card-${p.program_id}`}
@@ -368,7 +368,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 3: Temp tag */}
-      <div style={{ width: 50, flexShrink: 0, textAlign: "center" }} className="hidden sm:block">
+      <div style={{ width: 50, flexShrink: 0, textAlign: "center" }} className="hidden md:block">
         <span style={{
           fontSize: 10, fontWeight: 800, padding: "3px 0", borderRadius: 6,
           display: "inline-block", width: "100%", textAlign: "center",
@@ -390,7 +390,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 5: Next action */}
-      <div style={{ width: 120, flexShrink: 0, textAlign: "right" }} className="hidden sm:block">
+      <div style={{ width: 120, flexShrink: 0, textAlign: "right" }} className="hidden xl:block">
         <div style={{ fontSize: 10, color: "var(--t-text-faint, #999)" }}>
           <strong style={{ color: "var(--t-text, #1a1a1a)", fontWeight: 700 }}>Status:</strong> {next.label}
         </div>
@@ -404,7 +404,7 @@ function PipelineSchoolCard({ program: p, matchScore, engagement, navigate }) {
       </div>
 
       {/* Col 6: CTA */}
-      <div style={{ width: 120, flexShrink: 0 }} className="hidden sm:block">
+      <div style={{ width: 120, flexShrink: 0 }} className="hidden xl:block">
         <button
           onClick={e => { e.stopPropagation(); navigate(`/journey/${p.program_id}`); }}
           style={{
