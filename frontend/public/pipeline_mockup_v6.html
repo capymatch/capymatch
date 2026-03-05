@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Schools — CapyMatch v6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap');
+
+  :root {
+    --bg: #f7f7f8; --card: #ffffff; --border: #ebebef; --border-s: #f0f0f3;
+    --text: #18181b; --text2: #52525b; --text3: #a1a1aa; --text4: #d4d4d8;
+    --teal: #0d9488; --teal-bg: #e6f7f5; --teal-soft: #ccfbf1;
+    --red: #dc2626; --red-bg: #fef2f2; --red-soft: #fee2e2;
+    --amber: #d97706; --amber-bg: #fffbeb; --amber-soft: #fef3c7;
+    --green: #16a34a; --green-bg: #f0fdf4; --green-soft: #dcfce7;
+    --blue: #2563eb; --blue-bg: #eff6ff; --blue-soft: #dbeafe;
+    --purple: #7c3aed; --purple-bg: #f5f3ff;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+    --radius: 16px;
+    --radius-sm: 12px;
+    --radius-xs: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 32px 20px 100px; }
+
+  /* ── Header ── */
+  .page-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .page-header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .school-count { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--card); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); }
+  .header-spacer { flex: 1; }
+  .add-school-btn {
+    display: flex; align-items: center; gap: 7px; padding: 10px 20px;
+    border-radius: var(--radius-sm); border: none; background: var(--teal); color: white;
+    font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: all 0.15s; box-shadow: 0 2px 8px rgba(13,148,136,0.25);
+  }
+  .add-school-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.35); }
+  .add-school-btn svg { width: 14px; height: 14px; }
+
+  /* ── Daily Brief (Hero) ── */
+  .daily-brief {
+    background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+    border-radius: 20px; padding: 28px 30px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .daily-brief::before {
+    content: ''; position: absolute; top: -40%; right: -10%; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brief-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--teal); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .brief-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .brief-greeting { font-size: 20px; font-weight: 800; color: white; letter-spacing: -0.3px; margin-bottom: 8px; }
+  .brief-summary { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 20px; max-width: 620px; }
+  .brief-summary strong { color: rgba(255,255,255,0.9); font-weight: 700; }
+  .brief-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .brief-btn {
+    display: flex; align-items: center; gap: 7px; padding: 11px 22px;
+    border-radius: var(--radius-sm); border: none; font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .brief-btn.primary { background: var(--teal); color: white; box-shadow: 0 2px 10px rgba(13,148,136,0.3); }
+  .brief-btn.primary:hover { transform: translateY(-1px); }
+  .brief-btn.ghost { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); }
+  .brief-btn.ghost:hover { background: rgba(255,255,255,0.1); color: white; }
+  .brief-btn svg { width: 14px; height: 14px; }
+
+  /* ── Scorecard ── */
+  .scorecard {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 28px;
+  }
+  .score-tile {
+    background: var(--card); border-radius: var(--radius); padding: 18px 16px;
+    border: 1px solid var(--border-s); text-align: center; transition: all 0.15s;
+  }
+  .score-tile:hover { box-shadow: var(--shadow-sm); border-color: var(--border); }
+  .score-num { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .score-label { font-size: 11px; font-weight: 600; color: var(--text3); }
+  .score-trend { font-size: 10px; font-weight: 700; margin-top: 6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; }
+
+  /* ── Filters ── */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter-chip {
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    border: 1.5px solid var(--border); background: var(--card); color: var(--text2);
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .filter-chip:hover { border-color: var(--text4); }
+  .filter-chip.active { background: var(--text); color: white; border-color: var(--text); }
+  .filter-chip .n { font-weight: 800; margin-left: 4px; }
+
+  /* ── Section Headers ── */
+  .section-header { display: flex; align-items: center; gap: 10px; padding: 20px 0 14px; }
+  .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .section-name { font-size: 14px; font-weight: 800; }
+  .section-count {
+    font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px;
+    margin-left: 2px;
+  }
+  .section-divider { flex: 1; height: 1px; background: var(--border-s); margin-left: 8px; }
+
+  /* ── School Card (Full) ── */
+  .school-card {
+    background: var(--card); border-radius: 20px; border: 1px solid var(--border-s);
+    margin-bottom: 14px; overflow: hidden; cursor: pointer; transition: all 0.2s;
+  }
+  .school-card:hover { box-shadow: var(--shadow-md); border-color: var(--border); }
+
+  /* Alert banner */
+  .card-alert {
+    padding: 10px 24px; display: flex; align-items: center; gap: 8px;
+  }
+  .alert-indicator { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .alert-indicator.pulse { animation: pulse-dot 2s infinite; }
+  .alert-label { font-size: 12px; font-weight: 700; }
+  .alert-when { margin-left: auto; font-size: 11px; font-weight: 600; }
+
+  /* Card content */
+  .card-content { padding: 20px 24px; }
+
+  /* Top row: school info + health ring */
+  .card-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+  .school-logo {
+    width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center;
+    justify-content: center; font-size: 15px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .school-info { flex: 1; min-width: 0; }
+  .school-name { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.2; }
+  .school-meta { font-size: 12px; color: var(--text3); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .school-meta .sep { color: var(--text4); }
+
+  /* Health ring */
+  .health-ring { width: 52px; height: 52px; position: relative; flex-shrink: 0; }
+  .health-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .health-ring .ring-val {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+  }
+
+  /* Momentum badge */
+  .momentum {
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+    border-radius: 20px; font-size: 10px; font-weight: 700; margin-left: 10px;
+  }
+  .momentum svg { width: 10px; height: 10px; }
+  .momentum.up { background: var(--green-bg); color: var(--green); }
+  .momentum.steady { background: var(--blue-bg); color: var(--blue); }
+  .momentum.down { background: var(--red-bg); color: var(--red); }
+
+  /* Two-column layout for card details */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
+
+  /* Story block */
+  .story-block {
+    font-size: 13.5px; line-height: 1.6; color: var(--text2);
+    padding: 14px 16px; border-radius: var(--radius-sm);
+    background: var(--bg); border-left: 3px solid var(--border);
+  }
+  .story-block strong { color: var(--text); font-weight: 700; }
+
+  /* Coach + engagement block */
+  .coach-block {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .coach-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: var(--radius-sm); background: var(--bg);
+  }
+  .coach-avatar {
+    width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; font-size: 9px; font-weight: 800; flex-shrink: 0;
+  }
+  .coach-name { font-size: 13px; font-weight: 600; color: var(--text2); }
+  .coach-role { font-size: 10px; color: var(--text3); }
+
+  /* Engagement signal */
+  .engagement-signal {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-radius: var(--radius-sm);
+  }
+  .eng-sig-icon {
+    width: 28px; height: 28px; border-radius: 9px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .eng-sig-icon svg { width: 13px; height: 13px; }
+  .eng-sig-text { font-size: 12.5px; font-weight: 600; line-height: 1.4; }
+  .eng-sig-sub { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+
+  /* Fit tags */
+  .fit-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .fit-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600;
+  }
+  .fit-tag svg { width: 11px; height: 11px; }
+  .fit-tag.good { background: var(--green-bg); color: var(--green); }
+  .fit-tag.ok { background: var(--amber-bg); color: var(--amber); }
+  .fit-tag.info { background: var(--blue-bg); color: var(--blue); }
+  .fit-tag.quest { background: var(--purple-bg); color: var(--purple); }
+
+  /* Progress rail */
+  .progress-rail { margin-bottom: 16px; }
+  .rail-track { display: flex; align-items: center; gap: 0; margin-bottom: 6px; }
+  .rail-dot {
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; border: 2.5px solid;
+  }
+  .rail-dot.done { background: var(--teal); border-color: var(--teal); color: white; }
+  .rail-dot.current { background: white; border-color: var(--teal); color: var(--teal); }
+  .rail-dot.upcoming { background: var(--bg); border-color: var(--border); color: var(--text4); }
+  .rail-line { flex: 1; height: 2.5px; border-radius: 2px; }
+  .rail-line.done { background: var(--teal); }
+  .rail-line.pending { background: var(--border); }
+  .rail-labels { display: flex; justify-content: space-between; }
+  .rail-labels span { font-size: 9px; font-weight: 600; color: var(--text4); text-align: center; flex: 1; }
+  .rail-labels span.active { color: var(--teal); font-weight: 800; }
+
+  /* Last activity */
+  .last-activity {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: var(--radius-xs); background: var(--bg);
+    margin-bottom: 16px;
+  }
+  .la-icon {
+    width: 22px; height: 22px; border-radius: 7px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .la-icon svg { width: 11px; height: 11px; }
+  .la-text { font-size: 12px; color: var(--text2); flex: 1; }
+  .la-text strong { font-weight: 700; color: var(--text); }
+  .la-time { font-size: 10px; color: var(--text4); flex-shrink: 0; }
+
+  /* Card actions */
+  .card-actions { display: flex; gap: 8px; }
+  .action-btn {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 13px 20px; border-radius: var(--radius-sm); border: none;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: all 0.15s; flex: 1;
+  }
+  .action-btn:hover { transform: translateY(-1px); }
+  .action-btn:active { transform: scale(0.98); }
+  .action-btn svg { width: 15px; height: 15px; }
+  .action-btn.primary { color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .action-btn.secondary {
+    background: var(--bg); color: var(--text2); border: 1.5px solid var(--border);
+  }
+  .action-btn.secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* ── Compact Row ── */
+  .compact-card {
+    display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+    background: var(--card); border: 1px solid var(--border-s); border-radius: var(--radius);
+    margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .compact-card:hover { box-shadow: var(--shadow-sm); border-color: var(--border); }
+  .compact-logo {
+    width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center;
+    justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .compact-body { flex: 1; min-width: 0; }
+  .compact-title { font-size: 15px; font-weight: 700; }
+  .compact-desc { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .compact-cta {
+    padding: 9px 18px; border-radius: 10px; border: none; font-size: 12px;
+    font-weight: 700; cursor: pointer; font-family: inherit; color: white;
+    flex-shrink: 0; transition: all 0.15s;
+  }
+  .compact-cta:hover { transform: translateY(-1px); }
+
+  /* ── Committed Banner ── */
+  .committed-banner {
+    background: var(--green-bg); border: 1px solid rgba(22,163,74,0.15);
+    border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 18px;
+    margin-bottom: 14px;
+  }
+  .commit-check {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--green);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .commit-check svg { width: 24px; height: 24px; color: white; }
+  .commit-info { flex: 1; }
+  .commit-name { font-size: 18px; font-weight: 800; }
+  .commit-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .commit-stats { display: flex; gap: 20px; flex-shrink: 0; }
+  .commit-stat { text-align: center; }
+  .commit-stat .cs-num { font-size: 18px; font-weight: 800; }
+  .commit-stat .cs-label { font-size: 9px; color: var(--text3); font-weight: 600; }
+  .commit-badge {
+    padding: 7px 16px; border-radius: 10px; background: white; color: var(--green);
+    font-size: 12px; font-weight: 700; border: 1px solid rgba(22,163,74,0.15); flex-shrink: 0;
+  }
+
+  /* ── Weekly Wins ── */
+  .weekly-wins {
+    background: var(--card); border: 1px solid var(--border-s); border-radius: 20px;
+    padding: 20px 24px; margin-bottom: 28px;
+  }
+  .wins-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .wins-icon {
+    width: 28px; height: 28px; border-radius: 10px; background: var(--amber-bg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wins-title { font-size: 14px; font-weight: 800; }
+  .wins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .win-item {
+    padding: 12px 14px; border-radius: var(--radius-sm); background: var(--bg);
+    text-align: center;
+  }
+  .win-num { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .win-label { font-size: 11px; color: var(--text3); font-weight: 600; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .scorecard { grid-template-columns: repeat(2, 1fr); }
+    .wins-grid { grid-template-columns: repeat(3, 1fr); }
+    .committed-banner { flex-direction: column; text-align: center; }
+    .commit-stats { justify-content: center; }
+    .daily-brief { padding: 22px 20px; }
+    .brief-greeting { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ Header ═══ -->
+  <div class="page-header">
+    <h1>My Schools</h1>
+    <span class="school-count">12 schools</span>
+    <span class="header-spacer"></span>
+    <button class="add-school-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
+      Add School
+    </button>
+  </div>
+
+  <!-- ═══ Daily Brief (Hero) ═══ -->
+  <div class="daily-brief">
+    <div class="brief-label">
+      <span class="dot"></span>
+      Your recruiting update
+    </div>
+    <div class="brief-greeting">Here's what needs your attention today</div>
+    <div class="brief-summary">
+      <strong>Coach Wise</strong> at Florida hasn't heard from you in 14 days — a quick follow-up would go a long way.
+      Meanwhile, <strong>Coach Sealy</strong> at UCLA opened your email 3 times and clicked your highlight reel. He's clearly interested!
+    </div>
+    <div class="brief-actions">
+      <button class="brief-btn primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Follow Up with Florida
+      </button>
+      <button class="brief-btn ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        See All Activity
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ Weekly Wins ═══ -->
+  <div class="weekly-wins">
+    <div class="wins-header">
+      <div class="wins-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div class="wins-title">This week's progress</div>
+    </div>
+    <div class="wins-grid">
+      <div class="win-item">
+        <div class="win-num" style="color: var(--green);">3</div>
+        <div class="win-label">Coaches opened emails</div>
+      </div>
+      <div class="win-item">
+        <div class="win-num" style="color: var(--blue);">1</div>
+        <div class="win-label">New coach reply</div>
+      </div>
+      <div class="win-item">
+        <div class="win-num" style="color: var(--teal);">2</div>
+        <div class="win-label">Follow-ups sent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Scorecard ═══ -->
+  <div class="scorecard">
+    <div class="score-tile">
+      <div class="score-num" style="color: var(--red);">2</div>
+      <div class="score-label">Need Action</div>
+      <div class="score-trend" style="background: var(--red-bg); color: var(--red);">
+        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>
+        1 overdue
+      </div>
+    </div>
+    <div class="score-tile">
+      <div class="score-num" style="color: var(--green);">2</div>
+      <div class="score-label">Interested</div>
+      <div class="score-trend" style="background: var(--green-bg); color: var(--green);">
+        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17l5-5 5 5"/></svg>
+        Trending up
+      </div>
+    </div>
+    <div class="score-tile">
+      <div class="score-num" style="color: var(--blue);">2</div>
+      <div class="score-label">In Convo</div>
+    </div>
+    <div class="score-tile">
+      <div class="score-num" style="color: var(--teal);">4</div>
+      <div class="score-label">To Reach Out</div>
+    </div>
+  </div>
+
+  <!-- ═══ Filters ═══ -->
+  <div class="filters">
+    <button class="filter-chip active">All<span class="n">12</span></button>
+    <button class="filter-chip">Action Needed<span class="n">2</span></button>
+    <button class="filter-chip">Interested<span class="n">2</span></button>
+    <button class="filter-chip">In Convo<span class="n">2</span></button>
+    <button class="filter-chip">New<span class="n">4</span></button>
+    <button class="filter-chip">Committed<span class="n">1</span></button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION: NEEDS YOUR ATTENTION              -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-header">
+    <div class="section-dot" style="background: var(--red);"></div>
+    <div class="section-name" style="color: var(--red);">Needs your attention</div>
+    <div class="section-count" style="background: var(--red-bg); color: var(--red);">2</div>
+    <div class="section-divider"></div>
+  </div>
+
+  <!-- University of Florida -->
+  <div class="school-card">
+    <div class="card-alert" style="background: var(--red-bg);">
+      <div class="alert-indicator pulse" style="background: var(--red);"></div>
+      <div class="alert-label" style="color: var(--red);">Follow-up overdue</div>
+      <div class="alert-when" style="color: var(--red);">1 day late</div>
+    </div>
+    <div class="card-content">
+      <div class="card-top">
+        <div class="school-logo" style="background: #0021A5;">UF</div>
+        <div class="school-info">
+          <div class="school-name">
+            University of Florida
+            <span class="momentum down">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M17 7l-5 5-5-5"/></svg>
+              Cooling off
+            </span>
+          </div>
+          <div class="school-meta">
+            <span>D1</span><span class="sep">&middot;</span>
+            <span>SEC</span><span class="sep">&middot;</span>
+            <span>Gainesville, FL</span>
+          </div>
+        </div>
+        <div class="health-ring">
+          <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#fee2e2" stroke-width="4"/>
+            <circle cx="26" cy="26" r="22" fill="none" stroke="var(--red)" stroke-width="4" stroke-dasharray="55 83" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-val" style="color: var(--red);">40%</div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="story-block">
+          You emailed <strong>Coach Wise</strong> 14 days ago but haven't heard back. A friendly follow-up shows persistence — coaches respect that.
+        </div>
+        <div class="coach-block">
+          <div class="coach-row">
+            <div class="coach-avatar" style="background: var(--teal-bg); color: var(--teal);">MW</div>
+            <div>
+              <div class="coach-name">Coach Mary Wise</div>
+              <div class="coach-role">Head Coach</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fit-tags">
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Good academic fit</span>
+        <span class="fit-tag ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>Check finances</span>
+      </div>
+
+      <div class="progress-rail">
+        <div class="rail-track">
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot current">3</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">4</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">5</div>
+        </div>
+        <div class="rail-labels">
+          <span>Added</span><span>Emailed</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+        </div>
+      </div>
+
+      <div class="last-activity">
+        <div class="la-icon" style="background: var(--teal-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="la-text"><strong>You</strong> sent an introductory email</div>
+        <div class="la-time">Feb 18</div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-btn primary" style="background: var(--red);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Follow-Up Now
+        </button>
+        <button class="action-btn secondary">View Journey</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- University of Texas -->
+  <div class="school-card">
+    <div class="card-alert" style="background: var(--amber-bg);">
+      <div class="alert-indicator pulse" style="background: var(--amber);"></div>
+      <div class="alert-label" style="color: var(--amber);">Follow-up due soon</div>
+      <div class="alert-when" style="color: var(--amber);">In 2 days</div>
+    </div>
+    <div class="card-content">
+      <div class="card-top">
+        <div class="school-logo" style="background: #BF5700;">TX</div>
+        <div class="school-info">
+          <div class="school-name">
+            University of Texas
+            <span class="momentum steady">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/></svg>
+              Steady
+            </span>
+          </div>
+          <div class="school-meta">
+            <span>D1</span><span class="sep">&middot;</span>
+            <span>Big 12</span><span class="sep">&middot;</span>
+            <span>Austin, TX</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="story-block">
+          <strong>Coach Elliott</strong> showed some interest early on. Your follow-up is coming in 2 days — prepare something personal!
+        </div>
+        <div class="coach-block">
+          <div class="coach-row">
+            <div class="coach-avatar" style="background: var(--amber-bg); color: var(--amber);">JE</div>
+            <div>
+              <div class="coach-name">Coach Jerritt Elliott</div>
+              <div class="coach-role">Head Coach</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fit-tags">
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Good academic fit</span>
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Good financial fit</span>
+        <span class="fit-tag info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>2h from home</span>
+      </div>
+
+      <div class="progress-rail">
+        <div class="rail-track">
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot current">3</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">4</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">5</div>
+        </div>
+        <div class="rail-labels">
+          <span>Added</span><span>Emailed</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+        </div>
+      </div>
+
+      <div class="last-activity">
+        <div class="la-icon" style="background: var(--teal-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="la-text"><strong>You</strong> sent 3 emails &middot; No reply yet</div>
+        <div class="la-time">7d ago</div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-btn primary" style="background: var(--amber);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Prepare Follow-Up
+        </button>
+        <button class="action-btn secondary">View Journey</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION: COACHES INTERESTED                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-header">
+    <div class="section-dot" style="background: var(--green);"></div>
+    <div class="section-name" style="color: var(--green);">Coaches interested in you</div>
+    <div class="section-count" style="background: var(--green-bg); color: var(--green);">2</div>
+    <div class="section-divider"></div>
+  </div>
+
+  <!-- UCLA -->
+  <div class="school-card">
+    <div class="card-content">
+      <div class="card-top">
+        <div class="school-logo" style="background: #2774AE;">UC</div>
+        <div class="school-info">
+          <div class="school-name">
+            UCLA
+            <span class="momentum up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17l5-5 5 5"/></svg>
+              Hot lead
+            </span>
+          </div>
+          <div class="school-meta">
+            <span>D1</span><span class="sep">&middot;</span>
+            <span>Pac-12</span><span class="sep">&middot;</span>
+            <span>Los Angeles, CA</span>
+          </div>
+        </div>
+        <div class="health-ring">
+          <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#dcfce7" stroke-width="4"/>
+            <circle cx="26" cy="26" r="22" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="112 27" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-val" style="color: var(--green);">81%</div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="story-block" style="border-left-color: var(--green);">
+          You're in an <strong>active conversation</strong> with Coach Sealy. He replied to your last email and is clearly engaged. Keep the momentum going!
+        </div>
+        <div class="coach-block">
+          <div class="coach-row">
+            <div class="coach-avatar" style="background: var(--green-bg); color: var(--green);">MS</div>
+            <div>
+              <div class="coach-name">Coach Michael Sealy</div>
+              <div class="coach-role">Head Coach</div>
+            </div>
+          </div>
+          <div class="engagement-signal" style="background: var(--green-bg); border: 1px solid rgba(22,163,74,0.1);">
+            <div class="eng-sig-icon" style="background: white;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div>
+              <div class="eng-sig-text" style="color: var(--green);">Opened your email 3x and clicked your highlight reel</div>
+              <div class="eng-sig-sub">This is a great sign — the coach is interested!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fit-tags">
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Great academic fit</span>
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Aid available</span>
+        <span class="fit-tag quest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Questionnaire done</span>
+      </div>
+
+      <div class="progress-rail">
+        <div class="rail-track">
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot current">4</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">5</div>
+        </div>
+        <div class="rail-labels">
+          <span>Added</span><span>Emailed</span><span>Followed up</span><span class="active">Talking</span><span>Commit</span>
+        </div>
+      </div>
+
+      <div class="last-activity">
+        <div class="la-icon" style="background: var(--green-bg);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div class="la-text"><strong>Coach Sealy</strong> replied to your email</div>
+        <div class="la-time">Mar 1</div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-btn primary" style="background: var(--teal);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          Open Journey
+        </button>
+        <button class="action-btn secondary">Email Coach</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Penn State -->
+  <div class="school-card">
+    <div class="card-content">
+      <div class="card-top">
+        <div class="school-logo" style="background: #001E44;">PS</div>
+        <div class="school-info">
+          <div class="school-name">
+            Penn State
+            <span class="momentum up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17l5-5 5 5"/></svg>
+              Warming up
+            </span>
+          </div>
+          <div class="school-meta">
+            <span>D1</span><span class="sep">&middot;</span>
+            <span>Big Ten</span><span class="sep">&middot;</span>
+            <span>State College, PA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="story-block" style="border-left-color: var(--green);">
+          You sent your intro to <strong>Coach Schumacher-Cawley</strong> and she opened it twice. She hasn't replied yet — but the opens mean she's paying attention.
+        </div>
+        <div class="coach-block">
+          <div class="coach-row">
+            <div class="coach-avatar" style="background: var(--green-bg); color: var(--green);">KC</div>
+            <div>
+              <div class="coach-name">Coach Schumacher-Cawley</div>
+              <div class="coach-role">Head Coach</div>
+            </div>
+          </div>
+          <div class="engagement-signal" style="background: var(--green-bg); border: 1px solid rgba(22,163,74,0.1);">
+            <div class="eng-sig-icon" style="background: white;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div>
+              <div class="eng-sig-text" style="color: var(--green);">Opened your email 2 times</div>
+              <div class="eng-sig-sub">She's reading your stuff — follow up now!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fit-tags">
+        <span class="fit-tag good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Good academic fit</span>
+        <span class="fit-tag ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg>Staff change</span>
+      </div>
+
+      <div class="progress-rail">
+        <div class="rail-track">
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line done"></div>
+          <div class="rail-dot done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot current">3</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">4</div>
+          <div class="rail-line pending"></div>
+          <div class="rail-dot upcoming">5</div>
+        </div>
+        <div class="rail-labels">
+          <span>Added</span><span>Emailed</span><span class="active">Follow up</span><span>Talking</span><span>Commit</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-btn primary" style="background: var(--teal);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Follow-Up
+        </button>
+        <button class="action-btn secondary">View Journey</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION: IN CONVERSATION                   -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-header">
+    <div class="section-dot" style="background: var(--blue);"></div>
+    <div class="section-name" style="color: var(--blue);">In conversation</div>
+    <div class="section-count" style="background: var(--blue-bg); color: var(--blue);">2</div>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #154733;">OR</div>
+    <div class="compact-body">
+      <div class="compact-title">University of Oregon</div>
+      <div class="compact-desc">Coach Ulmer replied 2 days ago &middot; D1 &middot; Big Ten &middot; 62% match</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Open</button>
+  </div>
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #00274C;">MI</div>
+    <div class="compact-body">
+      <div class="compact-title">University of Michigan</div>
+      <div class="compact-desc">At offer/commit stage &middot; Coach replied today &middot; D1 &middot; Big Ten</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Open</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION: READY TO REACH OUT                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-header">
+    <div class="section-dot" style="background: var(--teal);"></div>
+    <div class="section-name" style="color: var(--teal);">Ready to reach out</div>
+    <div class="section-count" style="background: var(--teal-bg); color: var(--teal);">4</div>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #8B0000;">UT</div>
+    <div class="compact-body">
+      <div class="compact-title">University of Tampa</div>
+      <div class="compact-desc">Great 55% match &middot; D2 &middot; SSC &middot; Haven't contacted yet</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Reach Out</button>
+  </div>
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #4B1F80;">AC</div>
+    <div class="compact-body">
+      <div class="compact-title">Abilene Christian University</div>
+      <div class="compact-desc">18% match &middot; D1 &middot; WAC &middot; Questionnaire pending</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Reach Out</button>
+  </div>
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #660000;">AA</div>
+    <div class="compact-body">
+      <div class="compact-title">Alabama A&M University</div>
+      <div class="compact-desc">18% match &middot; D1 &middot; SWAC &middot; Questionnaire pending</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Reach Out</button>
+  </div>
+  <div class="compact-card">
+    <div class="compact-logo" style="background: #002D72;">JH</div>
+    <div class="compact-body">
+      <div class="compact-title">Johns Hopkins University</div>
+      <div class="compact-desc">D3 &middot; 9% match &middot; Centennial &middot; Not contacted</div>
+    </div>
+    <button class="compact-cta" style="background: var(--teal);">Reach Out</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION: COMMITTED                          -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section-header">
+    <div class="section-dot" style="background: var(--green);"></div>
+    <div class="section-name" style="color: var(--green);">Committed</div>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="committed-banner">
+    <div class="commit-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="commit-info">
+      <div class="commit-name">Stanford University</div>
+      <div class="commit-sub">D1 &middot; Pac-12 &middot; Stanford, CA &middot; Coach Kevin Hambly</div>
+    </div>
+    <div class="commit-stats">
+      <div class="commit-stat">
+        <div class="cs-num" style="color: var(--green);">95%</div>
+        <div class="cs-label">Match</div>
+      </div>
+      <div class="commit-stat">
+        <div class="cs-num">12</div>
+        <div class="cs-label">Emails</div>
+      </div>
+      <div class="commit-stat">
+        <div class="cs-num">5</div>
+        <div class="cs-label">Replies</div>
+      </div>
+    </div>
+    <div class="commit-badge">Verbal Commit</div>
+  </div>
+
+</div>
+</body>
+</html>
