@@ -8,7 +8,7 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://recruit-hub-128.preview.emergentagent.com"
+    BASE_URL = "https://capy-pipeline-v5.preview.emergentagent.com"
 
 
 class TestAuthBypass:

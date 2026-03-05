@@ -13,7 +13,7 @@ import requests
 import os
 import json
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://recruit-hub-128.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://capy-pipeline-v5.preview.emergentagent.com').rstrip('/')
 FGCU_PROGRAM_ID = "prog_3fe70bce8e71"  # Florida Gulf Coast University - D1, no nil_signals
 
 
