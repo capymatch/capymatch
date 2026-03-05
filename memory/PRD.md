@@ -1,62 +1,72 @@
-# CapyMatch – Volleyball Recruiting CRM
+# CapyMatch — Product Requirements Document
 
-## Product Overview
-CapyMatch is a full-stack React/FastAPI volleyball recruiting CRM that helps athletes track and manage their college recruiting pipeline.
+## Original Problem Statement
+CapyMatch is a Volleyball Recruiting CRM designed for non-technical parents to manage their athlete's college recruiting journey. The platform provides school discovery, coach communication, engagement tracking, and pipeline management.
 
-## Core Features (Implemented)
-- **Pipeline Board**: Kanban-style board to track school recruiting status
-- **School Info Pages**: Detailed school profiles with academic, financial, admissions, coaching staff data
-- **Social Spotlight**: Tabbed YouTube/Twitter feed for pipeline schools
-- **Gmail Import**: OAuth-based email import for tracking coach communications
-- **AI Assistant**: Claude-powered AI for recruiting advice
-- **Athlete Profile**: Public shareable profile for coaches to view
-- **Stripe Payments**: Subscription management
-- **Monthly Coach Data Refresh**: Automated monthly re-scraping of coaching data with email change reports
-- **Engagement Tracking System**: Email opens, link clicks, profile views
-  - Dashboard "Who's Watching" widget
-  - Pipeline card engagement badges
-  - **Journey page**: Unified Coaches card with stats strip + inline email badges with hover tooltips (Mar 5, 2026)
+## User Personas
+- **Primary**: Non-technical parents managing their child's volleyball recruiting
+- **Secondary**: Student athletes tracking their own recruiting progress
 
-## Journey Page Architecture
-- **Unified Coaches Card** (right sidebar):
-  - Header with staff health badge (Stable/Change)
-  - Engagement stats strip (Opens/Clicks/Unique)
-  - Staff change alert (when detected)
-  - Coach list with edit/delete
-  - Head coach social links from KB
-- **Timeline** (left 2/3):
-  - Sent email bubbles show engagement badge (eye icon + count) in top-right corner
-  - Hover badge to see tooltip: who opened, who clicked, when
-  - Badge matching: Gmail emails match by subject; logged emails match by content keywords
-  - Orphaned link_clicks (no subject) included when opens are matched
-- **Removed**: Old "At a Glance" card, standalone "Coach Engagement Tracker", standalone "Coaching Staff Social Media" section, "Recent Activity" list in sidebar
+## Core Requirements
+1. School discovery and knowledge base with D1/D2/D3 programs
+2. Coach contact management and communication
+3. Gmail integration for email tracking
+4. Recruiting pipeline/board for tracking school relationships
+5. Journey page for individual school detail and timeline
+6. Social media spotlight for school social feeds
+7. Engagement tracking (email opens, link clicks)
+8. AI-powered features (match scoring, insights)
+9. NCAA timeline and calendar integration
 
-## Architecture
-- **Frontend**: React (CRA) + Tailwind CSS + Shadcn/UI
-- **Backend**: FastAPI + Motor (async MongoDB)
-- **Database**: MongoDB Atlas (capymatch DB)
+## Tech Stack
+- **Frontend**: React + Tailwind CSS + Shadcn/UI
+- **Backend**: FastAPI + MongoDB
+- **Auth**: Session-based (email/password)
+- **Theme**: Light/Dark mode via CSS variables (--t-*)
 
-## Key DB Schema
-- **`university_knowledge_base`**: `coaching_staff: [{name, role, email, email_verified}]`
-- **`engagement_events`**: `{user_id, school_id, event_type, email_subject, coach_email, created_at}`
+## What's Been Implemented
 
-## Key API Endpoints
-- `GET /api/engagement/school/{program_id}` — Per-school engagement (total_opens, total_clicks, unique_opens, timeline)
-- `GET /api/programs/{program_id}/journey` — Timeline with interactions + Gmail emails
-- `GET /api/track/open/{tracking_id}` — Pixel tracking endpoint
-- `GET /api/track/click/{tracking_id}` — Link click tracking endpoint
+### Pipeline Page Redesign (March 5, 2026) ✅
+Complete UI overhaul of the Pipeline/My Schools page (`/pipeline`) based on approved mockup v10b:
+- **Hero Card**: Journey-style dark (#141422) card showing most urgent school with progress rail, badges (division, match %, sentiment), social icons, and Follow Up/Start Outreach CTA
+- **Filter Chips**: All, Outreach, Waiting, In Convo, Committed with counts
+- **Collapsible Sections**: Needs Outreach (amber), Waiting on Reply (red), In Conversation (blue), Committed (green)
+- **Compact School Cards**: 7-column aligned rows — school identity, progress rail (200px), temperature tag, engagement metrics (views/clicks/contacts), next action, CTA button, arrow chevron
+- **Committed Card**: Special green card with check icon and "Verbal Commit" badge
+- **Responsive**: Hidden columns on smaller screens
+- **View Toggle**: Compact/Expanded modes
+- File: `frontend/src/pages/RecruitingBoard.js`
 
-## Upcoming Tasks (P1)
-- Manual Email Logging: UI for non-Gmail users to manually log emails
-- Camp Data Integration: Add camp_url to knowledge base
+### Previously Completed Features
+- Social Spotlight page redesign
+- Data enrichment (social media, coaching staff for D1/D2/D3)
+- Data quality verification
+- Automated data refresh
+- Engagement tracking system
+- Journey page UI refactor
+- Pipeline mockup design process (v1-v10b)
 
-## Backlog (P2)
+## Prioritized Backlog
+
+### P1 — Upcoming
+- **Manual Email Logging**: UI for non-Gmail users to manually log email interactions from Journey page
+- **Camp Data Integration**: Add `camp_url` to knowledge base, display university camp info
+
+### P2 — Future/Backlog
 - Microsoft Outlook/365 Import
+- Full NIL transaction/payment processing platform
+- Separate Girls/Boys Volleyball data models
 - Email templates & bulk outreach
 - Redesign "Find Schools" page
 - Fix duplicate YouTube URLs for similarly-named schools
-- Full NIL transaction/payment processing
-- Separate Girls/Boys Volleyball data models
 
-## 3rd Party Integrations
-- Google YouTube Data API v3, Anthropic Claude (Emergent LLM Key), Google APIs (Gmail OAuth), Resend, Stripe, Playwright, MongoDB Atlas, APScheduler, BeautifulSoup4
+## Key API Endpoints
+- `GET /api/programs` — List all pipeline programs
+- `GET /api/programs/:id` — Single program with journey_rail
+- `GET /api/match-scores` — Match scores for all programs
+- `GET /api/engagement/summary` — Engagement data by school
+- `POST /api/auth/login` — Login with email/password
+
+## Demo Credentials
+- Email: `demo@capymatch.com`
+- Password: `demo2026`
