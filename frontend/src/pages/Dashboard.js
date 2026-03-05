@@ -582,9 +582,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ═══ Who's Watching ═══ */}
-      <WhosWatching engagement={engagement} navigate={navigate} formatTimeAgo={formatTimeAgo} />
-
       {/* ═══ Section 2: Today's Actions ═══ */}
       <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="todays-actions">
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
@@ -698,49 +695,10 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ═══ Section 4 + 5: Pipeline + Activity ═══ */}
+      {/* ═══ Section 4 + 5: Who's Watching + Activity ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Pipeline Snapshot */}
-        <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="pipeline-snapshot">
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--t-border)" }}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "rgba(26,138,128,0.12)" }}>
-                <BarChart3 className="w-4 h-4" style={{ color: "#1a8a80" }} strokeWidth={2} />
-              </div>
-              <h3 className="text-sm font-bold" style={{ color: "var(--t-text)" }}>Pipeline Snapshot</h3>
-            </div>
-            <button onClick={() => navigate("/pipeline")} className="text-xs font-semibold flex items-center gap-1 transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }} data-testid="open-board-btn">
-              Open board <ChevronRight className="w-3 h-3" />
-            </button>
-          </div>
-          {totalSchools > 0 ? (
-            <>
-              <div className="px-6 py-5">
-                <div className="flex gap-2 items-end" style={{ height: "130px" }}>
-                  {pipelineStatuses.map(s => (
-                    <FunnelBar key={s.key} count={statusMap[s.key] || 0} maxCount={maxPipeline} label={s.label} color={s.color} />
-                  ))}
-                </div>
-              </div>
-              {Object.keys(divCounts).length > 0 && (
-                <div className="flex gap-5 justify-center px-5 py-3 border-t" style={{ borderColor: "var(--t-border)" }}>
-                  {Object.entries(divCounts).map(([div, count]) => (
-                    <div key={div} className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded" style={{ backgroundColor: divColors[div] || "#6b7280" }} />
-                      <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>{div} · {count}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-12 px-5">
-              <BarChart3 className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--t-text-faint)" }} />
-              <p className="text-sm" style={{ color: "var(--t-text-muted)" }}>Add schools to see your pipeline</p>
-              <button onClick={() => navigate("/knowledge-base")} className="mt-2 text-sm font-semibold transition-opacity hover:opacity-80" style={{ color: "#1a8a80" }}>+ Add a school</button>
-            </div>
-          )}
-        </div>
+        {/* Who's Watching */}
+        <WhosWatching engagement={engagement} navigate={navigate} formatTimeAgo={formatTimeAgo} />
 
         {/* Recent Activity Feed */}
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="recent-activity">
