@@ -276,13 +276,13 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
         )}
 
         {/* Advice + Follow Up row */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
           {/* What to do next */}
           {(() => {
             const advice = getHeroAdvice(p);
             return advice ? (
               <div style={{
-                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(13,148,136,0.2)",
+                flex: 1, minWidth: 0, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(13,148,136,0.2)",
                 borderLeft: "3px solid #0d9488", borderRadius: 10, padding: "14px 18px",
                 display: "flex", gap: 12, alignItems: "flex-start",
               }} data-testid="hero-advice-card">
@@ -292,25 +292,22 @@ function PipelineHeroCard({ program: p, matchScore, engagement, navigate }) {
                   <div style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{advice}</div>
                 </div>
               </div>
-            ) : null;
+            ) : <div style={{ flex: 1 }} />;
           })()}
 
-          {/* Follow Up button - full width on mobile, right-aligned on desktop */}
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button
-              onClick={() => navigate(`/journey/${p.program_id}`)}
-              style={{
-                padding: "12px 26px", borderRadius: 10, border: "none", background: "#0d9488",
-                color: "white", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex",
-                alignItems: "center", justifyContent: "center", gap: 7, fontFamily: "inherit",
-              }}
-              className="w-full sm:w-auto"
-              data-testid="hero-follow-up-btn"
-            >
-              <Send style={{ width: 15, height: 15 }} />
-              {p.board_group === "needs_outreach" ? "Start Outreach" : "Follow Up"}
-            </button>
-          </div>
+          {/* Follow Up button */}
+          <button
+            onClick={() => navigate(`/journey/${p.program_id}`)}
+            style={{
+              padding: "12px 26px", borderRadius: 10, border: "none", background: "#0d9488",
+              color: "white", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex",
+              alignItems: "center", justifyContent: "center", gap: 7, fontFamily: "inherit", flexShrink: 0,
+            }}
+            data-testid="hero-follow-up-btn"
+          >
+            <Send style={{ width: 15, height: 15 }} />
+            {p.board_group === "needs_outreach" ? "Start Outreach" : "Follow Up"}
+          </button>
         </div>
       </div>
     </div>
