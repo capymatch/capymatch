@@ -6,7 +6,8 @@ import {
   ArrowLeft, Mail, Phone, Clock, Target, DollarSign,
   MessageSquare, Users, Loader2, ChevronDown, ChevronUp,
   Plus, Edit2, Trash2, X, GitCompare, AlertCircle, Info,
-  ClipboardCheck, ExternalLink, CheckCircle2, Send, Share2
+  ClipboardCheck, ExternalLink, CheckCircle2, Send, Share2,
+  Sparkles, Crown
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -66,6 +67,8 @@ export default function RecruitingJourney() {
   const [questLoading, setQuestLoading] = useState(false);
   const [gmailConnected, setGmailConnected] = useState(true);
   const [schoolEngagement, setSchoolEngagement] = useState(null);
+  const [aiSummary, setAiSummary] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const [activeForm, setActiveForm] = useState(null);
   const [editCoach, setEditCoach] = useState(null);
@@ -98,6 +101,16 @@ export default function RecruitingJourney() {
   const openReplied = () => { setActiveForm(prev => prev === "replied" ? null : "replied"); };
   const openCoach = () => { setActiveForm("coach"); };
   const openFollowup = () => { setActiveForm(prev => prev === "followup" ? null : "followup"); };
+
+  const generateAI = async () => {
+    if (!isPremium) return;
+    setAiLoading(true);
+    try {
+      const res = await api.post("/ai/journey-summary", { program_id: programId });
+      setAiSummary(res.data);
+    } catch { toast.error("Failed to generate insights"); }
+    finally { setAiLoading(false); }
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -662,6 +675,54 @@ export default function RecruitingJourney() {
         </div>
 
         <div className="lg:col-span-1">
+          {/* ── Next Steps Card ── */}
+          {(program.next_action_due || isPremium || !isBasic) && (
+            <div className="rounded-2xl border p-4 mb-4 space-y-3" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="next-steps-card">
+              {program.next_action_due && (
+                <div className="p-2.5 rounded-lg" style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }} data-testid="follow-up-reminder">
+                  <div className="flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#f97316" }} />
+                    <span className="text-[11px] font-semibold" style={{ color: "#f97316" }}>
+                      Follow-up: {new Date(program.next_action_due).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                  {program.next_action && <p className="text-[10px] mt-1 ml-5" style={{ color: "var(--t-text-muted)" }}>{program.next_action}</p>}
+                </div>
+              )}
+              {isPremium ? (
+                <div className="rounded-lg p-2.5" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.06), rgba(26,138,128,0.04))", border: "1px solid rgba(168,85,247,0.15)" }} data-testid="ai-next-step">
+                  {aiSummary ? (
+                    <div className="space-y-1.5">
+                      <p className="text-[9px] font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: "#a855f7" }}>
+                        <Sparkles className="w-3 h-3" />Next move
+                      </p>
+                      <p className="text-[11px] leading-relaxed" style={{ color: "var(--t-text-secondary)" }}>{aiSummary.suggested_action}</p>
+                      <button onClick={generateAI} disabled={aiLoading} className="text-[10px] font-medium flex items-center gap-1 disabled:opacity-50" style={{ color: "#a855f7" }}>
+                        {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Refresh
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={generateAI} disabled={aiLoading} className="w-full flex items-center gap-2 text-left disabled:opacity-50" data-testid="ai-generate-btn">
+                      <Sparkles className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#a855f7" }} />
+                      <span className="text-[11px]" style={{ color: "var(--t-text-muted)" }}>
+                        {aiLoading ? "Analyzing..." : "Get AI-powered next step"}
+                      </span>
+                      {aiLoading && <Loader2 className="w-3 h-3 animate-spin ml-auto" style={{ color: "#a855f7" }} />}
+                    </button>
+                  )}
+                </div>
+              ) : !isBasic ? (
+                <div className="rounded-lg p-2.5" style={{ border: "1px solid rgba(168,85,247,0.12)" }}>
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-3 h-3 flex-shrink-0" style={{ color: "rgba(251,191,36,0.7)" }} />
+                    <span className="text-[10px]" style={{ color: "var(--t-text-muted)" }}>AI insights</span>
+                    <a href="/account" className="ml-auto text-[10px] font-semibold hover:opacity-80" style={{ color: "#a855f7" }}>Upgrade</a>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          )}
+
           {/* ── Unified Coaches Card ── */}
           <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: "var(--t-surface)", borderColor: "var(--t-border)" }} data-testid="unified-coach-card">
             {/* Header */}
