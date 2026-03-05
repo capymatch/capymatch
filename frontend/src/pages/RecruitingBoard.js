@@ -87,10 +87,11 @@ function getNextAction(p, matchScore) {
     return { label: "Start outreach", sub: ms ? `${ms}% match` : null, subColor: "#0d9488", subBg: "#e6f7f5" };
   }
   if (p.board_group === "waiting_on_reply" || p.board_group === "overdue") {
-    const sig = p.signals || {};
-    const days = sig.days_since_outreach || sig.days_since_activity;
-    const sub = days ? `${days}d ago` : null;
     const isOverdue = p.board_group === "overdue" || (p.next_action_due && p.next_action_due <= new Date().toISOString().split("T")[0]);
+    let sub = null;
+    if (p.next_action_due) {
+      sub = new Date(p.next_action_due + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
     return { label: "Follow up", sub, subColor: isOverdue ? "#dc2626" : "#d97706", subBg: isOverdue ? "#fef2f2" : "#fffbeb" };
   }
   if (p.board_group === "in_conversation") {
