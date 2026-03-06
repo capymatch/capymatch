@@ -272,6 +272,7 @@ export default function UniversityKnowledgeBase() {
   const [filterDivision, setFilterDivision] = useState("");
   const [filterRegion, setFilterRegion] = useState("");
   const [filterConference, setFilterConference] = useState("");
+  const [filterState, setFilterState] = useState("");
   const [activeBucket, setActiveBucket] = useState("all");
 
   const [adding, setAdding] = useState({});
@@ -280,6 +281,7 @@ export default function UniversityKnowledgeBase() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [riskDrawer, setRiskDrawer] = useState(null);
   const [seeding, setSeeding] = useState(false);
+  const [athleteState, setAthleteState] = useState("");
 
   const { subscription } = useSubscription();
 
@@ -302,6 +304,13 @@ export default function UniversityKnowledgeBase() {
     api.get("/programs").then(res => {
       setBoardSchools(new Set((res.data || []).map(p => p.university_name)));
     }).catch(() => {});
+    api.get("/athlete-profile").then(res => {
+      const stateAbbr = res.data?.state || "";
+      if (stateAbbr) {
+        const STATE_MAP = {AL:"alabama",AK:"alaska",AZ:"arizona",AR:"arkansas",CA:"california",CO:"colorado",CT:"connecticut",DE:"delaware",FL:"florida",GA:"georgia",HI:"hawaii",ID:"idaho",IL:"illinois",IN:"indiana",IA:"iowa",KS:"kansas",KY:"kentucky",LA:"louisiana",ME:"maine",MD:"maryland",MA:"massachusetts",MI:"michigan",MN:"minnesota",MS:"mississippi",MO:"missouri",MT:"montana",NE:"nebraska",NV:"nevada",NH:"new-hampshire",NJ:"new-jersey",NM:"new-mexico",NY:"new-york",NC:"north-carolina",ND:"north-dakota",OH:"ohio",OK:"oklahoma",OR:"oregon",PA:"pennsylvania",RI:"rhode-island",SC:"south-carolina",SD:"south-dakota",TN:"tennessee",TX:"texas",UT:"utah",VT:"vermont",VA:"virginia",WA:"washington",WV:"west-virginia",WI:"wisconsin",WY:"wyoming",DC:"washington-dc"};
+        setAthleteState(STATE_MAP[stateAbbr.toUpperCase()] || stateAbbr.toLowerCase());
+      }
+    }).catch(() => {});
   }, []);
 
   const fetchUniversities = useCallback(async () => {
@@ -311,6 +320,7 @@ export default function UniversityKnowledgeBase() {
       if (filterRegion) params.region = filterRegion;
       if (filterDivision) params.division = filterDivision;
       if (filterConference) params.conference = filterConference;
+      if (filterState) params.state = filterState;
       const res = await api.get("/knowledge-base", { params });
       const data = res.data;
       // Handle both paginated and legacy responses
@@ -328,7 +338,7 @@ export default function UniversityKnowledgeBase() {
     } finally {
       setLoading(false);
     }
-  }, [search, filterRegion, filterDivision, filterConference, page]);
+  }, [search, filterRegion, filterDivision, filterConference, filterState, page]);
 
   useEffect(() => { fetchUniversities(); }, [fetchUniversities]);
 
@@ -357,18 +367,20 @@ export default function UniversityKnowledgeBase() {
 
   const handleBucketClick = (bucket) => {
     setActiveBucket(bucket.id);
+    setFilterState("");
     if (bucket.id === "all") { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
+    else if (bucket.id === "close") { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setFilterState(athleteState); }
     else if (bucket.filter?.division) { setFilterDivision(bucket.filter.division); setFilterRegion(""); setFilterConference(""); }
     else { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); }
     setPage(1);
   };
 
-  const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); setPage(1); };
-  const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); setPage(1); };
-  const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); setPage(1); };
-  const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setSearch(""); setActiveBucket("all"); setPage(1); };
+  const toggleDiv = d => { setFilterDivision(prev => prev === d ? "" : d); setActiveBucket("all"); setFilterState(""); setPage(1); };
+  const toggleReg = r => { setFilterRegion(prev => prev === r ? "" : r); setActiveBucket("all"); setFilterState(""); setPage(1); };
+  const toggleConf = c => { setFilterConference(prev => prev === c ? "" : c); setActiveBucket("all"); setFilterState(""); setPage(1); };
+  const resetFilters = () => { setFilterDivision(""); setFilterRegion(""); setFilterConference(""); setFilterState(""); setSearch(""); setActiveBucket("all"); setPage(1); };
 
-  const activeFilterCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0);
+  const activeFilterCount = (filterDivision ? 1 : 0) + (filterRegion ? 1 : 0) + (filterConference ? 1 : 0) + (filterState ? 1 : 0);
 
   const suggestionMap = {};
   suggestions.forEach(s => { suggestionMap[s.university_name] = s; });

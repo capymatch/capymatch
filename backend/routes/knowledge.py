@@ -36,7 +36,7 @@ router = APIRouter(prefix="/api")
 
 
 @router.get("/knowledge-base")
-async def list_knowledge_base(division: Optional[str] = None, conference: Optional[str] = None, region: Optional[str] = None, search: Optional[str] = None, page: int = 1, limit: int = 50, fields: Optional[str] = None):
+async def list_knowledge_base(division: Optional[str] = None, conference: Optional[str] = None, region: Optional[str] = None, state: Optional[str] = None, search: Optional[str] = None, page: int = 1, limit: int = 50, fields: Optional[str] = None):
     query = {}
     if division:
         query["division"] = division
@@ -44,6 +44,8 @@ async def list_knowledge_base(division: Optional[str] = None, conference: Option
         query["conference"] = {"$regex": conference, "$options": "i"}
     if region:
         query["region"] = {"$regex": f"^{region}$", "$options": "i"}
+    if state:
+        query["pr_state"] = {"$regex": f"^{state}$", "$options": "i"}
     if search:
         query["university_name"] = {"$regex": search, "$options": "i"}
 
